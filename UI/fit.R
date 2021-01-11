@@ -25,17 +25,33 @@ fit <- navbarMenu(title = "Fit Causal models",
                                  
                                  hr(),
                                  
-                                 # Column Selection for X and Y
-                                 selectInput("xcol", "Select Covariates (X) Columns", 
-                                             choices = NULL, multiple = TRUE),
-                                 selectInput("ycol", "Select Response (Y) Column", choices = NULL),
+                                 # CDescribe Data
+                                 h4("Describe Data"),
                                  
+                                 # Randomized
+                                 radioButtons("rand", label = h6("Treatment Assignment"),
+                                              choices = list("Non-Random" = 1, "Random" = 2), 
+                                              selected = 1),
+                                 
+                                 # blocked opton if random is selected
+                                 conditionalPanel(
+                                   condition = 'input.rand == 2',
+                                   selectInput('blockcheck', 'Blocked Design:', 
+                                               choices = c('No', 'Yes'))
+                                 ),
+                                 
+                                 # select blocking variables (if appropriate)
+                                 conditionalPanel(
+                                   condition = "input.blockcheck == 'Yes'", 
+                                   selectInput("blockvar", "Select Blocking Variable(s)", choices = NULL)
+                                 ),
+
                                  # Column Selection for Z, and identify treatment
                                  selectInput("zcol", "Select Treatment (Z) Column", choices = NULL),
                                  
                                  #conditionalPanel(
                                  #  condition = "input.zcol",
-                                 selectInput("trt.ind", "Select the Value Representing Receiving Treatment", 
+                                 selectInput("trt.ind", "Type the Value Representing Receiving Treatment", 
                                              choices = NULL),
                                  #)
                                  
