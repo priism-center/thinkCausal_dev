@@ -1,4 +1,7 @@
 fit <- navbarMenu(title = "Fit Causal models", 
+                  
+
+# Load Data ---------------------------------------------------------------
                     tabPanel(title = "Load Data", 
                              sidebarLayout(
                                
@@ -25,7 +28,7 @@ fit <- navbarMenu(title = "Fit Causal models",
                                  
                                  hr(),
                                  
-                                 # CDescribe Data
+                                 # Describe Data
                                  h4("Describe Data"),
                                  
                                  # Grouping Variable
@@ -41,7 +44,7 @@ fit <- navbarMenu(title = "Fit Causal models",
                                               choices = list("Non-Random" = 1, "Random" = 2), 
                                               selected = 1),
                                  
-                                 # blocked opton if random is selected
+                                 # blocked option if random is selected
                                  conditionalPanel(
                                    condition = 'input.rand == 2',
                                    selectInput('blockcheck', 'Blocked Design:', 
@@ -79,12 +82,32 @@ fit <- navbarMenu(title = "Fit Causal models",
                              )
                     ),
                   
-                  
-                    tabPanel(title = "Specify Model", 
-                             sidebarPanel(
-                               width = 4,
-                               h3("Insert Options"),
-                               h5("some options")))
-                  )
+
+# Specify Model -----------------------------------------------------------
+tabPanel(title = "Specify Model",
+         sidebarLayout(
+           sidebarPanel(radioButtons(
+             "estimand",
+             label = h6("Select An Estimatamd:"),
+             choices = list(
+               "ATE" = 1,
+               "ATT" = 2,
+               "ATC" = 3,
+               "CATE" = 4
+             )
+           )),
+           
+           mainPanel(
+             # Output: Data file
+             h4("Status"),
+             textOutput("uploadconfirm"),
+             #textOutput("variableconfirm"),
+             hr(),
+             h4("Data"),
+             DT::dataTableOutput("uploads")
+           )
+           
+         ))
+)
   
  

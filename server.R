@@ -82,8 +82,8 @@ observe({
     updateSelectInput(session, "xcol", choices = vars)
     updateSelectInput(session, "zcol", choices = vars)
     updateSelectInput(session, "ycol", choices = vars)
+    updateSelectInput(session, "blockvar", choices = vars)
     updateSelectInput(session, "gvar", choices = vars)
-    #updateNumericInput(session, "xvar", max = ncol(my_data()))
 })
 
 })
