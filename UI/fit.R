@@ -40,13 +40,17 @@ fit <- navbarMenu(title = "Fit Causal models",
                                  ),
                                  
                                  # Randomized
-                                 radioButtons("rand", label = h6("Treatment Assignment"),
-                                              choices = list("Non-Random" = 1, "Random" = 2), 
-                                              selected = 1),
+                                 radioButtons("rand", label = h6("Study Design"),
+                                              choices = list(
+                                                "Observational Study" = 'obs',
+                                                "Randomized Experement" = 'rct',
+                                                "Natural Experement" = 'nat'
+                                              ),
+                                              selected = character(0)),
                                  
                                  # blocked option if random is selected
                                  conditionalPanel(
-                                   condition = 'input.rand == 2',
+                                   condition = "input.rand == 'rct'",
                                    selectInput('blockcheck', 'Blocked Design:', 
                                                choices = c('No', 'Yes'))
                                  ),
@@ -94,7 +98,8 @@ tabPanel(title = "Specify Model",
                "ATT" = 2,
                "ATC" = 3,
                "CATE" = 4
-             )
+             ), 
+             selected = character(0),
            )),
            
            mainPanel(
