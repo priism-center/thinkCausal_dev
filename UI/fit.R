@@ -1,118 +1,88 @@
-fit <- navbarMenu(title = "Fit Causal models", 
+fit <- navbarMenu(title = "Fit Causal models",
                   
-
 # Load Data ---------------------------------------------------------------
-                    tabPanel(title = "Load Data", 
-                             sidebarLayout(
-                               
-                               # Sidebar Panel
-                               sidebarPanel(
-                                 
-                                 # Input: file type
-                                 selectInput("filetype", "Select File Type", 
-                                             choices = c("csv" = "csv", 
-                                                         "dta" = "dta",
-                                                         "xlsx" = "xlsx",
-                                                         "txt" = "txt",
-                                                         "spss" = "spss")),
-                                 
-                                 # Input: file
-                                 fileInput("file", "Choose File",
-                                           multiple = FALSE,
-                                           accept = NULL),
-                                 
-                                 hr(),
-                                 
-                                 # Input: header
-                                 checkboxInput("header", "Header", TRUE),
-                                 
-                                 hr(),
-                                 
-                                 # Describe Data
-                                 h4("Describe Data"),
-                                 
-                                 # Grouping Variable
-                                 checkboxInput("gvarcheck", "Include Grouping Variable?", FALSE), 
-                                 
-                                 conditionalPanel(
-                                   condition = "input.gvarcheck",
-                                   selectInput("gvar", "Select Grouping Variable", choices = NULL)
-                                 ),
-                                 
-                                 # Randomized
-                                 radioButtons("rand", label = h6("Study Design"),
-                                              choices = list(
-                                                "Observational Study" = 'obs',
-                                                "Randomized Experement" = 'rct',
-                                                "Natural Experement" = 'nat'
-                                              ),
-                                              selected = character(0)),
-                                 
-                                 # blocked option if random is selected
-                                 conditionalPanel(
-                                   condition = "input.rand == 'rct'",
-                                   selectInput('blockcheck', 'Blocked Design:', 
-                                               choices = c('No', 'Yes'))
-                                 ),
-                                 
-                                 # select blocking variables (if appropriate)
-                                 conditionalPanel(
-                                   condition = "input.blockcheck == 'Yes'", 
-                                   selectInput("blockvar", "Select Blocking Variable(s)", choices = NULL)
-                                 ),
-
-                                 # Column Selection for Z, and identify treatment
-                                 selectInput("zcol", "Select Treatment (Z) Column", choices = NULL),
-                                 
-                                 #  condition = "input.zcol",
-                                 selectInput("trt.ind", "Type the Value Representing Receiving Treatment", 
-                                             choices = NULL),
-                                 
-                                 # select outcome (Y) variable
-                                 selectInput("ycol", "Select Outcome (Y) Column", choices = NULL)
-                               ),
-                               
-                               # Main Panel
-                               mainPanel(
-                                 
-                                 # Output: Data file
-                                 h4("Status"),
-                                 textOutput("uploadconfirm"),
-                                 #textOutput("variableconfirm"),
-                                 hr(),
-                                 h4("Data"),
-                                 DT::dataTableOutput("uploads")
-                               )
-                             )
-                    ),
-                  
-
-# Specify Model -----------------------------------------------------------
-tabPanel(title = "Specify Model",
+tabPanel("Load Data",
+         #sidebar layout
          sidebarLayout(
-           sidebarPanel(radioButtons(
-             "estimand",
-             label = h6("Select An Estimatamd:"),
-             choices = list(
-               "ATE" = 1,
-               "ATT" = 2,
-               "ATC" = 3,
-               "CATE" = 4
-             ), 
-             selected = character(0),
-           )),
            
-           mainPanel(
-             # Output: Data file
-             h4("Status"),
-             textOutput("uploadconfirm"),
-             #textOutput("variableconfirm"),
-             hr(),
-             h4("Data"),
-             DT::dataTableOutput("uploads")
-           )
+           #sidebar panel
+           sidebarPanel(
+             # input: file type
+             selectInput(
+               "filetype",
+               "Select File Type",
+               choices = c(
+                 "csv" = "csv",
+                 "dta" = "dta",
+                 "xlsx" = "xlsx",
+                 "txt" = "txt",
+                 "spss" = "spss"
+               )
+             ),
+             # find and select input file
+             fileInput("file", "Choose File",
+                       multiple = FALSE,
+                       accept = NULL),
+             
+             # is there a header col?
+             checkboxInput("header", "Header", TRUE)
+             
+           ), 
+         
+         # Main Panel
+         mainPanel(
            
+           # Output: Data file
+           h4("Status"),
+           textOutput("uploadconfirm"),
+           #textOutput("variableconfirm"),
+           hr(),
+           h4("Data"),
+           DT::dataTableOutput("uploads")
          ))
+         
+         ), 
+
+# Study Design ------------------------------------------------------------
+tabPanel(title = "Describe Data", 
+         sidebarLayout(
+           sidebarPanel(
+             # study design
+             radioButtons("design", 
+                          label = h6("Study Design:"), 
+                          choices = list(
+                            "Observational Study" = "obs",
+                            "Randomized Experement" = 'rct',
+                            "Natural Experement" = "nat"
+                          ), selected = character(0)), 
+             
+             hr(), 
+             # If random, is randomization blocked? 
+             conditionalPanel(condition = "input.design == 'rct'", 
+                              radioButtons("blocked", 
+                                           label = h6("Blocked Design"),
+                                           choices = c("no", "yes"))), 
+             
+             conditionalPanel(condition = "input.blocked == 'yes' && input.design== 'rct'", 
+                              selectInput("blockvar", 
+                                          label = h6("Select Blocking Variable(s):"), 
+                                          choices = NULL)), 
+             
+             radioButtons("gvarcheck",
+                           label = h6("Grouping Variable(s):"), 
+                          choices = c("No", "Yes"), 
+                          selected = character(0)),
+             
+             conditionalPanel(condition = "input.gvarcheck == 'Yes'",
+                              selectInput("gvar", "Select Grouping Variable(s):", 
+                                          choices = NULL))
+             
+           ), 
+           mainPanel()
+         ))
+
+
+
 )
-  
- 
+
+

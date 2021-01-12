@@ -41,32 +41,14 @@ output$uploads <- DT::renderDataTable({
 
 output$uploadconfirm <- renderText({
     # dataset validation
-    datacheck <- function(data, confound, trt, resp) {
+    datacheck <- function(data) {
         if (is.null(data)) {
             "Please Upload a dataset"
-        }
-        
-        else {
-            
-            if (is.null(confound) || trt == "" || resp == "") {
-                "Please identify X, Y, Z"
-            }
-            
-            else {
-                
-                if (length(unique(my_data()[, which(names(my_data()) == trt)])) > 2) {
-                    "Please check treatment variable selection, and/or missing values"
-                }
-                
-                else {
-                    NULL
-                }
-            }
         }
     }
     
     validate(
-        datacheck(input$file, input$xcol, input$zcol, input$ycol)
+        datacheck(input$file)
     )
     # datacheck in functions.R
     paste("Upload complete")
@@ -75,15 +57,15 @@ output$uploadconfirm <- renderText({
 
 
 # Updating column selection
-observe({
-    req(input$file)
-    vars <- names(my_data())
-    updateSelectInput(session, "idcol", choices = vars)
-    updateSelectInput(session, "xcol", choices = vars)
-    updateSelectInput(session, "zcol", choices = vars)
-    updateSelectInput(session, "ycol", choices = vars)
-    updateSelectInput(session, "blockvar", choices = vars)
-    updateSelectInput(session, "gvar", choices = vars)
-})
+# observe({
+#     req(input$file)
+#     vars <- names(my_data())
+#     updateSelectInput(session, "idcol", choices = vars)
+#     updateSelectInput(session, "xcol", choices = vars)
+#     updateSelectInput(session, "zcol", choices = vars)
+#     updateSelectInput(session, "ycol", choices = vars)
+#    updateSelectInput(session, "blockvar", choices = vars)
+#    updateSelectInput(session, "gvar", choices = vars)
+#  })
 
 })
