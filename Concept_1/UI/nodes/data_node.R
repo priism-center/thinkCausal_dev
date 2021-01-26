@@ -1,4 +1,5 @@
-data_node <- tabPanel('Data', 
+data_node <- tabPanel(
+  title = 'Data', 
          tabsetPanel(
            tabPanel("Load", fluid = TRUE,
                     sidebarLayout(
@@ -15,9 +16,13 @@ data_node <- tabPanel('Data',
                           )
                         ),
                         # find and select input file
-                        fileInput("file", "Choose File",
-                                  multiple = FALSE,
-                                  accept = NULL),
+                        div(id = "upload_file_div",
+                          fileInput(inputId = "file", 
+                                    label = "Choose File",
+                                    buttonLabel = 'Browse',
+                                    multiple = FALSE,
+                                    accept = NULL),
+                        ),
                         
                         # is there a header col?
                         checkboxInput("header", "Header", TRUE)

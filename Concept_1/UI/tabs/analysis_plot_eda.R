@@ -16,7 +16,8 @@ analysis_plot_eda <- tabPanel("Descriptive Plots",
                inputId ="exploration_variable_x",
                label = "X: ",
                multiple = FALSE,
-               choices = c('var 1', "var 2", 'var n')
+               choices = col_names,
+               selected = col_names[1]
              ),
              conditionalPanel(
                condition = "input.exploration_select_plot_type == 'Scatter'",
@@ -24,13 +25,15 @@ analysis_plot_eda <- tabPanel("Descriptive Plots",
                  inputId = "exploration_variable_y",
                  label = "Y: ",
                  multiple = FALSE,
-                 choices = c('var 1', "var 2", 'var n')
+                 choices = col_names,
+                 selected = col_names[9]
                ),
                selectInput(
                  inputId = "exploration_variable_fill",
                  label = "Fill color: ",
                  multiple = FALSE,
-                 choices = c('var 1', "var 2", 'var n')
+                 choices = col_names,
+                 selected = col_names[12]
                ),
                conditionalPanel(
                  condition = "input.exploration_variable_fill == 'Cluster'",
@@ -57,7 +60,8 @@ analysis_plot_eda <- tabPanel("Descriptive Plots",
                  inputId = "exploration_variable_size",
                  label = "Size: ",
                  multiple = FALSE,
-                 choices = c('var 1', "var 2", 'var n')
+                 choices = col_names,
+                 selected = col_names[4]
                ),
                selectInput(
                  inputId = "exploration_variable_regression",
@@ -88,14 +92,14 @@ analysis_plot_eda <- tabPanel("Descriptive Plots",
                  inputId = "exploration_variable_group",
                  label = "Grouping: ",
                  multiple = FALSE,
-                 choices = c("None")
+                 choices = categorical_names
                )
              ),
              selectInput(
                inputId = "exploration_variable_facet",
                label = "Facet variable: ",
                multiple = FALSE,
-               choices = c("None"),
+               choices = c("None", categorical_names),
                selected = "None"
              ),
              bsPopover(id = 'exploration_variable_facet',
@@ -123,16 +127,7 @@ analysis_plot_eda <- tabPanel("Descriptive Plots",
                  step = 0.1
                )
              ),
-             HTML('<details><summary>Advanced</summary>'),
-             div(
-               id = "exploration_dataset_div",  
-               selectInput(
-                 inputId = "exploration_dataset",
-                 label = "Dataset: ",
-                 multiple = FALSE,
-                 choices = NULL
-               ),
-             ),
+             HTML('<details><summary>Advanced options</summary>'),
              actionButton(inputId = "exploration_button_download", 
                           label = "Download the plot"),
              br(),
