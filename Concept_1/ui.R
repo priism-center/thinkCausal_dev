@@ -4,7 +4,11 @@ library(shinyBS)
 shinyUI(navbarPage(
     id = "nav",
     title = 'thinkCausal:',
-    analysis_dropdown
+    welcome_dropdown,
+    analysis_dropdown, 
+    concepts_dropdown,
+    log_dropdown, 
+    help_dropdown
 ))
 
 

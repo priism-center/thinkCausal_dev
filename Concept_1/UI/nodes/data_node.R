@@ -27,16 +27,19 @@ data_node <- tabPanel('Data',
                       )
                     )
            ),
-           # tabPanel("Transform", fluid = TRUE,
-           #          sidebarLayout(
-           #            sidebarPanel(sliderInput("year", "Year:", min = 1968, max = 2009, value = 2009, sep='')),
-           #            mainPanel(
-           #              # insert output
-           #            )
-           #          )
-           # ),
            
-           tabPanel("Select", fluid = TRUE, 
+           tabPanel("Transform Data", fluid = TRUE,
+                    h4("Pivoting Data Wide/Long or Transposing from row to column form"),
+                    sidebarLayout(
+                      sidebarPanel(sliderInput("year", "Year:", min = 1968, max = 2009, value = 2009, sep='')),
+                      mainPanel(
+                        # insert output
+                      )
+                    )
+           ),
+           
+           tabPanel("Select Data", fluid = TRUE, 
+                    hr('Indicate Treatment Variable, Outcome Variable and Counfounders'),
                     sidebarLayout(
                       sidebarPanel(h4("Select Variables:"), 
  
