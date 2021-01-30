@@ -12,16 +12,28 @@ shinyUI(
         # load custom CSS file
         includeCSS("www/custom_css.css"),
         
+        # load custom JavaScript
+        tags$script(src = "navSlideOver.js"),
+        
         # set top left title
-        # titlePanel(
-        #     title = h1("thinkCausal"),
-        #     windowTitle = "thinkCausal"
-        # ),
+        titlePanel(
+            title = h2("thinkCausal"),
+            windowTitle = "thinkCausal"
+        ),
+        
+        # div for help slide over
+        tags$div(id = 'mySideNav',
+                 class = 'conceptsSideBar',
+                 tags$div(class = 'conceptsSideBarContainer',
+                     HTML('<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>'),
+                     includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))
+                 )
+                ),
         
         # set main navigation
         navbarPage(
             id = "nav",
-            title = 'thinkCausal',
+            title = HTML('<span style="font-size:20px;cursor:pointer" onclick="openNav()">&#9776;</span>'), #'thinkCausal',
             welcome_dropdown,
             analysis_dropdown, 
             concepts_dropdown,

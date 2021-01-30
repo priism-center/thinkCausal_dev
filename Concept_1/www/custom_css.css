@@ -318,3 +318,50 @@ border 0 fixes the buttons moving around when you hover / click */
    background:-o-linear-gradient(top, #e8e8e8 0%, #e8e8e8 100%)!important;
    background:linear-gradient(to bottom, #e8e8e8 0%, #e8e8e8 100%)!important;
 }
+
+/* help slideover */
+/*https://www.w3schools.com/howto/howto_js_sidenav.asp*/
+.conceptsSideBar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+  background-color: #3e374a;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 40px;
+  -webkit-box-shadow: 400px 0px 300px rgba(74, 74, 74, 0.5);
+  -moz-box-shadow: 400px 0px 300px rgba(74, 74, 74, 0.5);
+  box-shadow: 400px 0px 300px rgba(74, 74, 74, 0.5);
+}
+
+.conceptsSideBar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #b0b0b0;
+  display: block;
+  transition: 0.3s;
+}
+
+.conceptsSideBar a:hover {
+  color: #f1f1f1;
+}
+
+.conceptsSideBar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.conceptsSideBarContainer p, .conceptsSideBarContainer h1, .conceptsSideBarContainer h2, .conceptsSideBarContainer h3, .conceptsSideBarContainer h4, .conceptsSideBarContainer h5 {
+  color: #b0b0b0;
+}
+
+.conceptsSideBarContainer {
+  padding: 3rem;
+}
