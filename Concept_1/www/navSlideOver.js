@@ -1,15 +1,22 @@
-function openNav() {
-  document.getElementById("mySideBar").style.width = "min(100%, 700px)";
+// open/closes the concepts sidebar
+function openConcepts() {
+  let sideDiv = document.getElementById("mySideBar")
+  if (sideDiv.style.width === 'min(100%, 700px)'){
+    sideDiv.style.width = '0';
+  } else {
+    sideDiv.style.width = "min(100%, 700px)"
+  }
+  //document.getElementById("mySideBar").style.width = "min(100%, 700px)";
 }
 
 // maybe replace with this https://css-tricks.com/sticky-smooth-active-nav/
-function openNavPage(divID) {
+function openConceptsPage(divID) {
   document.getElementById("mySideBar").style.width = "min(100%, 700px)";
   let elmnt = document.getElementById(divID);
   elmnt.scrollIntoView(true);
 }
 
-function closeNav() {
+function closeConcepts() {
   document.getElementById("mySideBar").style.width = "0";
 }
 

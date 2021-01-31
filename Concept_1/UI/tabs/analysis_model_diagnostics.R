@@ -5,7 +5,7 @@ analysis_model_diagostics <- tabPanel(
       h4('Model Diagnostics'),
       tags$button(type = 'button',
                   class = 'btn btn-default',
-                  onclick = "openNavPage('Concept2')",
+                  onclick = "openConceptsPage('Concept2')",
                   'Help me'),
       ),
     mainPanel()
