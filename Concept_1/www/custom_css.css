@@ -384,6 +384,10 @@ border 0 fixes the buttons moving around when you hover / click */
   padding: 1rem 3rem 1rem 3rem;
 }
 
+ .markdownContainer > h4 {
+  padding: 1rem 3rem 0.3rem 3rem;
+ }
+
 .conceptsSubHeader {
   position: -webkit-sticky;
   position: sticky;

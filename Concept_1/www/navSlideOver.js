@@ -6,14 +6,15 @@ function openConcepts() {
   } else {
     sideDiv.style.width = "min(100%, 700px)"
   }
-  //document.getElementById("mySideBar").style.width = "min(100%, 700px)";
 }
 
 // maybe replace with this https://css-tricks.com/sticky-smooth-active-nav/
 function openConceptsPage(divID) {
   document.getElementById("mySideBar").style.width = "min(100%, 700px)";
   let elmnt = document.getElementById(divID);
-  elmnt.scrollIntoView(true);
+  setTimeout(function(){elmnt.scrollIntoView(true);}, 750);
+  //let topPos = document.getElementById('Concept2').offsetTop
+  //setTimeout(function(){document.getElementById("conceptsSideBarContainer").scrollTop = topPos;}, 500);
 }
 
 function closeConcepts() {
