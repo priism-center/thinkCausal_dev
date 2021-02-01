@@ -32,23 +32,22 @@ data_node <- tabPanel(
                       )
                     )
            ),
+           # 
+           # tabPanel("Transform Data", fluid = TRUE,
+           #          h4("Pivoting Data Wide/Long or Transposing from row to column form"),
+           #          sidebarLayout(
+           #            sidebarPanel(sliderInput("year", "Year:", min = 1968, max = 2009, value = 2009, sep='')),
+           #            mainPanel(
+           #              # insert output
+           #            )
+           #          )
+           # ),
            
-           tabPanel("Transform Data", fluid = TRUE,
-                    h4("Pivoting Data Wide/Long or Transposing from row to column form"),
-                    sidebarLayout(
-                      sidebarPanel(sliderInput("year", "Year:", min = 1968, max = 2009, value = 2009, sep='')),
-                      mainPanel(
-                        # insert output
-                      )
-                    )
-           ),
            
-           tabPanel("Select Data", fluid = TRUE, 
+           tabPanel("Select Data", fluid = TRUE,
                     hr('Indicate Treatment Variable, Outcome Variable and Counfounders'),
                     sidebarLayout(
-                      sidebarPanel(h4("Select Variables:"), 
- 
-                                   
+                      sidebarPanel(h4("Select Variables:"),  
                                    # Column Selection for Z, and identify treatment
                                    selectInput("zcol", "Select Treatment (Z) Column", choices = NULL),
                                    
@@ -61,6 +60,20 @@ data_node <- tabPanel(
                                    selectInput("xcol", "Select Covariates (X) Columns", 
                                                choices = NULL, 
                                                multiple = TRUE)), 
+                      mainPanel(
+                        # insert output
+                      )
+                    )
+           ), 
+           
+           tabPanel("Study Design", fluid = TRUE,
+                    sidebarLayout(
+                      sidebarPanel(width = 5, 
+                      h4("Indicate Study Design"),
+                      radioButtons(inputId = "exp.dsn", label = 'Select Assignment of Treatment (Z):', 
+                                   choices = c('Non-Random (Observational)', 
+                                               'Random (Experemental)', 
+                                               'Quasi-Random (Natural Experement)'))),
                       mainPanel(
                         # insert output
                       )
