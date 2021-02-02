@@ -45,7 +45,7 @@ data_node <- tabPanel(
            
            
            tabPanel("Select Data", fluid = TRUE,
-                    hr('Indicate Treatment Variable, Outcome Variable and Counfounders'),
+                    hr('Indicate Treatment Variable, Outcome Variable and Confounders'),
                     sidebarLayout(
                       sidebarPanel(h4("Select Variables:"),  
                                    # Column Selection for Z, and identify treatment
@@ -72,8 +72,8 @@ data_node <- tabPanel(
                       h4("Indicate Study Design"),
                       radioButtons(inputId = "exp.dsn", label = 'Select Assignment of Treatment (Z):', 
                                    choices = c('Non-Random (Observational)', 
-                                               'Random (Experemental)', 
-                                               'Quasi-Random (Natural Experement)'))),
+                                               'Random (Experimental)', 
+                                               'Quasi-Random (Natural Experiment)'))),
                       mainPanel(
                         # insert output
                       )

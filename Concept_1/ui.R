@@ -30,12 +30,12 @@ shinyUI(
                  tags$div(class = 'conceptsSideBarContainer',
                      tags$div(
                          class = 'conceptsHeader',
-                         h1("Concepts"),
+                         h1("Help"),
                          HTML('<a href="javascript:void(0)" class="closebtn" onclick="closeConcepts()">&times;</a>')
                      ),
                      tags$div(
                          class = 'markdownContainer',
-                         includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))
+                         includeMarkdown(file.path("UI", "markdowns", 'help.md'))
                      )
                  )
                 ),
@@ -47,8 +47,8 @@ shinyUI(
             welcome_dropdown,
             analysis_dropdown, 
             concepts_dropdown,
-            log_dropdown, 
-            help_dropdown
+            log_dropdown
+            # help_dropdown
             ),
 
         # install jquery - unneccessary as its already loaded

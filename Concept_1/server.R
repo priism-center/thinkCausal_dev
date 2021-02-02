@@ -1,7 +1,7 @@
-library(shiny)
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
+
+  # EDA ---------------------------------------------------------------------
 
   output$analysis_plot_balance_plot <- renderPlot({
     
@@ -173,5 +173,19 @@ shinyServer(function(input, output, session) {
       )
     }
   })
+  
+
+  # concepts ----------------------------------------------------------------
+  
+  # add listeners that link the concepts title image to its article
+  tab_titles <- c("Randomization", 'Fundamental problem', 'Assumptions', 'Regression methods')
+  lapply(tab_titles, function(page_to_go_to) {
+    page_id <- paste0("concepts_link_", page_to_go_to)
+    observeEvent(input[[page_id]], {
+      updateNavbarPage(session, "nav", page_to_go_to)
+    })
+  })
+  
+  randomizationServer(id = 'concepts_randomization')
 
 })
