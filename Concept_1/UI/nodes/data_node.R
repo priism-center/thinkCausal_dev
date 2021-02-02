@@ -1,7 +1,9 @@
 data_node <- tabPanel(
   title = 'Data', 
          tabsetPanel(
-           tabPanel("Load", fluid = TRUE,
+           id = "analysis_data_tabs",
+           tabPanel("Load", 
+                    fluid = TRUE,
                     sidebarLayout(
                       sidebarPanel( # input: file type
                         selectInput(
@@ -17,7 +19,7 @@ data_node <- tabPanel(
                         ),
                         # find and select input file
                         div(id = "upload_file_div",
-                          fileInput(inputId = "file", 
+                          fileInput(inputId = "analysis_data_upload", 
                                     label = "Choose File",
                                     buttonLabel = 'Browse',
                                     multiple = FALSE,
@@ -25,10 +27,28 @@ data_node <- tabPanel(
                         ),
                         
                         # is there a header col?
-                        checkboxInput("header", "Header", TRUE)
+                        checkboxInput(inputId = "analysis_data_header", 
+                                      label = "Data contains a header row", 
+                                      value = TRUE),
+                        textInput(inputId = 'analysis_data_colnames',
+                                    label = "Rename columns",
+                                    ),
+                        br(),br(),
+                        actionButton(inputId = "analysis_data_load_button_next",
+                                     label = "Next")
                       ),
                       mainPanel(
-                        # insert output
+                        br(),
+                        tabsetPanel(
+                          id = "analysis_data_tabs",
+                          tabPanel(
+                            title = "Your data",
+                            DT::dataTableOutput('analysis_data_table')
+                          ),
+                          tabPanel(
+                            title = 'Upload logs'
+                          )
+                        )
                       )
                     )
            ),
@@ -44,7 +64,8 @@ data_node <- tabPanel(
            # ),
            
            
-           tabPanel("Select Data", fluid = TRUE,
+           tabPanel("Select Data", 
+                    fluid = TRUE,
                     hr('Indicate Treatment Variable, Outcome Variable and Confounders'),
                     sidebarLayout(
                       sidebarPanel(h4("Select Variables:"),  
@@ -59,21 +80,33 @@ data_node <- tabPanel(
                                    
                                    selectInput("xcol", "Select Covariates (X) Columns", 
                                                choices = NULL, 
-                                               multiple = TRUE)), 
+                                               multiple = TRUE),
+                                   br(),br(),
+                                   actionButton(inputId = "analysis_data_select_button_next",
+                                                label = "Next")), 
                       mainPanel(
                         # insert output
                       )
                     )
            ), 
            
-           tabPanel("Study Design", fluid = TRUE,
+           tabPanel("Study Design", 
+                    fluid = TRUE,
                     sidebarLayout(
                       sidebarPanel(width = 5, 
                       h4("Indicate Study Design"),
                       radioButtons(inputId = "exp.dsn", label = 'Select Assignment of Treatment (Z):', 
                                    choices = c('Non-Random (Observational)', 
                                                'Random (Experimental)', 
-                                               'Quasi-Random (Natural Experiment)'))),
+                                               'Quasi-Random (Natural Experiment)')),
+                      br(),
+                      tags$button(type = 'button',
+                                  class = 'btn btn-default',
+                                  onclick = "openConceptsPage('Concept3')",
+                                  'Help me'),
+                      br(),br(),
+                      actionButton(inputId = "analysis_data_design_button_next",
+                                   label = "Next")),
                       mainPanel(
                         # insert output
                       )

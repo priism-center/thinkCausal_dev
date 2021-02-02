@@ -1,6 +1,59 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
 
+
+  # next buttons ------------------------------------------------------------
+  
+  # data page
+  observeEvent(input$analysis_data_load_button_next, {
+    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected ="Select Data")
+  })
+  observeEvent(input$analysis_data_select_button_next, {
+    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Study Design")
+  })
+  observeEvent(input$analysis_data_design_button_next, {
+    updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
+    updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
+  })
+  
+  # plotting page
+  
+  # model page
+  
+  # diagnostics page
+  
+  # 
+
+
+  # upload data -------------------------------------------------------------
+
+  # read in the CSV that was uploaded
+  uploaded_df <- reactive({
+    # TODO: modify so it can handle other datatypes
+    # TODO: add parsing failures to log
+    req(input$analysis_data_upload)
+    tryCatch({
+      upload_csv <- read_csv(
+        file = input$analysis_data_upload$datapath,
+        col_names = input$analysis_data_header)
+    },
+    error = function(e) {
+      # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
+      stop(safeError(e))
+    })
+    
+    return(upload_csv)
+  })  
+  
+  # table of selected dataset
+  output$analysis_data_table <- DT::renderDataTable({
+    custom_datatable(
+      uploaded_df(),
+      selection = "none"
+    )
+  })
+  
+  
   # EDA ---------------------------------------------------------------------
 
   output$analysis_plot_balance_plot <- renderPlot({
@@ -15,7 +68,7 @@ shinyServer(function(input, output, session) {
     # plot it
     user_data %>% 
       # dplyr::select(-c('re78', 'u74', 'u75')) %>% 
-      dplyr::select(c(selected_cols, 'z')) %>% 
+      dplyr::select(all_of(c(selected_cols, 'z'))) %>% 
       pivot_longer(cols = -c('z')) %>% 
       group_by(name) %>% 
       mutate(value = scale(value)) %>% 
@@ -186,6 +239,7 @@ shinyServer(function(input, output, session) {
     })
   })
   
+  # run the randomization module
   randomizationServer(id = 'concepts_randomization')
 
 })
