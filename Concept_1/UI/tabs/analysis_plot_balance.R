@@ -15,7 +15,10 @@ analysis_plot_balance <- tabPanel(title = "Balance Plots",
                                           choices = X_names,
                                           selected = X_names
                                         )
-                                      )
+                                      ),
+                                      br(),br(),
+                                      actionButton(inputId = "analysis_plots_balance_button_next",
+                                                   label = "Next")
                                       
                                       # add advanced option to remove scale
                                     ),

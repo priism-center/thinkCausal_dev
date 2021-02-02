@@ -42,9 +42,9 @@ violet_col <- "#5c5980"
 # ensure there is a z column (we'll have to standardize column names in the background)
 user_data$z <- user_data$treat
 
-# read in all the UI files
-source(file.path('R', 'randomization_module.R'))
-map(list.files('UI/concepts'), function(file) source(file.path("UI/concepts", file)))
-map(list.files('UI/tabs'), function(file) source(file.path("UI/tabs", file)))
-map(list.files('UI/nodes'), function(file) source(file.path("UI/nodes", file)))
-map(list.files('UI/dropdowns'), function(file) source(file.path("UI/dropdowns", file)))
+# read in all the UI and module files
+map(list.files('R', recursive = TRUE), function(file) source(file.path('R', file)))
+map(list.files(file.path('UI', 'concepts')), function(file) source(file.path("UI", "concepts", file)))
+map(list.files(file.path('UI', 'tabs')), function(file) source(file.path("UI", "tabs", file)))
+map(list.files(file.path('UI', 'nodes')), function(file) source(file.path("UI", "nodes", file)))
+map(list.files(file.path('UI', 'dropdowns')), function(file) source(file.path("UI", "dropdowns", file)))
