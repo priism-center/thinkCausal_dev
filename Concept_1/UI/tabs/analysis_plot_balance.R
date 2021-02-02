@@ -3,7 +3,7 @@ analysis_plot_balance <- tabPanel(title = "Balance Plots",
                                     sidebarPanel(
                                       width = 4,
                                       h4("Visualize Balance Between Treatment and Control"),
-                                      checkboxInput(inputId = "all_balance", 
+                                      awesomeCheckbox(inputId = "all_balance", 
                                                     label = "Include All Variables", 
                                                     value = TRUE),
                                       conditionalPanel(

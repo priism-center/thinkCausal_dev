@@ -12,7 +12,7 @@ analysis_plot_common_sup <- tabPanel(
         multiple = TRUE,
       ),
       h6("With Dimension Reduction"),
-      checkboxInput(inputId = "dim.red",
+      awesomeCheckbox(inputId = "dim.red",
                     label = "Dimension Reduction", FALSE),
       br(),br(),
       actionButton(inputId = "analysis_plots_support_button_next",

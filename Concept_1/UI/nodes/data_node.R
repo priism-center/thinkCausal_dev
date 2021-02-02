@@ -5,18 +5,10 @@ data_node <- tabPanel(
            tabPanel("Load", 
                     fluid = TRUE,
                     sidebarLayout(
-                      sidebarPanel( # input: file type
-                        selectInput(
-                          "filetype",
-                          "Select File Type",
-                          choices = c(
-                            "csv" = "csv",
-                            "dta" = "dta",
-                            "xlsx" = "xlsx",
-                            "txt" = "txt",
-                            "spss" = "spss"
-                          )
-                        ),
+                      sidebarPanel(
+                        awesomeCheckbox(inputId = "analysis_data_header", 
+                                        label = "Data contains a header row", 
+                                        value = TRUE),
                         # find and select input file
                         div(id = "upload_file_div",
                           fileInput(inputId = "analysis_data_upload", 
@@ -25,14 +17,17 @@ data_node <- tabPanel(
                                     multiple = FALSE,
                                     accept = NULL),
                         ),
-                        
-                        # is there a header col?
-                        checkboxInput(inputId = "analysis_data_header", 
-                                      label = "Data contains a header row", 
-                                      value = TRUE),
-                        textInput(inputId = 'analysis_data_colnames',
-                                    label = "Rename columns",
+                        uiOutput(outputId = 'analysis_data_delim'),
+                        awesomeCheckbox(inputId = 'analysis_data_rename',
+                                      label = "Rename columns",
+                                      value = FALSE
                                     ),
+                        conditionalPanel(
+                          condition = "input.analysis_data_rename == true",
+                          uiOutput(outputId = 'analysis_data_rename'),
+                          actionButton(inputId = 'analysis_data_rename_save',
+                                       label = 'Save names')
+                        ),
                         br(),br(),
                         actionButton(inputId = "analysis_data_load_button_next",
                                      label = "Next")
@@ -95,7 +90,7 @@ data_node <- tabPanel(
                     sidebarLayout(
                       sidebarPanel(width = 5, 
                       h4("Indicate Study Design"),
-                      radioButtons(inputId = "exp.dsn", label = 'Select Assignment of Treatment (Z):', 
+                      awesomeRadio(inputId = "exp.dsn", label = 'Select Assignment of Treatment (Z):', 
                                    choices = c('Non-Random (Observational)', 
                                                'Random (Experimental)', 
                                                'Quasi-Random (Natural Experiment)')),

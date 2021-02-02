@@ -36,28 +36,90 @@ shinyServer(function(input, output, session) {
 
   # upload data -------------------------------------------------------------
 
-  # read in the CSV that was uploaded
+  # initialize list to store variables  
+  store <- reactiveValues(uploaded_df = data.frame())
+  
+  # read in the uploaded file
   uploaded_df <- reactive({
-    # TODO: modify so it can handle other datatypes
+    # TODO: test all the file types (e.g. stata is only stata 15 or older)
+    # TODO: this behavior is really unintuitive; need to rethink it
     # TODO: add parsing failures to log
     req(input$analysis_data_upload)
     tryCatch({
-      upload_csv <- read_csv(
-        file = input$analysis_data_upload$datapath,
-        col_names = input$analysis_data_header)
-    },
-    error = function(e) {
-      # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
-      stop(safeError(e))
-    })
+        
+      # extract the filepath and the filetype
+      filepath <- input$analysis_data_upload$datapath
+      filetype <- tools::file_ext(filepath)
+        
+      # if it's a txt file then ask the user what the delimiter is  
+      if (filetype == 'txt'){
+        output$analysis_data_delim <- renderUI({ 
+          textInput(inputId = 'analysis_data_delim_value',
+                    label = "Column delimiter",
+                    # value = ',',
+                    placeholder = ", | - :")
+        })
+        req(input$analysis_data_delim_value)
+      }
+      
+      # upload the file based on its filetype
+      if (filetype == "csv"){
+        uploaded_file <- readr::read_csv(
+          file = filepath,
+          col_names = input$analysis_data_header) 
+      } else if (filetype == 'dta'){
+        uploaded_file <- readstata13::read.dta13(file = filepath)
+      } else if (filetype == 'xlsx'){
+        uploaded_file <- xlsx::read.xlsx(file = filepath)
+      } else if (filetype == 'txt'){
+        delim <- input$analysis_data_delim_value
+        if (delim == "") delim <- ","
+        uploaded_file <- readr::read_delim(
+          file = filepath,
+          delim = delim,
+          col_names = input$analysis_data_header
+          )
+      } else if (filetype == 'spss'){
+        uploaded_file <- Hmisc::spss.get(file = filepath)
+      } else stop("File type is invalid")
+      },
+      error = function(e) {
+        # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
+        stop(safeError(e))
+      })
     
-    return(upload_csv)
-  })  
+    return(uploaded_file)
+  })
+  
+  # add dataframe to store object
+  observeEvent(nrow(uploaded_df()), {
+    store$uploaded_df <- uploaded_df()
+  })
+
+  # render UI for renaming the columns
+  output$analysis_data_rename <- renderUI({
+    tagList(
+      lapply(X = colnames(store$uploaded_df), FUN = function(col) {
+        textInput(
+          inputId = paste0("analysis_data_rename_", tolower(str_replace_all(col, " ", "_"))),
+          label = col,
+          value = col
+        )
+      }
+      ))
+  })
+  
+  # overwrite column names when user saves new names
+  observeEvent(input$analysis_data_rename_save, {
+    input_ids <- paste0("analysis_data_rename_", tolower(str_replace_all(colnames(store$uploaded_df), " ", "_")))
+    inputted_name_values <- reactiveValuesToList(input)[input_ids]
+    colnames(store$uploaded_df) <- inputted_name_values
+  })
   
   # table of selected dataset
   output$analysis_data_table <- DT::renderDataTable({
     custom_datatable(
-      uploaded_df(),
+      store$uploaded_df,
       selection = "none"
     )
   })
