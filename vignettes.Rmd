@@ -1,0 +1,86 @@
+---
+title: "Vignettes"
+author: "thinkCausal"
+output: pdf_document
+---
+
+## Casey
+### Propensity Scores: a love hate relationship
+
+stats knowledge: medium \newline
+background: PhD student Educational Policy \newline
+software: stata \newline
+
+Casey's doctoral program requires several stats methods courses where Casey has learned how to fit propensity score matching and propensity score weighting within stata. These techniques have been helpful because Casey frequently works with Education data where various interventions. Casey has fit several of these models as part of class projects and the lab that Casey works in has used propensity score matching to balance treatment and control groups. While Casey knows how to fit these models, Casey is somewhat unsure of the underlying assumptions and is frequently frustrated when, even after matching, there is considerable differences between treatment and control conditions. Casey heard about a novel method, BART, that can help to improve balance between groups but Casey needs help writing up the results, citing the method and knowing that the model has been fit properly. Casey also is not fully convinced that a new method is better than propensity scores, which Casey's adviser believes are the most advanced method available. Accordingly, Casey will need some help distinguishing this new method from existing approaches. Without help on the interpretation, citations and writing, Casey will likelly not feel comfortable submitting papers with BART. Casey is also concerned that reviewers will not understand the method and reject any submissions that rely on the novel approach. 
+
+## Alex
+### Data analyst in over their head
+
+stats knowledge: low \newline
+background: MPP \newline
+software: SPSS \newline
+
+Alex graduated with an Master's Degree in Public Policy last year and has been working at for the Chicago Public School District (CPSD) for almost a year now. As part of his Master's program he took 2 courses in statistics, the first course covered the fundamentals of linear regression and hypothesis testing, while the second course covered general linear models and survival analysis. After starting at CPSD, Alex was quickly promoted to the role of Data Analyst because Alex was one of the few employees who understand and could explain a logistic regression. Alex's new role requires evaluating the efficacy of some of the districts after school programs. These programs are not randomly assigned, instead parents can choose to enrol their children or opt out of the program. 
+
+Alex remembers from stats class that regression can not prove causality but only demonstrates if a given association is statistically significant or not. Causality relies on randomized controlled trial, which the district can not implement for ethical reasons. Accordingly,  Alex makes sure never to use the work "cause" when writing up the results and tells his supervisors weather a given program is or is not associated with better outcomes. 
+
+Alex does not know what balance/overlap, causal estimands or propensity scores are are. Alex is not from the statistics or computer science community, is unaware of CRAN or stack overflow. Alex has thought about exploring resources on expanding statistical techniques but does not know where to start and there are so many resources it quickly becomes overwhelming. There are a lot of complex sounding methods that Alex comes across but Alex does not know how to differentiate different methods and is not confident in fitting novel methods without supervision. 
+
+## Kit
+### Alphabet Soup
+
+stats knowledge: high \newline
+background: Assistant Professor in Public Health \newline
+software: SPSS and knows basic R \newline
+
+Kit is an assistant professor of public health working on the evaluation of school based violence prevention intentions. Recently some research has suggested that heterogeneous treatment effects are common in violence prevention interventions. Accordingly, Kit decided it would be a good idea to re-analyze some old data and test for the heterogeneous effect. 
+
+During graduate school Kit exclusively used SPSS. Recently, Kit came across a paper outlining the use of a novel method, BART, which can fit the heterogeneous model needed for the current research. BART, however, is only available in R. Kit is familiar with some basic R commands, but when Kit visited the bartCause manual on CRAN Kit was overwhelmed by the different options. Kit needs help knowing if the defaults are appropriate as well using the heterogeneous effect functionality of BART. Kit knows the concepts of CATE and individual treatment effects but does not know where to access this information from bartCause output. While Kit knows calculating heterogeneous  effects is necessary, Kit is confused about using the 'ite' 'icate' 'mu.y' etc from the documentation and does not know how to pull those quantities from the R output. 
+
+
+## Taylor
+### Is this a black box? 
+
+stats knowledge: moderate \newline
+background: MPH epidemiology \newline
+software: SAS has used an R package when necessary \newline
+
+Taylor had several regression courses while attending an MPH program in epidemiology. Since entering the workforce, Taylor has noticed that funders and collaborators care about the interpretability of a model. Taylor knows that using propensity score models are supposed to be better, but most of the collaborators Taylor works with prefer regression because they understand the framework better. Taylor learned in school that linear regression models are very robust, especially when n is large, so Taylor usually uses linear regression. 
+
+Taylor's friend from public health school introduced a new method called BART, however, Taylor is cornered that it is to much of a "black box" the R package that returns the results only produces an estimate for the treatment effect and the other terms in the model appear to be hidden. Taylor is also concerned about explaining the method to collaborators. Without being able to explain how the method works it may be hard to convince others on the project that BART should be used. Explaining propensity scores are already difficult, having to explain machine learning may be untenable. 
+
+
+
+## Lindsey
+### "I'm not learning R"
+stats knowledge: high \newline
+background: Professor in Economics \newline
+software: stata \newline
+
+Lindsey is a professor of Economics and studies the economic implications after school programs. Lindsey has a strong understanding of propensity scores, Diff in Diff and quasi-experimental designs. Lindsey came across BART at a presentation a few weeks ago and is interested in applying it various research projects. Lindsey has fit random forest models in stata and understands the advantages of using machine learning within the context of causal inference. To Lindsey the methods are less intimidating than learning and using R. Lindsey has only used stata and does not see the utility of learning R just to fit a single method. Lindsey will only use BART if a point and click methodology is provided. 
+
+
+## Dakota 
+### We didn't learn this in stats school
+
+stats knowledge: high \newline
+background: MS in Statistics \newline
+software: R \newline
+
+Dakota graduated with an MS in statistics in 2012, after graduation Dakota began working for a public policy think tank. Dakota knows that the causal inference methods for observational data all have strong assumptions of ignorability. In real life, this assumption can be a tenuous one. Dakota has done some research and came across the idea of a sensitivity analysis. This method seems like a great way to check the plausibility of the strong ignorability assumption. Dakota found the treatSens package on R but is not confident that the model is fit correctly. In the past, Dakota became confident in a method after passing the test or receiving a good grade on a homework assignment. Dakota wishes there was a way to check the output and know that the method is being used as intended. 
+
+## Sidney 
+### I got this. I think....
+stats knowledge: moderate \newline
+background: MS in Psychology \newline
+software: SPSS and a little R \newline
+
+Sidney received an MS in Social Psychology with a specific focus on evaluating educational interventions based in social psychology. Sidney used SPSS through out undergrad and learned a little R during graduate school. Sidney knows that in regression analysis saturating the model with to many variables is problematic and leads to colinarities and produces standard errors that are to large. 
+
+Sidney's past work has relied of RCTs to isolate treatment effects, however, a new project Sidney is working on relies using observational data. The study was very robust and collected over 300 unique covariates. Sidney, is skeptical of fitting a normal regression and adjusting for all 300 covariates. Prior to beginning the analysis, Sidney did some research on StakOverflow and came across propensity scores. Sidney plans to fit a propensity score model. To avoid overfilling the propensity scores Sidney will only include variables that are correlated with the treatment variable in the propensity score model. After fitting the propensity score approach, Sidney came across a new method called BART. There was an easy point and click software to implement the analysis. Sidney loaded the the dataset with the outcome, treatment and only the 40 variables that were correlated with the treatment variable into the software and re-did the analysis. 
+
+
+
+
+
+
