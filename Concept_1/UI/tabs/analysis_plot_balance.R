@@ -3,18 +3,12 @@ analysis_plot_balance <- tabPanel(title = "Balance Plots",
                                     sidebarPanel(
                                       width = 4,
                                       h4("Visualize Balance Between Treatment and Control"),
-                                      awesomeCheckbox(inputId = "all_balance", 
-                                                    label = "Include All Variables", 
-                                                    value = TRUE),
-                                      conditionalPanel(
-                                        "input.all_balance == false",
-                                        selectInput(
-                                          "balance_var",
-                                          label = "Select Variables for Blance Check:",
-                                          multiple = T,
-                                          choices = X_names,
-                                          selected = X_names
-                                        )
+                                      selectInput(
+                                        inputId = "analysis_plot_balance_select_var",
+                                        label = "Select Variables for Balance Check:",
+                                        multiple = TRUE,
+                                        choices = X_names,
+                                        selected = X_names
                                       ),
                                       br(),br(),
                                       actionButton(inputId = "analysis_plots_balance_button_next",

@@ -1,4 +1,5 @@
 # this defines the eda plotting on the analysis tab
+# TODO: think about smart defaults (both default columns and default plot type)
 
 edaUI <- function(id, col_names, categorical_names) {
   ns <- NS(id)
@@ -31,7 +32,7 @@ edaUI <- function(id, col_names, categorical_names) {
             label = "Y: ",
             multiple = FALSE,
             choices = col_names,
-            selected = col_names[9]
+            selected = col_names[2]
           ),
           selectInput(
             inputId = ns("exploration_variable_fill"),
@@ -291,7 +292,6 @@ edaServer <- function(id, input_data) {
         }
         
         return(txt)
-        
       })
       
       # table of brushed data points from plot

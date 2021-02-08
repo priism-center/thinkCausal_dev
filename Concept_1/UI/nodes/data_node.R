@@ -2,22 +2,24 @@ data_node <- tabPanel(
   title = 'Data', 
          tabsetPanel(
            id = "analysis_data_tabs",
-           tabPanel("Load", 
+           tabPanel(title = "Load", 
                     fluid = TRUE,
                     sidebarLayout(
                       sidebarPanel(
-                        awesomeCheckbox(inputId = "analysis_data_header", 
-                                        label = "Data contains a header row", 
-                                        value = TRUE),
                         # find and select input file
+                        h4("Upload Your Data:"),
                         div(id = "upload_file_div",
                           fileInput(inputId = "analysis_data_upload", 
                                     label = "Choose File",
                                     buttonLabel = 'Browse',
                                     multiple = FALSE,
-                                    accept = NULL),
+                                    accept = c('.csv', '.txt', '.xlsx', '.dta', '.spss'),
+                                    placeholder = 'csv, txt, xlsx, dta, or spss'),
                         ),
                         uiOutput(outputId = 'analysis_data_delim'),
+                        awesomeCheckbox(inputId = "analysis_data_header", 
+                                        label = "Data contains a header row", 
+                                        value = TRUE),
                         awesomeCheckbox(inputId = 'analysis_data_rename',
                                       label = "Rename columns",
                                       value = FALSE
@@ -26,7 +28,7 @@ data_node <- tabPanel(
                           condition = "input.analysis_data_rename == true",
                           uiOutput(outputId = 'analysis_data_rename'),
                           actionButton(inputId = 'analysis_data_rename_save',
-                                       label = 'Save names')
+                                       label = 'Save column names')
                         ),
                         br(),br(),
                         actionButton(inputId = "analysis_data_load_button_next",
@@ -59,38 +61,53 @@ data_node <- tabPanel(
            # ),
            
            
-           tabPanel("Select Data", 
+           tabPanel(title = "Select Data", 
                     fluid = TRUE,
-                    hr('Indicate Treatment Variable, Outcome Variable and Confounders'),
+                    # hr('Indicate Treatment Variable, Outcome Variable and Confounders'),
                     sidebarLayout(
                       sidebarPanel(h4("Select Variables:"),  
                                    # Column Selection for Z, and identify treatment
-                                   selectInput("zcol", "Select Treatment (Z) Column", choices = NULL),
-                                   
-                                   selectInput("trt.ind", "Select the Value Representing Receiving Treatment",
+                                   selectInput(inputId = "analysis_data_select_select_zcol", 
+                                               label = "Select Treatment (Z) Column", 
+                                               choices = NULL),
+                                   selectInput(inputId = "analysis_data_select_select_treatment", 
+                                               label = "Select the Value Representing Receiving Treatment",
                                                choices = NULL),      
-                                   
-                                   selectInput("ycol", "Select Response (Y) Column", 
+                                   selectInput(inputId = "analysis_data_select_select_ycol", 
+                                               label = "Select Response (Y) Column", 
                                                choices = NULL), 
-                                   
-                                   selectInput("xcol", "Select Covariates (X) Columns", 
+                                   selectInput(inputId = "analysis_data_select_select_xcol", 
+                                               label = "Select Covariates (X) Columns", 
                                                choices = NULL, 
                                                multiple = TRUE),
+                                   actionButton(inputId = 'analysis_data_select_column_save',
+                                                label = 'Save column assignments'),
                                    br(),br(),
                                    actionButton(inputId = "analysis_data_select_button_next",
                                                 label = "Next")), 
                       mainPanel(
-                        # insert output
+                        br(),
+                        tabsetPanel(
+                          id = "analysis_data_select_tabs",
+                          tabPanel(
+                            title = "Your selected data",
+                            DT::dataTableOutput('analysis_data_select_table')
+                          ),
+                          tabPanel(
+                            title = 'TBD'
+                          )
+                        )
                       )
                     )
            ), 
            
-           tabPanel("Study Design", 
+           tabPanel(title = "Study Design", 
                     fluid = TRUE,
                     sidebarLayout(
-                      sidebarPanel(width = 5, 
+                      sidebarPanel(width = 6, 
                       h4("Indicate Study Design"),
-                      awesomeRadio(inputId = "exp.dsn", label = 'Select Assignment of Treatment (Z):', 
+                      awesomeRadio(inputId = "analysis_data_design_radio_design", 
+                                   label = 'Select Assignment of Treatment (Z):', 
                                    choices = c('Non-Random (Observational)', 
                                                'Random (Experimental)', 
                                                'Quasi-Random (Natural Experiment)')),

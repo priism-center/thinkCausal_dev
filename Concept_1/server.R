@@ -32,10 +32,10 @@ shinyServer(function(input, output, session) {
   # diagnostics page
   
   # 
-
-
+  
+  
   # upload data -------------------------------------------------------------
-
+  
   # initialize list to store variables  
   store <- reactiveValues(uploaded_df = data.frame())
   
@@ -46,11 +46,11 @@ shinyServer(function(input, output, session) {
     # TODO: add parsing failures to log
     req(input$analysis_data_upload)
     tryCatch({
-        
+      
       # extract the filepath and the filetype
       filepath <- input$analysis_data_upload$datapath
       filetype <- tools::file_ext(filepath)
-        
+      
       # if it's a txt file then ask the user what the delimiter is  
       if (filetype == 'txt'){
         output$analysis_data_delim <- renderUI({ 
@@ -78,32 +78,34 @@ shinyServer(function(input, output, session) {
           file = filepath,
           delim = delim,
           col_names = input$analysis_data_header
-          )
+        )
       } else if (filetype == 'spss'){
         uploaded_file <- Hmisc::spss.get(file = filepath)
       } else stop("File type is invalid")
-      },
-      error = function(e) {
-        # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
-        stop(safeError(e))
-      })
+    },
+    error = function(e) {
+      # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
+      stop(safeError(e))
+    })
     
     return(uploaded_file)
   })
+  
+  #TODO: need to clean column names during upload; bad csvs will crash the server
   
   # add dataframe to store object
   observeEvent(nrow(uploaded_df()), {
     store$uploaded_df <- uploaded_df()
   })
-
+  
   # render UI for renaming the columns
   output$analysis_data_rename <- renderUI({
     tagList(
-      lapply(X = colnames(store$uploaded_df), FUN = function(col) {
+      lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
         textInput(
-          inputId = paste0("analysis_data_rename_", tolower(str_replace_all(col, " ", "_"))),
-          label = col,
-          value = col
+          inputId = paste0("analysis_data_rename_", i),
+          label = colnames(store$uploaded_df)[i],
+          value = colnames(store$uploaded_df)[i]
         )
       }
       ))
@@ -111,7 +113,8 @@ shinyServer(function(input, output, session) {
   
   # overwrite column names when user saves new names
   observeEvent(input$analysis_data_rename_save, {
-    input_ids <- paste0("analysis_data_rename_", tolower(str_replace_all(colnames(store$uploaded_df), " ", "_")))
+    validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
+    input_ids <- paste0("analysis_data_rename_", seq_along(colnames(store$uploaded_df)))
     inputted_name_values <- reactiveValuesToList(input)[input_ids]
     colnames(store$uploaded_df) <- inputted_name_values
   })
@@ -124,26 +127,137 @@ shinyServer(function(input, output, session) {
     )
   })
   
-  
-  # EDA ---------------------------------------------------------------------
 
+  # select data -------------------------------------------------------------
+
+  # vector of selector ids
+  analysis_data_select_selector_ids <-
+    c(
+      "analysis_data_select_select_zcol",
+      "analysis_data_select_select_treatment",
+      "analysis_data_select_select_ycol",
+      "analysis_data_select_select_xcol"
+    )
+  
+  # update select inputs when the input data changes
+  observeEvent(store$uploaded_df, {
+
+    # update the first three dropdown options with the column names from the uploaded dataset
+    lapply(analysis_data_select_selector_ids[1:3], function(id){
+      # other_select_values <- reactiveValuesToList(input)[setdiff(selector_ids, id)]
+      updateSelectInput(session = session, 
+                        inputId = id,
+                        choices = colnames(store$uploaded_df),
+                        selected = colnames(store$uploaded_df)[which(analysis_data_select_selector_ids == id)]
+                        )
+    })
+    
+    # update X drop down with the remaining columns
+    updateSelectInput(session = session, 
+                      inputId = analysis_data_select_selector_ids[4],
+                      choices = colnames(store$uploaded_df),
+                      selected = setdiff(colnames(store$uploaded_df), colnames(store$uploaded_df)[1:3])
+    )
+  })
+
+  # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
+  # with the new columns
+  observeEvent(input$analysis_data_select_column_save, {
+    
+    # get the current values of the select inputs
+    all_selected_vars <- reactiveValuesToList(input)[analysis_data_select_selector_ids]
+    has_values <- all(!sapply(all_selected_vars, is.null))
+    
+    # stop here if all dropdowns are somehow not selected
+    validate(need(has_values, "Need all dropdowns to be selected"))
+    
+    # if all the values have been selected then update the new dataframe
+    Z <- all_selected_vars[1]
+    treatment <- all_selected_vars[2]
+    Y <- all_selected_vars[3]
+    X <- unlist(all_selected_vars[4])
+    
+    # stop here if there are overlapping column assignments
+    inputs_are_all_unique <- length(unique(unlist(all_selected_vars))) == length(unlist(all_selected_vars))
+    if (isFALSE(inputs_are_all_unique)){
+      shinyWidgets::show_alert(
+        title = 'Duplicative column assignment',
+        text = "At least one column has been selected for two different assignments. Please correct before saving.",
+        type = 'error'
+      )
+    }
+    validate(need(inputs_are_all_unique, "There are duplicative input columns"))
+    
+    # new column names
+    # TODO: update these with better labels
+    new_col_names <- paste0(c('Z', 'treatment', 'Y', paste0('X', 1:length(X))),
+                            "_",
+                            unlist(all_selected_vars))
+      
+    # create new dataframe of just the selected vars and rename them
+    store$selected_df <- store$uploaded_df[, unlist(all_selected_vars)]
+    colnames(store$selected_df) <- new_col_names
+      
+    # save original column names
+    store$selected_df_original_names <- all_selected_vars
+    
+    # save the column names by their respective class
+    # TODO: UNIT TEST THIS!!!
+    classes_categorical <- c('logical', 'character', 'factor')
+    classes_continuous <- c('numeric', 'double', 'integer')
+    cols_by_class <- split(names(store$selected_df), sapply(store$selected_df, function(x) paste(class(x), collapse = " ")))
+    store$selected_df_categorical_vars <- as.vector(unlist(cols_by_class[classes_categorical]))
+    store$selected_df_numeric_vars <- as.vector(unlist(cols_by_class[classes_continuous]))
+    
+    # render the UI eda with this data
+    output$analysis_plots_descriptive_eda_module <- renderUI({
+      edaUI(id = "analysis_plots_descriptive", 
+            col_names = colnames(store$selected_df), 
+            categorical_names = store$selected_df_categorical_vars)
+    })
+    
+    # run the eda module server
+    edaServer(id = 'analysis_plots_descriptive', input_data = store$selected_df)
+    
+    # update selects on balance plots
+    # TODO: exclude categorical vars here???
+    cols <- store$selected_df_numeric_vars
+    X_cols <- cols[stringr::str_starts(cols, "X")]
+    updateSelectInput(session = session,
+                      inputId = 'analysis_plot_balance_select_var',
+                      choices = X_cols,
+                      selected = X_cols
+    )
+  })
+  
+  # table of selected dataset
+  output$analysis_data_select_table <- DT::renderDataTable({
+    
+    # render the table
+    custom_datatable(
+      store$selected_df,
+      selection = "none"
+    )
+  })
+  
+
+  # EDA ---------------------------------------------------------------------
+  
+  # create the balance plot
   output$analysis_plot_balance_plot <- renderPlot({
     
-    # choose which variables to include
-    if (isTRUE(input$all_balance)){
-      selected_cols <- X_names
-    } else {
-      selected_cols <- input$balance_var
-    }
+    selected_cols <- input$analysis_plot_balance_select_var
+    validate(need(length(selected_cols) > 0,
+                  "No numeric columns selected"))
     
     # plot it
-    user_data %>% 
-      # dplyr::select(-c('re78', 'u74', 'u75')) %>% 
-      dplyr::select(all_of(c(selected_cols, 'z'))) %>% 
-      pivot_longer(cols = -c('z')) %>% 
+    store$selected_df %>% 
+      rename(Z = starts_with("Z")) %>% 
+      dplyr::select(all_of(c(selected_cols, "Z"))) %>% 
+      pivot_longer(cols = -Z) %>% 
       group_by(name) %>% 
-      mutate(value = scale(value)) %>% 
-      group_by(name, z) %>% 
+      mutate(value = scale(value)[,1]) %>%
+      group_by(name, Z) %>% 
       summarize(mean = mean(value),
                 .groups = 'drop') %>% 
       group_by(name) %>% 
@@ -160,10 +274,9 @@ shinyServer(function(input, output, session) {
       theme(legend.position = 'none')
   })
   
-  # run the eda module
-  edaServer(id = 'analysis_plots_descriptive', input_data = user_data)
+  # run the eda module server. the UI is rendered server side within an observeEvent function
+  # edaServer(id = 'analysis_plots_descriptive', input_data = store$selected_df) #user_data) #
   
-
   # concepts ----------------------------------------------------------------
   
   # add listeners that link the concepts title image to its article
@@ -177,5 +290,5 @@ shinyServer(function(input, output, session) {
   
   # run the randomization module
   randomizationServer(id = 'concepts_randomization')
-
+  
 })
