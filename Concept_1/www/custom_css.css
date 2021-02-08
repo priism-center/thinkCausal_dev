@@ -447,3 +447,7 @@ border 0 fixes the buttons moving around when you hover / click */
 .backNextContainer > button:first-child {
   margin-right: 1rem;
 }
+
+.btn.btn-default.help {
+  background-color: #938497 !important;
+}

@@ -16,7 +16,7 @@ analysis_plot_common_sup <- tabPanel(
                     label = "Dimension Reduction", FALSE),
       br(),
       tags$button(type = 'button',
-                  class = 'btn btn-default',
+                  class = 'btn btn-default help',
                   onclick = "openConceptsPage('Concept3')",
                   'What is this plot telling me?'),
       br(),br(),

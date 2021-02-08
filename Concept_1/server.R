@@ -2,8 +2,8 @@
 shinyServer(function(input, output, session) {
 
 
-  # next buttons ------------------------------------------------------------
-  
+  # back next buttons -------------------------------------------------------
+
   # data page
   observeEvent(input$analysis_data_load_button_next, {
     updateTabsetPanel(session, inputId ="analysis_data_tabs", selected ="Select Data")
@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {
   
   # diagnostics page
   
-  # 
+  # results page
   
   
   # upload data -------------------------------------------------------------
@@ -262,6 +262,7 @@ shinyServer(function(input, output, session) {
   # create the balance plot
   output$analysis_plot_balance_plot <- renderPlot({
     
+    # stop here if there are no numeric columns selected
     selected_cols <- input$analysis_plot_balance_select_var
     validate(need(length(selected_cols) > 0,
                   "No numeric columns selected"))

@@ -31,7 +31,7 @@ shinyUI(
                      tags$div(
                          class = 'conceptsHeader',
                          h1("Help"),
-                         HTML('<a href="javascript:void(0)" class="closebtn" onclick="closeConcepts()">&times;</a>')
+                         HTML('<a style="cursor:pointer" class="closebtn" onclick="closeConcepts()">&times;</a>')
                      ),
                      tags$div(
                          class = 'markdownContainer',
@@ -51,9 +51,6 @@ shinyUI(
             # help_dropdown
             ),
 
-        # install jquery - unneccessary as its already loaded
-        # HTML('<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>'),
-        
         # load custom JavaScript
         tags$script(src = "navSlideOver.js")
         )
