@@ -4,11 +4,31 @@ results_node <- tabPanel(
            sidebarLayout(
              sidebarPanel(
                h4('Model results'),
+               htmlOutput('analysis_results_table_summary'),
+               h5("Results interpretation"),
+               p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+               br(),
                tags$button(type = 'button',
                            class = 'btn btn-default help',
                            onclick = "openConceptsPage('Concept2')",
-                           'Help me')
+                           'What are these plots telling me?'),
+               br(), br(),
+               actionButton(inputId = "analysis_results_button_back",
+                            label = "Diagnostics"),
              ),
-             mainPanel()
+             mainPanel(
+               br(),
+               tabsetPanel(
+                 id = "analysis_results_tabs",
+                 tabPanel(
+                   title = "Individual treatment effects",
+                   # plotOutput()
+                 ),
+                 tabPanel(
+                   title = 'Conditional individual treatment effects',
+                   # DT::renderDataTable()
+                 )
+               )
+             )
            )))
 

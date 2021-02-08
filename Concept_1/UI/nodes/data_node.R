@@ -70,9 +70,10 @@ data_node <- tabPanel(
                                    selectInput(inputId = "analysis_data_select_select_zcol", 
                                                label = "Select Treatment (Z) Column", 
                                                choices = NULL),
+                                   # TODO: automate this with a smart default
                                    selectInput(inputId = "analysis_data_select_select_treatment", 
                                                label = "Select the Value Representing Receiving Treatment",
-                                               choices = NULL),      
+                                               choices = list('TRUE FALSE', '0 1', 'Yes No')),      
                                    selectInput(inputId = "analysis_data_select_select_ycol", 
                                                label = "Select Response (Y) Column", 
                                                choices = NULL), 
@@ -110,35 +111,35 @@ data_node <- tabPanel(
                         )
                       )
                     )
-           ), 
+           ) 
            
-           tabPanel(title = "Study Design", 
-                    fluid = TRUE,
-                    sidebarLayout(
-                      sidebarPanel(width = 6, 
-                      h4("Indicate Study Design"),
-                      awesomeRadio(inputId = "analysis_data_design_radio_design", 
-                                   label = 'Select Assignment of Treatment (Z):', 
-                                   choices = c('Non-Random (Observational)', 
-                                               'Random (Experimental)', 
-                                               'Quasi-Random (Natural Experiment)')),
-                      br(),
-                      tags$button(type = 'button',
-                                  class = 'btn btn-default help',
-                                  onclick = "openConceptsPage('Concept3')",
-                                  'Help me'),
-                      br(),br(),
-                      div(
-                        class = 'backNextContainer',
-                        actionButton(inputId = "analysis_data_design_button_back",
-                                     label = "Back"),
-                        actionButton(inputId = "analysis_data_design_button_next",
-                                     label = "Next"),
-                      )
-                      ),
-                      mainPanel(
-                        # insert output
-                      )
-                    )
-           )
+           # tabPanel(title = "Study Design", 
+           #          fluid = TRUE,
+           #          sidebarLayout(
+           #            sidebarPanel(width = 6, 
+           #            h4("Indicate Study Design"),
+           #            awesomeRadio(inputId = "analysis_data_design_radio_design", 
+           #                         label = 'Select Assignment of Treatment (Z):', 
+           #                         choices = c('Non-Random (Observational)', 
+           #                                     'Random (Experimental)', 
+           #                                     'Quasi-Random (Natural Experiment)')),
+           #            br(),
+           #            tags$button(type = 'button',
+           #                        class = 'btn btn-default help',
+           #                        onclick = "openConceptsPage('Concept3')",
+           #                        'Help me'),
+           #            br(),br(),
+           #            div(
+           #              class = 'backNextContainer',
+           #              actionButton(inputId = "analysis_data_design_button_back",
+           #                           label = "Back"),
+           #              actionButton(inputId = "analysis_data_design_button_next",
+           #                           label = "Next"),
+           #            )
+           #            ),
+           #            mainPanel(
+           #              # insert output
+           #            )
+           #          )
+           # )
          ))

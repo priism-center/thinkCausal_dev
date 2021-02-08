@@ -12,12 +12,6 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Load")
   })
   observeEvent(input$analysis_data_select_button_next, {
-    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Study Design")
-  })
-  observeEvent(input$analysis_data_design_button_back, {
-    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Select Data")
-  })
-  observeEvent(input$analysis_data_design_button_next, {
     updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
   })
@@ -25,7 +19,7 @@ shinyServer(function(input, output, session) {
   # plotting page
   observeEvent(input[[NS('analysis_plots_descriptive')('analysis_plots_descriptive_button_back')]], {
     updateNavbarPage(session, inputId = "nav", selected = "Data")
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Study Design")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
   })
   observeEvent(input[[NS('analysis_plots_descriptive')('analysis_plots_descriptive_button_next')]], {
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Common Support Plots")
@@ -44,10 +38,41 @@ shinyServer(function(input, output, session) {
   })
   
   # model page
+  observeEvent(input$analysis_model_button_back, {
+    updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
+    updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
+  })
+  observeEvent(input$analysis_model_button_next, {
+    # insert popup to notify user of model fit process?
+    # run model
+    X <- lalonde %>% 
+      dplyr::select(-c(re78, treat)) %>% 
+      as.matrix()
+    store$model_results <- bartc(re78, treat, X, lalonde)
+    
+    # store the results
+    store$good_model_fit <- TRUE
+    
+    # move to next page based on model fit
+    if (isTRUE(store$good_model_fit)){
+      updateNavbarPage(session, inputId = "nav", selected = "Results")
+    } else {
+      updateNavbarPage(session, inputId = "nav", selected = "Model diagnostics")
+    }
+  })
   
   # diagnostics page
+  observeEvent(input$analysis_diagnostics_button_back, {
+    updateNavbarPage(session, inputId = "nav", selected = "Model")
+  })
+  observeEvent(input$analysis_diagnostics_button_next, {
+    updateNavbarPage(session, inputId = "nav", selected = "Results")
+  })
   
   # results page
+  observeEvent(input$analysis_results_button_back, {
+    updateNavbarPage(session, inputId = "nav", selected = "Model diagnostics")
+  })
   
   
   # upload data -------------------------------------------------------------
@@ -150,7 +175,6 @@ shinyServer(function(input, output, session) {
   analysis_data_select_selector_ids <-
     c(
       "analysis_data_select_select_zcol",
-      "analysis_data_select_select_treatment",
       "analysis_data_select_select_ycol",
       "analysis_data_select_select_xcol"
     )
@@ -159,7 +183,7 @@ shinyServer(function(input, output, session) {
   observeEvent(store$uploaded_df, {
 
     # update the first three dropdown options with the column names from the uploaded dataset
-    lapply(analysis_data_select_selector_ids[1:3], function(id){
+    lapply(analysis_data_select_selector_ids[1:2], function(id){
       # other_select_values <- reactiveValuesToList(input)[setdiff(selector_ids, id)]
       updateSelectInput(session = session, 
                         inputId = id,
@@ -170,9 +194,9 @@ shinyServer(function(input, output, session) {
     
     # update X drop down with the remaining columns
     updateSelectInput(session = session, 
-                      inputId = analysis_data_select_selector_ids[4],
+                      inputId = analysis_data_select_selector_ids[3],
                       choices = colnames(store$uploaded_df),
-                      selected = setdiff(colnames(store$uploaded_df), colnames(store$uploaded_df)[1:3])
+                      selected = setdiff(colnames(store$uploaded_df), colnames(store$uploaded_df)[1:2])
     )
   })
 
@@ -189,9 +213,8 @@ shinyServer(function(input, output, session) {
     
     # if all the values have been selected then update the new dataframe
     Z <- all_selected_vars[1]
-    treatment <- all_selected_vars[2]
-    Y <- all_selected_vars[3]
-    X <- unlist(all_selected_vars[4])
+    Y <- all_selected_vars[2]
+    X <- unlist(all_selected_vars[3])
     
     # stop here if there are overlapping column assignments
     inputs_are_all_unique <- length(unique(unlist(all_selected_vars))) == length(unlist(all_selected_vars))
@@ -206,7 +229,7 @@ shinyServer(function(input, output, session) {
     
     # new column names
     # TODO: update these with better labels
-    new_col_names <- paste0(c('Z', 'treatment', 'Y', paste0('X', 1:length(X))),
+    new_col_names <- paste0(c('Z', 'Y', paste0('X', 1:length(X))),
                             "_",
                             unlist(all_selected_vars))
       
@@ -293,6 +316,71 @@ shinyServer(function(input, output, session) {
   
   # run the eda module server. the UI is rendered server side within an observeEvent function
   # edaServer(id = 'analysis_plots_descriptive', input_data = store$selected_df) #user_data) #
+  
+
+  # diagnostics -------------------------------------------------------------
+  
+  # render either both the back and next buttons or just the back if its a bad
+    # model fit
+  output$analysis_diagnosis_buttons_ui <- renderUI({
+    if (isTRUE(store$good_model_fit)){
+      tagList(
+        div(
+          class = 'backNextContainer',
+          actionButton(inputId = "analysis_diagnostics_button_back",
+                       label = "Back to specify model"),
+          actionButton(inputId = "analysis_diagnostics_button_next",
+                       label = "Model results")
+        )
+      )
+    } else {
+      actionButton(inputId = "analysis_diagnostics_button_back",
+                   label = "Back to specify model")
+    }
+  })
+  
+  # trace plot
+  output$analysis_diagnostics_plot_trace <- renderPlot({
+    # extract model from store
+    mod <- store$model_results
+    
+    # plot it
+    mod %>% 
+      extract() %>% 
+      as.tibble() %>% 
+      mutate(index = row_number()) %>% 
+      ggplot(aes(x = index, y = value)) + 
+      geom_line() + 
+      labs(title = 'Diagnostics: Trace Plot', 
+           x = 'Iteration', 
+           y = base::toupper(mod$estimand))
+  })
+  
+  # common support plot
+  output$analysis_diagnostics_plot_support <- renderPlot({
+    
+    # refit model with support rule
+    X <- lalonde %>% 
+      dplyr::select(-c(re78, treat)) %>% 
+      as.matrix()
+    out_2 <- bartc(re78, treat, X, lalonde, commonSup.rule = 'sd')
+    bartCause::plot_support(out_2)
+  })
+  
+  
+  
+  # results -----------------------------------------------------------------
+
+  # render the summary table
+  output$analysis_results_table_summary <- renderText({
+    summary(store$model_results)$estimates %>% 
+      t() %>% 
+      knitr::kable(digits = 3, format = 'html') %>% 
+      kableExtra::kable_styling(bootstrap_options = c("hover", "condensed"))
+  })
+  
+  # render the interpretation text
+  
   
   # concepts ----------------------------------------------------------------
   
