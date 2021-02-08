@@ -5,9 +5,9 @@ model_node <- tabPanel(title = "Model",
                                     h4('Specify Model'),
                                     awesomeRadio(inputId = "analysis_model_radio_design", 
                                                  label = 'Select Assignment of Treatment (Z):', 
-                                                 choices = c('Non-Random (Observational)', 
-                                                             'Random (Experimental)', 
-                                                             'Quasi-Random (Natural Experiment)')),
+                                                 choices = c('Non-Random (Observational)' = 'non_random', 
+                                                             'Random (Experimental)' = 'random', 
+                                                             'Quasi-Random (Natural Experiment)' = 'quasi')),
                                     awesomeRadio(
                                       inputId = "analysis_model_radio_estimand",
                                       label = "Select Causal Estimand",
@@ -17,7 +17,9 @@ model_node <- tabPanel(title = "Model",
                                     awesomeRadio(
                                       inputId = "analysis_model_radio_support",
                                       label = "Common Support Rule",
-                                      choices = c('None', 'Standard Deviation', 'Chi Squared Test')
+                                      choices = c('None' = "none", 
+                                                  'Standard Deviation' = 'sd', 
+                                                  'Chi Squared Test' = 'chi')
                                     ),
                                     HTML('<details><summary>Advanced options</summary>'),
                                     br(),
@@ -54,5 +56,5 @@ model_node <- tabPanel(title = "Model",
                                                    label = "Run model")
                                     )
                                   ),
-                                  mainPanel(includeMarkdown('UI/markdowns/estimands.md'))
+                                  mainPanel(htmlOutput('analysis_model_summary'))
                                 )))

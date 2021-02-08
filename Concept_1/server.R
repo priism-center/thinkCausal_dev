@@ -359,14 +359,49 @@ shinyServer(function(input, output, session) {
   # common support plot
   output$analysis_diagnostics_plot_support <- renderPlot({
     
-    # refit model with support rule
-    X <- lalonde %>% 
-      dplyr::select(-c(re78, treat)) %>% 
-      as.matrix()
-    out_2 <- bartc(re78, treat, X, lalonde, commonSup.rule = 'sd')
-    bartCause::plot_support(out_2)
+    # refit model with support rule if there wasn't originally one
+    BART_model <- store$model_results
+    if (is.null(attributes(BART_model)$commonSup.rule)){
+      BART_model <- refit(BART_model, commonSup.rule = 'sd') 
+    }
+    
+    # plot it
+    bartCause::plot_support(BART_model)
   })
   
+
+  # specify model -----------------------------------------------------------
+
+  # render text output to summarize the users inputs
+  output$analysis_model_summary <- renderText({
+    
+    # extract inputs
+    design <- input$analysis_model_radio_design
+    estimand <- input$analysis_model_radio_estimand
+    if (is.null(estimand)) estimand <- "None"
+    support <- input$analysis_model_radio_support
+    
+    # grab text from object
+    design_text <- analysis_model_text$design[[design]]
+    estimand_text <- analysis_model_text$estimand[[estimand]]
+    support_text <- analysis_model_text$support[[support]]
+    
+    if (!nchar(estimand_text) > 0) estimand_text <- ""
+    
+    # paste together all the text
+    custom_text <- paste0(
+      "<h3>Design</h3>",
+      design_text,
+      "<br><br>",
+      "<h3>Estimand</h3>",
+      estimand_text,
+      "<br><br>",
+      "<h3>Common Support</h3>",
+      support_text
+    )
+    
+    return(custom_text)
+  })
   
   
   # results -----------------------------------------------------------------

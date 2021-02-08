@@ -43,6 +43,26 @@ violet_col <- "#5c5980"
 # ensure there is a z column (we'll have to standardize column names in the background)
 user_data$z <- user_data$treat
 
+# text for model specification
+analysis_model_text <- list(
+  'design' = list(
+    'non_random' = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+    'random' = 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    'quasi' = 'Sed euismod nisi porta lorem mollis aliquam ut. Et sollicitudin ac orci phasellus egestas. Purus viverra accumsan in nisl nisi scelerisque eu ultrices vitae.'
+  ),
+  'estimand' = list(
+    'ATE' = 'Vestibulum lorem sed risus ultricies. Leo vel fringilla est ullamcorper eget nulla. Enim diam vulputate ut pharetra sit amet aliquam id diam.',
+    'ATT' = 'Rutrum tellus pellentesque eu tincidunt tortor aliquam. Nulla facilisi etiam dignissim diam quis. Aliquet nibh praesent tristique magna sit amet purus gravida. Integer feugiat scelerisque varius morbi enim nunc.',
+    'ATC' = 'Commodo ullamcorper a lacus vestibulum sed arcu non odio. Augue eget arcu dictum varius duis at consectetur. Duis at tellus at urna condimentum mattis. Ultricies mi eget mauris pharetra.',
+    "None" = 'None selected yet'
+  ),
+  'support' = list(
+    'none' = "None",
+    'sd' = 'Condimentum lacinia quis vel eros donec. Et leo duis ut diam. Adipiscing elit duis tristique sollicitudin nibh sit. Ut placerat orci nulla pellentesque dignissim enim sit amet.',
+    'chi' = 'Integer vitae justo eget magna fermentum iaculis eu non. Sed libero enim sed faucibus turpis in. At volutpat diam ut venenatis.'
+  )
+)
+
 # read in all the UI and module files
 map(list.files('R', recursive = TRUE), function(file) source(file.path('R', file)))
 map(list.files(file.path('UI', 'concepts')), function(file) source(file.path("UI", "concepts", file)))
