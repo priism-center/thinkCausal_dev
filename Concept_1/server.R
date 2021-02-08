@@ -285,6 +285,10 @@ shinyServer(function(input, output, session) {
   # create the balance plot
   output$analysis_plot_balance_plot <- renderPlot({
     
+    # stop here if data hasn't been uploaded and selected
+    validate(need(is.data.frame(store$selected_df), 
+                  "Data must be first uploaded and selected. Please see 'Data' tab"))
+    
     # stop here if there are no numeric columns selected
     selected_cols <- input$analysis_plot_balance_select_var
     validate(need(length(selected_cols) > 0,
@@ -341,6 +345,11 @@ shinyServer(function(input, output, session) {
   
   # trace plot
   output$analysis_diagnostics_plot_trace <- renderPlot({
+    
+    # stop here if model is not run yet
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be run on 'Model' tab"))
+    
     # extract model from store
     mod <- store$model_results
     
@@ -358,6 +367,10 @@ shinyServer(function(input, output, session) {
   
   # common support plot
   output$analysis_diagnostics_plot_support <- renderPlot({
+    
+    # stop here if model is not run yet
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be run on 'Model' tab"))
     
     # refit model with support rule if there wasn't originally one
     BART_model <- store$model_results
@@ -385,9 +398,7 @@ shinyServer(function(input, output, session) {
     design_text <- analysis_model_text$design[[design]]
     estimand_text <- analysis_model_text$estimand[[estimand]]
     support_text <- analysis_model_text$support[[support]]
-    
-    if (!nchar(estimand_text) > 0) estimand_text <- ""
-    
+
     # paste together all the text
     custom_text <- paste0(
       "<h3>Design</h3>",
