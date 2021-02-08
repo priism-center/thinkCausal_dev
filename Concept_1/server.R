@@ -266,6 +266,11 @@ shinyServer(function(input, output, session) {
                       choices = X_cols,
                       selected = X_cols
     )
+    updateSelectInput(session = session,
+                      inputId = 'analysis_plot_overlap_select_var',
+                      choices = X_cols,
+                      selected = X_cols
+    )
   })
   
   # table of selected dataset
@@ -280,6 +285,42 @@ shinyServer(function(input, output, session) {
   
 
   # EDA ---------------------------------------------------------------------
+  
+  # create the overlap plot
+  output$analysis_plot_overlap_plot <- renderPlot({
+    
+    # stop here if data hasn't been uploaded and selected
+    validate(need(is.data.frame(store$selected_df), 
+                  "Data must be first uploaded and selected. Please see 'Data' tab."))
+    
+    # columns to plot
+    selected_cols <- input$analysis_plot_overlap_select_var
+    
+    # pivot the data
+    dat_pivoted <- store$selected_df %>% 
+      rename(Z = starts_with("Z")) %>% 
+      dplyr::select(all_of(c(selected_cols, "Z"))) %>% 
+      pivot_longer(cols = -Z) %>% 
+      mutate(Z = as.logical(Z))
+    
+    # histograms showing overlaps
+    ggplot() + 
+      geom_hline(yintercept = 0, linetype = 'dashed', color = 'grey60') +
+      geom_histogram(data = dat_pivoted %>% filter(Z == 1), 
+                     aes(x = value, y = ..density.., fill = Z), 
+                     alpha = 0.8)+ 
+      geom_histogram(data = dat_pivoted %>% filter(Z == 0), 
+                     aes(x = value, y = -..density.., fill = Z), 
+                     alpha = 0.8) +
+      scale_y_continuous(labels = function(brk) abs(brk)) +
+      scale_fill_manual(values = c('#bd332a', '#262991')) +
+      facet_wrap(~name, scales = 'free', ncol = 3) +
+      labs(title = "Overlap by treatment status",
+           subtitle = 'Informative subtitle to go here',
+           x = NULL,
+           y = 'Density',
+           fill = "Treatment")
+  })
   
   # create the balance plot
   output$analysis_plot_balance_plot <- renderPlot({

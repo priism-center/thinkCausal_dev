@@ -4,12 +4,12 @@ analysis_plot_common_sup <- tabPanel(
     sidebarPanel(
       width = 4,
       h4("Check Common Support"),
-      h6("With Selected Variables(s)"),
       selectInput(
-        inputId = "sup_var",
-        label = "Choose Confounders to Plot",
-        choices = X_names,
+        inputId = "analysis_plot_overlap_select_var",
+        label = "Select Variables for Overlap Check:",
         multiple = TRUE,
+        choices = X_names,
+        selected = X_names
       ),
       h6("With Dimension Reduction"),
       awesomeCheckbox(inputId = "dim.red",
@@ -28,4 +28,11 @@ analysis_plot_common_sup <- tabPanel(
                      label = "Next")
       )
   ),
-  mainPanel()))
+  mainPanel(
+    width = 8,
+    br(),
+    plotOutput(outputId = "analysis_plot_overlap_plot", 
+               height = 800)
+  )
+  )
+  )

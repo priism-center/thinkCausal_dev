@@ -28,6 +28,7 @@ analysis_plot_balance <- tabPanel(title = "Balance Plots",
                                     mainPanel(
                                       width = 8,
                                       br(),
-                                      plotOutput("analysis_plot_balance_plot", height = 500)
+                                      plotOutput(outputId = "analysis_plot_balance_plot", 
+                                                 height = 500)
                                     )
                                   ))
