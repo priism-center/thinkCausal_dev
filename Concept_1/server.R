@@ -1,6 +1,8 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
 
+  # initialize list to store variables  
+  store <- reactiveValues(uploaded_df = data.frame())
 
   # back next buttons -------------------------------------------------------
 
@@ -76,9 +78,6 @@ shinyServer(function(input, output, session) {
   
   
   # upload data -------------------------------------------------------------
-  
-  # initialize list to store variables  
-  store <- reactiveValues(uploaded_df = data.frame())
   
   # read in the uploaded file
   uploaded_df <- reactive({
@@ -287,7 +286,7 @@ shinyServer(function(input, output, session) {
     
     # stop here if data hasn't been uploaded and selected
     validate(need(is.data.frame(store$selected_df), 
-                  "Data must be first uploaded and selected. Please see 'Data' tab"))
+                  "Data must be first uploaded and selected. Please see 'Data' tab."))
     
     # stop here if there are no numeric columns selected
     selected_cols <- input$analysis_plot_balance_select_var
@@ -313,6 +312,7 @@ shinyServer(function(input, output, session) {
       geom_point(size=4) +
       scale_colour_gradient(low = 'gray30', high = 'red3') + #or should color be scaled to finite values?
       labs(title = 'Treatment and control balance',
+           subtitle = 'Informative subtitle to go here',
            x = 'Scaled mean difference',
            y = NULL) +
       theme(legend.position = 'none')
@@ -348,7 +348,7 @@ shinyServer(function(input, output, session) {
     
     # stop here if model is not run yet
     validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be run on 'Model' tab"))
+                  "Model must first be fit on 'Model' tab"))
     
     # extract model from store
     mod <- store$model_results
@@ -361,25 +361,71 @@ shinyServer(function(input, output, session) {
       ggplot(aes(x = index, y = value)) + 
       geom_line() + 
       labs(title = 'Diagnostics: Trace Plot', 
+           subtitle = 'Informative subtitle to go here',
            x = 'Iteration', 
            y = base::toupper(mod$estimand))
   })
   
   # common support plot
-  output$analysis_diagnostics_plot_support <- renderPlot({
+  output$analysis_diagnostics_plot_support_sd <- renderPlot({
     
     # stop here if model is not run yet
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be run on 'Model' tab"))
     
-    # refit model with support rule if there wasn't originally one
+    # retrieve model from the store
     BART_model <- store$model_results
-    if (is.null(attributes(BART_model)$commonSup.rule)){
-      BART_model <- refit(BART_model, commonSup.rule = 'sd') 
-    }
+    
+    # calculate summary stats
+    total <- sum(BART_model$sd.cf > max(BART_model$sd.obs) + sd(BART_model$sd.obs))
+    prop <- total / length(BART_model$sd.cf)
+    sd_test <- paste0(prop, "% of cases would have been removed by the standard deviation common support check")
     
     # plot it
-    bartCause::plot_support(BART_model)
+    BART_model$sd.cf %>% 
+      as_tibble() %>% 
+      mutate(rownumber = row_number()) %>% 
+      ggplot(aes(rownumber, value)) + 
+      geom_point(alpha = 0.8)+
+      geom_hline(aes(yintercept = max(BART_model$sd.obs) + sd(BART_model$sd.obs)),
+                 color = 'coral3', linetype = 'dashed') + 
+      labs(title ="Diagnostics: Common Support Checks", 
+           subtitle = paste0("Standard Deviation method: ", sd_test),
+           x = NULL, #"Row index",
+           y = 'Counterfactual Uncertanty') + 
+      theme(legend.title = element_blank(), 
+            legend.position = 'bottom')
+  })
+  
+  # common support plot
+  output$analysis_diagnostics_plot_support_chi <- renderPlot({
+    
+    # stop here if model is not run yet
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be run on 'Model' tab"))
+    
+    # retrieve model from the store
+    BART_model <- store$model_results
+    
+    # calculate summary stats
+    total <- sum((BART_model$sd.cf / BART_model$sd.obs) ** 2 > 3.841)
+    prop <- total / length(BART_model$sd.cf)
+    chi_test <- paste0(prop, "% of cases would have been removed by the chi squred common support check")
+    
+    # plot it
+    (BART_model$sd.cf / BART_model$sd.obs)**2  %>% 
+      as_tibble() %>% 
+      mutate(rownumber = row_number()) %>% 
+      ggplot(aes(rownumber, value)) + 
+      geom_point(alpha = 0.8) + 
+      geom_hline(aes(color = 'Removal threshold', yintercept = 3.841), linetype = 'dashed') + 
+      scale_color_manual(values = 'coral3') +
+      labs(title = NULL, 
+           subtitle = paste0("Chi Squared method: ", chi_test),
+           x = "Row index",
+           y = 'Counterfactual Uncertanty') + 
+      theme(legend.title = element_blank(), 
+            legend.position = 'bottom')
   })
   
 
@@ -419,6 +465,11 @@ shinyServer(function(input, output, session) {
 
   # render the summary table
   output$analysis_results_table_summary <- renderText({
+    
+    # stop here if model isn't fit yet
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be fit on 'Model' tab"))
+    
     summary(store$model_results)$estimates %>% 
       t() %>% 
       knitr::kable(digits = 3, format = 'html') %>% 

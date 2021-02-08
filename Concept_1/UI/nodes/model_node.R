@@ -53,7 +53,7 @@ model_node <- tabPanel(title = "Model",
                                       actionButton(inputId = "analysis_model_button_back",
                                                    label = "Back to EDA"),
                                       actionButton(inputId = "analysis_model_button_next",
-                                                   label = "Run model")
+                                                   label = "Fit model")
                                     )
                                   ),
                                   mainPanel(htmlOutput('analysis_model_summary'))
