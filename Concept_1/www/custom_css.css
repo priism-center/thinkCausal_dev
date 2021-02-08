@@ -142,8 +142,8 @@ within the selectize dropdowns */
   background-color: #eeefef !important;
 }
 
-/* buttons */
-.btn, .btn:hover, .btn:active, .btn:visited {
+/* buttons .btn:hover, .btn:active, .btn:visited */
+.btn {
     background-color: #302f42 !important;
     border-radius: 0;
     box-shadow: none;
@@ -434,4 +434,16 @@ border 0 fixes the buttons moving around when you hover / click */
   margin-left: auto;
   margin-right: auto;
   object-fit: cover;
+}
+
+.backNextContainer {
+  display: flex;
+}
+
+.backNextContainer > button {
+  flex: 1
+}
+
+.backNextContainer > button:first-child {
+  margin-right: 1rem;
 }

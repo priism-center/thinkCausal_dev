@@ -8,8 +8,14 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_data_load_button_next, {
     updateTabsetPanel(session, inputId ="analysis_data_tabs", selected ="Select Data")
   })
+  observeEvent(input$analysis_data_select_button_back, {
+    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Load")
+  })
   observeEvent(input$analysis_data_select_button_next, {
     updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Study Design")
+  })
+  observeEvent(input$analysis_data_design_button_back, {
+    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Select Data")
   })
   observeEvent(input$analysis_data_design_button_next, {
     updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
@@ -17,11 +23,21 @@ shinyServer(function(input, output, session) {
   })
   
   # plotting page
-  observeEvent(input$analysis_plots_descriptive_button_next, {
+  observeEvent(input[[NS('analysis_plots_descriptive')('analysis_plots_descriptive_button_back')]], {
+    updateNavbarPage(session, inputId = "nav", selected = "Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Study Design")
+  })
+  observeEvent(input[[NS('analysis_plots_descriptive')('analysis_plots_descriptive_button_next')]], {
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Common Support Plots")
+  })
+  observeEvent(input$analysis_plots_support_button_back, {
+    updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
   })
   observeEvent(input$analysis_plots_support_button_next, {
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
+  })
+  observeEvent(input$analysis_plots_balance_button_back, {
+    updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Common Support Plots")
   })
   observeEvent(input$analysis_plots_balance_button_next, {
     updateNavbarPage(session, inputId = "nav", selected = "Model")

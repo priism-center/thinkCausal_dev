@@ -147,8 +147,13 @@ edaUI <- function(id, col_names, categorical_names) {
         br(),
         HTML('</details><br>'),
         br(),br(),
-        actionButton(inputId = "analysis_plots_descriptive_button_next",
-                     label = "Next")
+        div(
+          class = 'backNextContainer',
+          actionButton(inputId = ns("analysis_plots_descriptive_button_back"),
+                       label = "Back"),
+          actionButton(inputId = ns("analysis_plots_descriptive_button_next"),
+                       label = "Next")
+        )
       ),
       
       mainPanel(

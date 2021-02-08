@@ -16,9 +16,13 @@ analysis_plot_balance <- tabPanel(title = "Balance Plots",
                                                   onclick = "openConceptsPage('Concept3')",
                                                   'What is this plot telling me?'),
                                       br(),br(),
-                                      actionButton(inputId = "analysis_plots_balance_button_next",
-                                                   label = "Next")
-                                      
+                                      div(
+                                        class = 'backNextContainer',
+                                        actionButton(inputId = "analysis_plots_balance_button_back",
+                                                     label = "Back"),
+                                        actionButton(inputId = "analysis_plots_balance_button_next",
+                                                     label = "Next")
+                                      )
                                       # add advanced option to remove scale
                                     ),
                                     mainPanel(

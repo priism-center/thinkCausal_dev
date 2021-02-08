@@ -83,8 +83,19 @@ data_node <- tabPanel(
                                    actionButton(inputId = 'analysis_data_select_column_save',
                                                 label = 'Save column assignments'),
                                    br(),br(),
-                                   actionButton(inputId = "analysis_data_select_button_next",
-                                                label = "Next")), 
+                                   tags$button(type = 'button',
+                                               class = 'btn btn-default',
+                                               onclick = "openConceptsPage('Concept3')",
+                                               'Help me'),
+                                   br(),br(),
+                                   div(
+                                     class = 'backNextContainer',
+                                     actionButton(inputId = "analysis_data_select_button_back",
+                                                  label = "Back"),
+                                     actionButton(inputId = "analysis_data_select_button_next",
+                                                  label = "Next"),
+                                     )
+                                   ), 
                       mainPanel(
                         br(),
                         tabsetPanel(
@@ -117,8 +128,14 @@ data_node <- tabPanel(
                                   onclick = "openConceptsPage('Concept3')",
                                   'Help me'),
                       br(),br(),
-                      actionButton(inputId = "analysis_data_design_button_next",
-                                   label = "Next")),
+                      div(
+                        class = 'backNextContainer',
+                        actionButton(inputId = "analysis_data_design_button_back",
+                                     label = "Back"),
+                        actionButton(inputId = "analysis_data_design_button_next",
+                                     label = "Next"),
+                      )
+                      ),
                       mainPanel(
                         # insert output
                       )

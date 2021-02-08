@@ -20,7 +20,12 @@ analysis_plot_common_sup <- tabPanel(
                   onclick = "openConceptsPage('Concept3')",
                   'What is this plot telling me?'),
       br(),br(),
-      actionButton(inputId = "analysis_plots_support_button_next",
-                   label = "Next")
+      div(
+        class = 'backNextContainer',
+        actionButton(inputId = "analysis_plots_support_button_back",
+                     label = "Back"),
+        actionButton(inputId = "analysis_plots_support_button_next",
+                     label = "Next")
+      )
   ),
   mainPanel()))
