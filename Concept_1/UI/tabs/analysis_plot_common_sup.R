@@ -14,6 +14,11 @@ analysis_plot_common_sup <- tabPanel(
       h6("With Dimension Reduction"),
       awesomeCheckbox(inputId = "dim.red",
                     label = "Dimension Reduction", FALSE),
+      br(),
+      tags$button(type = 'button',
+                  class = 'btn btn-default',
+                  onclick = "openConceptsPage('Concept3')",
+                  'What is this plot telling me?'),
       br(),br(),
       actionButton(inputId = "analysis_plots_support_button_next",
                    label = "Next")

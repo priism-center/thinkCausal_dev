@@ -10,6 +10,11 @@ analysis_plot_balance <- tabPanel(title = "Balance Plots",
                                         choices = X_names,
                                         selected = X_names
                                       ),
+                                      br(),
+                                      tags$button(type = 'button',
+                                                  class = 'btn btn-default',
+                                                  onclick = "openConceptsPage('Concept3')",
+                                                  'What is this plot telling me?'),
                                       br(),br(),
                                       actionButton(inputId = "analysis_plots_balance_button_next",
                                                    label = "Next")
