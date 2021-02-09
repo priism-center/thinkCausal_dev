@@ -22,7 +22,9 @@ results_node <- tabPanel(
                  id = "analysis_results_tabs",
                  tabPanel(
                    title = "Individual treatment effects",
-                   # plotOutput()
+                   br(),
+                   plotOutput(outputId = 'anlaysis_results_plot_ITE',
+                              height = 500)
                  ),
                  tabPanel(
                    title = 'Conditional individual treatment effects',

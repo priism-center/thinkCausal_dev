@@ -397,7 +397,7 @@ shinyServer(function(input, output, session) {
     # plot it
     mod %>% 
       extract() %>% 
-      as.tibble() %>% 
+      as_tibble() %>% 
       mutate(index = row_number()) %>% 
       ggplot(aes(x = index, y = value)) + 
       geom_line() + 
@@ -518,6 +518,34 @@ shinyServer(function(input, output, session) {
   })
   
   # render the interpretation text
+  
+  # ITE plot
+  output$anlaysis_results_plot_ITE <- renderPlot({
+    
+    # stop here if model isn't fit yet
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be fit on 'Model' tab"))
+    
+    # retrieve model from the store
+    BART_model <- store$model_results
+
+    # calculate stats
+    ites <- bartCause::extract(BART_model, 'icate')
+    ite.m <- apply(ites, 2, mean)
+    sd.ite <- apply(ites, 2, sd)
+    ite.ub <- ite.m + 1.96 * sd.ite
+    ite.lb <-  ite.m - 1.96 * sd.ite
+    
+    # plot it
+    tibble(ite.m, ite.ub, ite.lb) %>% 
+      # arrange(ite.m) %>% 
+      # mutate(rank = row_number()) %>% 
+      ggplot(aes(x = ite.m)) + 
+      geom_histogram(alpha = 0.8) + 
+      labs(title = 'Individual Treatment Effects',
+           x = base::toupper(BART_model$estimand), 
+           y = 'Frequency')
+  })
   
   
   # concepts ----------------------------------------------------------------

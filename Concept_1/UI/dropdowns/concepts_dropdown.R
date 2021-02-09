@@ -80,7 +80,8 @@ concepts_dropdown <- navbarMenu(
            )
   ),
   "-----",
-  tabPanel(title = 'Randomization', randomizationUI(id = "concepts_randomization")),
+  tabPanel(title = 'Randomization', 
+           randomizationUI(id = "concepts_randomization")),
   tabPanel(title = "Fundamental problem",
            includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))),
   tabPanel(title = "Assumptions",
