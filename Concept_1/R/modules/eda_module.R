@@ -14,128 +14,143 @@ edaUI <- function(id, col_names, categorical_names) {
           inputId = ns("exploration_select_plot_type"),
           label = "Plot type:",
           multiple = FALSE,
-          choices = c("Scatter", "Histogram", "Density", "Boxplot"),
-          selected = "Scatter"
-        ),
-        selectInput(
-          inputId = ns("exploration_variable_x"),
-          label = "X: ",
-          multiple = FALSE,
-          choices = col_names,
-          selected = col_names[1]
+          choices = c("Pairs", "Scatter", "Histogram", "Density", "Boxplot"),
+          selected = "Pairs"
         ),
         conditionalPanel(
-          condition = "input.exploration_select_plot_type == 'Scatter'",
+          condition = "input.exploration_select_plot_type == 'Pairs'",
           ns = ns,
           selectInput(
-            inputId = ns("exploration_variable_y"),
-            label = "Y: ",
-            multiple = FALSE,
+            inputId = ns("exploration_variable_pairs_vars"),
+            label = "Columns to plot",
+            multiple = TRUE,
             choices = col_names,
-            selected = col_names[2]
-          ),
+            selected = col_names
+          )
+        ),
+        conditionalPanel(
+          condition = "input.exploration_select_plot_type != 'Pairs'",
+          ns = ns,
           selectInput(
-            inputId = ns("exploration_variable_fill"),
-            label = "Fill color: ",
+            inputId = ns("exploration_variable_x"),
+            label = "X: ",
             multiple = FALSE,
             choices = col_names,
-            selected = col_names[12]
+            selected = col_names[1]
           ),
           conditionalPanel(
-            condition = "input.exploration_variable_fill == 'Cluster'",
+            condition = "input.exploration_select_plot_type == 'Scatter'",
             ns = ns,
             selectInput(
-              inputId = ns("exploration_variable_cluster"),
-              label = "Clustering algorithm: ",
+              inputId = ns("exploration_variable_y"),
+              label = "Y: ",
               multiple = FALSE,
-              choices = c('k-means', 'Hierarchical'),
-              selected = 'k-means'
+              choices = col_names,
+              selected = col_names[2]
             ),
+            selectInput(
+              inputId = ns("exploration_variable_fill"),
+              label = "Fill color: ",
+              multiple = FALSE,
+              choices = col_names,
+              selected = col_names[12]
+            ),
+            conditionalPanel(
+              condition = "input.exploration_variable_fill == 'Cluster'",
+              ns = ns,
+              selectInput(
+                inputId = ns("exploration_variable_cluster"),
+                label = "Clustering algorithm: ",
+                multiple = FALSE,
+                choices = c('k-means', 'Hierarchical'),
+                selected = 'k-means'
+              ),
+              sliderInput(
+                inputId = ns("exploration_variable_n_clusters"),
+                label = "Number of clusters: ",
+                min = 2,
+                max = 10,
+                value = 4,
+                step = 1
+              ),
+              HTML(
+                'Clustering using only selected X and Y variables. Not recommended when faceting.<br><br>'
+              )
+            ),
+            selectInput(
+              inputId = ns("exploration_variable_size"),
+              label = "Size: ",
+              multiple = FALSE,
+              choices = col_names,
+              selected = col_names[4]
+            ),
+            selectInput(
+              inputId = ns("exploration_variable_regression"),
+              label = "Linear regression: ",
+              multiple = FALSE,
+              choices = c('None', 'Include'),
+              selected = 'None'
+            ),
+            bsPopover(id = ns('exploration_variable_regression'),
+                      title = "Linear regression",
+                      content = 'Apply a linear regression (y ~ x) to each subgroup of your plot. If you facet on a variable, then the regressions will be calculated per each facet group.',
+                      placement = 'top'),
+          ), 
+          conditionalPanel(
+            condition = "input.exploration_select_plot_type == 'Histogram'",
+            ns = ns,
             sliderInput(
-              inputId = ns("exploration_variable_n_clusters"),
-              label = "Number of clusters: ",
-              min = 2,
-              max = 10,
-              value = 4,
+              inputId = ns("exploration_variable_n_bins"),
+              label = "Number of bins: ",
+              min = 5,
+              max = 50,
+              value = 20,
               step = 1
-            ),
-            HTML(
-              'Clustering using only selected X and Y variables. Not recommended when faceting.<br><br>'
+            )
+          ),
+          conditionalPanel(
+            condition = "input.exploration_select_plot_type == 'Boxplot'",
+            ns = ns,
+            selectInput(
+              inputId = ns("exploration_variable_group"),
+              label = "Grouping: ",
+              multiple = FALSE,
+              choices = categorical_names
             )
           ),
           selectInput(
-            inputId = ns("exploration_variable_size"),
-            label = "Size: ",
+            inputId = ns("exploration_variable_facet"),
+            label = "Facet variable: ",
             multiple = FALSE,
-            choices = col_names,
-            selected = col_names[4]
-          ),
-          selectInput(
-            inputId = ns("exploration_variable_regression"),
-            label = "Linear regression: ",
-            multiple = FALSE,
-            choices = c('None', 'Include'),
-            selected = 'None'
-          ),
-          bsPopover(id = ns('exploration_variable_regression'),
-                    title = "Linear regression",
-                    content = 'Apply a linear regression (y ~ x) to each subgroup of your plot. If you facet on a variable, then the regressions will be calculated per each facet group.',
-                    placement = 'top'),
-        ), 
-        conditionalPanel(
-          condition = "input.exploration_select_plot_type == 'Histogram'",
-          ns = ns,
-          sliderInput(
-            inputId = ns("exploration_variable_n_bins"),
-            label = "Number of bins: ",
-            min = 5,
-            max = 50,
-            value = 20,
-            step = 1
-          )
-        ),
-        conditionalPanel(
-          condition = "input.exploration_select_plot_type == 'Boxplot'",
-          ns = ns,
-          selectInput(
-            inputId = ns("exploration_variable_group"),
-            label = "Grouping: ",
-            multiple = FALSE,
-            choices = categorical_names
-          )
-        ),
-        selectInput(
-          inputId = ns("exploration_variable_facet"),
-          label = "Facet variable: ",
-          multiple = FALSE,
-          choices = c("None", categorical_names),
-          selected = "None"
-        ),
-        bsPopover(id = ns('exploration_variable_facet'),
-                  title = "Facet variable",
-                  content = 'Faceting splits the data by one or more variables and then plots these subsets.',
-                  placement = 'top'),
-        conditionalPanel(
-          condition = "input.exploration_variable_facet != 'None'",
-          ns = ns,
-          selectInput(
-            inputId = ns("exploration_variable_facet_second"),
-            label = "Second facet variable: ",
-            multiple = FALSE,
-            choices = c("None"),
+            choices = c("None", categorical_names),
             selected = "None"
-          )
-        ),
-        conditionalPanel(
-          condition = "input.exploration_select_plot_type == 'Scatter'",
-          ns = ns,
-          sliderInput(
-            inputId = ns("exploration_variable_alpha"),
-            label = "Opacity: ",
-            min = 0.1,
-            max = 1,
-            value = 0.5,
-            step = 0.1
+          ),
+          bsPopover(id = ns('exploration_variable_facet'),
+                    title = "Facet variable",
+                    content = 'Faceting splits the data by one or more variables and then plots these subsets.',
+                    placement = 'top'),
+          conditionalPanel(
+            condition = "input.exploration_variable_facet != 'None'",
+            ns = ns,
+            selectInput(
+              inputId = ns("exploration_variable_facet_second"),
+              label = "Second facet variable: ",
+              multiple = FALSE,
+              choices = c("None"),
+              selected = "None"
+            )
+          ),
+          conditionalPanel(
+            condition = "input.exploration_select_plot_type == 'Scatter'",
+            ns = ns,
+            sliderInput(
+              inputId = ns("exploration_variable_alpha"),
+              label = "Opacity: ",
+              min = 0.1,
+              max = 1,
+              value = 0.5,
+              step = 0.1
+            )
           )
         ),
         HTML('<details><summary>Advanced options</summary>'),
@@ -204,6 +219,11 @@ edaServer <- function(id, input_data) {
         
         # create base ggplot object
         p <- ggplot(plot_data, aes_string(x = sym(input$exploration_variable_x)))
+        
+        # pairs plit
+        if (input$exploration_select_plot_type == 'Pairs'){
+          p <- GGally::ggpairs(plot_data[, input$exploration_variable_pairs_vars])
+        }
         
         # scatter
         if (input$exploration_select_plot_type == 'Scatter'){
