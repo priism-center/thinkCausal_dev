@@ -71,9 +71,9 @@ data_node <- tabPanel(
                                                label = "Select Treatment (Z) Column", 
                                                choices = NULL),
                                    # TODO: automate this with a smart default
-                                   selectInput(inputId = "analysis_data_select_select_treatment", 
-                                               label = "Select the Value Representing Receiving Treatment",
-                                               choices = list('TRUE FALSE', '0 1', 'Yes No')),      
+                                   # selectInput(inputId = "analysis_data_select_select_treatment", 
+                                   #             label = "Select the Value Representing Receiving Treatment",
+                                   #             choices = list('TRUE FALSE', '0 1', 'Yes No')),      
                                    selectInput(inputId = "analysis_data_select_select_ycol", 
                                                label = "Select Response (Y) Column", 
                                                choices = NULL), 

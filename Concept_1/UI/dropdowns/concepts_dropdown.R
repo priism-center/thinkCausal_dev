@@ -11,6 +11,40 @@ concepts_dropdown <- navbarMenu(
                class = 'conceptsGrid',
                fluidRow(
                  column(3, 
+                        wellPanel(
+                          img(src = 'thumbnails/propensity.png'),
+                          br(),
+                          h3("Making fair comparisons"),
+                          p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit. ")
+                        )
+                 ),
+                 column(3, 
+                        wellPanel(
+                          img(src = 'thumbnails/balance.png'),
+                          br(),
+                          h3("BART vs. propensity score methods"),
+                          p("Tincidunt pellentesque viverra ultrices bibendum mauris duis ad tempor, nam aliquet quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor elementum eget eleifend nisi cubilia.")
+                        )
+                 ),
+                 column(3, 
+                        wellPanel(
+                          img(src = 'thumbnails/regression_discontinuity.png'),
+                          br(),
+                          h3("BART vs. regression methods"),
+                          p("Vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu  ad tempor, nam aliquet quis feugiat augue.")
+                        )
+                 ),
+                 column(3, 
+                        wellPanel(
+                          img(src = 'thumbnails/randomization.png'),
+                          br(),
+                          h3("Assessing overlap and balance"),
+                          p("Quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor elementum eget eleifend nisi cubilia.")
+                        )
+                 )
+               ),
+               fluidRow(
+                 column(3, 
                   wellPanel(
                     actionLink("concepts_link_Randomization", img(src = 'thumbnails/randomization.png')),
                     br(),
@@ -38,44 +72,10 @@ concepts_dropdown <- navbarMenu(
                   wellPanel(
                     actionLink("concepts_link_Regression methods", img(src = 'thumbnails/regression.png')),
                     br(),
-                    h3("BART vs. regression methods"),
+                    h3("Ignorability"),
                     p("Quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor elementum eget eleifend nisi cubilia.")
                   )
                  )
-              ),
-              fluidRow(
-                column(3, 
-                       wellPanel(
-                         img(src = 'thumbnails/propensity.png'),
-                         br(),
-                         h3("BART vs. propensity score methods"),
-                         p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit. ")
-                       )
-                ),
-                column(3, 
-                       wellPanel(
-                         img(src = 'thumbnails/balance.png'),
-                         br(),
-                         h3("Assessing overlap and balance"),
-                         p("Tincidunt pellentesque viverra ultrices bibendum mauris duis ad tempor, nam aliquet quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor elementum eget eleifend nisi cubilia.")
-                       )
-                ),
-                column(3, 
-                       wellPanel(
-                         img(src = 'thumbnails/regression_discontinuity.png'),
-                         br(),
-                         h3("BART for regression discontinuity"),
-                         p("Vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu  ad tempor, nam aliquet quis feugiat augue.")
-                       )
-                ),
-                column(3, 
-                       wellPanel(
-                         img(src = 'thumbnails/randomization.png'),
-                         br(),
-                         h3("BART for experimental studies, observational studies, and natural experiments"),
-                         p("Quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor elementum eget eleifend nisi cubilia.")
-                       )
-                )
               )
            )
   ),

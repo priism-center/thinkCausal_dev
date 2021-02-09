@@ -45,8 +45,8 @@ shinyUI(
             id = "nav",
             title = 'thinkCausal',
             welcome_dropdown,
-            analysis_dropdown, 
             concepts_dropdown,
+            analysis_dropdown, 
             log_dropdown
             # help_dropdown
             ),

@@ -541,6 +541,7 @@ shinyServer(function(input, output, session) {
       # arrange(ite.m) %>% 
       # mutate(rank = row_number()) %>% 
       ggplot(aes(x = ite.m)) + 
+      geom_vline(xintercept = 0, linetype = 'dashed', color = 'grey60') +
       geom_histogram(alpha = 0.8) + 
       labs(title = 'Individual Treatment Effects',
            x = base::toupper(BART_model$estimand), 
@@ -561,5 +562,17 @@ shinyServer(function(input, output, session) {
   
   # run the randomization module
   randomizationServer(id = 'concepts_randomization')
+  
+  
+  # welcome page ------------------------------------------------------------
+
+  observeEvent(input$welcome_link_concepts, {
+    updateNavbarPage(session, inputId = "nav", selected = "All concepts")
+  })
+  observeEvent(input$welcome_link_Analysis, {
+    updateNavbarPage(session, inputId = "nav", selected = "Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
+  })
+  
   
 })
