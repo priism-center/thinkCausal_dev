@@ -418,7 +418,7 @@ shinyServer(function(input, output, session) {
     
     # plot it
     mod %>% 
-      extract() %>% 
+      bartCause::extract() %>% 
       as_tibble() %>% 
       mutate(index = row_number()) %>% 
       ggplot(aes(x = index, y = value)) + 
