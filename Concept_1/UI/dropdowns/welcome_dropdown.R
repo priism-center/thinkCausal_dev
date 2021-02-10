@@ -2,7 +2,8 @@ welcome_dropdown <- tabPanel(
   title = 'Welcome', 
   mainPanel(
     h2("thinkCausal"),
-    p('Lobortis inceptos pulvinar ridiculus euismod habitant erat quam quis parturient suspendisse fermentum, ligula dignissim habitasse vulputate lacus est ad porta egestas. Ultrices semper phasellus augue enim fringilla suscipit ornare, nascetur nec fames nostra etiam luctus rutrum, sociis magnis ullamcorper mollis dui in. Dui viverra vehicula varius a interdum orci parturient tincidunt netus urna tristique bibendum, sagittis neque porta euismod dapibus dis taciti est ad hendrerit montes. Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, '),
+    h3('Getting Started'),
+    p('Lorem ipsum dolor sit amet consectetur adipiscing elit netus posuere quisque ultricies, tempor habitasse ac risus ultrices egestas auctor eu aliquam sodales. Tempor molestie nisi nec venenatis tristique dui, semper tortor at eu mauris cubilia etiam, ligula diam consequat dictum pellentesque. In auctor sagittis etiam consequat potenti eget per scelerisque dictumst nascetur turpis vulputate, viverra cursus integer class dis posuere mollis pellentesque urna risus.'),
     br(),
     div(id = 'conceptsGridHome',
         class = 'conceptsGrid',
@@ -12,7 +13,7 @@ welcome_dropdown <- tabPanel(
                    actionLink("welcome_link_concepts", img(src = 'thumbnails/randomization.png')),
                    br(),
                    h3("Learn"),
-                   p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit. ")
+                   p("Interactivly learn the foundational concepts of casual inference and new methods for casual inference.")
                  )
           ),
           column(4, 
@@ -20,7 +21,7 @@ welcome_dropdown <- tabPanel(
                    actionLink("concepts_link_Fundamental problem", img(src = 'thumbnails/fundamental_problem.png')),
                    br(),
                    h3("Practice"),
-                   p("Tincidunt pellentesque viverra ultrices bibendum mauris duis ad tempor, nam aliquet quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor.")
+                   p("Test your understanding of causal inference. Build confidence and identify opurtunities for growth.")
                  )
           ),
           column(4, 
@@ -28,7 +29,7 @@ welcome_dropdown <- tabPanel(
                    actionLink("welcome_link_Analysis", img(src = 'thumbnails/assumptions.png')),
                    br(),
                    h3("Fit"),
-                   p("Vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu  ad tempor, nam aliquet quis feugiat augue.")
+                   p("Unlock modern causal inference methods. Easily implement Bayesian Additive Regression Trees")
                  )
           )
         )
