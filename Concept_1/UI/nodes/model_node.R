@@ -25,18 +25,15 @@ model_node <- tabPanel(title = "Model",
                                     br(),
                                     awesomeRadio(
                                       inputId = "",
-                                      label = "Use weighted propensity scores",
-                                      choices = 1:3
+                                      label = "model outcome with",
+                                      choices = c('BART', "Weighted Propensity Score", 'TMLE'), 
+                                      selected = 'BART'
                                     ),
                                     awesomeRadio(
                                       inputId = "",
-                                      label = "TMLE adjustment",
-                                      choices = 1:3
-                                    ),
-                                    awesomeRadio(
-                                      inputId = "",
-                                      label = "Propensity score fit model",
-                                      choices = 1:3
+                                      label = "model propensity score fit with:",
+                                      choices = c('BART', 'generalized linear model','do not fit propensity scores'), 
+                                      selected = 'BART'
                                     ),
                                     br(),
                                     HTML('</details><br>'),
