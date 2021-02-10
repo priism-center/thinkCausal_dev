@@ -10,6 +10,14 @@ concepts_dropdown <- navbarMenu(
            div(id = 'conceptsGrid1',
                class = 'conceptsGrid',
                fluidRow(
+                column(12, 
+                        wellPanel(
+                          actionLink('practice_test', img(src = 'thumbnails/practice_test.png')), 
+                          br(), 
+                          h3("Test Your Understanding"), 
+                          p("Take practice tests on casual infernece concperts")
+                        )
+                 ),
                  column(3, 
                         wellPanel(
                           img(src = 'thumbnails/propensity.png'),
@@ -80,6 +88,8 @@ concepts_dropdown <- navbarMenu(
            )
   ),
   "-----",
+  tabPanel(title = "Test your Understanding", 
+           includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))), 
   tabPanel(title = 'Randomization', 
            randomizationUI(id = "concepts_randomization")),
   tabPanel(title = "Fundamental problem",

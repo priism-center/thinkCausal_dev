@@ -31,6 +31,19 @@ data_node <- tabPanel(
                                        label = 'Save column names')
                         ),
                         br(),br(),
+                        
+                        actionButton(inputId = 'create_practice',
+                                     label = 'Create a Practice Data Set'),
+                        
+                        conditionalPanel('input.create_practice %2 != 0', 
+                                         br(), 
+                                         sliderInput(inputId = 'sim.diff', 
+                                                     label = div(style='width:400px;', 
+                                                                 div(style='float:left;', 'Least Difficult'), 
+                                                                 div(style='float:right;', 'Most Difficult')), 
+                                                      min = 1, max = 6, value = 1, width = '400px')), 
+                        
+                        br(), br(),
                         actionButton(inputId = "analysis_data_load_button_next",
                                      label = "Next")
                       ),
