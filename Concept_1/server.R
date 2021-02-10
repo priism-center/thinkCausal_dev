@@ -134,7 +134,7 @@ shinyServer(function(input, output, session) {
   #TODO: need to clean column names during upload; bad csvs will crash the server
   
   # add dataframe to store object
-  observeEvent(nrow(uploaded_df()), {
+  observeEvent(uploaded_df(), {
     store$uploaded_df <- uploaded_df()
   })
   
@@ -511,6 +511,7 @@ shinyServer(function(input, output, session) {
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fit on 'Model' tab"))
     
+    # extract estimates and format
     summary(store$model_results)$estimates %>% 
       t() %>% 
       knitr::kable(digits = 3, format = 'html') %>% 
@@ -566,6 +567,7 @@ shinyServer(function(input, output, session) {
   
   # welcome page ------------------------------------------------------------
 
+  # add listeners that link the front page images to their respective pages
   observeEvent(input$welcome_link_concepts, {
     updateNavbarPage(session, inputId = "nav", selected = "All concepts")
   })
