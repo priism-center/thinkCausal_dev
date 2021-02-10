@@ -84,52 +84,74 @@ shinyServer(function(input, output, session) {
     # TODO: test all the file types (e.g. stata is only stata 15 or older)
     # TODO: this behavior is really unintuitive; need to rethink it
     # TODO: add parsing failures to log
-    req(input$analysis_data_upload)
-    tryCatch({
-      
-      # extract the filepath and the filetype
-      filepath <- input$analysis_data_upload$datapath
-      filetype <- tools::file_ext(filepath)
-      
-      # if it's a txt file then ask the user what the delimiter is  
-      if (filetype == 'txt'){
-        output$analysis_data_delim <- renderUI({ 
-          textInput(inputId = 'analysis_data_delim_value',
-                    label = "Column delimiter",
-                    # value = ',',
-                    placeholder = ", | - :")
+    
+    #req(input$analysis_data_upload)
+    
+    # extract the filepath and the filetype
+    filepath <- input$analysis_data_upload$datapath
+    filetype <- tools::file_ext(filepath)
+    practice <- input$create_practice
+    
+    if(length(filepath != 0) & practice%%2 == 0){
+        tryCatch({
+          
+          # if it's a txt file then ask the user what the delimiter is  
+          if (filetype == 'txt'){
+            output$analysis_data_delim <- renderUI({ 
+              textInput(inputId = 'analysis_data_delim_value',
+                        label = "Column delimiter",
+                        # value = ',',
+                        placeholder = ", | - :")
+            })
+            req(input$analysis_data_delim_value)
+          }
+          
+          # upload the file based on its filetype
+          if (filetype == "csv"){
+            uploaded_file <- readr::read_csv(
+              file = filepath,
+              col_names = input$analysis_data_header) 
+          } else if (filetype == 'dta'){
+            uploaded_file <- readstata13::read.dta13(file = filepath)
+          } else if (filetype == 'xlsx'){
+            uploaded_file <- xlsx::read.xlsx(file = filepath)
+          } else if (filetype == 'txt'){
+            delim <- input$analysis_data_delim_value
+            if (delim == "") delim <- ","
+            uploaded_file <- readr::read_delim(
+              file = filepath,
+              delim = delim,
+              col_names = input$analysis_data_header
+            )
+          } else if (filetype == 'spss'){
+            uploaded_file <- Hmisc::spss.get(file = filepath)
+          } else stop("File type is invalid")
+        },
+        error = function(e) {
+          # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
+          stop(safeError(e))
         })
-        req(input$analysis_data_delim_value)
-      }
-      
-      # upload the file based on its filetype
-      if (filetype == "csv"){
-        uploaded_file <- readr::read_csv(
-          file = filepath,
-          col_names = input$analysis_data_header) 
-      } else if (filetype == 'dta'){
-        uploaded_file <- readstata13::read.dta13(file = filepath)
-      } else if (filetype == 'xlsx'){
-        uploaded_file <- xlsx::read.xlsx(file = filepath)
-      } else if (filetype == 'txt'){
-        delim <- input$analysis_data_delim_value
-        if (delim == "") delim <- ","
-        uploaded_file <- readr::read_delim(
-          file = filepath,
-          delim = delim,
-          col_names = input$analysis_data_header
-        )
-      } else if (filetype == 'spss'){
-        uploaded_file <- Hmisc::spss.get(file = filepath)
-      } else stop("File type is invalid")
-    },
-    error = function(e) {
-      # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
-      stop(safeError(e))
-    })
+    }
+    
+    else if(practice%%2 != 0){
+      uploaded_file <- make_dat_demo()
+    }
+    
+    else{
+      uploaded_file <- ''
+    }
     
     return(uploaded_file)
   })
+  
+
+  # # Practice df
+  # uploaded_df <-  reactive({
+  #   req(input$create_practice)
+  #   sim <- make_dat_demo()
+  #   return(sim)
+  # })
+
   
   #TODO: need to clean column names during upload; bad csvs will crash the server
   
