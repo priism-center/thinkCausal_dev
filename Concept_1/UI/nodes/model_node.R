@@ -19,7 +19,7 @@ model_node <- tabPanel(title = "Model",
                                       label = "Common Support Rule",
                                       choices = c('None' = "none", 
                                                   'Standard Deviation' = 'sd', 
-                                                  'Chi Squared Test' = 'chi')
+                                                  'Chi Squared Test' = 'chisq')
                                     ),
                                     HTML('<details><summary>Advanced options</summary>'),
                                     br(),

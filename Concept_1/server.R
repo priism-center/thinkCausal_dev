@@ -45,15 +45,48 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
   })
   observeEvent(input$analysis_model_button_next, {
-    # insert popup to notify user of model fit process?
+    
+    # stop here if inputs aren't found
+    validate(
+      need(
+        nchar(input$analysis_model_radio_design) > 0,
+        'Please select an assignment mechanishm'
+      ),
+      need(
+        nchar(input$analysis_model_radio_estimand) > 0,
+        'Please select an estimand and common support rule'
+      ),
+      need(
+        nchar(input$analysis_model_radio_support) > 0,
+        'Please select a common support rule'
+      )
+    )
+    
+    # insert popup to notify user of model fit process
+    shinyWidgets::show_alert(
+      title = 'Model fitting...',
+      text = "Please wait",
+      type = 'info',
+      btn_labels = NA
+    )
+    
     # run model
     X <- lalonde %>% 
       dplyr::select(-c(re78, treat)) %>% 
       as.matrix()
-    store$model_results <- bartc(re78, treat, X, lalonde)
+    store$model_results <- bartCause::bartc(
+      response = re78, 
+      treatment = treat, 
+      confounders = X, 
+      data = lalonde,
+      estimand = base::tolower(input$analysis_model_radio_estimand),
+      commonSup.rule = input$analysis_model_radio_support)
     
     # store the results
     store$good_model_fit <- TRUE
+    
+    # close the alert
+    shinyWidgets::closeSweetAlert()
     
     # move to next page based on model fit
     if (isTRUE(store$good_model_fit)){
