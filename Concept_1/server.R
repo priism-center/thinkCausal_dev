@@ -72,14 +72,15 @@ shinyServer(function(input, output, session) {
     # TODO: this behavior is really unintuitive; need to rethink it
     # TODO: add parsing failures to log
     
-    #req(input$analysis_data_upload)
+    req(input$analysis_data_upload)
     
     # extract the filepath and the filetype
     filepath <- input$analysis_data_upload$datapath
     filetype <- tools::file_ext(filepath)
-    practice <- input$create_practice
+    # practice <- input$create_practice
     
-    if(length(filepath != 0) & practice%%2 == 0){
+    
+    # if(length(filepath != 0) & practice%%2 == 0){
         tryCatch({
           
           # if it's a txt file then ask the user what the delimiter is  
@@ -118,15 +119,15 @@ shinyServer(function(input, output, session) {
           # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
           stop(safeError(e))
         })
-    }
+    # }
     
-    else if(practice%%2 != 0){
-      uploaded_file <- make_dat_demo()
-    }
+    # else if(practice%%2 != 0){
+    #   uploaded_file <- make_dat_demo()
+    # }
     
-    else{
-      uploaded_file <- ''
-    }
+    # else{
+    #   uploaded_file <- ''
+    # }
     
     return(uploaded_file)
   })
@@ -189,23 +190,22 @@ shinyServer(function(input, output, session) {
   
   # update select inputs when the input data changes
   observeEvent(store$uploaded_df, {
-
-    # update the first three dropdown options with the column names from the uploaded dataset
-    lapply(analysis_data_select_selector_ids[1:2], function(id){
-      # other_select_values <- reactiveValuesToList(input)[setdiff(selector_ids, id)]
-      updateSelectInput(session = session, 
-                        inputId = id,
-                        choices = colnames(store$uploaded_df),
-                        selected = colnames(store$uploaded_df)[which(analysis_data_select_selector_ids == id)]
-                        )
-    })
     
-    # update X drop down with the remaining columns
-    updateSelectInput(session = session, 
-                      inputId = analysis_data_select_selector_ids[3],
-                      choices = colnames(store$uploaded_df),
-                      selected = setdiff(colnames(store$uploaded_df), colnames(store$uploaded_df)[1:2])
-    )
+    # stop here if data hasn't been uploaded 
+    validate(need(nrow(store$uploaded_df) > 0, 
+                  "Data must be first uploaded. Please see 'Data' tab."))
+    
+    # infer which columns are Z, Y, and X columns for smart defaults
+    auto_columns <- detect_ZYX_columns(colnames(store$uploaded_df))
+    
+    # fill the dropdown options with the colnames
+    for (i in 1:3){
+      updateSelectInput(session = session, 
+                        inputId = analysis_data_select_selector_ids[i],
+                        choices = colnames(store$uploaded_df),
+                        selected = auto_columns[[i]]
+      )
+    }
   })
 
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
@@ -399,7 +399,7 @@ shinyServer(function(input, output, session) {
     
     # stop here if model is not run yet
     validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fit on 'Model' tab"))
+                  "Model must first be fitted on the 'Model' tab"))
     
     # extract model from store
     mod <- store$model_results
@@ -422,7 +422,7 @@ shinyServer(function(input, output, session) {
     
     # stop here if model is not run yet
     validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be run on 'Model' tab"))
+                  "Model must first be fitted on the 'Model' tab"))
     
     # retrieve model from the store
     BART_model <- store$model_results
@@ -453,7 +453,7 @@ shinyServer(function(input, output, session) {
     
     # stop here if model is not run yet
     validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be run on 'Model' tab"))
+                  "Model must first be fitted on the 'Model' tab"))
     
     # retrieve model from the store
     BART_model <- store$model_results
@@ -619,7 +619,8 @@ shinyServer(function(input, output, session) {
       #   tags$span(class = 'sr-only', "Loading...")
       # ),
       # html = TRUE,
-      btn_labels = NA
+      btn_labels = NA,
+      closeOnClickOutside = FALSE
     )
     
     # pull the response, treatment, and confounders variables out of the df
@@ -658,7 +659,7 @@ shinyServer(function(input, output, session) {
     
     # stop here if model isn't fit yet
     validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fit on 'Model' tab"))
+                  "Model must first be fitted on the 'Model' tab"))
     
     # extract estimates and format
     summary(store$model_results)$estimates %>% 
@@ -674,7 +675,7 @@ shinyServer(function(input, output, session) {
     
     # stop here if model isn't fit yet
     validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fit on 'Model' tab"))
+                  "Model must first be fitted on the 'Model' tab"))
     
     # retrieve model from the store
     BART_model <- store$model_results

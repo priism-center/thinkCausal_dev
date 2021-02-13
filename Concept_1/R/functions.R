@@ -51,3 +51,37 @@ make_dat_demo <- function(n = 400){
   df <- df %>% dplyr::select(-c(Y0, Y1, prob))
   return(df)
 }
+
+
+detect_ZYX_columns <- function(input_colnames) {
+  # attempts to auto detect which columns are treatment and response based on the 
+  # column name alone
+  # if none are detected, then returns the first two respectively
+  # TODO: instead of regex, do string distance?
+  
+  Z_potentials <- c("Z", "trt", "treat", "treatment")
+  Y_potentials <- c("Y", "response", "rsp")
+  all_col_names <- input_colnames
+  
+  # find Z column
+  Z_matches <- sapply(X = all_col_names, FUN = function(col){
+    any(stringr::str_detect(string = col, pattern = Z_potentials))
+  })
+  Z <- all_col_names[Z_matches][1]
+
+  # find Y columns
+  all_col_names_ex_Z <- setdiff(all_col_names, Z)
+  Y_matches <- sapply(X = all_col_names_ex_Z, FUN = function(col){
+    any(stringr::str_detect(string = col, pattern = Y_potentials))
+  })
+  Y <- all_col_names_ex_Z[Y_matches][1]
+  
+  # defaults if none are found
+  all_col_names_ex_Y <- setdiff(all_col_names, Y)
+  if (isTRUE(is.na(Z))) Z <- all_col_names_ex_Y[1]
+  all_col_names_ex_Z <- setdiff(all_col_names, Z)
+  if (isTRUE(is.na(Y))) Y <- all_col_names_ex_Z[1]
+  
+  matched_cols <- list(Z = Z, Y = Y, X = setdiff(all_col_names, c(Z, Y)))
+  return(matched_cols)
+}
