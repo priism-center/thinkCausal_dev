@@ -149,7 +149,8 @@ shinyServer(function(input, output, session) {
   })
   
   # render UI for renaming the columns
-  output$analysis_data_rename <- renderUI({
+  # TODO change CSS to render label side by side
+  output$analysis_data_rename_UI <- renderUI({
     tagList(
       lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
         textInput(
@@ -157,17 +158,44 @@ shinyServer(function(input, output, session) {
           label = colnames(store$uploaded_df)[i],
           value = colnames(store$uploaded_df)[i]
         )
-      }
-      ))
+      })
+    )
   })
   
   # overwrite column names when user saves new names
-  observeEvent(input$analysis_data_rename_save, {
+  observeEvent(input$analysis_data_button_rename_save, {
     validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
     input_ids <- paste0("analysis_data_rename_", seq_along(colnames(store$uploaded_df)))
     inputted_name_values <- reactiveValuesToList(input)[input_ids]
     colnames(store$uploaded_df) <- inputted_name_values
   })
+  
+  # render UI for changing the data types
+  output$analysis_data_changeDataTypes_UI <- renderUI({
+    
+    # get default data types
+    default_data_types <- simple_data_types(store$uploaded_df)
+    
+    # render the dropdowns
+    tagList(
+      lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
+        selectInput(
+          inputId = paste0("analysis_data_changeDataType_", i),
+          label = colnames(store$uploaded_df)[i],
+          choices = c('Categorical', 'Continuous'),
+          selected = default_data_types[i]
+        )
+      })
+    )
+  })
+  
+  # TODO: overwrite data types names when user saves new data types
+  # observeEvent(input$analysis_data_button_changeDataTypes_save, {
+  #   validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
+  #   input_ids <- paste0("analysis_data_rename_", seq_along(colnames(store$uploaded_df)))
+  #   inputted_name_values <- reactiveValuesToList(input)[input_ids]
+  #   colnames(store$uploaded_df) <- inputted_name_values
+  # })
   
   # table of selected dataset
   output$analysis_data_table <- DT::renderDataTable({
@@ -627,6 +655,8 @@ shinyServer(function(input, output, session) {
     response_v <- store$selected_df[, 1]
     treatment_v <- store$selected_df[, 2]
     confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+    
+    # TODO: dummy code categorical vars??
     
     # run model    
     store$model_results <- bartCause::bartc(

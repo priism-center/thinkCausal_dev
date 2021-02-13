@@ -24,11 +24,21 @@ data_node <- tabPanel(
                                       label = "Rename columns",
                                       value = FALSE
                                     ),
+                        awesomeCheckbox(inputId = 'analysis_data_changeDataTypes',
+                                        label = "Change data types",
+                                        value = FALSE
+                        ),
                         conditionalPanel(
                           condition = "input.analysis_data_rename == true",
-                          uiOutput(outputId = 'analysis_data_rename'),
-                          actionButton(inputId = 'analysis_data_rename_save',
+                          uiOutput(outputId = 'analysis_data_rename_UI'),
+                          actionButton(inputId = 'analysis_data_button_rename_save',
                                        label = 'Save column names')
+                        ),
+                        conditionalPanel(
+                          condition = "input.analysis_data_changeDataTypes == true",
+                          uiOutput(outputId = 'analysis_data_changeDataTypes_UI'),
+                          actionButton(inputId = 'analysis_data_button_changeDataTypes_save',
+                                       label = 'Save data types')
                         ),
                         br(),br(),
                         
