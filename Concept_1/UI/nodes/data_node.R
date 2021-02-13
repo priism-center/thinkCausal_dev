@@ -108,7 +108,9 @@ data_node <- tabPanel(
                                                   label = "Back"),
                                      actionButton(inputId = "analysis_data_select_button_next",
                                                   label = "Next"),
-                                     )
+                                     ),
+                                   br(),
+                                   progress_bar(1/7*100)
                                    ), 
                       mainPanel(
                         br(),

@@ -26,7 +26,9 @@ analysis_plot_common_sup <- tabPanel(
                      label = "Back"),
         actionButton(inputId = "analysis_plots_support_button_next",
                      label = "Next")
-      )
+      ),
+      br(),
+      progress_bar(3/7*100)
   ),
   mainPanel(
     width = 8,

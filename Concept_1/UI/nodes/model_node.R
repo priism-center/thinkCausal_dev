@@ -7,20 +7,26 @@ model_node <- tabPanel(title = "Model",
                                                  label = 'Select Assignment of Treatment (Z):', 
                                                  choices = c('Non-Random (Observational)' = 'non_random', 
                                                              'Random (Experimental)' = 'random', 
-                                                             'Quasi-Random (Natural Experiment)' = 'quasi')),
+                                                             'Quasi-Random (Natural Experiment)' = 'quasi'),
+                                                 selected = 1),
+                                    htmlOutput(outputId = 'analysis_model_text_design'),
+                                    htmlOutput(outputId = 'analysis_model_text_design_noinput'),
                                     awesomeRadio(
                                       inputId = "analysis_model_radio_estimand",
                                       label = "Select Causal Estimand",
                                       choices = c('ATE', 'ATT', 'ATC'),
                                       selected = 1
                                     ),
+                                    htmlOutput(outputId = 'analysis_model_text_estimand_noinput'),
                                     awesomeRadio(
                                       inputId = "analysis_model_radio_support",
                                       label = "Common Support Rule",
                                       choices = c('None' = "none", 
                                                   'Standard Deviation' = 'sd', 
-                                                  'Chi Squared Test' = 'chisq')
+                                                  'Chi Squared Test' = 'chisq'),
+                                      selected = 1
                                     ),
+                                    htmlOutput(outputId = 'analysis_model_text_support_noinput'),
                                     HTML('<details><summary>Advanced options</summary>'),
                                     br(),
                                     awesomeRadio(
@@ -51,7 +57,9 @@ model_node <- tabPanel(title = "Model",
                                                    label = "Back to EDA"),
                                       actionButton(inputId = "analysis_model_button_next",
                                                    label = "Fit model")
-                                    )
+                                    ),
+                                    br(),
+                                    progress_bar(5/7*100)
                                   ),
                                   mainPanel(htmlOutput('analysis_model_summary'))
                                 )))

@@ -22,7 +22,9 @@ analysis_plot_balance <- tabPanel(title = "Balance Plots",
                                                      label = "Back"),
                                         actionButton(inputId = "analysis_plots_balance_button_next",
                                                      label = "Next")
-                                      )
+                                      ),
+                                      br(),
+                                      progress_bar(4/7*100)
                                       # add advanced option to remove scale
                                     ),
                                     mainPanel(

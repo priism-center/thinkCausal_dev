@@ -12,7 +12,9 @@ diagnostics_node <- tabPanel(
                     onclick = "openConceptsPage('Concept2')",
                     'What are these plots telling me?'),
         br(),br(),
-        uiOutput(outputId = 'analysis_diagnosis_buttons_ui')
+        uiOutput(outputId = 'analysis_diagnosis_buttons_ui'),
+        br(),
+        progress_bar(6/7*100)
       ),
       mainPanel(
         br(),

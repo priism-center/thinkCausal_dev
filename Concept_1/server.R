@@ -44,43 +44,107 @@ shinyServer(function(input, output, session) {
     updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
   })
+  observeEvent(input$analysis_model_button_popup, {
+    updateNavbarPage(session, inputId = "nav", selected = "Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load")
+    shinyWidgets::closeSweetAlert()
+  })
+  
+  # when user runs the model, take a number of actions
   observeEvent(input$analysis_model_button_next, {
+    
+    # launch popup if data is not yet selected
+    if (!is.data.frame(store$selected_df)) {
+      shinyWidgets::show_alert(
+        title = 'Data must be first uploaded and columns selected',
+        text = tags$div(
+          actionButton(
+            inputId = 'analysis_model_button_popup',
+            label = 'Take me to the Data tab')
+        ),
+        type = 'error',
+        btn_labels = NA
+      ) 
+    }
+    
+    # spawn red text if selection isn't made
+    if (isTRUE(is.null(input$analysis_model_radio_design))) {
+      output$analysis_model_text_design_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    if (isTRUE(is.null(input$analysis_model_radio_estimand))) {
+      output$analysis_model_text_estimand_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    if (isTRUE(is.null(input$analysis_model_radio_support))) {
+      output$analysis_model_text_support_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
     
     # stop here if inputs aren't found
     validate(
       need(
-        nchar(input$analysis_model_radio_design) > 0,
-        'Please select an assignment mechanishm'
+        is.data.frame(store$selected_df),
+        "Data must be first uploaded and selected. Please see 'Data' tab."
+        ),
+      need(
+        isFALSE(input$analysis_model_radio_design == 'quasi'),
+        'Natural experiment design is not currently supported'
       ),
       need(
-        nchar(input$analysis_model_radio_estimand) > 0,
+        isFALSE(is.null(input$analysis_model_radio_design)),
+        'Please select an assignment mechanism'
+      ),
+      need(
+        isFALSE(is.null(input$analysis_model_radio_estimand)),
         'Please select an estimand and common support rule'
       ),
       need(
-        nchar(input$analysis_model_radio_support) > 0,
+        isFALSE(is.null(input$analysis_model_radio_support)),
         'Please select a common support rule'
       )
     )
     
     # insert popup to notify user of model fit process
+    # TODO estimate the time remaining empirically?
     shinyWidgets::show_alert(
       title = 'Model fitting...',
       text = "Please wait",
       type = 'info',
+      # text = tags$div(
+      #   class = 'spinner-grow',
+      #   role = 'status',
+      #   tags$span(class = 'sr-only', "Loading...")
+      # ),
+      # html = TRUE,
       btn_labels = NA
     )
     
-    # run model
-    X <- lalonde %>% 
-      dplyr::select(-c(re78, treat)) %>% 
-      as.matrix()
+    # pull the response, treatment, and confounders variables out of the df
+    response_v <- store$selected_df[, 1]
+    treatment_v <- store$selected_df[, 2]
+    confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+
+    # run model    
     store$model_results <- bartCause::bartc(
-      response = re78, 
-      treatment = treat, 
-      confounders = X, 
-      data = lalonde,
+      response = response_v,
+      treatment = treatment_v,
+      confounders = confounders_mat,
       estimand = base::tolower(input$analysis_model_radio_estimand),
-      commonSup.rule = input$analysis_model_radio_support)
+      commonSup.rule = input$analysis_model_radio_support
+      )
     
     # store the results
     store$good_model_fit <- TRUE
@@ -216,7 +280,7 @@ shinyServer(function(input, output, session) {
   
   # table of selected dataset
   output$analysis_data_table <- DT::renderDataTable({
-    custom_datatable(
+    pretty_datatable(
       store$uploaded_df,
       selection = "none"
     )
@@ -310,7 +374,8 @@ shinyServer(function(input, output, session) {
     })
     
     # run the eda module server
-    edaServer(id = 'analysis_plots_descriptive', input_data = store$selected_df)
+    # TODO: remove or integrate random sampling of data; including for now for dev speed
+    edaServer(id = 'analysis_plots_descriptive', input_data = slice_sample(store$selected_df, n = 100))
     
     # update selects on balance plots
     # TODO: exclude categorical vars here???
@@ -332,7 +397,7 @@ shinyServer(function(input, output, session) {
   output$analysis_data_select_table <- DT::renderDataTable({
     
     # render the table
-    custom_datatable(
+    pretty_datatable(
       store$selected_df,
       selection = "none"
     )
@@ -533,8 +598,10 @@ shinyServer(function(input, output, session) {
     # extract inputs
     design <- input$analysis_model_radio_design
     estimand <- input$analysis_model_radio_estimand
-    if (is.null(estimand)) estimand <- "None"
     support <- input$analysis_model_radio_support
+    if (is.null(design)) design <- "None"
+    if (is.null(estimand)) estimand <- "None"
+    if (is.null(support)) support <- "None"
     
     # grab text from object
     design_text <- analysis_model_text$design[[design]]
@@ -556,6 +623,32 @@ shinyServer(function(input, output, session) {
     return(custom_text)
   })
   
+  # render text below the radio buttons
+  output$analysis_model_text_design <- renderUI({
+
+    if (isTRUE(input$analysis_model_radio_design == 'quasi')){
+      html_out <- tags$span(
+        style = 'color: red;', 
+        "Natural experiment design is not currently supported",
+        br(), br()
+      )
+      return(html_out)
+    }
+    
+    html_out <- ''
+    return(html_out)
+  })
+  
+  # remove no text UI spawns
+  observeEvent(input$analysis_model_radio_design, {
+    removeUI('#analysis_model_text_design_noinput')
+  })
+  observeEvent(input$analysis_model_radio_estimand, {
+    removeUI('#analysis_model_text_estimand_noinput')
+  })
+  observeEvent(input$analysis_model_radio_support, {
+    removeUI('#analysis_model_text_support_noinput')
+  })
   
   # results -----------------------------------------------------------------
 

@@ -451,3 +451,7 @@ border 0 fixes the buttons moving around when you hover / click */
 .btn.btn-default.help {
   background-color: #938497 !important;
 }
+
+.progress {
+  height: 1rem;
+}

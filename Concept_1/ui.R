@@ -6,18 +6,9 @@ shinyUI(
         # set default slider skin
         chooseSliderSkin(skin = "Flat", color = "#221146"),
         
-        # initiate shinyjs
-        # useShinyjs(),
-        
         # load custom CSS file
-        includeCSS("www/custom_css.css"),
-        
-        # set top left title
-        # titlePanel(
-        #     title = h2("thinkCausal"),
-        #     windowTitle = "thinkCausal"
-        # ),
-        
+        includeCSS("www/thinkCausal.css"),
+
         # floating button to activate slide over
         tags$div(id = 'sideBarBtn',
                  class = 'sideBarBtn',

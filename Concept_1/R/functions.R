@@ -1,19 +1,33 @@
 
-custom_datatable <- function(...){
+pretty_datatable <- function(...){
   # wrapper around DT::datatable so commonly used arguments
     # can be set as global defaults
   
-  DT::datatable(..., rownames = FALSE, 
+  DT::datatable(..., 
+                rownames = FALSE, 
                 options = list(
-                  # sets n observations shown
-                  pageLength = 20,
-                  # removes option to change n observations shown
-                  lengthChange = FALSE,
-                  # removes the search bar
-                  sDom  = '<"top">lrt<"bottom">ip',
-                  # enable side scroll so table doesn't overflow
-                  scrollX = TRUE
+                  pageLength = 20, # sets n observations shown
+                  lengthChange = FALSE, #  removes option to change n observations shown
+                  sDom  = '<"top">lrt<"bottom">ip', # removes the search bar
+                  scrollX = TRUE # enable side scroll so table doesn't overflow
                 )
+  )
+}
+
+progress_bar <- function(progress) {
+  # returns the html to create a bootsrap progress bar filled to the progress amount
+  # TODO: change fill color
+  #https://getbootstrap.com/docs/4.4/components/progress/
+  tags$div(
+    class = 'progress',
+    tags$div(
+      class = "progress-bar progress-bar-striped progress-bar-animated bg-info",
+      role = "progressbar",
+      style = paste0("width: ", progress, "%"),
+      'aria-valuenow' = as.character(progress),
+      'aria-valuemin' = "0",
+      'aria-valuemax' = "100"
+    )
   )
 }
 
