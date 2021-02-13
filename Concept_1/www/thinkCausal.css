@@ -7,6 +7,12 @@ body {
   font-weight: 300;
 }
 
+.wrapper {
+  max-width: 1280px;
+  margin: auto;
+  display: block;
+}
+
 /* headers */
 h1, h2, h3, h4, h5, h6 {
   color: #525252;

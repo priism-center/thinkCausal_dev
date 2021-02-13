@@ -50,116 +50,6 @@ shinyServer(function(input, output, session) {
     shinyWidgets::closeSweetAlert()
   })
   
-  # when user runs the model, take a number of actions
-  observeEvent(input$analysis_model_button_next, {
-    
-    # launch popup if data is not yet selected
-    if (!is.data.frame(store$selected_df)) {
-      shinyWidgets::show_alert(
-        title = 'Data must be first uploaded and columns selected',
-        text = tags$div(
-          actionButton(
-            inputId = 'analysis_model_button_popup',
-            label = 'Take me to the Data tab')
-        ),
-        type = 'error',
-        btn_labels = NA
-      ) 
-    }
-    
-    # spawn red text if selection isn't made
-    if (isTRUE(is.null(input$analysis_model_radio_design))) {
-      output$analysis_model_text_design_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    if (isTRUE(is.null(input$analysis_model_radio_estimand))) {
-      output$analysis_model_text_estimand_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    if (isTRUE(is.null(input$analysis_model_radio_support))) {
-      output$analysis_model_text_support_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    
-    # stop here if inputs aren't found
-    validate(
-      need(
-        is.data.frame(store$selected_df),
-        "Data must be first uploaded and selected. Please see 'Data' tab."
-        ),
-      need(
-        isFALSE(input$analysis_model_radio_design == 'quasi'),
-        'Natural experiment design is not currently supported'
-      ),
-      need(
-        isFALSE(is.null(input$analysis_model_radio_design)),
-        'Please select an assignment mechanism'
-      ),
-      need(
-        isFALSE(is.null(input$analysis_model_radio_estimand)),
-        'Please select an estimand and common support rule'
-      ),
-      need(
-        isFALSE(is.null(input$analysis_model_radio_support)),
-        'Please select a common support rule'
-      )
-    )
-    
-    # insert popup to notify user of model fit process
-    # TODO estimate the time remaining empirically?
-    shinyWidgets::show_alert(
-      title = 'Model fitting...',
-      text = "Please wait",
-      type = 'info',
-      # text = tags$div(
-      #   class = 'spinner-grow',
-      #   role = 'status',
-      #   tags$span(class = 'sr-only', "Loading...")
-      # ),
-      # html = TRUE,
-      btn_labels = NA
-    )
-    
-    # pull the response, treatment, and confounders variables out of the df
-    response_v <- store$selected_df[, 1]
-    treatment_v <- store$selected_df[, 2]
-    confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
-
-    # run model    
-    store$model_results <- bartCause::bartc(
-      response = response_v,
-      treatment = treatment_v,
-      confounders = confounders_mat,
-      estimand = base::tolower(input$analysis_model_radio_estimand),
-      commonSup.rule = input$analysis_model_radio_support
-      )
-    
-    # store the results
-    store$good_model_fit <- TRUE
-    
-    # close the alert
-    shinyWidgets::closeSweetAlert()
-    
-    # move to next page based on model fit
-    if (isTRUE(store$good_model_fit)){
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
-    } else {
-      updateNavbarPage(session, inputId = "nav", selected = "Model diagnostics")
-    }
-  })
-  
   # diagnostics page
   observeEvent(input$analysis_diagnostics_button_back, {
     updateNavbarPage(session, inputId = "nav", selected = "Model")
@@ -639,7 +529,7 @@ shinyServer(function(input, output, session) {
     return(html_out)
   })
   
-  # remove no text UI spawns
+  # remove no text UI spawns if user makes a selection
   observeEvent(input$analysis_model_radio_design, {
     removeUI('#analysis_model_text_design_noinput')
   })
@@ -649,6 +539,117 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_model_radio_support, {
     removeUI('#analysis_model_text_support_noinput')
   })
+  
+  # when user runs the model, take a number of actions
+  observeEvent(input$analysis_model_button_next, {
+    
+    # launch popup if data is not yet selected
+    if (!is.data.frame(store$selected_df)) {
+      shinyWidgets::show_alert(
+        title = 'Data must be first uploaded and columns selected',
+        text = tags$div(
+          actionButton(
+            inputId = 'analysis_model_button_popup',
+            label = 'Take me to the Data tab')
+        ),
+        type = 'error',
+        btn_labels = NA
+      ) 
+    }
+    
+    # spawn red text if selection isn't made
+    if (isTRUE(is.null(input$analysis_model_radio_design))) {
+      output$analysis_model_text_design_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    if (isTRUE(is.null(input$analysis_model_radio_estimand))) {
+      output$analysis_model_text_estimand_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    if (isTRUE(is.null(input$analysis_model_radio_support))) {
+      output$analysis_model_text_support_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    
+    # stop here if inputs aren't found
+    validate(
+      need(
+        is.data.frame(store$selected_df),
+        "Data must be first uploaded and selected. Please see 'Data' tab."
+      ),
+      need(
+        isFALSE(input$analysis_model_radio_design == 'quasi'),
+        'Natural experiment design is not currently supported'
+      ),
+      need(
+        isFALSE(is.null(input$analysis_model_radio_design)),
+        'Please select an assignment mechanism'
+      ),
+      need(
+        isFALSE(is.null(input$analysis_model_radio_estimand)),
+        'Please select an estimand and common support rule'
+      ),
+      need(
+        isFALSE(is.null(input$analysis_model_radio_support)),
+        'Please select a common support rule'
+      )
+    )
+    
+    # insert popup to notify user of model fit process
+    # TODO estimate the time remaining empirically?
+    shinyWidgets::show_alert(
+      title = 'Model fitting...',
+      text = "Please wait",
+      type = 'info',
+      # text = tags$div(
+      #   class = 'spinner-grow',
+      #   role = 'status',
+      #   tags$span(class = 'sr-only', "Loading...")
+      # ),
+      # html = TRUE,
+      btn_labels = NA
+    )
+    
+    # pull the response, treatment, and confounders variables out of the df
+    response_v <- store$selected_df[, 1]
+    treatment_v <- store$selected_df[, 2]
+    confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+    
+    # run model    
+    store$model_results <- bartCause::bartc(
+      response = response_v,
+      treatment = treatment_v,
+      confounders = confounders_mat,
+      estimand = base::tolower(input$analysis_model_radio_estimand),
+      commonSup.rule = input$analysis_model_radio_support
+    )
+    
+    # store the results
+    store$good_model_fit <- TRUE
+    
+    # close the alert
+    shinyWidgets::closeSweetAlert()
+    
+    # move to next page based on model fit
+    if (isTRUE(store$good_model_fit)){
+      updateNavbarPage(session, inputId = "nav", selected = "Results")
+    } else {
+      updateNavbarPage(session, inputId = "nav", selected = "Model diagnostics")
+    }
+  })
+  
   
   # results -----------------------------------------------------------------
 

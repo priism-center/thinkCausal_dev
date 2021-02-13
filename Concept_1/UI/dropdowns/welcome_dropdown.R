@@ -1,6 +1,7 @@
 welcome_dropdown <- tabPanel(
   title = 'Welcome', 
   mainPanel(
+    width = 12,
     h2("thinkCausal"),
     h3('Getting Started'),
     p('Lorem ipsum dolor sit amet consectetur adipiscing elit netus posuere quisque ultricies, tempor habitasse ac risus ultrices egestas auctor eu aliquam sodales. Tempor molestie nisi nec venenatis tristique dui, semper tortor at eu mauris cubilia etiam, ligula diam consequat dictum pellentesque. In auctor sagittis etiam consequat potenti eget per scelerisque dictumst nascetur turpis vulputate, viverra cursus integer class dis posuere mollis pellentesque urna risus.'),

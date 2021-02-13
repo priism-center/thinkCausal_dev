@@ -32,15 +32,18 @@ shinyUI(
                 ),
         
         # set main navigation
-        navbarPage(
-            id = "nav",
-            title = 'thinkCausal',
-            welcome_dropdown,
-            concepts_dropdown,
-            analysis_dropdown, 
-            log_dropdown
-            # help_dropdown
-            ),
+        tags$div(
+            class = "wrapper",
+            navbarPage(
+                id = "nav",
+                title = 'thinkCausal',
+                welcome_dropdown,
+                concepts_dropdown,
+                analysis_dropdown, 
+                log_dropdown
+                # help_dropdown
+                )
+        ),
 
         # load custom JavaScript
         tags$script(src = "navSlideOver.js")

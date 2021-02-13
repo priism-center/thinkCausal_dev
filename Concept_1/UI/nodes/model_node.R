@@ -3,12 +3,14 @@ model_node <- tabPanel(title = "Model",
                                 sidebarLayout(
                                   sidebarPanel(
                                     h4('Specify Model'),
-                                    awesomeRadio(inputId = "analysis_model_radio_design", 
-                                                 label = 'Select Assignment of Treatment (Z):', 
-                                                 choices = c('Non-Random (Observational)' = 'non_random', 
-                                                             'Random (Experimental)' = 'random', 
-                                                             'Quasi-Random (Natural Experiment)' = 'quasi'),
-                                                 selected = 1),
+                                    awesomeRadio(
+                                      inputId = "analysis_model_radio_design", 
+                                      label = 'Select Assignment of Treatment (Z):', 
+                                      choices = c('Non-Random (Observational)' = 'non_random', 
+                                                  'Random (Experimental)' = 'random', 
+                                                  'Quasi-Random (Natural Experiment)' = 'quasi'),
+                                      selected = 1
+                                      ),
                                     htmlOutput(outputId = 'analysis_model_text_design'),
                                     htmlOutput(outputId = 'analysis_model_text_design_noinput'),
                                     awesomeRadio(
