@@ -173,6 +173,10 @@ edaUI <- function(id, col_names, categorical_names) {
       
       mainPanel(
         width = 6,
+        br(),
+        absolutePanel(id = ns("exploration_loading_message"),
+                      HTML("Please wait. Building plot..."),
+                      style = "z-index: -2;"),
         plotOutput(outputId = ns('exploration_plot'),
                    height = 600,
                    brush = brushOpts(id = ns("plot1_brush"))),
@@ -325,7 +329,7 @@ edaServer <- function(id, input_data) {
         # show only if there isn't faceting
         if (input$exploration_variable_facet == "None" & input$exploration_select_plot_type == 'Scatter') {
           
-          custom_datatable(
+          pretty_datatable(
             brushedPoints(user_data, input$plot1_brush),
             selection = "none"
           )

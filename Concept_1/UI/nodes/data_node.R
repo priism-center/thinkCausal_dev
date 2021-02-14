@@ -20,28 +20,40 @@ data_node <- tabPanel(
                         awesomeCheckbox(inputId = "analysis_data_header", 
                                         label = "Data contains a header row", 
                                         value = TRUE),
-                        awesomeCheckbox(inputId = 'analysis_data_rename',
-                                      label = "Rename columns",
+                        awesomeCheckbox(inputId = "analysis_data_check_auto_convert", 
+                                        label = "Auto convert 0s and 1s to logicals?", 
+                                        value = FALSE),
+                        awesomeCheckbox(inputId = 'analysis_data_modify',
+                                      label = "Modify your data",
                                       value = FALSE
                                     ),
-                        awesomeCheckbox(inputId = 'analysis_data_changeDataTypes',
-                                        label = "Change data types",
-                                        value = FALSE
-                        ),
                         conditionalPanel(
-                          condition = "input.analysis_data_rename == true",
-                          uiOutput(outputId = 'analysis_data_rename_UI'),
-                          actionButton(inputId = 'analysis_data_button_rename_save',
-                                       label = 'Save column names')
+                          condition = "input.analysis_data_modify == true",
+                          uiOutput(outputId = 'analysis_data_modify_UI'),
+                          actionButton(inputId = 'analysis_data_button_modify_save',
+                                       label = 'Save modifications')
                         ),
-                        conditionalPanel(
-                          condition = "input.analysis_data_changeDataTypes == true",
-                          uiOutput(outputId = 'analysis_data_changeDataTypes_UI'),
-                          actionButton(inputId = 'analysis_data_button_changeDataTypes_save',
-                                       label = 'Save data types')
-                        ),
+                        # awesomeCheckbox(inputId = 'analysis_data_rename',
+                        #               label = "Rename columns",
+                        #               value = FALSE
+                        #             ),
+                        # awesomeCheckbox(inputId = 'analysis_data_changeDataTypes',
+                        #                 label = "Change data types",
+                        #                 value = FALSE
+                        # ),
+                        # conditionalPanel(
+                        #   condition = "input.analysis_data_rename == true",
+                        #   uiOutput(outputId = 'analysis_data_rename_UI'),
+                        #   actionButton(inputId = 'analysis_data_button_rename_save',
+                        #                label = 'Save column names')
+                        # ),
+                        # conditionalPanel(
+                        #   condition = "input.analysis_data_changeDataTypes == true",
+                        #   uiOutput(outputId = 'analysis_data_changeDataTypes_UI'),
+                        #   actionButton(inputId = 'analysis_data_button_changeDataTypes_save',
+                        #                label = 'Save data types')
+                        # ),
                         br(),br(),
-                        
                         actionButton(inputId = 'create_practice',
                                      label = 'Create a Practice Data Set'),
                         

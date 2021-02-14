@@ -148,46 +148,150 @@ shinyServer(function(input, output, session) {
     store$uploaded_df <- uploaded_df()
   })
   
-  # render UI for renaming the columns
-  # TODO change CSS to render label side by side
-  output$analysis_data_rename_UI <- renderUI({
-    tagList(
-      lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
-        textInput(
-          inputId = paste0("analysis_data_rename_", i),
-          label = colnames(store$uploaded_df)[i],
-          value = colnames(store$uploaded_df)[i]
-        )
-      })
-    )
+  observeEvent(input$analysis_data_check_auto_convert, {
+    # ensure data is uploaded
+    validate(need(nrow(store$uploaded_df) > 0, "No dataframe uploaded"))
+    
+    # auto convert 0:1s to logicals and save back
+    if (isTRUE(input$analysis_data_check_auto_convert)){
+      store$uploaded_df <- auto_convert_logicals(store$uploaded_df) 
+    }
   })
   
-  # overwrite column names when user saves new names
-  observeEvent(input$analysis_data_button_rename_save, {
-    validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
-    input_ids <- paste0("analysis_data_rename_", seq_along(colnames(store$uploaded_df)))
-    inputted_name_values <- reactiveValuesToList(input)[input_ids]
-    colnames(store$uploaded_df) <- inputted_name_values
-  })
-  
-  # render UI for changing the data types
-  output$analysis_data_changeDataTypes_UI <- renderUI({
+  # render UI for modifying the data
+  # TODO there's a CSS padding or margin issue that causes the boxes to be misaligned
+  output$analysis_data_modify_UI <- renderUI({
     
     # get default data types
     default_data_types <- simple_data_types(store$uploaded_df)
-    
-    # render the dropdowns
-    tagList(
-      lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
-        selectInput(
-          inputId = paste0("analysis_data_changeDataType_", i),
-          label = colnames(store$uploaded_df)[i],
-          choices = c('Categorical', 'Continuous'),
-          selected = default_data_types[i]
+  
+    # render the selectize HTML
+    html_tags <- tagList(
+      tags$div(
+        class = 'backNextContainer',
+        tags$div(
+          class = 'dataSelectizeLeft',
+          tagList(
+            h5("Column name"),
+            lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
+              textInput(
+                inputId = paste0("analysis_data_rename_", i),
+                label = NULL, #colnames(store$uploaded_df)[i],
+                value = colnames(store$uploaded_df)[i]
+              )
+            })
+          )
+        ),
+        tags$div(
+          class = 'dataSelectizeRight',
+          tagList(
+            h5("Data type"),
+            lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
+              selectInput(
+                inputId = paste0("analysis_data_changeDataType_", i),
+                label = NULL, #colnames(store$uploaded_df)[i],
+                choices = c('Categorical', 'Continuous', 'Logical'),
+                selected = default_data_types[i]
+                )
+              })
+          )
         )
-      })
+      )
     )
+    
+    # add listeners that launch a popup if the user changes the data to categorical
+    # TODO this kind of works but is a mess; need to rethink the UI
+    lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
+      dropdown_ID <- paste0("analysis_data_changeDataType_", i)
+      observeEvent(input[[dropdown_ID]], {
+        
+        if (input[[dropdown_ID]] == 'Logical'){
+        
+          # get the data levels to the current column
+          current_levels <- sort(unique(store$uploaded_df[[i]]))
+
+          shinyWidgets::show_alert(
+            title = 'Choose the levels to the logical',
+            text = tags$div(
+              tagList(
+                selectInput(
+                  inputId = paste0('analysis_data_changeDataType_popup_TRUE_', i),
+                  label = 'TRUE',
+                  choices = current_levels
+                ),
+                selectInput(
+                  inputId = paste0('analysis_data_changeDataType_popup_FALSE_', i),
+                  label = 'FALSE',
+                  choices = current_levels
+                )
+              )
+            ),
+            html = TRUE,
+            btn_labels = "Save",
+            closeOnClickOutside = TRUE
+          )
+        }
+      })
+    })
+    
+    return(html_tags)
   })
+  
+  # overwrite column names when user saves new names
+  observeEvent(input$analysis_data_button_modify_save, {
+    validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
+    
+    # rename the columns
+    input_ids <- paste0("analysis_data_rename_", seq_along(colnames(store$uploaded_df)))
+    inputted_name_values <- reactiveValuesToList(input)[input_ids]
+    colnames(store$uploaded_df) <- inputted_name_values
+    
+    # change the data types
+    # TODO
+    
+  })
+  
+  
+  # # render UI for renaming the columns
+  # # TODO change CSS to render label side by side
+  # output$analysis_data_rename_UI <- renderUI({
+  #   tagList(
+  #     lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
+  #       textInput(
+  #         inputId = paste0("analysis_data_rename_", i),
+  #         label = colnames(store$uploaded_df)[i],
+  #         value = colnames(store$uploaded_df)[i]
+  #       )
+  #     })
+  #   )
+  # })
+  
+  # # overwrite column names when user saves new names
+  # observeEvent(input$analysis_data_button_rename_save, {
+  #   validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
+  #   input_ids <- paste0("analysis_data_rename_", seq_along(colnames(store$uploaded_df)))
+  #   inputted_name_values <- reactiveValuesToList(input)[input_ids]
+  #   colnames(store$uploaded_df) <- inputted_name_values
+  # })
+  
+  # # render UI for changing the data types
+  # output$analysis_data_changeDataTypes_UI <- renderUI({
+  #   
+  #   # get default data types
+  #   default_data_types <- simple_data_types(store$uploaded_df)
+  #   
+  #   # render the dropdowns
+  #   tagList(
+  #     lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
+  #       selectInput(
+  #         inputId = paste0("analysis_data_changeDataType_", i),
+  #         label = colnames(store$uploaded_df)[i],
+  #         choices = c('Categorical', 'Continuous'),
+  #         selected = default_data_types[i]
+  #       )
+  #     })
+  #   )
+  # })
   
   # TODO: overwrite data types names when user saves new data types
   # observeEvent(input$analysis_data_button_changeDataTypes_save, {
@@ -639,14 +743,18 @@ shinyServer(function(input, output, session) {
     # TODO estimate the time remaining empirically?
     shinyWidgets::show_alert(
       title = 'Model fitting...',
-      text = "Please wait",
-      type = 'info',
+      # text = "Please wait",
+      # type = 'info',
       # text = tags$div(
       #   class = 'spinner-grow',
       #   role = 'status',
       #   tags$span(class = 'sr-only', "Loading...")
       # ),
-      # html = TRUE,
+      text = tags$div(
+        img(src = file.path('img', 'tree.gif'),
+            width = "50%")
+      ),
+      html = TRUE,
       btn_labels = NA,
       closeOnClickOutside = FALSE
     )

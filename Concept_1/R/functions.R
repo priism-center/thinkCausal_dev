@@ -87,7 +87,7 @@ detect_ZYX_columns <- function(input_colnames) {
 }
 
 simple_data_types <- function(input_data){
-  # simplifies the data types to either categorical or numeric
+  # simplifies the data types to either categorical, logical, or numeric
   # returns NA if it can't simplify
   
   raw_data_types <- apply(input_data, 2, class)
@@ -95,7 +95,7 @@ simple_data_types <- function(input_data){
   # create mapping between complex and simple data types
   data_type_mapping <- data.frame(
     complex = c("character", "factor", "logical", "numeric", "integer"),
-    simple = c("Categorical", "Categorical", 'Categorical', "Continuous", "Continuous"),
+    simple = c("Categorical", "Categorical", 'Logical', "Continuous", "Continuous"),
     stringsAsFactors = FALSE
   )
   
@@ -106,4 +106,20 @@ simple_data_types <- function(input_data){
     by = 'complex')
   
   return(simple_data_types$simple)
+}
+
+auto_convert_logicals <- function(input_data){
+  # function converts colums of 0:1s to logicals
+  
+  for (col in colnames(input_data)){
+    # is the column exclusively 0s, 1s, or 0s and 1s
+    is_01 <- length(setdiff(unique(input_data[[col]]), 0:1)) == 0
+    
+    # convert column to logical
+    if (isTRUE(is_01)){
+      input_data[,col] <- as.logical(input_data[[col]])
+    }
+  }
+  
+  return(input_data)
 }
