@@ -109,22 +109,26 @@ simple_data_types <- function(input_data){
 }
 
 auto_convert_logicals <- function(input_data){
-  # function converts colums of 0:1s to logicals
+  # function converts columns of 0:1, T:F, True:False to logicals
   
   for (col in colnames(input_data)){
-    # is the column exclusively 0s, 1s, or 0s and 1s
-    is_01 <- length(setdiff(unique(input_data[[col]]), 0:1)) == 0
+    
+    # is the column exclusively in list of pre-determined
+    inclusion_list <- c(0, 1, 't', 'f', 'true', 'false')
+    col_as_char <- as.character(input_data[[col]])
+    col_cleaned <- base::tolower(unique(col_as_char))
+    is_in_list <- length(setdiff(col_cleaned, inclusion_list)) == 0
     
     # convert column to logical
-    if (isTRUE(is_01)){
-      input_data[,col] <- as.logical(input_data[[col]])
+    if (isTRUE(is_in_list)){
+      input_data[,col] <- readr::parse_logical(col_as_char)
     }
   }
   
   return(input_data)
 }
 
-
+# TODO: should confounders be named X? whats the default X object?
 cate_test <- function(.fit = fit, confounders = X){
   # extract individual conditional effects 
   icate <- bartCause::extract(.fit , 'icate')
@@ -191,6 +195,7 @@ cate_test <- function(.fit = fit, confounders = X){
   
   cate_plts <- list()
   for (i in 1:ncol(X)) {
+    # TODO whats p2s?????
     p2s[[i]] <- ploter(X[,i])
     
   }

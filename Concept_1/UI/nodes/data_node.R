@@ -21,7 +21,7 @@ data_node <- tabPanel(
                                         label = "Data contains a header row", 
                                         value = TRUE),
                         awesomeCheckbox(inputId = "analysis_data_check_auto_convert", 
-                                        label = "Auto convert 0s and 1s to logicals?", 
+                                        label = "Auto convert logical columns", 
                                         value = FALSE),
                         awesomeCheckbox(inputId = 'analysis_data_modify',
                                       label = "Modify your data",

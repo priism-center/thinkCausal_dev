@@ -16,6 +16,11 @@ Et tortor consequat id porta. Nibh tortor id aliquet lectus proin nibh nisl cond
 ### Concept 3
 Mauris sit amet massa vitae tortor condimentum lacinia. Amet luctus venenatis lectus magna fringilla urna porttitor rhoncus dolor. Morbi tristique senectus et netus et. Faucibus vitae aliquet nec ullamcorper sit. Sit amet consectetur adipiscing elit ut aliquam. Consectetur lorem donec massa sapien. Augue neque gravida in fermentum et sollicitudin ac orci phasellus. Imperdiet sed euismod nisi porta lorem mollis aliquam. Arcu odio ut sem nulla pharetra diam sit amet. Nisl vel pretium lectus quam id leo in vitae turpis. Laoreet suspendisse interdum consectetur libero id faucibus nisl tincidunt. Cras semper auctor neque vitae tempus quam. Semper risus in hendrerit gravida. Augue eget arcu dictum varius duis at consectetur. Malesuada nunc vel risus commodo. Facilisis gravida neque convallis a cras semper. Integer malesuada nunc vel risus commodo viverra maecenas. Interdum velit laoreet id donec ultrices tincidunt. Pretium nibh ipsum consequat nisl vel pretium lectus. Et odio pellentesque diam volutpat commodo sed egestas egestas.
 
+<p align="center">
+<img src="img/placeholder.png" width=70%>
+</p>
+
+
 Varius sit amet mattis vulputate enim nulla aliquet porttitor. In tellus integer feugiat scelerisque varius morbi enim nunc faucibus. Egestas quis ipsum suspendisse ultrices. Phasellus egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Urna nunc id cursus metus aliquam eleifend mi. Neque vitae tempus quam pellentesque nec nam aliquam sem et. Quam nulla porttitor massa id neque aliquam vestibulum. Volutpat commodo sed egestas egestas fringilla phasellus faucibus scelerisque. Sed libero enim sed faucibus. Vel fringilla est ullamcorper eget. Sit amet dictum sit amet justo donec enim diam vulputate. Tincidunt eget nullam non nisi est sit amet facilisis magna.
 
 #### Concept 3.1

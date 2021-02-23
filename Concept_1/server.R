@@ -809,7 +809,7 @@ shinyServer(function(input, output, session) {
   # render the interpretation text
   
   # ITE plot
-  output$anlaysis_results_plot_ITE <- renderPlot({
+  output$analysis_results_plot_ITE <- renderPlot({
     
     # stop here if model isn't fit yet
     validate(need(is(store$model_results, "bartcFit"), 
@@ -835,6 +835,27 @@ shinyServer(function(input, output, session) {
       labs(title = 'Individual Treatment Effects',
            x = base::toupper(BART_model$estimand), 
            y = 'Frequency')
+  })
+  
+  # conditional individual treatment effects plot
+  output$analysis_results_plot_CITE <- renderPlot({
+    
+    # stop here if model isn't fit yet
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be fitted on the 'Model' tab"))
+    
+    # retrieve model from the store
+    BART_model <- store$model_results
+    
+    # retrieve all the confounder columns
+    X <- store$selected_df[, 3:ncol(store$selected_df)]
+    
+    # plot it
+    # TODO see TODOs for cate_test() in functions.R
+    # p <- cate_test(.fit = BART_model, X = X)
+    p <- NULL
+    
+    return(p)
   })
   
   

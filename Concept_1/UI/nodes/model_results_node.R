@@ -25,12 +25,14 @@ results_node <- tabPanel(
                  tabPanel(
                    title = "Individual treatment effects",
                    br(),
-                   plotOutput(outputId = 'anlaysis_results_plot_ITE',
+                   plotOutput(outputId = 'analysis_results_plot_ITE',
                               height = 500)
                  ),
                  tabPanel(
                    title = 'Conditional individual treatment effects',
-                   # DT::renderDataTable()
+                   br(),
+                   plotOutput(outputId = 'analysis_results_plot_CITE',
+                              height = 500)
                  )
                )
              )
