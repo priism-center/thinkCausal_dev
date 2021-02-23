@@ -14,6 +14,18 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Load")
   })
   observeEvent(input$analysis_data_select_button_next, {
+    
+    # ensure data has been selected first
+    data_has_been_selected <- isTRUE(nrow(store$selected_df) > 0)
+    if (isFALSE(data_has_been_selected)){
+      shinyWidgets::show_alert(
+        title = 'Please select and save columns assignments',
+        text = "Must be saved prior to proceeding",
+        type = 'error'
+      )
+    }
+    validate(need(data_has_been_selected, "No dataframe uploaded"))
+    
     updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
   })
@@ -159,7 +171,7 @@ shinyServer(function(input, output, session) {
   })
   
   # render UI for modifying the data
-  # TODO there's a CSS padding or margin issue that causes the boxes to be misaligned
+  # TODO there's a CSS padding or margin issue that causes the boxes to be misaligned on some browsers (linux firefox)
   output$analysis_data_modify_UI <- renderUI({
     
     # get default data types
