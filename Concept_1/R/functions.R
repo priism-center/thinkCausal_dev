@@ -128,7 +128,7 @@ auto_convert_logicals <- function(input_data){
   return(input_data)
 }
 
-# TODO: should confounders be named X? whats the default X object?
+
 cate_test <- function(.fit = fit, confounders = X){
   # extract individual conditional effects 
   icate <- bartCause::extract(.fit , 'icate')
@@ -136,7 +136,7 @@ cate_test <- function(.fit = fit, confounders = X){
   icate.sd <- apply(icate, 2, sd)
 
   # fit regression tree 
-  cart <- rpart::rpart(icate.m ~ X)
+  cart <- rpart::rpart(icate.m ~ confounders)
   # svae variable importance
   importance <- cart$variable.importance/sum(cart$variable.importance)*100
   names(importance) <- sub(".", "", names(importance))
@@ -195,12 +195,10 @@ cate_test <- function(.fit = fit, confounders = X){
   
   cate_plts <- list()
   for (i in 1:ncol(X)) {
-    # TODO whats p2s?????
-    p2s[[i]] <- ploter(X[,i])
+    cate_plts[[i]] <- ploter(X[,i])
     
   }
   
   results <- list(p1, cate_plts)
   return(results)
 }
-
