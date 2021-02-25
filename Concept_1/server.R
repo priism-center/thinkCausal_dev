@@ -47,6 +47,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_plots_balance_button_back, {
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Common Support Plots")
   })
+  
   observeEvent(input$analysis_plots_balance_button_next, {
     updateNavbarPage(session, inputId = "nav", selected = "Model")
   })
@@ -440,9 +441,13 @@ shinyServer(function(input, output, session) {
 
   # EDA ---------------------------------------------------------------------
   
+  eventReactive(input$dim.red,{
+    print('passed!')
+  })
+  
   # create the overlap plot
-  output$analysis_plot_overlap_plot <- renderPlot({
-    
+    output$analysis_plot_overlap_plot <- renderPlot({
+    if(input$dim.red == F){
     # stop here if data hasn't been uploaded and selected
     validate(need(is.data.frame(store$selected_df), 
                   "Data must be first uploaded and selected. Please see 'Data' tab."))
@@ -474,6 +479,35 @@ shinyServer(function(input, output, session) {
            x = NULL,
            y = 'Density',
            fill = "Treatment")
+    }
+      
+    else if(input$dim.red == T){
+      pscores <- bartCause::bartc(
+        response = response_v,
+        treatment = treatment_v,
+        confounders = confounders_mat)$p.score
+      
+      # TODO # RESUME HERE
+        dat_pivoted <- store$selected_df %>% 
+        mutate(pscores = pscores) 
+      
+        ggplot() + 
+        geom_hline(yintercept = 0, linetype = 'dashed', color = 'grey60') +
+        geom_histogram(data = dat_pivoted %>% filter(Z == 1), 
+                       aes(x = value, y = ..density.., fill = Z), 
+                       alpha = 0.8)+ 
+        geom_histogram(data = dat_pivoted %>% filter(Z == 0), 
+                       aes(x = value, y = -..density.., fill = Z), 
+                       alpha = 0.8) +
+        scale_y_continuous(labels = function(brk) abs(brk)) +
+        scale_fill_manual(values = c('#bd332a', '#262991')) +
+        facet_wrap(~name, scales = 'free', ncol = 3) +
+        labs(title = "Overlap by treatment status",
+             subtitle = 'Informative subtitle to go here',
+             x = NULL,
+             y = 'Density',
+             fill = "Treatment")
+    }
   })
   
   # create the balance plot
