@@ -482,30 +482,37 @@ shinyServer(function(input, output, session) {
     }
       
     else if(input$dim.red == T){
+      # pull the response, treatment, and confounders variables out of the df
+      response_v <- store$selected_df[, 1]
+      treatment_v <- store$selected_df[, 2]
+      confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
       pscores <- bartCause::bartc(
         response = response_v,
         treatment = treatment_v,
         confounders = confounders_mat)$p.score
       
       # TODO # RESUME HERE
-        dat_pivoted <- store$selected_df %>% 
+      
+        
+      dat_pivoted <- store$selected_df %>% 
+        rename(Z = starts_with("Z")) %>% 
+        dplyr::select(all_of("Z")) %>% 
         mutate(pscores = pscores) 
       
         ggplot() + 
         geom_hline(yintercept = 0, linetype = 'dashed', color = 'grey60') +
         geom_histogram(data = dat_pivoted %>% filter(Z == 1), 
-                       aes(x = value, y = ..density.., fill = Z), 
+                       aes(x = pscores, y = ..count.., fill = as_factor(Z)), 
                        alpha = 0.8)+ 
         geom_histogram(data = dat_pivoted %>% filter(Z == 0), 
-                       aes(x = value, y = -..density.., fill = Z), 
+                       aes(x = pscores, y = -..count.., fill = as_factor(Z)), 
                        alpha = 0.8) +
         scale_y_continuous(labels = function(brk) abs(brk)) +
         scale_fill_manual(values = c('#bd332a', '#262991')) +
-        facet_wrap(~name, scales = 'free', ncol = 3) +
         labs(title = "Overlap by treatment status",
              subtitle = 'Informative subtitle to go here',
              x = NULL,
-             y = 'Density',
+             y = 'Count',
              fill = "Treatment")
     }
   })
