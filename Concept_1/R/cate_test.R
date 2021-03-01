@@ -1,6 +1,6 @@
 ### cate_test
 # Author: George Perrett
-# Date: 
+# Inputs: .fit= output from bartc and matrix of confounders
 # Purpose: Fit single regression tree on bartc() icates to produce 
 # variable importance plot & conditional effects plots.
 # Output: 2 objects: variable importance plot & plots for each conditional effect
