@@ -11,9 +11,18 @@ analysis_plot_common_sup <- tabPanel(
         choices = X_names,
         selected = X_names
       ),
+
       h6("With Dimension Reduction"),
-      awesomeCheckbox(inputId = "dim.red",
-                    label = "Dimension Reduction", FALSE),
+      awesomeRadio(inputId = "dim.red",
+                    label = "View:", inline = T, 
+                   choices = c("By Variables"=1, 
+                               "One Number Summary"=2), 
+                   selected = 1),
+      br(),
+      awesomeRadio(inputId = "overlap.type",
+             label = "Plot Type:", inline = T, 
+             choices = c('Histigram', 'Density'), 
+             selected = 'Histigram'),
       br(),
       tags$button(type = 'button',
                   class = 'btn btn-default help',
@@ -33,8 +42,8 @@ analysis_plot_common_sup <- tabPanel(
   mainPanel(
     width = 8,
     br(),
-    plotOutput(outputId = "analysis_plot_overlap_plot", 
-               height = 800)
+    plotOutput(outputId = "analysis_plot_overlap_plot", height = 800)
+
   )
   )
   )

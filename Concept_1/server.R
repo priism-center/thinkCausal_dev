@@ -1,11 +1,11 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
-
+  
   # initialize list to store variables  
   store <- reactiveValues(uploaded_df = data.frame())
-
+  
   # back next buttons -------------------------------------------------------
-
+  
   # data page
   observeEvent(input$analysis_data_load_button_next, {
     updateTabsetPanel(session, inputId ="analysis_data_tabs", selected ="Select Data")
@@ -94,44 +94,44 @@ shinyServer(function(input, output, session) {
     
     
     # if(length(filepath != 0) & practice%%2 == 0){
-        tryCatch({
-          
-          # if it's a txt file then ask the user what the delimiter is  
-          if (filetype == 'txt'){
-            output$analysis_data_delim <- renderUI({ 
-              textInput(inputId = 'analysis_data_delim_value',
-                        label = "Column delimiter",
-                        # value = ',',
-                        placeholder = ", | - :")
-            })
-            req(input$analysis_data_delim_value)
-          }
-          
-          # upload the file based on its filetype
-          if (filetype == "csv"){
-            uploaded_file <- readr::read_csv(
-              file = filepath,
-              col_names = input$analysis_data_header) 
-          } else if (filetype == 'dta'){
-            uploaded_file <- readstata13::read.dta13(file = filepath)
-          } else if (filetype == 'xlsx'){
-            uploaded_file <- xlsx::read.xlsx(file = filepath)
-          } else if (filetype == 'txt'){
-            delim <- input$analysis_data_delim_value
-            if (delim == "") delim <- ","
-            uploaded_file <- readr::read_delim(
-              file = filepath,
-              delim = delim,
-              col_names = input$analysis_data_header
-            )
-          } else if (filetype == 'spss'){
-            uploaded_file <- Hmisc::spss.get(file = filepath)
-          } else stop("File type is invalid")
-        },
-        error = function(e) {
-          # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
-          stop(safeError(e))
+    tryCatch({
+      
+      # if it's a txt file then ask the user what the delimiter is  
+      if (filetype == 'txt'){
+        output$analysis_data_delim <- renderUI({ 
+          textInput(inputId = 'analysis_data_delim_value',
+                    label = "Column delimiter",
+                    # value = ',',
+                    placeholder = ", | - :")
         })
+        req(input$analysis_data_delim_value)
+      }
+      
+      # upload the file based on its filetype
+      if (filetype == "csv"){
+        uploaded_file <- readr::read_csv(
+          file = filepath,
+          col_names = input$analysis_data_header) 
+      } else if (filetype == 'dta'){
+        uploaded_file <- readstata13::read.dta13(file = filepath)
+      } else if (filetype == 'xlsx'){
+        uploaded_file <- xlsx::read.xlsx(file = filepath)
+      } else if (filetype == 'txt'){
+        delim <- input$analysis_data_delim_value
+        if (delim == "") delim <- ","
+        uploaded_file <- readr::read_delim(
+          file = filepath,
+          delim = delim,
+          col_names = input$analysis_data_header
+        )
+      } else if (filetype == 'spss'){
+        uploaded_file <- Hmisc::spss.get(file = filepath)
+      } else stop("File type is invalid")
+    },
+    error = function(e) {
+      # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
+      stop(safeError(e))
+    })
     # }
     
     # else if(practice%%2 != 0){
@@ -145,14 +145,14 @@ shinyServer(function(input, output, session) {
     return(uploaded_file)
   })
   
-
+  
   # # Practice df
   # uploaded_df <-  reactive({
   #   req(input$create_practice)
   #   sim <- make_dat_demo()
   #   return(sim)
   # })
-
+  
   
   #TODO: need to clean column names during upload; bad csvs will crash the server
   
@@ -177,7 +177,7 @@ shinyServer(function(input, output, session) {
     
     # get default data types
     default_data_types <- simple_data_types(store$uploaded_df)
-  
+    
     # render the selectize HTML
     html_tags <- tagList(
       tags$div(
@@ -205,8 +205,8 @@ shinyServer(function(input, output, session) {
                 label = NULL, #colnames(store$uploaded_df)[i],
                 choices = c('Categorical', 'Continuous', 'Logical'),
                 selected = default_data_types[i]
-                )
-              })
+              )
+            })
           )
         )
       )
@@ -219,10 +219,10 @@ shinyServer(function(input, output, session) {
       observeEvent(input[[dropdown_ID]], {
         
         if (input[[dropdown_ID]] == 'Logical'){
-        
+          
           # get the data levels to the current column
           current_levels <- sort(unique(store$uploaded_df[[i]]))
-
+          
           shinyWidgets::show_alert(
             title = 'Choose the levels to the logical',
             text = tags$div(
@@ -322,9 +322,9 @@ shinyServer(function(input, output, session) {
     )
   })
   
-
+  
   # select data -------------------------------------------------------------
-
+  
   # vector of selector ids
   analysis_data_select_selector_ids <-
     c(
@@ -352,7 +352,7 @@ shinyServer(function(input, output, session) {
       )
     }
   })
-
+  
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
   observeEvent(input$analysis_data_select_column_save, {
@@ -385,11 +385,11 @@ shinyServer(function(input, output, session) {
     new_col_names <- paste0(c('Z', 'Y', paste0('X', 1:length(X))),
                             "_",
                             unlist(all_selected_vars))
-      
+    
     # create new dataframe of just the selected vars and rename them
     store$selected_df <- store$uploaded_df[, unlist(all_selected_vars)]
     colnames(store$selected_df) <- new_col_names
-      
+    
     # save original column names
     store$selected_df_original_names <- all_selected_vars
     
@@ -438,82 +438,18 @@ shinyServer(function(input, output, session) {
     )
   })
   
-
+  
   # EDA ---------------------------------------------------------------------
   
-  eventReactive(input$dim.red,{
-    print('passed!')
-  })
-  
   # create the overlap plot
-    output$analysis_plot_overlap_plot <- renderPlot({
-    if(input$dim.red == F){
-    # stop here if data hasn't been uploaded and selected
-    validate(need(is.data.frame(store$selected_df), 
-                  "Data must be first uploaded and selected. Please see 'Data' tab."))
-    
-    # columns to plot
-    selected_cols <- input$analysis_plot_overlap_select_var
-    
-    # pivot the data
-    dat_pivoted <- store$selected_df %>% 
-      rename(Z = starts_with("Z")) %>% 
-      dplyr::select(all_of(c(selected_cols, "Z"))) %>% 
-      pivot_longer(cols = -Z) %>% 
-      mutate(Z = as.logical(Z))
-    
-    # histograms showing overlaps
-    ggplot() + 
-      geom_hline(yintercept = 0, linetype = 'dashed', color = 'grey60') +
-      geom_histogram(data = dat_pivoted %>% filter(Z == 1), 
-                     aes(x = value, y = ..density.., fill = Z), 
-                     alpha = 0.8)+ 
-      geom_histogram(data = dat_pivoted %>% filter(Z == 0), 
-                     aes(x = value, y = -..density.., fill = Z), 
-                     alpha = 0.8) +
-      scale_y_continuous(labels = function(brk) abs(brk)) +
-      scale_fill_manual(values = c('#bd332a', '#262991')) +
-      facet_wrap(~name, scales = 'free', ncol = 3) +
-      labs(title = "Overlap by treatment status",
-           subtitle = 'Informative subtitle to go here',
-           x = NULL,
-           y = 'Density',
-           fill = "Treatment")
+  output$analysis_plot_overlap_plot <- renderPlot({
+    if(input$dim.red == 1){
+
+      overlap.1(dat = store$selected_df, selected_cols = input$analysis_plot_overlap_select_var)
     }
-      
-    else if(input$dim.red == T){
-      # pull the response, treatment, and confounders variables out of the df
-      response_v <- store$selected_df[, 1]
-      treatment_v <- store$selected_df[, 2]
-      confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
-      pscores <- bartCause::bartc(
-        response = response_v,
-        treatment = treatment_v,
-        confounders = confounders_mat)$p.score
-      
-      # TODO # RESUME HERE
-      
-        
-      dat_pivoted <- store$selected_df %>% 
-        rename(Z = starts_with("Z")) %>% 
-        dplyr::select(all_of("Z")) %>% 
-        mutate(pscores = pscores) 
-      
-        ggplot() + 
-        geom_hline(yintercept = 0, linetype = 'dashed', color = 'grey60') +
-        geom_histogram(data = dat_pivoted %>% filter(Z == 1), 
-                       aes(x = pscores, y = ..count.., fill = as_factor(Z)), 
-                       alpha = 0.8)+ 
-        geom_histogram(data = dat_pivoted %>% filter(Z == 0), 
-                       aes(x = pscores, y = -..count.., fill = as_factor(Z)), 
-                       alpha = 0.8) +
-        scale_y_continuous(labels = function(brk) abs(brk)) +
-        scale_fill_manual(values = c('#bd332a', '#262991')) +
-        labs(title = "Overlap by treatment status",
-             subtitle = 'Informative subtitle to go here',
-             x = NULL,
-             y = 'Count',
-             fill = "Treatment")
+    
+    else if(input$dim.red == 2){
+      overlap.2(dat = store$selected_df)
     }
   })
   
@@ -557,11 +493,11 @@ shinyServer(function(input, output, session) {
   # run the eda module server. the UI is rendered server side within an observeEvent function
   # edaServer(id = 'analysis_plots_descriptive', input_data = store$selected_df) #user_data) #
   
-
+  
   # diagnostics -------------------------------------------------------------
   
   # render either both the back and next buttons or just the back if its a bad
-    # model fit
+  # model fit
   output$analysis_diagnosis_buttons_ui <- renderUI({
     if (isTRUE(store$good_model_fit)){
       tagList(
@@ -664,9 +600,9 @@ shinyServer(function(input, output, session) {
             legend.position = 'bottom')
   })
   
-
+  
   # specify model -----------------------------------------------------------
-
+  
   # render text output to summarize the users inputs
   output$analysis_model_summary <- renderText({
     
@@ -682,7 +618,7 @@ shinyServer(function(input, output, session) {
     design_text <- analysis_model_text$design[[design]]
     estimand_text <- analysis_model_text$estimand[[estimand]]
     support_text <- analysis_model_text$support[[support]]
-
+    
     # paste together all the text
     custom_text <- paste0(
       "<h3>Design</h3>",
@@ -700,7 +636,7 @@ shinyServer(function(input, output, session) {
   
   # render text below the radio buttons
   output$analysis_model_text_design <- renderUI({
-
+    
     if (isTRUE(input$analysis_model_radio_design == 'quasi')){
       html_out <- tags$span(
         style = 'color: red;', 
@@ -813,8 +749,8 @@ shinyServer(function(input, output, session) {
     )
     
     # pull the response, treatment, and confounders variables out of the df
-    response_v <- store$selected_df[, 1]
-    treatment_v <- store$selected_df[, 2]
+    response_v <- store$selected_df[, 2]
+    treatment_v <- store$selected_df[, 1]
     confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
     
     # TODO: dummy code categorical vars??
@@ -844,7 +780,7 @@ shinyServer(function(input, output, session) {
   
   
   # results -----------------------------------------------------------------
-
+  
   # render the summary table
   output$analysis_results_table_summary <- renderText({
     
@@ -870,7 +806,7 @@ shinyServer(function(input, output, session) {
     
     # retrieve model from the store
     BART_model <- store$model_results
-
+    
     # calculate stats
     ites <- bartCause::extract(BART_model, 'icate')
     ite.m <- apply(ites, 2, mean)
@@ -928,7 +864,7 @@ shinyServer(function(input, output, session) {
   
   
   # welcome page ------------------------------------------------------------
-
+  
   # add listeners that link the front page images to their respective pages
   observeEvent(input$welcome_link_concepts, {
     updateNavbarPage(session, inputId = "nav", selected = "All concepts")
