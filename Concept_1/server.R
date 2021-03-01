@@ -485,25 +485,12 @@ shinyServer(function(input, output, session) {
   
   # trace plot
   output$analysis_diagnostics_plot_trace <- renderPlot({
-    
     # stop here if model is not run yet
-    validate(need(is(store$model_results, "bartcFit"), 
+    validate(need(is(dat, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
+    # call function
+    model_estimate_plot(dat = store$model_results)
     
-    # extract model from store
-    mod <- store$model_results
-    
-    # plot it
-    mod %>% 
-      bartCause::extract() %>% 
-      as_tibble() %>% 
-      mutate(index = row_number()) %>% 
-      ggplot(aes(x = index, y = value)) + 
-      geom_line() + 
-      labs(title = 'Diagnostics: Trace Plot', 
-           subtitle = 'Informative subtitle to go here',
-           x = 'Iteration', 
-           y = base::toupper(mod$estimand))
   })
   
   # common support plot
