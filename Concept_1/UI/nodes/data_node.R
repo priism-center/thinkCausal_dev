@@ -132,7 +132,7 @@ data_node <- tabPanel(
                                                   label = "Next"),
                                      ),
                                    br(),
-                                   progress_bar(1/7*100)
+                                   create_progress_bar(1/7*100)
                                    ), 
                       mainPanel(
                         br(),

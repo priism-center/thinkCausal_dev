@@ -14,7 +14,7 @@ diagnostics_node <- tabPanel(
         br(),br(),
         uiOutput(outputId = 'analysis_diagnosis_buttons_ui'),
         br(),
-        progress_bar(6/7*100)
+        create_progress_bar(6/7*100)
       ),
       mainPanel(
         br(),

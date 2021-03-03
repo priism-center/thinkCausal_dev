@@ -37,7 +37,7 @@ analysis_plot_common_sup <- tabPanel(
                      label = "Next")
       ),
       br(),
-      progress_bar(3/7*100)
+      create_progress_bar(3/7*100)
   ),
   mainPanel(
     width = 8,

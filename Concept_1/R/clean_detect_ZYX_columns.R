@@ -1,5 +1,7 @@
 #' Attempt to detect which columns of a dataframe are Z, Y, and X
-#'
+#' 
+#' Attempts to auto detect which columns are treatment and response based on the column name alone. If none are detected, then returns the first two respectivel
+#' 
 #' @param input_colnames character vector of column names
 #'
 #' @author Joe Marlo
@@ -9,11 +11,8 @@
 #'
 #' @examples
 #' x <- c("treatment", "rsp", "dummy1", "dummy2")
-#' detect_ZYX_columns(x)
-detect_ZYX_columns <- function(input_colnames) {
-  # attempts to auto detect which columns are treatment and response based on the 
-  # column name alone
-  # if none are detected, then returns the first two respectively
+#' clean_detect_ZYX_columns(x)
+clean_detect_ZYX_columns <- function(input_colnames) {
   # TODO: instead of regex, do string distance?
   
   Z_potentials <- c("Z", "trt", "treat", "treatment")

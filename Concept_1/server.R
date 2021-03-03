@@ -167,7 +167,7 @@ shinyServer(function(input, output, session) {
     
     # auto convert 0:1s to logicals and save back
     if (isTRUE(input$analysis_data_check_auto_convert)){
-      store$uploaded_df <- auto_convert_logicals(store$uploaded_df) 
+      store$uploaded_df <- clean_auto_convert_logicals(store$uploaded_df) 
     }
   })
   
@@ -316,7 +316,7 @@ shinyServer(function(input, output, session) {
   
   # table of selected dataset
   output$analysis_data_table <- DT::renderDataTable({
-    pretty_datatable(
+    create_datatable(
       store$uploaded_df,
       selection = "none"
     )
@@ -341,7 +341,7 @@ shinyServer(function(input, output, session) {
                   "Data must be first uploaded. Please see 'Data' tab."))
     
     # infer which columns are Z, Y, and X columns for smart defaults
-    auto_columns <- detect_ZYX_columns(colnames(store$uploaded_df))
+    auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
     
     # fill the dropdown options with the colnames
     for (i in 1:3){
@@ -432,7 +432,7 @@ shinyServer(function(input, output, session) {
   output$analysis_data_select_table <- DT::renderDataTable({
     
     # render the table
-    pretty_datatable(
+    create_datatable(
       store$selected_df,
       selection = "none"
     )
@@ -455,7 +455,19 @@ shinyServer(function(input, output, session) {
   
   # create the balance plot
   output$analysis_plot_balance_plot <- renderPlot({
-    balance_plot(dat = store$selected_df, selected_cols = input$analysis_plot_balance_select_var)
+    
+    # stop here if data hasn't been uploaded and selected
+    validate(need(is.data.frame(dat), 
+                  "Data must be first uploaded and selected. Please see 'Data' tab."))
+    
+    # stop here if there are no numeric columns selected
+    validate(need(length(selected_cols) > 0,
+                  "No numeric columns selected"))
+    
+    # plot it
+    p <- plot_balance(.data = store$selected_df, selected_cols = input$analysis_plot_balance_select_var)
+    
+    return(p)
   })
   
   # run the eda module server. the UI is rendered server side within an observeEvent function
@@ -485,12 +497,14 @@ shinyServer(function(input, output, session) {
   
   # trace plot
   output$analysis_diagnostics_plot_trace <- renderPlot({
+    
     # stop here if model is not run yet
-    validate(need(is(dat, "bartcFit"), 
+    validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     # call function
-    model_estimate_plot(dat = store$model_results)
+    p <- plot_model_estimate(model = store$model_results)
     
+    return(p)
   })
   
   # common support plot

@@ -13,8 +13,8 @@
 #'    TF = sample(c("T", "F"), 10, replace = TRUE),
 #'    truefalse = sample(c('true', 'false'), 10, replace = TRUE)
 #'  )
-#' auto_convert_logicals(x)
-auto_convert_logicals <- function(input_data){
+#' clean_auto_convert_logicals(x)
+clean_auto_convert_logicals <- function(input_data){
   # function converts columns of 0:1, T:F, True:False to logicals
   
   for (col in colnames(input_data)){

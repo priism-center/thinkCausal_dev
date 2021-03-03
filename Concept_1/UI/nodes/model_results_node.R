@@ -16,7 +16,7 @@ results_node <- tabPanel(
                actionButton(inputId = "analysis_results_button_back",
                             label = "Diagnostics"),
                br(),br(),
-               progress_bar(7/7*100)
+               create_progress_bar(7/7*100)
              ),
              mainPanel(
                br(),

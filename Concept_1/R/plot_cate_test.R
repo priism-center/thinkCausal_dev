@@ -1,12 +1,14 @@
-### cate_test
-# Author: George Perrett
-# Inputs: .fit= output from bartc and matrix of confounders
-# Purpose: Fit single regression tree on bartc() icates to produce 
-# variable importance plot & conditional effects plots.
-# Output: 2 objects: variable importance plot & plots for each conditional effect
-
-
-cate_test <- function(.fit = fit, confounders = X){
+#' Variable importance of Bayesian Additive Regression Trees
+#'
+#' Fit single regression tree on bartc() icates to produce variable importance plot & conditional effects plots.
+#'
+#' @param .fit output from bartc 
+#' @param confounders matrix of confounders
+#' @author George Perrett
+#' @return a list containing variable importance plot & plots for each conditional effect
+#' @export
+#'
+plot_cate_test <- function(.fit = fit, confounders = X){
   # extract individual conditional effects 
   icate <- bartCause::extract(.fit , 'icate')
   icate.m <- apply(icate, 2, mean)

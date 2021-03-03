@@ -24,7 +24,7 @@ analysis_plot_balance <- tabPanel(title = "Balance Plots",
                                                      label = "Next")
                                       ),
                                       br(),
-                                      progress_bar(4/7*100)
+                                      create_progress_bar(4/7*100)
                                       # add advanced option to remove scale
                                     ),
                                     mainPanel(

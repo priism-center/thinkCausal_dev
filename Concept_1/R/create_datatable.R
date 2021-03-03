@@ -1,4 +1,17 @@
-pretty_datatable <- function(...){
+#' Create a pretty datatable
+#' 
+#' Create an HTML datatable using the JavaScript library DataTables with predefined defaults
+#'
+#' @param ... arguments to be passed to DT::datatable. Typically a dataframe
+#' @author Joe Marlo
+#'
+#' @return HTML datatable
+#' @export 
+#' 
+#' @examples
+#' X <- data.frame(x = 1:10, y = 1:10)
+#' create_datatable(X)
+create_datatable <- function(...){
   # wrapper around DT::datatable so commonly used arguments
   # can be set as global defaults
   

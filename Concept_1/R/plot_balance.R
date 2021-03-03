@@ -1,15 +1,16 @@
-balance_plot <- function(dat, selected_cols){
-
-# stop here if data hasn't been uploaded and selected
-validate(need(is.data.frame(dat), 
-              "Data must be first uploaded and selected. Please see 'Data' tab."))
-
-# stop here if there are no numeric columns selected
-validate(need(length(selected_cols) > 0,
-              "No numeric columns selected"))
+#' Plot the balance
+#'
+#' @param X dataframe formatted with Z, Y, and X variables. Typically store$selected_df
+#' @param selected_cols character list of column names to plot. Typically input$analysis_plot_balance_select_var
+#' @author Joe Marlo
+#'
+#' @return ggplot object
+#' @export
+#'
+plot_balance <- function(.data, selected_cols){
 
 # plot it
- p <- dat %>% 
+ p <- .data %>% 
   rename(Z = starts_with("Z")) %>% 
   dplyr::select(all_of(c(selected_cols, "Z"))) %>% 
   pivot_longer(cols = -Z) %>% 
@@ -33,5 +34,4 @@ validate(need(length(selected_cols) > 0,
   theme(legend.position = 'none')
  
  return(p)
-
 }

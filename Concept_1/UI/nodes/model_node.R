@@ -61,7 +61,7 @@ model_node <- tabPanel(title = "Model",
                                                    label = "Fit model")
                                     ),
                                     br(),
-                                    progress_bar(5/7*100)
+                                    create_progress_bar(5/7*100)
                                   ),
                                   mainPanel(htmlOutput('analysis_model_summary'))
                                 )))
