@@ -1,3 +1,19 @@
+#' Convert all psuedo-logical columns in a dataframe to booleans
+#'
+#' @param input_data dataframe
+#'
+#' @author Joe Marlo
+#'
+#' @return dataframe
+#' @export
+#'
+#' @examples
+#' x <- data.frame(
+#'    zero_one = sample(0:1, 10, replace = TRUE),
+#'    TF = sample(c("T", "F"), 10, replace = TRUE),
+#'    truefalse = sample(c('true', 'false'), 10, replace = TRUE)
+#'  )
+#' auto_convert_logicals(x)
 auto_convert_logicals <- function(input_data){
   # function converts columns of 0:1, T:F, True:False to logicals
   

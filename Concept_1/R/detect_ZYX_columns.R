@@ -1,3 +1,15 @@
+#' Attempt to detect which columns of a dataframe are Z, Y, and X
+#'
+#' @param input_colnames character vector of column names
+#'
+#' @author Joe Marlo
+#'
+#' @return a list denoting which column names are Z, Y, and X
+#' @export
+#'
+#' @examples
+#' x <- c("treatment", "rsp", "dummy1", "dummy2")
+#' detect_ZYX_columns(x)
 detect_ZYX_columns <- function(input_colnames) {
   # attempts to auto detect which columns are treatment and response based on the 
   # column name alone
