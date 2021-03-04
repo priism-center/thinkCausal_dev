@@ -730,6 +730,7 @@ shinyServer(function(input, output, session) {
   
   # render the interpretation text
   
+  
   # ITE plot
   output$analysis_results_plot_ITE <- renderPlot({
     
@@ -737,26 +738,10 @@ shinyServer(function(input, output, session) {
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     
-    # retrieve model from the store
-    BART_model <- store$model_results
-    
-    # calculate stats
-    ites <- bartCause::extract(BART_model, 'icate')
-    ite.m <- apply(ites, 2, mean)
-    sd.ite <- apply(ites, 2, sd)
-    ite.ub <- ite.m + 1.96 * sd.ite
-    ite.lb <-  ite.m - 1.96 * sd.ite
-    
     # plot it
-    tibble(ite.m, ite.ub, ite.lb) %>% 
-      # arrange(ite.m) %>% 
-      # mutate(rank = row_number()) %>% 
-      ggplot(aes(x = ite.m)) + 
-      geom_vline(xintercept = 0, linetype = 'dashed', color = 'grey60') +
-      geom_histogram(alpha = 0.8) + 
-      labs(title = 'Individual Treatment Effects',
-           x = base::toupper(BART_model$estimand), 
-           y = 'Frequency')
+    p <- plot_ITE(.model = store$model_results)
+    
+    return(p)
   })
   
   # conditional individual treatment effects plot
