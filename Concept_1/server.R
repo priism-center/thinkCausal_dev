@@ -410,7 +410,7 @@ shinyServer(function(input, output, session) {
     
     # run the eda module server
     # TODO: remove or integrate random sampling of data; including for now for dev speed
-    edaServer(id = 'analysis_plots_descriptive', input_data = slice_sample(store$selected_df, n = 100))
+    edaServer(id = 'analysis_plots_descriptive', input_data = slice_sample(store$selected_df, n = 50))
     
     # update selects on balance plots
     # TODO: exclude categorical vars here???
@@ -443,13 +443,18 @@ shinyServer(function(input, output, session) {
   
   # create the overlap plot
   output$analysis_plot_overlap_plot <- renderPlot({
+    
+    # stop here if data hasn't been uploaded and selected
+    validate(need(is.data.frame(store$selected_df), 
+                  "Data must be first uploaded and selected. Please see 'Data' tab."))
+    
+    # plot either the variables or the 1 dimension propensity scores
     if(input$dim.red == 1){
-
-      overlap.1(dat = store$selected_df, selected_cols = input$analysis_plot_overlap_select_var)
+      plot_overlap_vars(.data = store$selected_df, selected_cols = input$analysis_plot_overlap_select_var)
     }
     
     else if(input$dim.red == 2){
-      overlap.2(dat = store$selected_df)
+      plot_overlap_pScores(.data = store$selected_df)
     }
   })
   
@@ -457,11 +462,11 @@ shinyServer(function(input, output, session) {
   output$analysis_plot_balance_plot <- renderPlot({
     
     # stop here if data hasn't been uploaded and selected
-    validate(need(is.data.frame(dat), 
+    validate(need(is.data.frame(store$selected_df), 
                   "Data must be first uploaded and selected. Please see 'Data' tab."))
     
     # stop here if there are no numeric columns selected
-    validate(need(length(selected_cols) > 0,
+    validate(need(length(input$analysis_plot_balance_select_var) > 0,
                   "No numeric columns selected"))
     
     # plot it
@@ -502,7 +507,7 @@ shinyServer(function(input, output, session) {
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     # call function
-    p <- plot_model_estimate(model = store$model_results)
+    p <- plot_trace(.model = store$model_results)
     
     return(p)
   })
@@ -664,7 +669,7 @@ shinyServer(function(input, output, session) {
     # insert popup to notify user of model fit process
     # TODO estimate the time remaining empirically?
     shinyWidgets::show_alert(
-      title = 'Model fitting...',
+      title = 'Fitting BART model...',
       # text = "Please wait",
       # type = 'info',
       # text = tags$div(
@@ -698,6 +703,7 @@ shinyServer(function(input, output, session) {
     )
     
     # store the results
+    # TODO: need way to test if actually have a good fit
     store$good_model_fit <- TRUE
     
     # close the alert
@@ -751,15 +757,12 @@ shinyServer(function(input, output, session) {
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     
-    # retrieve model from the store
-    BART_model <- store$model_results
-    
     # retrieve all the confounder columns
-    X <- store$selected_df[, 3:ncol(store$selected_df)]
+    X <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
     
     # plot it
-    # TODO see TODOs for cate_test() in functions.R
-    # p <- plot_cate_test(.fit = BART_model, X = X)
+    # TODO see TODOs for plot_cate_test()
+    # p <- plot_cate_test(.model = store$model_results, confounders = X)
     p <- NULL
     
     return(p)

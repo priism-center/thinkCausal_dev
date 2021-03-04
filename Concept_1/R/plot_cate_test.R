@@ -2,24 +2,32 @@
 #'
 #' Fit single regression tree on bartc() icates to produce variable importance plot & conditional effects plots.
 #'
-#' @param .fit output from bartc 
+#' @param .model a model produced by bartCause::bartc(). Typically store$model_results
 #' @param confounders matrix of confounders
-#' @author George Perrett
+#' @author George Perrett, Joe Marlo
 #' @return a list containing variable importance plot & plots for each conditional effect
 #' @export
-#'
-plot_cate_test <- function(.fit = fit, confounders = X){
+plot_cate_test <- function(.model, confounders){
+  
+  # TODO: this returns a list of plots; should probably return one 
+  #   ggplot object or a grob
+  
+  if (!is(.model, "bartcFit")) stop(".model must be of class bartcFit")
+  if (!is.matrix(confounders)) stop("confounders must be of class matrix")
+  
   # extract individual conditional effects 
-  icate <- bartCause::extract(.fit , 'icate')
+  icate <- bartCause::extract(.model , 'icate')
   icate.m <- apply(icate, 2, mean)
   icate.sd <- apply(icate, 2, sd)
   
   # fit regression tree 
   cart <- rpart::rpart(icate.m ~ confounders)
-  # svae variable importance
+  
+  # save variable importance
   importance <- cart$variable.importance/sum(cart$variable.importance)*100
   names(importance) <- sub(".", "", names(importance))
   
+  # enframe and clean data
   importance_table <- importance %>% 
     as_tibble() %>% 
     mutate(Variable = names(importance)) %>% 
@@ -32,11 +40,13 @@ plot_cate_test <- function(.fit = fit, confounders = X){
     geom_point(size = 4) + 
     labs(x = 'Importance', y = 'Variable', title = 'Potential Moderators')
   
-  # Reorder confounder matrix by var importance
-  X <- X[, names(importance)]
+  # reorder confounder matrix by var importance
+  X <- confounders[, names(importance)]
   
   # plot conditional effects
-  posterior <- bartCause::extract(.fit, 'icate') %>% 
+  # TODO: wheres 445 come from? should make explicit 
+  #   in case dependents accidental change this
+  posterior <- bartCause::extract(.model, 'icate') %>% 
     as_tibble() %>% 
     pivot_longer(cols = 1:445)
   

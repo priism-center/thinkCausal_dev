@@ -4,10 +4,10 @@
 \alias{plot_cate_test}
 \title{Variable importance of Bayesian Additive Regression Trees}
 \usage{
-plot_cate_test(.fit = fit, confounders = X)
+plot_cate_test(.model, confounders)
 }
 \arguments{
-\item{.fit}{output from bartc}
+\item{.model}{a model produced by bartCause::bartc(). Typically store$model_results}
 
 \item{confounders}{matrix of confounders}
 }
@@ -18,5 +18,5 @@ a list containing variable importance plot & plots for each conditional effect
 Fit single regression tree on bartc() icates to produce variable importance plot & conditional effects plots.
 }
 \author{
-George Perrett
+George Perrett, Joe Marlo
 }
