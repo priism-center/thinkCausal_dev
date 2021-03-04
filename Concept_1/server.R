@@ -507,66 +507,30 @@ shinyServer(function(input, output, session) {
     return(p)
   })
   
-  # common support plot
+  # common support plot - sd
   output$analysis_diagnostics_plot_support_sd <- renderPlot({
     
     # stop here if model is not run yet
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     
-    # retrieve model from the store
-    BART_model <- store$model_results
-    
-    # calculate summary stats
-    total <- sum(BART_model$sd.cf > max(BART_model$sd.obs) + sd(BART_model$sd.obs))
-    prop <- total / length(BART_model$sd.cf)
-    sd_test <- paste0(prop, "% of cases would have been removed by the standard deviation common support check")
-    
     # plot it
-    BART_model$sd.cf %>% 
-      as_tibble() %>% 
-      mutate(rownumber = row_number()) %>% 
-      ggplot(aes(rownumber, value)) + 
-      geom_point(alpha = 0.8)+
-      geom_hline(aes(yintercept = max(BART_model$sd.obs) + sd(BART_model$sd.obs)),
-                 color = 'coral3', linetype = 'dashed') + 
-      labs(title ="Diagnostics: Common Support Checks", 
-           subtitle = paste0("Standard Deviation method: ", sd_test),
-           x = NULL, #"Row index",
-           y = 'Counterfactual Uncertanty') + 
-      theme(legend.title = element_blank(), 
-            legend.position = 'bottom')
+    p <- plot_common_support_sd(.model = store$model_results)
+    
+    return(p)
   })
   
-  # common support plot
+  # common support plot - chi
   output$analysis_diagnostics_plot_support_chi <- renderPlot({
     
     # stop here if model is not run yet
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     
-    # retrieve model from the store
-    BART_model <- store$model_results
-    
-    # calculate summary stats
-    total <- sum((BART_model$sd.cf / BART_model$sd.obs) ** 2 > 3.841)
-    prop <- total / length(BART_model$sd.cf)
-    chi_test <- paste0(prop, "% of cases would have been removed by the chi squred common support check")
-    
     # plot it
-    (BART_model$sd.cf / BART_model$sd.obs)**2  %>% 
-      as_tibble() %>% 
-      mutate(rownumber = row_number()) %>% 
-      ggplot(aes(rownumber, value)) + 
-      geom_point(alpha = 0.8) + 
-      geom_hline(aes(color = 'Removal threshold', yintercept = 3.841), linetype = 'dashed') + 
-      scale_color_manual(values = 'coral3') +
-      labs(title = NULL, 
-           subtitle = paste0("Chi Squared method: ", chi_test),
-           x = "Row index",
-           y = 'Counterfactual Uncertanty') + 
-      theme(legend.title = element_blank(), 
-            legend.position = 'bottom')
+    p <- plot_common_support_chi(.model = store$model_results)
+    
+    return(p)
   })
   
   
@@ -810,7 +774,7 @@ shinyServer(function(input, output, session) {
     
     # plot it
     # TODO see TODOs for cate_test() in functions.R
-    # p <- cate_test(.fit = BART_model, X = X)
+    # p <- plot_cate_test(.fit = BART_model, X = X)
     p <- NULL
     
     return(p)

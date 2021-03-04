@@ -2,7 +2,7 @@
 #' 
 #' Create a bootstrap HTML progress bar filled. `progress` specifies the fill percentage of the bar.
 #'
-#' @param progress integer between 0 an 100 representing the fill percentage
+#' @param progress integer between 0 and 100 representing the fill percentage
 #' @author Joe Marlo
 #'
 #' @return HTML

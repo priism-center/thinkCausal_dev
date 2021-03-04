@@ -7,7 +7,7 @@
 create_progress_bar(progress)
 }
 \arguments{
-\item{progress}{integer between 0 an 100 representing the fill percentage}
+\item{progress}{integer between 0 and 100 representing the fill percentage}
 }
 \value{
 HTML
