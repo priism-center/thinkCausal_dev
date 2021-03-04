@@ -1,5 +1,7 @@
 #' Convert all psuedo-logical columns in a dataframe to booleans
 #'
+#' Converts columns of a dataframe containing binary c(0, 1), c("T", "F"), c("True", "False") to boolean c(TRUE, FALSE). Is agnostic to case.
+#'
 #' @param input_data dataframe
 #'
 #' @author Joe Marlo

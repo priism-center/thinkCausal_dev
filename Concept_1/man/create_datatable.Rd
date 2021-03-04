@@ -13,7 +13,7 @@ create_datatable(...)
 HTML datatable
 }
 \description{
-Create an HTML datatable using the JavaScript library DataTables with predefined defaults
+Create an HTML datatable using the JavaScript library DataTables. This is a wrapper around DT::datatable with commonly used arguments set as defaults.
 }
 \examples{
 X <- data.frame(x = 1:10, y = 1:10)

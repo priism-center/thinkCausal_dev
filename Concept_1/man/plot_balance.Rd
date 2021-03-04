@@ -15,7 +15,7 @@ plot_balance(.data, selected_cols)
 ggplot object
 }
 \description{
-Plot the balance
+Returns a ggplot balance plot
 }
 \author{
 Joe Marlo

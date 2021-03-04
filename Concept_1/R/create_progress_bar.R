@@ -1,8 +1,8 @@
 #' Create a progress bar
 #' 
-#' Create a bootstrap HTML progress bar filled to `progress` percentage
+#' Create a bootstrap HTML progress bar filled. `progress` specifies the fill percentage of the bar.
 #'
-#' @param progress numeric between 0 an 1
+#' @param progress integer between 0 an 100 representing the fill percentage
 #' @author Joe Marlo
 #'
 #' @return HTML
@@ -10,7 +10,7 @@
 #'
 #'
 #' @examples
-#' create_progress_bar(0.8)
+#' create_progress_bar(80)
 create_progress_bar <- function(progress) {
   # returns the html to create a bootsrap progress bar filled to the progress amount
   # TODO: change fill color

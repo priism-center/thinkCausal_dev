@@ -7,16 +7,16 @@
 create_progress_bar(progress)
 }
 \arguments{
-\item{progress}{numeric between 0 an 1}
+\item{progress}{integer between 0 an 100 representing the fill percentage}
 }
 \value{
 HTML
 }
 \description{
-Create a bootstrap HTML progress bar filled to `progress` percentage
+Create a bootstrap HTML progress bar filled. `progress` specifies the fill percentage of the bar.
 }
 \examples{
-create_progress_bar(0.8)
+create_progress_bar(80)
 }
 \author{
 Joe Marlo

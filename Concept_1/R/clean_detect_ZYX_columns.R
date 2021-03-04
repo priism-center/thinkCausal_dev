@@ -1,6 +1,6 @@
 #' Attempt to detect which columns of a dataframe are Z, Y, and X
 #' 
-#' Attempts to auto detect which columns are treatment and response based on the column name alone. If none are detected, then returns the first two respectivel
+#' Attempts to auto detect which columns are treatment and response based on the column name alone. If none are detected, then returns the first two respectively.
 #' 
 #' @param input_colnames character vector of column names
 #'

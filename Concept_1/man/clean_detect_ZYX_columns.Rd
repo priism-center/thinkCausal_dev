@@ -13,7 +13,7 @@ clean_detect_ZYX_columns(input_colnames)
 a list denoting which column names are Z, Y, and X
 }
 \description{
-Attempts to auto detect which columns are treatment and response based on the column name alone. If none are detected, then returns the first two respectivel
+Attempts to auto detect which columns are treatment and response based on the column name alone. If none are detected, then returns the first two respectively.
 }
 \examples{
 x <- c("treatment", "rsp", "dummy1", "dummy2")
