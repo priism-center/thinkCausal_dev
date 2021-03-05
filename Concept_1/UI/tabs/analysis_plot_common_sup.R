@@ -11,8 +11,6 @@ analysis_plot_common_sup <- tabPanel(
         choices = X_names,
         selected = X_names
       ),
-
-      h6("With Dimension Reduction"),
       awesomeRadio(inputId = "dim.red",
                     label = "View:", inline = T, 
                    choices = c("By Variables" = 1, 

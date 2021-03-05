@@ -450,7 +450,9 @@ shinyServer(function(input, output, session) {
     
     # plot either the variables or the 1 dimension propensity scores
     if(input$dim.red == 1){
-      plot_overlap_vars(.data = store$selected_df, selected_cols = input$analysis_plot_overlap_select_var)
+      plot_overlap_vars(.data = store$selected_df, 
+                        selected_cols = input$analysis_plot_overlap_select_var, 
+                        plt_type = input$overlap.type)
     }
     
     else if(input$dim.red == 2){
