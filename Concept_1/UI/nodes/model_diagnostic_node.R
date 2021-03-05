@@ -29,10 +29,8 @@ diagnostics_node <- tabPanel(
           tabPanel(
             title = 'Common support',
             br(),
-            plotOutput('analysis_diagnostics_plot_support_sd',
-                       height = 300),
-            plotOutput('analysis_diagnostics_plot_support_chi',
-                       height = 300)
+            plotOutput('analysis_diagnostics_plot_support',
+                       height = 600)
           )
         )
       )

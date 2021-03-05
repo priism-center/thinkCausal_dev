@@ -512,32 +512,21 @@ shinyServer(function(input, output, session) {
     return(p)
   })
   
-  # common support plot - sd
-  output$analysis_diagnostics_plot_support_sd <- renderPlot({
+  # common support plot 
+  output$analysis_diagnostics_plot_support <- renderPlot({
     
     # stop here if model is not run yet
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     
     # plot it
-    p <- plot_common_support_sd(.model = store$model_results)
+    p <- plot_diagnostic_common_support(.model = store$model_results, 
+                                        .rule = input$analysis_model_radio_support)
     
     return(p)
   })
   
-  # common support plot - chi
-  output$analysis_diagnostics_plot_support_chi <- renderPlot({
-    
-    # stop here if model is not run yet
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
-    
-    # plot it
-    p <- plot_common_support_chi(.model = store$model_results)
-    
-    return(p)
-  })
-  
+ 
   
   # specify model -----------------------------------------------------------
   
