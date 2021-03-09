@@ -1,18 +1,40 @@
-#' Variable importance of Bayesian Additive Regression Trees
-#'
-#' Fit single regression tree on bartc() icates to produce variable importance plot & conditional effects plots.
-#'
-#' @param .model a model produced by bartCause::bartc(). Typically store$model_results
-#' @param confounders matrix of confounders
-#' @author George Perrett, Joe Marlo
-#' @return a list containing variable importance plot & plots for each conditional effect
-#' @export
+### this is a dev script that mimics the Shiny app analysis workflow
+### useful for testing functions
+library(tidyverse)
+library(bartCause)
+theme_set(theme_minimal())
+
+
+# setup -------------------------------------------------------------------
+
+X <- read_csv("data/lalonde.csv")
+X <- dplyr::select(X, 'treat', 're78', 'age', 'educ', 'black', 'hisp', 'married', 'nodegr')
+X <- clean_auto_convert_logicals(X)
+
+treatment_v <- X[, 1]
+response_v <- X[, 2]
+confounders_mat <- as.matrix(X[, 3:ncol(X)])
+
+# run model    
+model_results <- bartCause::bartc(
+  response = response_v,
+  treatment = treatment_v,
+  confounders = confounders_mat,
+  estimand = 'ate',
+  commonSup.rule = 'none'
+)
+
+
+# functions to test -------------------------------------------------------
 
 plot_cate_test <- function(.model, confounders){
   
-  # TODO: we need a smarter way to make these plots; it takes forever
+  # we need a smarter way to make these plots; it takes forever
   # and the output is messy; can we have the user specify which ones
   # they want to see?
+  
+  .model <- model_results
+  confounders <- as.matrix(X)
   
   if (!is(.model, "bartcFit")) stop(".model must be of class bartcFit")
   if (!is.matrix(confounders)) stop("confounders must be of class matrix")
@@ -95,3 +117,5 @@ plot_cate_test <- function(.model, confounders){
   results <- list(p1, cate_plts)
   return(results)
 }
+
+plot_cate_test(model_results, as.matrix(X))

@@ -678,8 +678,8 @@ shinyServer(function(input, output, session) {
     )
     
     # pull the response, treatment, and confounders variables out of the df
-    response_v <- store$selected_df[, 2]
     treatment_v <- store$selected_df[, 1]
+    response_v <- store$selected_df[, 2]
     confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
     
     # TODO: dummy code categorical vars??

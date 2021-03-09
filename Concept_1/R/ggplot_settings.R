@@ -31,11 +31,11 @@ options(
 
 # set default discrete colors
 scale_colour_discrete <- function(...) {
-  ggplot2::scale_color_viridis(..., discrete = TRUE)
+  viridis::scale_color_viridis(..., discrete = TRUE)
 }
 scale_color_discrete <- function(...) {
-  ggplot2::scale_color_viridis(..., discrete = TRUE)
+  viridis::scale_color_viridis(..., discrete = TRUE)
 }
 scale_fill_discrete <- function(...) {
-  ggplot2::scale_fill_viridis(..., discrete = TRUE)
+  viridis::scale_fill_viridis(..., discrete = TRUE)
 }
