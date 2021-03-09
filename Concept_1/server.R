@@ -31,11 +31,11 @@ shinyServer(function(input, output, session) {
   })
   
   # plotting page
-  observeEvent(input[[NS('analysis_plots_descriptive')('analysis_plots_descriptive_button_back')]], {
+  observeEvent(input[['analysis_plots_descriptive_button_back']], {
     updateNavbarPage(session, inputId = "nav", selected = "Data")
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
   })
-  observeEvent(input[[NS('analysis_plots_descriptive')('analysis_plots_descriptive_button_next')]], {
+  observeEvent(input[['analysis_plots_descriptive_button_next']], {
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Common Support Plots")
   })
   observeEvent(input$analysis_plots_support_button_back, {
@@ -402,15 +402,59 @@ shinyServer(function(input, output, session) {
     store$selected_df_numeric_vars <- as.vector(unlist(cols_by_class[classes_continuous]))
     
     # render the UI eda with this data
-    output$analysis_plots_descriptive_eda_module <- renderUI({
-      edaUI(id = "analysis_plots_descriptive", 
-            col_names = colnames(store$selected_df), 
-            categorical_names = store$selected_df_categorical_vars)
-    })
+    # output$analysis_plots_descriptive_eda_module <- renderUI({
+    #   edaUI(id = "analysis_plots_descriptive", 
+    #         col_names = colnames(store$selected_df), 
+    #         categorical_names = store$selected_df_categorical_vars)
+    # })
     
     # run the eda module server
     # TODO: remove or integrate random sampling of data; including for now for dev speed
-    edaServer(id = 'analysis_plots_descriptive', input_data = slice_sample(store$selected_df, n = 50))
+    # edaServer(id = 'analysis_plots_descriptive', input_data = slice_sample(store$selected_df, n = 50))
+    
+    # update selects on Descriptive plots page
+    col_names <- colnames(store$selected_df)
+    categorical_names <- store$selected_df_categorical_var
+    updateSelectInput(
+      session = session,
+      inputId = "analysis_eda_variable_pairs_vars",
+      choices = col_names,
+      selected = col_names
+    )
+    updateSelectInput(
+      session = session,
+      inputId = "analysis_eda_variable_x",
+      choices = col_names,
+      selected = col_names[1]
+    )
+    updateSelectInput(
+      session = session,
+      inputId = "analysis_eda_variable_y",
+      choices = col_names,
+      selected = col_names[2]
+    )
+    updateSelectInput(
+      session = session,
+      inputId = "analysis_eda_variable_fill",
+      choices = col_names,
+      selected = col_names[12]
+    )
+    updateSelectInput(
+      session = session,
+      inputId = "analysis_eda_variable_size",
+      choices = col_names,
+      selected = col_names[4]
+    )
+    updateSelectInput(
+      session = session,
+      inputId = "analysis_eda_variable_group",
+      choices = categorical_names
+    )
+    updateSelectInput(
+      session = session,
+      inputId = "analysis_eda_variable_facet",
+      choices = c("None", categorical_names) #TODO: this isn't updating
+    )
     
     # update selects on balance plots
     # TODO: exclude categorical vars here???
@@ -440,6 +484,72 @@ shinyServer(function(input, output, session) {
   
   
   # EDA ---------------------------------------------------------------------
+  
+  # create the descriptive plots
+  # build the exploration plots
+  output$analysis_eda_plot <- renderPlot({
+    
+    # stop here if data hasn't been uploaded and selected
+    # TODO: error messages here are hard to read
+    validate(need(is.data.frame(store$selected_df), 
+                  "Data must be first uploaded and selected. Please see 'Data' tab."))
+    
+    p <- plot_exploration(
+      .data = store$selected_df, #TODO: formalize sampling?
+      .plot_type = input$analysis_eda_select_plot_type,
+      .x = input$analysis_eda_variable_x,
+      .y = input$analysis_eda_variable_y,
+      .fill = input$analysis_eda_variable_fill,
+      .fill_static = "#5c5980",
+      .size = input$analysis_eda_variable_size,
+      .alpha = input$analysis_eda_variable_alpha,
+      .vars_pairs = input$analysis_eda_variable_pairs_vars,
+      .n_bins = input$analysis_eda_variable_n_bins,
+      .jitter = input$analysis_eda_check_jitter,
+      .groups = input$analysis_eda_variable_group,
+      .facet = input$analysis_eda_variable_facet,
+      .facet_second = input$analysis_eda_variable_facet_second,
+      .include_regression = input$analysis_eda_variable_regression
+    )
+    
+    return(p)
+  })
+  
+  # text above the brush table
+  output$analysis_eda_brush_text <- renderText({
+    
+    if (input$analysis_eda_variable_facet == "None" & input$analysis_eda_select_plot_type == 'Scatter') {
+      txt <- "<h4>Highlight data points on the above plot to view their information below</h4>"
+    } else {
+      txt <- NULL
+    }
+    
+    return(txt)
+  })
+  
+  # table of brushed data points from plot
+  output$analysis_eda_brush_info <- DT::renderDataTable(
+    
+    # show only if there isn't faceting
+    if (input$analysis_eda_variable_facet == "None" & input$analysis_eda_select_plot_type == 'Scatter') {
+      
+      create_datatable(
+        brushedPoints(store$selected_df, input$analysis_eda_plot_brush),
+        selection = "none"
+      )
+    })
+  
+  # update second facet options so user cannot double facet on the same variable
+  # b/c that causes an error
+  observeEvent(input$analysis_eda_variable_facet, {
+    if (input$analysis_eda_variable_facet != "None") {
+      updateSelectInput(
+        session = session,
+        inputId = "analysis_eda_variable_facet_second",
+        choices = setdiff(c("None", categorical_names), input$analysis_eda_variable_facet)
+      )
+    }
+  })
   
   # create the overlap plot
   output$analysis_plot_overlap_plot <- renderPlot({

@@ -11,6 +11,13 @@
 #' @examples
 #' X <- data.frame(x = 1:10, y = 1:10)
 #' create_datatable(X)
+#' 
+#' ## within Shiny
+#' # UI
+#' #DT::dataTableOutput(outputId = tableId)
+#' 
+#' # server
+#' #output$tableId <- DT::renderDataTable(create_datatable(X))
 create_datatable <- function(...){
   
   DT::datatable(..., 

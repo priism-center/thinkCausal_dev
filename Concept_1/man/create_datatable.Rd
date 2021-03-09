@@ -18,6 +18,13 @@ Create an HTML datatable using the JavaScript library DataTables. This is a wrap
 \examples{
 X <- data.frame(x = 1:10, y = 1:10)
 create_datatable(X)
+
+## within Shiny
+# UI
+#DT::dataTableOutput(outputId = tableId)
+
+# server
+#output$tableId <- DT::renderDataTable(create_datatable(X))
 }
 \author{
 Joe Marlo
