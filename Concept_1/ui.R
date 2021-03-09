@@ -37,10 +37,10 @@ shinyUI(
             navbarPage(
                 id = "nav",
                 title = 'thinkCausal',
-                welcome_dropdown,
-                concepts_dropdown,
-                analysis_dropdown, 
-                log_dropdown
+                welcome_header,
+                concepts_header,
+                analysis_header, 
+                log_header
                 # help_dropdown
                 )
         ),

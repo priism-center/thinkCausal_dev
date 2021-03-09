@@ -4,7 +4,7 @@
 #                                   includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))
 #                                 )
 # )
-concepts_dropdown <- navbarMenu(
+concepts_header <- navbarMenu(
   title = 'Concepts',
   tabPanel(title = "All concepts",
            div(id = 'conceptsGrid1',

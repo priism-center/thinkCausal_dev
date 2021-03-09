@@ -1,4 +1,4 @@
-welcome_dropdown <- tabPanel(
+welcome_header <- tabPanel(
   title = 'Welcome', 
   mainPanel(
     width = 12,

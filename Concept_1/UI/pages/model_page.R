@@ -1,4 +1,4 @@
-model_node <- tabPanel(title = "Model",
+model_page <- tabPanel(title = "Model",
                        tabPanel("Model",
                                 sidebarLayout(
                                   sidebarPanel(

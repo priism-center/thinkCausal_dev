@@ -69,6 +69,6 @@ analysis_model_text <- list(
 # read in all the UI and module files
 map(list.files('R', recursive = TRUE), function(file) source(file.path('R', file)))
 map(list.files(file.path('UI', 'concepts')), function(file) source(file.path("UI", "concepts", file)))
-map(list.files(file.path('UI', 'tabs')), function(file) source(file.path("UI", "tabs", file)))
-map(list.files(file.path('UI', 'nodes')), function(file) source(file.path("UI", "nodes", file)))
-map(list.files(file.path('UI', 'dropdowns')), function(file) source(file.path("UI", "dropdowns", file)))
+# map(list.files(file.path('UI', 'tabs')), function(file) source(file.path("UI", "tabs", file)))
+map(list.files(file.path('UI', 'pages')), function(file) source(file.path("UI", "pages", file)))
+map(list.files(file.path('UI', 'headers')), function(file) source(file.path("UI", "headers", file)))

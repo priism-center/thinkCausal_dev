@@ -1,4 +1,4 @@
-data_node <- tabPanel(
+data_page <- tabPanel(
   title = 'Data', 
          tabsetPanel(
            id = "analysis_data_tabs",

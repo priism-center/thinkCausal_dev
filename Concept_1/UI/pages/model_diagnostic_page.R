@@ -1,4 +1,4 @@
-diagnostics_node <- tabPanel(
+diagnostics_page <- tabPanel(
   title = "Model diagnostics", #htmlOutput("exploration_tab_name"),
   tabPanel(
     title = "Model diagnostics",

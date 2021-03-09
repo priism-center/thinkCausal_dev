@@ -1,4 +1,4 @@
-results_node <- tabPanel(
+results_page <- tabPanel(
   title = "Results", 
   tabPanel("Model", 
            sidebarLayout(

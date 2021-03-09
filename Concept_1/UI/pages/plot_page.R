@@ -1,4 +1,4 @@
-plot_node <- tabPanel(
+plot_page <- tabPanel(
   title = "Exploratory Plots", #htmlOutput("exploration_tab_name"),
   tabsetPanel(
     id = "analysis_plot_tabs", 
