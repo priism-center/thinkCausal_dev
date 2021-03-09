@@ -4,12 +4,14 @@
 \alias{plot_overlap_vars}
 \title{Plot the overlap of variables}
 \usage{
-plot_overlap_vars(.data, selected_cols)
+plot_overlap_vars(.data, selected_cols, plt_type)
 }
 \arguments{
 \item{.data}{dataframe. Typically store$selected_df}
 
 \item{selected_cols}{list of columns from .data to plot}
+
+\item{plt_type}{input from overlap.type to create either Histigram or Density}
 }
 \value{
 ggplot object
