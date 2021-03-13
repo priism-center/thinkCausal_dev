@@ -7,7 +7,7 @@
 #'
 #' @return ggplot object
 #' @export
-plot_overlap_pScores <- function(.data) {
+plot_overlap_pScores <- function(.data, plt_type) {
   
   # popup alert to user while waiting for bartc fit
   shinyWidgets::show_alert(
@@ -46,8 +46,11 @@ plot_overlap_pScores <- function(.data) {
   dat_pivoted <- .data %>%
     rename(Z = starts_with("Z")) %>%
     dplyr::select(Z) %>%
-    mutate(pscores = pscores)
+    mutate(pscores = pscores, 
+           Z = as.logical(Z))
   
+  
+  if(plt_type == 'Histogram'){
   # plot it
   p <- ggplot() +
     geom_hline(yintercept = 0, linetype = 'dashed', color = 'grey60') +
@@ -64,6 +67,25 @@ plot_overlap_pScores <- function(.data) {
          subtitle = 'Informative subtitle to go here',
          x = NULL,y = 'Count',
          fill = "Treatment")
+  }
+  
+  else{
+    p <- ggplot() +
+      geom_hline(yintercept = 0, linetype = 'dashed', color = 'grey60') +
+      geom_density(data = dat_pivoted %>% filter(Z == 1),
+                     aes(x = pscores, y = ..density.., fill = Z),
+                     alpha = 0.8) +
+      geom_density(data = dat_pivoted %>% filter(Z == 0),
+                     aes(x = pscores, y = -..density.., fill = Z),
+                     alpha = 0.8) +
+      scale_y_continuous(labels = function(brk) abs(brk)) +
+      # scale_x_continuous(labels = seq(0, 1, .1)) +
+      scale_fill_manual(values = c('#bd332a', '#262991')) +
+      labs(title = "Overlap by treatment status",
+           subtitle = 'Informative subtitle to go here',
+           x = NULL,y = 'Count',
+           fill = "Treatment")
+  }
   
   return(p)
 }
