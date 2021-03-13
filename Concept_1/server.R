@@ -566,7 +566,8 @@ shinyServer(function(input, output, session) {
     }
     
     else if(input$dim.red == 2){
-      plot_overlap_pScores(.data = store$selected_df)
+      plot_overlap_pScores(.data = store$selected_df, 
+                           plt_type = input$overlap.type)
     }
   })
   
