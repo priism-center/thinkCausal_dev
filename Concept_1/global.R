@@ -5,6 +5,7 @@ library(tidyverse)
 library(patchwork)
 library(DT)
 library(shinyBS)
+library(shinyjs)
 library(shiny)
 # library(shinythemes)
 library(shinyWidgets) # for slider skin

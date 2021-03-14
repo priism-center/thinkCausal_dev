@@ -6,6 +6,9 @@ shinyUI(
         # set default slider skin
         chooseSliderSkin(skin = "Flat", color = "#221146"),
         
+        # use shinyjs
+        shinyjs::useShinyjs(),
+        
         # load custom CSS file
         includeCSS("www/thinkCausal.css"),
 

@@ -158,53 +158,148 @@ shinyServer(function(input, output, session) {
   
   # add dataframe to store object
   observeEvent(uploaded_df(), {
-    store$uploaded_df <- uploaded_df()
+    
+    # retrieve the raw uploaded data frame
+    uploaded_df <- uploaded_df()
+
+    # auto convert all of the logical columns
+    auto_cleaned_df <- clean_auto_convert_logicals(uploaded_df) 
+    
+    store$uploaded_df <- auto_cleaned_df
   })
   
-  observeEvent(input$analysis_data_check_auto_convert, {
-    # ensure data is uploaded
-    validate(need(nrow(store$uploaded_df) > 0, "No dataframe uploaded"))
+  # observeEvent(input$analysis_data_check_auto_convert, {
+  #   # ensure data is uploaded
+  #   validate(need(nrow(store$uploaded_df) > 0, "No dataframe uploaded"))
+  #   
+  #   # auto convert 0:1s to logicals and save back
+  #   if (isTRUE(input$analysis_data_check_auto_convert)){
+  #     store$uploaded_df <- clean_auto_convert_logicals(store$uploaded_df) 
+  #   }
+  # })
+  
+  # TODO: just 'grey out' the rows not used!!!!!!!!!
+  
+  # TODO: one idea is to create a reactive variable list of the values
+  # observe({
+  #   
+  #   ids <- paste0("analysis_data_", 1:8)
+  #   mylist <- list()
+  #   mylist$colnames <- reactiveValuesToList(input)[paste0(ids, "_rename")]
+  #   mylist$datatype <- reactiveValuesToList(input)[paste0(ids, "_changeDataType")]
+  #   mylist$levels <- reactiveValuesToList(input)[paste0(ids, "_levels")]
+  #   print(mylist)
+  # })
+  
+  
+  # function that returns the dataframe with the user's modifications on
+  #   the data upload page
+  user_modified_df <- reactive({
     
-    # auto convert 0:1s to logicals and save back
-    if (isTRUE(input$analysis_data_check_auto_convert)){
-      store$uploaded_df <- clean_auto_convert_logicals(store$uploaded_df) 
-    }
+    
+    user_modified_df <- store$uploaded_df
+
+    # change column names
+    indices <- seq_along(colnames(store$uploaded_df))
+    user_entered_names <- sapply(indices, function(i) input[[paste0("analysis_data_", i, '_rename')]])
+    names(user_modified_df) <- user_entered_names
+    
+    # change data type
+    
+    
+    # change categorical levels
+  
+    
+    ## remove columns that aren't specified on the left side
+    # TODO:
+    # # get currently selected columns
+    # user_selected_cols <- c(input$analysis_data_select_select_zcol,
+    #                         input$analysis_data_select_select_ycol,
+    #                         input$analysis_data_select_select_xcol)
+    # user_selected_cols <- unlist(user_selected_cols)
+    # if (isFALSE(all(nchar(user_selected_cols) == 0))){
+    #   # get the current inputted named for these columns
+    #   indices <- seq_along(colnames(store$uploaded_df))
+    #   ids <- paste0("analysis_data_", indices, '_rename')
+    #   current_name_values <- reactiveValuesToList(input)[ids]
+    # 
+    #   # which columns are included?
+    #   included_colnames <- current_name_values[current_name_values %in% user_selected_cols]
+    # 
+    #   # subset the main dataframe to only include the included columns
+    #   user_modified_df <- user_modified_df[, unlist(included_colnames)]
+    # }
+
+    return(user_modified_df)
   })
   
   # render UI for modifying the data
   # TODO there's a CSS padding or margin issue that causes the boxes to be misaligned on some browsers (linux firefox)
   output$analysis_data_modify_UI <- renderUI({
     
+    validate(need(nrow(store$uploaded_df) > 0,
+                  "Upload your data first"))
+    
     # get default data types
     default_data_types <- simple_data_types(store$uploaded_df)
+    
+    # set indices to map over
+    all_col_names <- colnames(store$uploaded_df)
+    indices <- seq_along(all_col_names)
     
     # render the selectize HTML
     html_tags <- tagList(
       tags$div(
         class = 'backNextContainer',
         tags$div(
-          class = 'dataSelectizeLeft',
+          class = 'dataSelectizeFirst',
           tagList(
             h5("Column name"),
-            lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
+            lapply(X = indices, FUN = function(i) {
               textInput(
-                inputId = paste0("analysis_data_rename_", i),
+                inputId = paste0("analysis_data_", i, "_rename"),
                 label = NULL, #colnames(store$uploaded_df)[i],
-                value = colnames(store$uploaded_df)[i]
+                value = all_col_names[i]
               )
             })
           )
         ),
         tags$div(
-          class = 'dataSelectizeRight',
+          class = 'dataSelectizeSecond',
           tagList(
             h5("Data type"),
-            lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
+            lapply(X = indices, FUN = function(i) {
               selectInput(
-                inputId = paste0("analysis_data_changeDataType_", i),
+                inputId = paste0("analysis_data_", i, "_changeDataType"),
                 label = NULL, #colnames(store$uploaded_df)[i],
                 choices = c('Categorical', 'Continuous', 'Logical'),
                 selected = default_data_types[i]
+              )
+            })
+          )
+        ),
+        tags$div(
+          class = 'dataSelectizeThird',
+          tagList(
+            h5("Levels"),
+            lapply(X = indices, FUN = function(i) {
+              textInput(
+                inputId = paste0("analysis_data_", i, "_levels"),
+                label = NULL,
+                placeholder = 'TBD'
+              )
+            })
+          )
+        ),
+        tags$div(
+          class = 'dataSelectizeFourth',
+          tagList(
+            h5("Percent NA"),
+            lapply(X = indices, FUN = function(i) {
+              textInput(
+                inputId = paste0("analysis_data_", i, "_percentNA"),
+                label = NULL, #colnames(store$uploaded_df)[i],
+                placeholder = 'TBD'
               )
             })
           )
@@ -214,40 +309,57 @@ shinyServer(function(input, output, session) {
     
     # add listeners that launch a popup if the user changes the data to categorical
     # TODO this kind of works but is a mess; need to rethink the UI
-    lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
-      dropdown_ID <- paste0("analysis_data_changeDataType_", i)
-      observeEvent(input[[dropdown_ID]], {
-        
-        if (input[[dropdown_ID]] == 'Logical'){
-          
-          # get the data levels to the current column
-          current_levels <- sort(unique(store$uploaded_df[[i]]))
-          
-          shinyWidgets::show_alert(
-            title = 'Choose the levels to the logical',
-            text = tags$div(
-              tagList(
-                selectInput(
-                  inputId = paste0('analysis_data_changeDataType_popup_TRUE_', i),
-                  label = 'TRUE',
-                  choices = current_levels
-                ),
-                selectInput(
-                  inputId = paste0('analysis_data_changeDataType_popup_FALSE_', i),
-                  label = 'FALSE',
-                  choices = current_levels
-                )
-              )
-            ),
-            html = TRUE,
-            btn_labels = "Save",
-            closeOnClickOutside = TRUE
-          )
-        }
-      })
-    })
+    # lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
+    #   dropdown_ID <- paste0("analysis_data_changeDataType_", i)
+    #   observeEvent(input[[dropdown_ID]], {
+    #     
+    #     if (input[[dropdown_ID]] == 'Logical'){
+    #       
+    #       # get the data levels to the current column
+    #       current_levels <- sort(unique(store$uploaded_df[[i]]))
+    #       
+    #       shinyWidgets::show_alert(
+    #         title = 'Choose the levels to the logical',
+    #         text = tags$div(
+    #           tagList(
+    #             selectInput(
+    #               inputId = paste0('analysis_data_changeDataType_popup_TRUE_', i),
+    #               label = 'TRUE',
+    #               choices = current_levels
+    #             ),
+    #             selectInput(
+    #               inputId = paste0('analysis_data_changeDataType_popup_FALSE_', i),
+    #               label = 'FALSE',
+    #               choices = current_levels
+    #             )
+    #           )
+    #         ),
+    #         html = TRUE,
+    #         btn_labels = "Save",
+    #         closeOnClickOutside = TRUE
+    #       )
+    #     }
+    #   })
+    # })
     
     return(html_tags)
+  })
+  
+  # update percentNAs with actual data
+  observeEvent(user_modified_df(), {
+    lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
+      
+      # calculate percent NA
+      percent_NA <- mean(is.na(user_modified_df()[[i]]))
+      percent_NA <- paste0(percent_NA * 100, "%") 
+      
+      # update the value
+      updateTextInput(
+        session = session,
+        inputId = paste0("analysis_data_", i, "_percentNA"),
+        value = percent_NA
+      )
+    })
   })
   
   # overwrite column names when user saves new names
@@ -255,13 +367,81 @@ shinyServer(function(input, output, session) {
     validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
     
     # rename the columns
-    input_ids <- paste0("analysis_data_rename_", seq_along(colnames(store$uploaded_df)))
+    indices <- seq_along(colnames(store$uploaded_df))
+    input_ids <- paste0("analysis_data_", indices, "_rename")
     inputted_name_values <- reactiveValuesToList(input)[input_ids]
     colnames(store$uploaded_df) <- inputted_name_values
     
     # change the data types
     # TODO
     
+  })
+  
+  # make columns that are not selected by the user explicit by removing them
+  observe({
+    
+    validate(need(isFALSE(is.null(input$analysis_data_select_select_zcol)),
+                  "Need dropdowns to first be rendered"),
+             need(isFALSE(is.null(input$analysis_data_select_select_ycol)),
+                  "Need dropdowns to first be rendered"),
+             need(isFALSE(is.null(input$analysis_data_select_select_xcol)),
+                  "Need dropdowns to first be rendered"))
+    
+    # get currently selected columns
+    user_selected_cols <- c(input$analysis_data_select_select_zcol,
+                            input$analysis_data_select_select_ycol,
+                            input$analysis_data_select_select_xcol)
+    user_selected_cols <- unlist(user_selected_cols)
+    
+    # get the current inputted named for these columns
+    indices <- seq_along(colnames(store$uploaded_df))
+    ids <- paste0("analysis_data_", indices, '_rename')
+    current_name_values <- reactiveValuesToList(input)[ids]
+    
+    # which ones are missing?
+    is_missing <- !(current_name_values %in% user_selected_cols)
+    
+    # remove the missing blocks
+    missing_id_indices <- which(is_missing)
+    lapply(missing_id_indices, function(index){
+      shinyjs::runjs(
+        paste0(
+          paste0('document.getElementById("',
+                 paste0('analysis_data_', index, '_rename'),
+                 '").style.display = "none";'),
+          paste0('document.getElementById("',
+                 paste0('analysis_data_', index, '_changeDataType'),
+                 '").parentElement.style.display = "none";'),
+          paste0('document.getElementById("',
+                 paste0('analysis_data_', index, '_levels'),
+                 '").style.display = "none";'),
+          paste0('document.getElementById("',
+                 paste0('analysis_data_', index, '_percentNA'),
+                 '").style.display = "none";')
+        )
+      )
+    })
+    
+    # force all the other ones to appear
+    included_ids <- which(!is_missing)
+    lapply(included_ids, function(index){
+      shinyjs::runjs(
+        paste0(
+          paste0('document.getElementById("',
+                 paste0('analysis_data_', index, '_rename'),
+                 '").style.display = "block";'),
+          paste0('document.getElementById("',
+                 paste0('analysis_data_', index, '_changeDataType'),
+                 '").parentElement.style.display = "block";'),
+          paste0('document.getElementById("',
+                 paste0('analysis_data_', index, '_levels'),
+                 '").style.display = "block";'),
+          paste0('document.getElementById("',
+                 paste0('analysis_data_', index, '_percentNA'),
+                 '").style.display = "block";')
+        )
+      )
+    })
   })
   
   
@@ -317,7 +497,8 @@ shinyServer(function(input, output, session) {
   # table of selected dataset
   output$analysis_data_table <- DT::renderDataTable({
     create_datatable(
-      store$uploaded_df,
+      # store$uploaded_df,
+      user_modified_df(),
       selection = "none"
     )
   })
@@ -334,20 +515,22 @@ shinyServer(function(input, output, session) {
     )
   
   # update select inputs when the input data changes
-  observeEvent(store$uploaded_df, {
+  observeEvent(user_modified_df(), {
     
     # stop here if data hasn't been uploaded 
     validate(need(nrow(store$uploaded_df) > 0, 
                   "Data must be first uploaded. Please see 'Data' tab."))
     
     # infer which columns are Z, Y, and X columns for smart defaults
-    auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
+    auto_columns <- clean_detect_ZYX_columns(colnames(user_modified_df()))
+    
+    all_colnames <- colnames(user_modified_df())
     
     # fill the dropdown options with the colnames
     for (i in 1:3){
       updateSelectInput(session = session, 
                         inputId = analysis_data_select_selector_ids[i],
-                        choices = colnames(store$uploaded_df),
+                        choices = all_colnames,
                         selected = auto_columns[[i]]
       )
     }
@@ -355,7 +538,8 @@ shinyServer(function(input, output, session) {
   
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
-  observeEvent(input$analysis_data_select_column_save, {
+  # TODO: fixed issue caused by column name changes
+  observeEvent(input$analysis_data_save, {
     
     # get the current values of the select inputs
     all_selected_vars <- reactiveValuesToList(input)[analysis_data_select_selector_ids]
