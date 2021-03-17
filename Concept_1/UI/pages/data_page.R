@@ -23,52 +23,52 @@ data_page <- tabPanel(
                         # awesomeCheckbox(inputId = "analysis_data_check_auto_convert", 
                         #                 label = "Auto convert logical columns", 
                         #                 value = FALSE),
-                        tabsetPanel(
-                          id = NULL,
-                          tabPanel(
-                            title = 'Key variables',
-                            br(),
-                            # Column Selection for Z, and identify treatment
-                            selectInput(inputId = "analysis_data_select_select_zcol", 
-                                        label = "Select Treatment (Z) Column", 
-                                        choices = NULL),
-                            # TODO: automate this with a smart default
-                            # selectInput(inputId = "analysis_data_select_select_treatment", 
-                            #             label = "Select the Value Representing Receiving Treatment",
-                            #             choices = list('TRUE FALSE', '0 1', 'Yes No')),      
-                            selectInput(inputId = "analysis_data_select_select_ycol", 
-                                        label = "Select Response (Y) Column", 
-                                        choices = NULL), 
-                            selectInput(inputId = "analysis_data_select_select_xcol", 
-                                        label = "Select Covariates (X) Columns", 
-                                        choices = NULL, 
-                                        multiple = TRUE),
-                            # actionButton(inputId = 'analysis_data_select_column_save',
-                            #              label = 'Save column assignments'),
-                            div(
-                              class = 'backNextContainer',
-                              actionButton(inputId = 'analysis_data_text_reset',
-                                           label = 'Reset variable changes'),
-                              actionButton(inputId = 'analysis_data_save',
-                                           label = 'Save changes')
-                            ),
-                            br(),br(),
-                            tags$button(type = 'button',
-                                        class = 'btn btn-default help',
-                                        onclick = "openConceptsPage('Concept3')",
-                                        'Help me')
-                          ),
-                          tabPanel(
-                            title = 'Interpretation',
-                          h5("Specify descriptions for auto interpretation (TBD)"),
-                          textInput(inputId = 'analysis_data_text_treatment',
-                                    label = 'Treatment description',
-                                    placeholder = 'e.g. educational program'),
-                          textInput(inputId = 'analysis_data_text_unit',
-                                    label = 'Outcome units',
-                                    placeholder = 'e.g. income (USD)')
-                          )
-                        ),
+                        # tabsetPanel(
+                        #   id = NULL,
+                        #   tabPanel(
+                        #     title = 'Key variables',
+                        #     br(),
+                        #     # Column Selection for Z, and identify treatment
+                        #     selectInput(inputId = "analysis_data_select_select_zcol", 
+                        #                 label = "Select Treatment (Z) Column", 
+                        #                 choices = NULL),
+                        #     # TODO: automate this with a smart default
+                        #     # selectInput(inputId = "analysis_data_select_select_treatment", 
+                        #     #             label = "Select the Value Representing Receiving Treatment",
+                        #     #             choices = list('TRUE FALSE', '0 1', 'Yes No')),      
+                        #     selectInput(inputId = "analysis_data_select_select_ycol", 
+                        #                 label = "Select Response (Y) Column", 
+                        #                 choices = NULL), 
+                        #     selectInput(inputId = "analysis_data_select_select_xcol", 
+                        #                 label = "Select Covariates (X) Columns", 
+                        #                 choices = NULL, 
+                        #                 multiple = TRUE),
+                        #     # actionButton(inputId = 'analysis_data_select_column_save',
+                        #     #              label = 'Save column assignments'),
+                        #     div(
+                        #       class = 'backNextContainer',
+                        #       actionButton(inputId = 'analysis_data_text_reset',
+                        #                    label = 'Reset variable changes'),
+                        #       actionButton(inputId = 'analysis_data_save',
+                        #                    label = 'Save changes')
+                        #     ),
+                        #     br(),br(),
+                        #     tags$button(type = 'button',
+                        #                 class = 'btn btn-default help',
+                        #                 onclick = "openConceptsPage('Concept3')",
+                        #                 'Help me')
+                        #   ),
+                        #   tabPanel(
+                        #     title = 'Interpretation',
+                        #   h5("Specify descriptions for auto interpretation (TBD)"),
+                        #   textInput(inputId = 'analysis_data_text_treatment',
+                        #             label = 'Treatment description',
+                        #             placeholder = 'e.g. educational program'),
+                        #   textInput(inputId = 'analysis_data_text_unit',
+                        #             label = 'Outcome units',
+                        #             placeholder = 'e.g. income (USD)')
+                        #   )
+                        # ),
                         # awesomeCheckbox(inputId = 'analysis_data_modify',
                         #               label = "Modify your data",
                         #               value = FALSE
@@ -110,7 +110,18 @@ data_page <- tabPanel(
                         #                                          div(style='float:left;', 'Least Difficult'), 
                         #                                          div(style='float:right;', 'Most Difficult')), 
                         #                               min = 1, max = 6, value = 1, width = '400px')), 
-                        
+                        div(
+                          class = 'backNextContainer',
+                          actionButton(inputId = 'analysis_data_text_reset',
+                                       label = 'Reset variable changes'),
+                          actionButton(inputId = 'analysis_data_save',
+                                       label = 'Save changes')
+                        ),
+                        br(),br(),
+                        tags$button(type = 'button',
+                                    class = 'btn btn-default help',
+                                    onclick = "openConceptsPage('Concept3')",
+                                    'Help me'),
                         br(), br(),
                         actionButton(inputId = "analysis_data_load_button_next",
                                      label = "Next")

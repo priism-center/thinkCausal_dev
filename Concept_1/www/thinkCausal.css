@@ -461,31 +461,3 @@ border 0 fixes the buttons moving around when you hover / click */
 .progress {
   height: 1rem;
 }
-
-.backNextContainer > .dataSelectizeFirst {
-  max-width: 25%;
-  flex: 1;
-}
-
-.backNextContainer > .dataSelectizeSecond {
-  max-width: 25%;
-  padding: 0 0 0 2rem;
-  flex: 1;
-}
-
-.backNextContainer > .dataSelectizeThird {
-  max-width: 25%;
-  padding: 0 0 0 2rem;
-  flex: 1;
-}
-
-.backNextContainer > .dataSelectizeFourth {
-  max-width: 25%;
-  padding: 0 0 0 2rem;
-  flex: 1;
-}
-
-.backNextContainer > .dataSelectizeSecond > .form-group.shiny-input-container {
-  margin: 0 0 0 0 !important;
-  padding: 0 0 0 0 !important;
-}
