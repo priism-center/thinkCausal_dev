@@ -29,7 +29,7 @@ data_page <- tabPanel(
                                         label = "Select Covariates (X) Columns",
                                         choices = NULL,
                                         multiple = TRUE),
-                        actionButton(inputId = 'analysis_data_select_column_save',
+                        actionButton(inputId = 'analysis_data_button_columnAssignSave',
                                      label = 'Save column assignments'),
                         br(),br(),
                         tags$button(type = 'button',
@@ -52,6 +52,12 @@ data_page <- tabPanel(
                     # hr('Indicate Treatment Variable, Outcome Variable and Confounders'),
                     sidebarLayout(
                       sidebarPanel(
+                        br(),
+                        tags$button(type = 'button',
+                                    class = 'btn btn-default help',
+                                    onclick = "openConceptsPage('Concept3')",
+                                    'Help me'),
+                        br(),br(),
                         div(
                           class = 'backNextContainer',
                           actionButton(inputId = 'analysis_data_text_reset',
@@ -59,12 +65,7 @@ data_page <- tabPanel(
                           actionButton(inputId = 'analysis_data_save',
                                        label = 'Save changes')
                         ),
-                        br(),br(),
-                        tags$button(type = 'button',
-                                    class = 'btn btn-default help',
-                                    onclick = "openConceptsPage('Concept3')",
-                                    'Help me'),
-                        br(),br(),
+                        br(),
                         div(
                           class = 'backNextContainer',
                           actionButton(inputId = "analysis_data_select_button_back",

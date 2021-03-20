@@ -21,7 +21,7 @@
 #' @return
 #' @export
 #'
-#' @examples'
+#' @examples
 #' library(arm)
 #' X <- data(lalonde)
 #' X <- dplyr::select(X, 'treat', 're78', 'age', 'educ', 'black', 'hisp', 'married', 'nodegr')

@@ -19,3 +19,6 @@ ggplot object
 \description{
 Plot a simple DAG
 }
+\examples{
+plot_DAG("myZ", "myY", c("X1", "X2", "X3"))
+}

@@ -7,8 +7,11 @@
 #'
 #' @return ggplot object
 #' @export
+#' 
+#' @examples
+#' plot_DAG("myZ", "myY", c("X1", "X2", "X3"))
 plot_DAG <- function(Z_col, Y_col, X_cols){
-
+  
   validate_Z <- is.character(Z_col) & length(Z_col) == 1
   validate_Y <- is.character(Y_col) & length(Y_col) == 1
   validate_X <- is.character(Y_col)
@@ -57,7 +60,7 @@ plot_DAG <- function(Z_col, Y_col, X_cols){
     y = 0
   )
   
-  
+  # plot it
   p <- ggplot() +
     geom_segment(data = coordinates_arrows,
                  aes(x = x, xend = xend, y = y, yend = yend),

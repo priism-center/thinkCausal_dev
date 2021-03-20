@@ -59,3 +59,26 @@ plot_exploration(
 \description{
 To be used within Shiny
 }
+\examples{
+library(arm)
+X <- data(lalonde)
+X <- dplyr::select(X, 'treat', 're78', 'age', 'educ', 'black', 'hisp', 'married', 'nodegr')
+X <- clean_auto_convert_logicals(X)
+plot_exploration(
+.data = X,
+.plot_type = 'Boxplot', #c("Pairs", 'Scatter', 'Histogram', 'Density', 'Boxplot'),
+.x = 're78',
+.y = 'age',
+.fill = 'age',
+.fill_static = "#5c5980",
+.size = 'age',
+.alpha = 0.5,
+.vars_pairs,
+.n_bins = 30,
+.jitter = FALSE,
+.groups = 'None',
+.facet = 'None',
+.facet_second = 'None',
+.include_regression = 'None'
+)
+}

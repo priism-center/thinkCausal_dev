@@ -249,107 +249,7 @@ shinyServer(function(input, output, session) {
     store$user_modified_df <- user_modified_df 
   })
   
-  # render UI for modifying the data
-  # TODO there's a CSS padding or margin issue that causes the boxes to be misaligned on some browsers (linux firefox)
-  output$analysis_data_modify_UI <- renderUI({
-    
-    validate(need(nrow(store$uploaded_df) > 0,
-                  "Upload your data first"))
-    
-    # get default data types
-    default_data_types <- simple_data_types(store$uploaded_df)
-    
-    # set indices to map over
-    all_col_names <- colnames(store$uploaded_df)
-    indices <- seq_along(all_col_names)
-    
-    # render the header to the table
-    UI_header <- fluidRow(
-      column(1, h5("Include")),
-      column(3, h5('Column name')),
-      column(3, h5('Data type')),
-      column(3, h5('Levels')),
-      column(2, h5('Percent NA'))
-    )
-    
-    # render the rows
-    UI_grid <- lapply(indices, function(i){
-      fluidRow(
-          column(width = 1, 
-                 checkboxInput(
-                   inputId = paste0('analysis_data_', i, '_include'),
-                   label = NULL,
-                   value = TRUE
-                 )),
-          column(width = 3, 
-                 textInput(
-                   inputId = paste0("analysis_data_", i, "_rename"),
-                   label = NULL,
-                   value = all_col_names[i]
-                 )),
-          column(width = 3, 
-                 selectInput(
-                   inputId = paste0("analysis_data_", i, "_changeDataType"),
-                   label = NULL, 
-                   choices = c('Treatment', 'Response - continuous', 'Confounder - categorical', 'Confounder - continuous', 'Confounder - binary'),
-                   selected = default_data_types[i]
-                 )),
-          column(width = 3, 
-                 textInput(
-                   inputId = paste0("analysis_data_", i, "_levels"),
-                   label = NULL,
-                   placeholder = 'TBD'
-                 )),
-          column(width = 2, 
-                 textInput(
-                   inputId = paste0("analysis_data_", i, "_percentNA"),
-                   label = NULL, 
-                   placeholder = 'TBD'
-                 ))
-      )
-    })
 
-    # combine the header and the rows
-    UI_table <- tagList(UI_header, UI_grid)
-    
-    # add listeners that launch a popup if the user changes the data to categorical
-    # TODO this kind of works but is a mess; need to rethink the UI
-    # lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
-    #   dropdown_ID <- paste0("analysis_data_changeDataType_", i)
-    #   observeEvent(input[[dropdown_ID]], {
-    #     
-    #     if (input[[dropdown_ID]] == 'Logical'){
-    #       
-    #       # get the data levels to the current column
-    #       current_levels <- sort(unique(store$uploaded_df[[i]]))
-    #       
-    #       shinyWidgets::show_alert(
-    #         title = 'Choose the levels to the logical',
-    #         text = tags$div(
-    #           tagList(
-    #             selectInput(
-    #               inputId = paste0('analysis_data_changeDataType_popup_TRUE_', i),
-    #               label = 'TRUE',
-    #               choices = current_levels
-    #             ),
-    #             selectInput(
-    #               inputId = paste0('analysis_data_changeDataType_popup_FALSE_', i),
-    #               label = 'FALSE',
-    #               choices = current_levels
-    #             )
-    #           )
-    #         ),
-    #         html = TRUE,
-    #         btn_labels = "Save",
-    #         closeOnClickOutside = TRUE
-    #       )
-    #     }
-    #   })
-    # })
-    
-    return(UI_table)
-  })
-  
   # update percentNAs with actual data
   # TODO: issue here with mapping over the columns as some could be removed by user
   #   need a smarter way to manage the columns
@@ -546,25 +446,6 @@ shinyServer(function(input, output, session) {
     )
   })
   
-  output$analysis_data_plot_DAG <- renderPlot({
-    
-    # stop here if data hasn't been uploaded
-    validate(need(nrow(store$uploaded_df) > 0,
-                  "Data must be first uploaded. Please see 'Data' tab."))
-    
-    cols_z <- input$analysis_data_select_select_zcol
-    cols_y <- input$analysis_data_select_select_ycol
-    cols_x <- input$analysis_data_select_select_xcol
-    
-    # plot it
-    p <- plot_DAG(cols_z, cols_y, cols_x)
-    
-    return(p)
-  })
-  
-  
-  # select data -------------------------------------------------------------
-  
   # vector of selector ids
   analysis_data_select_selector_ids <-
     c(
@@ -575,16 +456,16 @@ shinyServer(function(input, output, session) {
   
   # update select inputs when the input data changes
   observeEvent(store$uploaded_df, {
-
+    
     # stop here if data hasn't been uploaded
     validate(need(nrow(store$uploaded_df) > 0,
                   "Data must be first uploaded. Please see 'Data' tab."))
-
+    
     # infer which columns are Z, Y, and X columns for smart defaults
     auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
-
+    
     all_colnames <- colnames(store$uploaded_df)
-
+    
     # fill the dropdown options with the colnames
     for (i in 1:3){
       updateSelectInput(session = session,
@@ -595,6 +476,119 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  # plot the DAG
+  output$analysis_data_plot_DAG <- renderPlot({
+    
+    # stop here if data hasn't been uploaded
+    validate(need(nrow(store$uploaded_df) > 0,
+                  "Data must be first uploaded. Please see 'Data' tab."))
+    
+    # get user inputs
+    cols_z <- input$analysis_data_select_select_zcol
+    cols_y <- input$analysis_data_select_select_ycol
+    cols_x <- input$analysis_data_select_select_xcol
+    
+    # plot it
+    p <- plot_DAG(cols_z, cols_y, cols_x)
+    
+    return(p)
+  })
+  
+  # create new dataframe when user saves column assignments
+  observeEvent(input$analysis_data_button_columnAssignSave, {
+    
+    #TODO: validation checks (e.g. duplicate columns)
+    
+    # use the uploaded df as the template
+    col_assignment_df <- store$uploaded_df
+    
+    # get user inputs
+    cols_z <- input$analysis_data_select_select_zcol
+    cols_y <- input$analysis_data_select_select_ycol
+    cols_x <- input$analysis_data_select_select_xcol
+    
+    # select only columns the user specified
+    col_assignment_df <- col_assignment_df[, c(cols_z, cols_y, cols_x)]
+    
+    # save columns assignments
+    store$column_assignments <- NULL
+    store$column_assignments$z <- cols_z
+    store$column_assignments$y <- cols_y
+    store$column_assignments$x <- cols_x
+    
+    # store it
+    store$col_assignment_df <- col_assignment_df
+  })
+  
+  # select data -------------------------------------------------------------
+  
+  # render UI for modifying the data
+  # TODO: UI doesn't render; some issue with reactivity
+  output$analysis_data_modify_UI <- renderUI({
+
+    # stop here if columns haven't been assigned yet
+    validate(need(nrow(store$col_assignment_df) > 0,
+                  "Data must be first uploaded and column assignments save. Please see 'Data - load' tab."))
+      
+    # get default data types
+    default_data_types <- simple_data_types(store$col_assignment_df)
+    
+    # set indices to map over
+    all_col_names <- colnames(store$col_assignment_df)
+    indices <- seq_along(all_col_names)
+    
+    # render the header to the table
+    UI_header <- fluidRow(
+      column(1, h5("Include")),
+      column(3, h5('Column name')),
+      column(3, h5('Data type')),
+      column(3, h5('Levels')),
+      column(2, h5('Percent NA'))
+    )
+    
+    # render the rows
+    UI_grid <- lapply(indices, function(i){
+      fluidRow(
+        column(width = 1, 
+               checkboxInput(
+                 inputId = paste0('analysis_data_', i, '_include'),
+                 label = NULL,
+                 value = TRUE
+               )),
+        column(width = 3, 
+               textInput(
+                 inputId = paste0("analysis_data_", i, "_rename"),
+                 label = NULL,
+                 value = all_col_names[i]
+               )),
+        column(width = 3, 
+               selectInput(
+                 inputId = paste0("analysis_data_", i, "_changeDataType"),
+                 label = NULL, 
+                 choices = c('Treatment', 'Response - continuous', 'Confounder - categorical', 'Confounder - continuous', 'Confounder - binary'),
+                 selected = default_data_types[i]
+               )),
+        column(width = 3, 
+               textInput(
+                 inputId = paste0("analysis_data_", i, "_levels"),
+                 label = NULL,
+                 placeholder = 'TBD'
+               )),
+        column(width = 2, 
+               textInput(
+                 inputId = paste0("analysis_data_", i, "_percentNA"),
+                 label = NULL, 
+                 placeholder = 'TBD'
+               ))
+      )
+    })
+    
+    # combine the header and the rows
+    UI_table <- tagList(UI_header, UI_grid)
+    
+    return(UI_table)
+  })
+
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
   # TODO: fixed issue caused by column name changes
