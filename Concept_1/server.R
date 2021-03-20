@@ -546,38 +546,54 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  output$analysis_data_plot_DAG <- renderPlot({
+    
+    # stop here if data hasn't been uploaded
+    validate(need(nrow(store$uploaded_df) > 0,
+                  "Data must be first uploaded. Please see 'Data' tab."))
+    
+    cols_z <- input$analysis_data_select_select_zcol
+    cols_y <- input$analysis_data_select_select_ycol
+    cols_x <- input$analysis_data_select_select_xcol
+    
+    # plot it
+    p <- plot_DAG(cols_z, cols_y, cols_x)
+    
+    return(p)
+  })
+  
   
   # select data -------------------------------------------------------------
   
   # vector of selector ids
-  # analysis_data_select_selector_ids <-
-  #   c(
-  #     "analysis_data_select_select_zcol",
-  #     "analysis_data_select_select_ycol",
-  #     "analysis_data_select_select_xcol"
-  #   )
+  analysis_data_select_selector_ids <-
+    c(
+      "analysis_data_select_select_zcol",
+      "analysis_data_select_select_ycol",
+      "analysis_data_select_select_xcol"
+    )
   
-  # # update select inputs when the input data changes
-  # observeEvent(user_modified_df(), {
-  #   
-  #   # stop here if data hasn't been uploaded 
-  #   validate(need(nrow(store$uploaded_df) > 0, 
-  #                 "Data must be first uploaded. Please see 'Data' tab."))
-  #   
-  #   # infer which columns are Z, Y, and X columns for smart defaults
-  #   auto_columns <- clean_detect_ZYX_columns(colnames(user_modified_df()))
-  #   
-  #   all_colnames <- colnames(user_modified_df())
-  #   
-  #   # fill the dropdown options with the colnames
-  #   for (i in 1:3){
-  #     updateSelectInput(session = session, 
-  #                       inputId = analysis_data_select_selector_ids[i],
-  #                       choices = all_colnames,
-  #                       selected = auto_columns[[i]]
-  #     )
-  #   }
-  # })
+  # update select inputs when the input data changes
+  observeEvent(store$uploaded_df, {
+
+    # stop here if data hasn't been uploaded
+    validate(need(nrow(store$uploaded_df) > 0,
+                  "Data must be first uploaded. Please see 'Data' tab."))
+
+    # infer which columns are Z, Y, and X columns for smart defaults
+    auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
+
+    all_colnames <- colnames(store$uploaded_df)
+
+    # fill the dropdown options with the colnames
+    for (i in 1:3){
+      updateSelectInput(session = session,
+                        inputId = analysis_data_select_selector_ids[i],
+                        choices = all_colnames,
+                        selected = auto_columns[[i]]
+      )
+    }
+  })
   
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns

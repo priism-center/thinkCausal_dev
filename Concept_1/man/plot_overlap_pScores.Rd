@@ -4,7 +4,7 @@
 \alias{plot_overlap_pScores}
 \title{Plot the overlap via propensity score method}
 \usage{
-plot_overlap_pScores(.data)
+plot_overlap_pScores(.data, plt_type)
 }
 \arguments{
 \item{.data}{dataframe. Typically store$selected_df}
