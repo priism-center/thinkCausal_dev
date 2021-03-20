@@ -440,6 +440,11 @@ border 0 fixes the buttons moving around when you hover / click */
   margin-left: auto;
   margin-right: auto;
   object-fit: cover;
+} %>% 
+
+/* make consistent height of grid bricks on concepts page */
+#conceptsGrid1 > .row > .col-sm-3 > .well {
+  height: 45rem;
 }
 
 .backNextContainer {
@@ -461,3 +466,4 @@ border 0 fixes the buttons moving around when you hover / click */
 .progress {
   height: 1rem;
 }
+

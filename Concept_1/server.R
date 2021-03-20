@@ -291,7 +291,7 @@ shinyServer(function(input, output, session) {
                  selectInput(
                    inputId = paste0("analysis_data_", i, "_changeDataType"),
                    label = NULL, 
-                   choices = c('Treatment', 'Response - continuous', 'Confounder - categorical', 'Confounder - continuous', 'Confounder - logical'),
+                   choices = c('Treatment', 'Response - continuous', 'Confounder - categorical', 'Confounder - continuous', 'Confounder - binary'),
                    selected = default_data_types[i]
                  )),
           column(width = 3, 
@@ -404,20 +404,20 @@ shinyServer(function(input, output, session) {
   #   # }
   # })
   
-  # overwrite column names when user saves new names
-  observeEvent(input$analysis_data_button_modify_save, {
-    validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
-    
-    # rename the columns
-    indices <- seq_along(colnames(store$uploaded_df))
-    input_ids <- paste0("analysis_data_", indices, "_rename")
-    inputted_name_values <- reactiveValuesToList(input)[input_ids]
-    colnames(store$uploaded_df) <- inputted_name_values
-    
-    # change the data types
-    # TODO
-    
-  })
+  # # overwrite column names when user saves new names
+  # observeEvent(input$analysis_data_button_modify_save, {
+  #   validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
+  #   
+  #   # rename the columns
+  #   indices <- seq_along(colnames(store$uploaded_df))
+  #   input_ids <- paste0("analysis_data_", indices, "_rename")
+  #   inputted_name_values <- reactiveValuesToList(input)[input_ids]
+  #   colnames(store$uploaded_df) <- inputted_name_values
+  #   
+  #   # change the data types
+  #   # TODO
+  #   
+  # })
   
   # # make columns that are not selected by the user explicit by removing them
   # observe({

@@ -15,9 +15,11 @@ concepts_header <- navbarMenu(
                           actionLink('practice_test', img(src = 'thumbnails/practice_test.png')), 
                           br(), 
                           h3("Test Your Understanding"), 
-                          p("Take practice tests on casual infernece concperts")
+                          p("Take practice tests on causal inference concepts")
                         )
-                 ),
+                 )
+               ),
+               fluidRow(
                  column(3, 
                         wellPanel(
                           img(src = 'thumbnails/propensity.png'),
