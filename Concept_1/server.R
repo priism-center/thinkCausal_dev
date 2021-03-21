@@ -202,20 +202,52 @@ shinyServer(function(input, output, session) {
     # use assigned dataframe as the template
     user_modified_df <- store$col_assignment_df
 
-    # change column names
+    # get input indices
     indices <- seq_along(user_modified_df)
+    
+    # change column names
     user_entered_names <- sapply(indices, function(i) input[[paste0("analysis_data_", i, '_rename')]])
     names(user_modified_df) <- user_entered_names
     
     # TODO
     # change data type
+    user_entered_dataTypes <- sapply(indices, function(i) input[[paste0("analysis_data_", i, '_changeDataType')]])
+    print(user_entered_dataTypes)
+    # user_modified_df <- convert_data_type_to_complex(user_modified_df, user_entered_dataTypes)
     
-    # TODO
+    # TODO?
     # change categorical levels
 
 
     # save the data to the store
     store$user_modified_df <- user_modified_df 
+  })
+  
+  # reset dataframe back to original when user clicks button
+  observeEvent(input$analysis_data_button_reset, {
+    
+    # reset dataframe
+    store$user_modified_df <- store$col_assignment_df
+    
+    ## reset UI
+    # set indices to map over
+    all_col_names <- colnames(store$col_assignment_df)
+    default_data_types <- convert_data_type_to_simple(store$col_assignment_df)
+    indices <- seq_along(all_col_names)
+    
+    # update the inputs
+    lapply(indices, function(i){
+      updateTextInput(
+        session = session,
+        inputId = paste0("analysis_data_", i, "_rename"),
+        value = all_col_names[i]
+      )
+      updateSelectInput(
+        session = session,
+        inputId = paste0("analysis_data_", i, "_changeDataType"),
+        selected = default_data_types[i]
+      )
+    })
   })
   
   # # render UI for changing the data types
@@ -252,11 +284,13 @@ shinyServer(function(input, output, session) {
     validate(need(nrow(store$col_assignment_df) > 0,
                   "Columns must first be assigned. Please see 'Load data' tab."))
     
-    
-    create_datatable(
+    # create JS datatable
+    tab <- create_datatable(
       store$user_modified_df,
       selection = "none"
     )
+    
+    return(tab)
   })
   
   # vector of selector ids
@@ -363,7 +397,7 @@ shinyServer(function(input, output, session) {
                   "Columns must first be assigned. Please see 'Load data' tab."))
       
     # get default data types
-    default_data_types <- clean_data_types(store$col_assignment_df)
+    default_data_types <- convert_data_type_to_simple(store$col_assignment_df)
     
     # set indices to map over
     all_col_names <- colnames(store$col_assignment_df)
@@ -460,6 +494,7 @@ shinyServer(function(input, output, session) {
       )
     })
   })
+  
 
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
@@ -551,10 +586,12 @@ shinyServer(function(input, output, session) {
   output$analysis_data_select_table <- DT::renderDataTable({
     
     # render the table
-    create_datatable(
+    tab <- create_datatable(
       store$selected_df,
       selection = "none"
     )
+    
+    return(tab)
   })
   
   

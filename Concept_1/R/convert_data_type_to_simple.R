@@ -2,10 +2,12 @@
 #'
 #' Categorizes R data types into 'Continuous', 'Categorical', or 'Binary'  
 #'
-#' @param input_data dataframe
+#' @param .data dataframe
 #'
-#' @return character vector of length ncol(input_data)
+#' @return character vector of length ncol(.data)
 #' @export
+#'
+#' @seealso \code{\link{convert_data_type_to_complex}}
 #'
 #' @examples
 #' n_row <- 10
@@ -13,11 +15,11 @@
 #' my_logical = sample(c(TRUE, FALSE), size = n_row, replace = TRUE)
 #' my_numeric = rnorm(n_row)
 #' X <- data.frame(my_character = my_character, my_logical = my_logical, my_numeric = my_numeric)
-#' clean_data_types(X)
-clean_data_types <- function(input_data){
+#' convert_data_type_to_simple(X)
+convert_data_type_to_simple <- function(.data){
 
   # get raw data types
-  raw_data_types <- sapply(input_data, class)
+  raw_data_types <- sapply(.data, class)
   
   # create mapping between complex and simple data types
   data_type_mapping <- data.frame(

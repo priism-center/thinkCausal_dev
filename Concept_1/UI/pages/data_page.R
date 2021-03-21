@@ -61,7 +61,7 @@ data_page <- tabPanel(
                         br(),br(),
                         div(
                           class = 'backNextContainer',
-                          actionButton(inputId = 'analysis_data_text_reset',
+                          actionButton(inputId = 'analysis_data_button_reset',
                                        label = 'Reset variable changes'),
                           actionButton(inputId = 'analysis_data_save',
                                        label = 'Save changes')
@@ -84,7 +84,7 @@ data_page <- tabPanel(
                         ),
                         hr(style = "height: 1px; background-color: #bfbfbf"),
                         h4("Your data", style = "padding: 0; margin: 0"),
-                        wellPanel(
+                        wellPanel( #TODO: remove well and make the js data.table scrollable instead?
                           style = "overflow-y:scroll; max-height: 400px; background-color: transparent; overflow-y: scroll",
                           DT::dataTableOutput('analysis_data_table')
                         ),
