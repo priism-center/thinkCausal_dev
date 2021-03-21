@@ -218,38 +218,6 @@ shinyServer(function(input, output, session) {
     store$user_modified_df <- user_modified_df 
   })
   
-
-  # update levels and percentNAs fields with actual data
-  observeEvent(store$user_modified_df, {
-
-    # stop here if columns haven't been assigned
-    validate(need(nrow(store$col_assignment_df) > 0,
-                  "Columns must first be assigned. Please see 'Load data' tab."))
-    
-    # original data column indices
-    indices <- seq_along(colnames(store$col_assignment_df))
-
-    lapply(X = indices, function(i) {
-      
-      # TODO
-      ## update the levels
-      
-      ## update the percent NA
-      # calculate percent NA
-      percent_NA <- mean(is.na(store$user_modified_df[[i]]))
-      percent_NA <- paste0(round(percent_NA, 3) * 100, "%")
-
-      # update the value
-      updateTextInput(
-        session = session,
-        inputId = paste0("analysis_data_", i, "_percentNA"),
-        value = percent_NA
-      )
-    })
-  })
-  
-  #
-  
   # # render UI for changing the data types
   # output$analysis_data_changeDataTypes_UI <- renderUI({
   #   
@@ -376,6 +344,12 @@ shinyServer(function(input, output, session) {
     
     # store it
     store$col_assignment_df <- col_assignment_df
+    
+    # launch success message
+    shinyWidgets::show_alert(
+      title = 'Column assignments saved',
+      type = 'success'
+    )
   })
   
   
@@ -389,7 +363,7 @@ shinyServer(function(input, output, session) {
                   "Columns must first be assigned. Please see 'Load data' tab."))
       
     # get default data types
-    default_data_types <- simple_data_types(store$col_assignment_df)
+    default_data_types <- clean_data_types(store$col_assignment_df)
     
     # set indices to map over
     all_col_names <- colnames(store$col_assignment_df)
@@ -422,27 +396,31 @@ shinyServer(function(input, output, session) {
                textInput(
                  inputId = paste0("analysis_data_", i, "_rename"),
                  label = NULL,
-                 value = all_col_names[i]
-               )),
+                 value = all_col_names[i])
+        ),
         column(width = 2, 
                selectInput(
                  inputId = paste0("analysis_data_", i, "_changeDataType"),
                  label = NULL, 
                  choices = c('Continuous', 'Categorical', 'Binary'),
-                 selected = default_data_types[i]
-               )),
+                 selected = default_data_types[i])
+        ),
         column(width = 3, 
-               textInput(
-                 inputId = paste0("analysis_data_", i, "_levels"),
-                 label = NULL,
-                 placeholder = 'TBD'
-               )),
+               shinyjs::disabled(
+                 textInput(
+                   inputId = paste0("analysis_data_", i, "_levels"),
+                   label = NULL,
+                   placeholder = 'TBD')
+               )
+        ),
         column(width = 2, 
-               textInput(
-                 inputId = paste0("analysis_data_", i, "_percentNA"),
-                 label = NULL, 
-                 placeholder = 'TBD'
-               ))
+               shinyjs::disabled(
+                 textInput(
+                   inputId = paste0("analysis_data_", i, "_percentNA"),
+                   label = NULL, 
+                   placeholder = 'TBD')
+               )
+        )
       )
     })
     
@@ -452,7 +430,36 @@ shinyServer(function(input, output, session) {
     return(UI_table)
   })
   
-  
+  # update levels and percentNAs fields with actual data
+  observeEvent(store$user_modified_df, {
+    
+    # stop here if columns haven't been assigned
+    validate(need(nrow(store$col_assignment_df) > 0,
+                  "Columns must first be assigned. Please see 'Load data' tab."))
+    
+    # original data column indices
+    indices <- seq_along(colnames(store$col_assignment_df))
+    
+    lapply(X = indices, function(i) {
+      
+      # update the levels
+      col_levels <- unique(store$col_assignment_df[[i]])
+      updateTextInput(
+        session = session,
+        inputId = paste0("analysis_data_", i, "_levels"),
+        value = col_levels
+      )
+      
+      # update the percent NA
+      percent_NA <- mean(is.na(store$user_modified_df[[i]]))
+      percent_NA <- paste0(round(percent_NA, 3) * 100, "%")
+      updateTextInput(
+        session = session,
+        inputId = paste0("analysis_data_", i, "_percentNA"),
+        value = percent_NA
+      )
+    })
+  })
 
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
