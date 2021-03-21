@@ -8,10 +8,10 @@ shinyServer(function(input, output, session) {
   
   # data page
   observeEvent(input$analysis_data_load_button_next, {
-    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected ="Select Data")
+    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Select Data")
   })
   observeEvent(input$analysis_data_select_button_back, {
-    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Load")
+    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Load Data")
   })
   observeEvent(input$analysis_data_select_button_next, {
     
@@ -192,222 +192,63 @@ shinyServer(function(input, output, session) {
   # })
   
   
-  # function that returns the dataframe with the user's modifications on
-  #   the data upload page
-  # user_modified_df <- reactive({
-    
+  # maintain a user modifed dataframe that is continuous updated
   observe({
-    user_modified_df <- store$uploaded_df
+    
+    # stop here if columns haven't been assigned
+    validate(need(nrow(store$col_assignment_df) > 0,
+                  "Columns must first be assigned. Please see 'Load data' tab."))
+    
+    # use assigned dataframe as the template
+    user_modified_df <- store$col_assignment_df
 
     # change column names
-    indices <- seq_along(colnames(store$uploaded_df))
+    indices <- seq_along(user_modified_df)
     user_entered_names <- sapply(indices, function(i) input[[paste0("analysis_data_", i, '_rename')]])
     names(user_modified_df) <- user_entered_names
     
+    # TODO
     # change data type
     
-    
+    # TODO
     # change categorical levels
-  
-    
-    ## remove columns that aren't specified by the user
-    checkmark_ids <- paste0('analysis_data_' , indices, '_include')
-    is_included <- reactiveValuesToList(input)[checkmark_ids]
 
-    # only remove columns once UI is rendered
-    is_all_null <- all(lapply(is_included, is.null))
-    if (isFALSE(is_all_null)){
-      included_column_indices <- which(unlist(is_included))
-      user_modified_df <- user_modified_df[, included_column_indices]
-      
-      # add current columns as a list to the store
-      store$current_columns_selected <- is_included[is_included == TRUE]
-    }
-    
-    
-    
-    # TODO:
-    # # get currently selected columns
-    # user_selected_cols <- c(input$analysis_data_select_select_zcol,
-    #                         input$analysis_data_select_select_ycol,
-    #                         input$analysis_data_select_select_xcol)
-    # user_selected_cols <- unlist(user_selected_cols)
-    # if (isFALSE(all(nchar(user_selected_cols) == 0))){
-    #   # get the current inputted named for these columns
-    #   indices <- seq_along(colnames(store$uploaded_df))
-    #   ids <- paste0("analysis_data_", indices, '_rename')
-    #   current_name_values <- reactiveValuesToList(input)[ids]
-    # 
-    #   # which columns are included?
-    #   included_colnames <- current_name_values[current_name_values %in% user_selected_cols]
-    # 
-    #   # subset the main dataframe to only include the included columns
-    #   user_modified_df <- user_modified_df[, unlist(included_colnames)]
-    # }
 
-    # return(user_modified_df)
+    # save the data to the store
     store$user_modified_df <- user_modified_df 
   })
   
 
-  # update percentNAs with actual data
-  # TODO: issue here with mapping over the columns as some could be removed by user
-  #   need a smarter way to manage the columns
-  # observeEvent(user_modified_df(), {
-  # observeEvent(store$user_modified_df, {
-  #   
-  #   # original data column indices
-  #   indices <- seq_along(colnames(store$current_columns_selected))
-  #   # all_ids <- paste0("analysis_data_", seq_along(colnames(store$uploaded_df)), "_percentNA")
-  #   
-  #   lapply(X = indices, function(i) {
-  #     # calculate percent NA
-  #     percent_NA <- mean(is.na(store$user_modified_df[[i]]))
-  #     percent_NA <- paste0(round(percent_NA, 3) * 100, "%") 
-  #     
-  #     # extract number for matching 
-  #     text_id <- stringr::str_extract(store$current_columns_selected[i], '\\d+')
-  #     
-  #     # update the value
-  #     updateTextInput(
-  #       session = session,
-  #       inputId = paste0("analysis_data_", text_id, "_percentNA"),
-  #       value = percent_NA
-  #     )
-  #   })
-  #   
-  #   # # which columns are currently included
-  #   # checkmark_ids <- paste0('analysis_data_' , indices, '_include')
-  #   # checkmark_values <- reactiveValuesToList(input)[checkmark_ids]
-  #   # 
-  #   # # return a vector that is TRUE when the column is kept by the user and FALSE when not
-  #   # is_all_null <- all(lapply(checkmark_values, is.null))
-  #   # if (isFALSE(is_all_null)){
-  #   #   cols_included <- checkmark_values == TRUE
-  #   # 
-  #   #   # loop through the columns and update the values
-  #   #   lapply(X = indices, FUN = function(i) {
-  #   #     if (isTRUE(cols_included[[i]])){
-  #   #       # calculate percent NA
-  #   #       # percent_NA <- mean(is.na(user_modified_df()[[i]]))
-  #   #       percent_NA <- mean(is.na(store$user_modified_df[[i]]))
-  #   #       percent_NA <- paste0(round(percent_NA, 3) * 100, "%") 
-  #   #       
-  #   #       # update the value
-  #   #       updateTextInput(
-  #   #         session = session,
-  #   #         inputId = paste0("analysis_data_", i, "_percentNA"),
-  #   #         value = percent_NA
-  #   #       )
-  #   #     }
-  #   #   })
-  #   # }
-  # })
+  # update levels and percentNAs fields with actual data
+  observeEvent(store$user_modified_df, {
+
+    # stop here if columns haven't been assigned
+    validate(need(nrow(store$col_assignment_df) > 0,
+                  "Columns must first be assigned. Please see 'Load data' tab."))
+    
+    # original data column indices
+    indices <- seq_along(colnames(store$col_assignment_df))
+
+    lapply(X = indices, function(i) {
+      
+      # TODO
+      ## update the levels
+      
+      ## update the percent NA
+      # calculate percent NA
+      percent_NA <- mean(is.na(store$user_modified_df[[i]]))
+      percent_NA <- paste0(round(percent_NA, 3) * 100, "%")
+
+      # update the value
+      updateTextInput(
+        session = session,
+        inputId = paste0("analysis_data_", i, "_percentNA"),
+        value = percent_NA
+      )
+    })
+  })
   
-  # # overwrite column names when user saves new names
-  # observeEvent(input$analysis_data_button_modify_save, {
-  #   validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
-  #   
-  #   # rename the columns
-  #   indices <- seq_along(colnames(store$uploaded_df))
-  #   input_ids <- paste0("analysis_data_", indices, "_rename")
-  #   inputted_name_values <- reactiveValuesToList(input)[input_ids]
-  #   colnames(store$uploaded_df) <- inputted_name_values
-  #   
-  #   # change the data types
-  #   # TODO
-  #   
-  # })
-  
-  # # make columns that are not selected by the user explicit by removing them
-  # observe({
-  #   
-  #   validate(need(isFALSE(is.null(input$analysis_data_select_select_zcol)),
-  #                 "Need dropdowns to first be rendered"),
-  #            need(isFALSE(is.null(input$analysis_data_select_select_ycol)),
-  #                 "Need dropdowns to first be rendered"),
-  #            need(isFALSE(is.null(input$analysis_data_select_select_xcol)),
-  #                 "Need dropdowns to first be rendered"))
-  #   
-  #   # get currently selected columns
-  #   user_selected_cols <- c(input$analysis_data_select_select_zcol,
-  #                           input$analysis_data_select_select_ycol,
-  #                           input$analysis_data_select_select_xcol)
-  #   user_selected_cols <- unlist(user_selected_cols)
-  #   
-  #   # get the current inputted named for these columns
-  #   indices <- seq_along(colnames(store$uploaded_df))
-  #   ids <- paste0("analysis_data_", indices, '_rename')
-  #   current_name_values <- reactiveValuesToList(input)[ids]
-  #   
-  #   # which ones are missing?
-  #   is_missing <- !(current_name_values %in% user_selected_cols)
-  #   
-  #   # remove the missing blocks
-  #   missing_id_indices <- which(is_missing)
-  #   lapply(missing_id_indices, function(index){
-  #     shinyjs::runjs(
-  #       paste0(
-  #         paste0('document.getElementById("',
-  #                paste0('analysis_data_', index, '_rename'),
-  #                '").style.display = "none";'),
-  #         paste0('document.getElementById("',
-  #                paste0('analysis_data_', index, '_changeDataType'),
-  #                '").parentElement.style.display = "none";'),
-  #         paste0('document.getElementById("',
-  #                paste0('analysis_data_', index, '_levels'),
-  #                '").style.display = "none";'),
-  #         paste0('document.getElementById("',
-  #                paste0('analysis_data_', index, '_percentNA'),
-  #                '").style.display = "none";')
-  #       )
-  #     )
-  #   })
-  #   
-  #   # force all the other ones to appear
-  #   included_ids <- which(!is_missing)
-  #   lapply(included_ids, function(index){
-  #     shinyjs::runjs(
-  #       paste0(
-  #         paste0('document.getElementById("',
-  #                paste0('analysis_data_', index, '_rename'),
-  #                '").style.display = "block";'),
-  #         paste0('document.getElementById("',
-  #                paste0('analysis_data_', index, '_changeDataType'),
-  #                '").parentElement.style.display = "block";'),
-  #         paste0('document.getElementById("',
-  #                paste0('analysis_data_', index, '_levels'),
-  #                '").style.display = "block";'),
-  #         paste0('document.getElementById("',
-  #                paste0('analysis_data_', index, '_percentNA'),
-  #                '").style.display = "block";')
-  #       )
-  #     )
-  #   })
-  # })
-  
-  
-  # # render UI for renaming the columns
-  # # TODO change CSS to render label side by side
-  # output$analysis_data_rename_UI <- renderUI({
-  #   tagList(
-  #     lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
-  #       textInput(
-  #         inputId = paste0("analysis_data_rename_", i),
-  #         label = colnames(store$uploaded_df)[i],
-  #         value = colnames(store$uploaded_df)[i]
-  #       )
-  #     })
-  #   )
-  # })
-  
-  # # overwrite column names when user saves new names
-  # observeEvent(input$analysis_data_button_rename_save, {
-  #   validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
-  #   input_ids <- paste0("analysis_data_rename_", seq_along(colnames(store$uploaded_df)))
-  #   inputted_name_values <- reactiveValuesToList(input)[input_ids]
-  #   colnames(store$uploaded_df) <- inputted_name_values
-  # })
+  #
   
   # # render UI for changing the data types
   # output$analysis_data_changeDataTypes_UI <- renderUI({
@@ -438,9 +279,13 @@ shinyServer(function(input, output, session) {
   
   # table of selected dataset
   output$analysis_data_table <- DT::renderDataTable({
+    
+    # stop here if columns haven't been assigned
+    validate(need(nrow(store$col_assignment_df) > 0,
+                  "Columns must first be assigned. Please see 'Load data' tab."))
+    
+    
     create_datatable(
-      # store$uploaded_df,
-      # user_modified_df(),
       store$user_modified_df,
       selection = "none"
     )
@@ -497,18 +342,31 @@ shinyServer(function(input, output, session) {
   # create new dataframe when user saves column assignments
   observeEvent(input$analysis_data_button_columnAssignSave, {
     
-    #TODO: validation checks (e.g. duplicate columns)
-    
-    # use the uploaded df as the template
-    col_assignment_df <- store$uploaded_df
-    
     # get user inputs
     cols_z <- input$analysis_data_select_select_zcol
     cols_y <- input$analysis_data_select_select_ycol
     cols_x <- input$analysis_data_select_select_xcol
+    all_cols <- unlist(c(cols_z, cols_y, cols_x))
+
+    # are there duplicate selections?
+    all_unique <- isTRUE(length(all_cols) == length(unique(all_cols)))
     
+    # launch error message
+    if (!all_unique){
+      shinyWidgets::show_alert(
+        title = 'Duplicative column assignment',
+        text = "At least one column has been selected for two different assignments. Please correct before saving.",
+        type = 'error'
+      )
+    }
+    
+    validate(need(all_unique, "There are duplicate column selections"))
+    
+    # use the uploaded df as the template
+    col_assignment_df <- store$uploaded_df
+        
     # select only columns the user specified
-    col_assignment_df <- col_assignment_df[, c(cols_z, cols_y, cols_x)]
+    col_assignment_df <- col_assignment_df[, all_cols]
     
     # save columns assignments
     store$column_assignments <- NULL
@@ -520,15 +378,15 @@ shinyServer(function(input, output, session) {
     store$col_assignment_df <- col_assignment_df
   })
   
+  
   # select data -------------------------------------------------------------
   
   # render UI for modifying the data
-  # TODO: UI doesn't render; some issue with reactivity
   output$analysis_data_modify_UI <- renderUI({
 
-    # stop here if columns haven't been assigned yet
+    # stop here if columns haven't been assigned
     validate(need(nrow(store$col_assignment_df) > 0,
-                  "Data must be first uploaded and column assignments save. Please see 'Data - load' tab."))
+                  "Columns must first be assigned. Please see 'Load data' tab."))
       
     # get default data types
     default_data_types <- simple_data_types(store$col_assignment_df)
@@ -537,35 +395,40 @@ shinyServer(function(input, output, session) {
     all_col_names <- colnames(store$col_assignment_df)
     indices <- seq_along(all_col_names)
     
+    # create vector of column type names
+    column_types <- c('Treatment', 'Outcome', rep('Confounder', length(all_col_names)-2))
+    
     # render the header to the table
     UI_header <- fluidRow(
-      column(1, h5("Include")),
+      column(2, h5('Type')),
       column(3, h5('Column name')),
-      column(3, h5('Data type')),
+      column(2, h5('Data type')),
       column(3, h5('Levels')),
       column(2, h5('Percent NA'))
     )
     
     # render the rows
-    UI_grid <- lapply(indices, function(i){
+    UI_grid <- lapply(indices, FUN = function(i){
       fluidRow(
-        column(width = 1, 
-               checkboxInput(
-                 inputId = paste0('analysis_data_', i, '_include'),
-                 label = NULL,
-                 value = TRUE
-               )),
+        column(width = 2,
+               shinyjs::disabled(
+                 textInput(
+                   inputId = paste0('analysis_data_', i, '_type'),
+                   label = NULL,
+                   value = column_types[i])
+               )
+        ),
         column(width = 3, 
                textInput(
                  inputId = paste0("analysis_data_", i, "_rename"),
                  label = NULL,
                  value = all_col_names[i]
                )),
-        column(width = 3, 
+        column(width = 2, 
                selectInput(
                  inputId = paste0("analysis_data_", i, "_changeDataType"),
                  label = NULL, 
-                 choices = c('Treatment', 'Response - continuous', 'Confounder - categorical', 'Confounder - continuous', 'Confounder - binary'),
+                 choices = c('Continuous', 'Categorical', 'Binary'),
                  selected = default_data_types[i]
                )),
         column(width = 3, 
@@ -585,48 +448,23 @@ shinyServer(function(input, output, session) {
     
     # combine the header and the rows
     UI_table <- tagList(UI_header, UI_grid)
-    
+
     return(UI_table)
   })
+  
+  
 
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
   # TODO: fixed issue caused by column name changes
   observeEvent(input$analysis_data_save, {
     
-    # # get the current values of the select inputs
-    # all_selected_vars <- reactiveValuesToList(input)[analysis_data_select_selector_ids]
-    # has_values <- all(!sapply(all_selected_vars, is.null))
-    
-    # # stop here if all dropdowns are somehow not selected
-    # validate(need(has_values, "Need all dropdowns to be selected"))
-    
-    # # if all the values have been selected then update the new dataframe
-    # Z <- all_selected_vars[1]
-    # Y <- all_selected_vars[2]
-    # X <- unlist(all_selected_vars[3])
-    
-    # # stop here if there are overlapping column assignments
-    # inputs_are_all_unique <- length(unique(unlist(all_selected_vars))) == length(unlist(all_selected_vars))
-    # if (isFALSE(inputs_are_all_unique)){
-    #   shinyWidgets::show_alert(
-    #     title = 'Duplicative column assignment',
-    #     text = "At least one column has been selected for two different assignments. Please correct before saving.",
-    #     type = 'error'
-    #   )
-    # }
-    # validate(need(inputs_are_all_unique, "There are duplicative input columns"))
-    
-    # # new column names
-    # # TODO: update these with better labels
-    # new_col_names <- paste0(c('Z', 'Y', paste0('X', 1:length(X))),
-    #                         "_",
-    #                         unlist(all_selected_vars))
-    # 
-    # # create new dataframe of just the selected vars and rename them
-    # store$selected_df <- store$uploaded_df[, unlist(all_selected_vars)]
-    # colnames(store$selected_df) <- new_col_names
-    
+    # new column names
+    # TODO: update these with better labels
+    new_col_names <- paste0(c('Z', 'Y', 'X'),
+                            "_",
+                            colnames(store$user_modified_df))
+
     # # save original column names
     # store$selected_df_original_names <- all_selected_vars
     
@@ -637,14 +475,6 @@ shinyServer(function(input, output, session) {
     # cols_by_class <- split(names(store$selected_df), sapply(store$selected_df, function(x) paste(class(x), collapse = " ")))
     # store$selected_df_categorical_vars <- as.vector(unlist(cols_by_class[classes_categorical]))
     # store$selected_df_numeric_vars <- as.vector(unlist(cols_by_class[classes_continuous]))
-    
-    # create new vector of column names
-    # TODO: map this to the 'data type' columns
-    # new_col_names <- paste0(c('Z', 'Y', paste0('X', 1:length(X))),
-    #                         "_",
-    #                         unlist(all_selected_vars))
-    n_cols <- ncol(store$user_modified_df)-2
-    new_col_names <- c("Z", "Y", paste0(paste0('X_', rep('tmp', n_cols)), 1:n_cols))
     
     # create new dataframe of just the selected vars and rename them
     store$selected_df <- store$user_modified_df

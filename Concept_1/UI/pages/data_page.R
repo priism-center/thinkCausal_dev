@@ -2,11 +2,11 @@ data_page <- tabPanel(
   title = 'Data', 
          tabsetPanel(
            id = "analysis_data_tabs",
-           tabPanel(title = "Load",
+           tabPanel(title = "Load Data",
                     fluid = TRUE,
                     sidebarLayout(
                       sidebarPanel(
-                        h4("Upload Your Data:"),
+                        h4("Upload your data"),
                         div(id = "upload_file_div",
                           fileInput(inputId = "analysis_data_upload", 
                                     label = "Choose File",
@@ -19,16 +19,16 @@ data_page <- tabPanel(
                         awesomeCheckbox(inputId = "analysis_data_header", 
                                         label = "Data contains a header row", 
                                         value = TRUE),
-                            selectInput(inputId = "analysis_data_select_select_zcol",
-                                        label = "Select Treatment (Z) Column",
-                                        choices = NULL),
-                            selectInput(inputId = "analysis_data_select_select_ycol",
-                                        label = "Select Response (Y) Column",
-                                        choices = NULL),
-                            selectInput(inputId = "analysis_data_select_select_xcol",
-                                        label = "Select Covariates (X) Columns",
-                                        choices = NULL,
-                                        multiple = TRUE),
+                        selectInput(inputId = "analysis_data_select_select_ycol",
+                                    label = "Select Response (Y) Column",
+                                    choices = NULL),
+                        selectInput(inputId = "analysis_data_select_select_zcol",
+                                    label = "Select Treatment (Z) Column",
+                                    choices = NULL),
+                        selectInput(inputId = "analysis_data_select_select_xcol",
+                                    label = "Select Covariates (X) Columns",
+                                    choices = NULL,
+                                    multiple = TRUE),
                         actionButton(inputId = 'analysis_data_button_columnAssignSave',
                                      label = 'Save column assignments'),
                         br(),br(),
@@ -49,9 +49,10 @@ data_page <- tabPanel(
            ),
            tabPanel(title = "Select Data",
                     fluid = TRUE,
-                    # hr('Indicate Treatment Variable, Outcome Variable and Confounders'),
                     sidebarLayout(
                       sidebarPanel(
+                        h4("Rename and verify your data"),
+                        p("Ensure your data is properly named and the data types are correct."),
                         br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',
@@ -77,23 +78,17 @@ data_page <- tabPanel(
                         create_progress_bar(1/7*100)
                       ),
                       mainPanel(
-                        br(),
-                        tabsetPanel(
-                          id = "analysis_data_tabs",
-                          tabPanel(
-                            title = 'Variable view',
-                            br(),
-                            uiOutput(outputId = 'analysis_data_modify_UI')
-                          ),
-                          tabPanel(
-                            title = "Data view",
-                            DT::dataTableOutput('analysis_data_table')
-                          ),
-                          tabPanel(
-                            title = "saved data [to be deleted]",
-                            DT::dataTableOutput('analysis_data_select_table')
-                          )
-                        )
+                        wellPanel(
+                          style = "overflow-y:scroll; max-height: 400px; background-color: transparent; overflow-y: scroll",
+                          uiOutput(outputId = 'analysis_data_modify_UI')
+                        ),
+                        hr(style = "height: 1px; background-color: #bfbfbf"),
+                        h4("Your data", style = "padding: 0; margin: 0"),
+                        wellPanel(
+                          style = "overflow-y:scroll; max-height: 400px; background-color: transparent; overflow-y: scroll",
+                          DT::dataTableOutput('analysis_data_table')
+                        ),
+                        DT::dataTableOutput('analysis_data_select_table')
                       )
               )
            )
