@@ -26,3 +26,6 @@ convert_data_type_to_simple(X)
 \seealso{
 \code{\link{convert_data_type_to_complex}}
 }
+\author{
+Joe Marlo
+}

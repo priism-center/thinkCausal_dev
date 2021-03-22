@@ -7,12 +7,12 @@ library(DT)
 library(shinyBS)
 library(shinyjs)
 library(shiny)
-# library(shinythemes)
 library(shinyWidgets) # for slider skin
 library(arm) # currently just for lalonde dataset
 library(viridis) # for color blind sensitive colors
 library(bartCause)
 theme_set(theme_minimal())
+options(shiny.reactlog = TRUE) # for testing
 
 # toy dataset
 data(lalonde)

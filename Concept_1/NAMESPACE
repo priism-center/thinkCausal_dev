@@ -2,6 +2,7 @@
 
 export(clean_auto_convert_logicals)
 export(clean_detect_ZYX_columns)
+export(clean_names)
 export(convert_data_type_to_complex)
 export(convert_data_type_to_simple)
 export(create_datatable)

@@ -4,6 +4,8 @@
 #'
 #' @param .data dataframe
 #'
+#' @author Joe Marlo
+#'
 #' @return character vector of length ncol(.data)
 #' @export
 #'
@@ -19,7 +21,7 @@
 convert_data_type_to_simple <- function(.data){
 
   # get raw data types
-  raw_data_types <- sapply(.data, class)
+  raw_data_types <- base::sapply(.data, class)
   
   # create mapping between complex and simple data types
   data_type_mapping <- data.frame(
@@ -29,7 +31,7 @@ convert_data_type_to_simple <- function(.data){
   )
   
   # get simple data
-  simple_data_types <- left_join(
+  simple_data_types <- dplyr::left_join(
     x = data.frame(complex = as.vector(raw_data_types)),
     y = data_type_mapping,
     by = 'complex')

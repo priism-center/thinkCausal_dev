@@ -92,8 +92,6 @@ shinyServer(function(input, output, session) {
     filetype <- tools::file_ext(filepath)
     # practice <- input$create_practice
     
-    
-    # if(length(filepath != 0) & practice%%2 == 0){
     tryCatch({
       
       # if it's a txt file then ask the user what the delimiter is  
@@ -132,16 +130,10 @@ shinyServer(function(input, output, session) {
       # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
       stop(safeError(e))
     })
-    # }
     
-    # else if(practice%%2 != 0){
-    #   uploaded_file <- make_dat_demo()
-    # }
-    
-    # else{
-    #   uploaded_file <- ''
-    # }
-    
+    # clean column names; bad csvs will crash the server
+    colnames(uploaded_file) <- clean_names(colnames(uploaded_file))
+
     return(uploaded_file)
   })
   
@@ -152,9 +144,6 @@ shinyServer(function(input, output, session) {
   #   sim <- make_dat_demo()
   #   return(sim)
   # })
-  
-  
-  #TODO: need to clean column names during upload; bad csvs will crash the server
   
   # add dataframe to store object
   observeEvent(uploaded_df(), {
@@ -168,31 +157,9 @@ shinyServer(function(input, output, session) {
     store$uploaded_df <- auto_cleaned_df
   })
   
-  # observeEvent(input$analysis_data_check_auto_convert, {
-  #   # ensure data is uploaded
-  #   validate(need(nrow(store$uploaded_df) > 0, "No dataframe uploaded"))
-  #   
-  #   # auto convert 0:1s to logicals and save back
-  #   if (isTRUE(input$analysis_data_check_auto_convert)){
-  #     store$uploaded_df <- clean_auto_convert_logicals(store$uploaded_df) 
-  #   }
-  # })
   
-  # TODO: just 'grey out' the rows not used!!!!!!!!!
-  
-  # TODO: one idea is to create a reactive variable list of the values
-  # observe({
-  #   
-  #   ids <- paste0("analysis_data_", 1:8)
-  #   mylist <- list()
-  #   mylist$colnames <- reactiveValuesToList(input)[paste0(ids, "_rename")]
-  #   mylist$datatype <- reactiveValuesToList(input)[paste0(ids, "_changeDataType")]
-  #   mylist$levels <- reactiveValuesToList(input)[paste0(ids, "_levels")]
-  #   print(mylist)
-  # })
-  
-  
-  # maintain a user modifed dataframe that is continuous updated
+  # maintain a user modified dataframe that is continuous updated
+  # TODO: does this need to be eager or can it lazy via reactive()? 
   observe({
     
     # stop here if columns haven't been assigned
@@ -202,16 +169,18 @@ shinyServer(function(input, output, session) {
     # use assigned dataframe as the template
     user_modified_df <- store$col_assignment_df
 
-    # get input indices
+    # get input indices and current input values
     indices <- seq_along(user_modified_df)
+    current_values <- reactiveValuesToList(input)
     
-    # change column names
-    user_entered_names <- sapply(indices, function(i) input[[paste0("analysis_data_", i, '_rename')]])
+    ## change column names
+    user_entered_names <- as.character(current_values[paste0("analysis_data_", indices, '_rename')])
+    user_entered_names <- clean_names(user_entered_names)
     names(user_modified_df) <- user_entered_names
     
     # TODO
     # change data type
-    user_entered_dataTypes <- sapply(indices, function(i) input[[paste0("analysis_data_", i, '_changeDataType')]])
+    user_entered_dataTypes <- as.character(current_values[paste0("analysis_data_", indices, '_changeDataType')])
     print(user_entered_dataTypes)
     # user_modified_df <- convert_data_type_to_complex(user_modified_df, user_entered_dataTypes)
     
@@ -250,33 +219,6 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  # # render UI for changing the data types
-  # output$analysis_data_changeDataTypes_UI <- renderUI({
-  #   
-  #   # get default data types
-  #   default_data_types <- simple_data_types(store$uploaded_df)
-  #   
-  #   # render the dropdowns
-  #   tagList(
-  #     lapply(X = seq_along(colnames(store$uploaded_df)), FUN = function(i) {
-  #       selectInput(
-  #         inputId = paste0("analysis_data_changeDataType_", i),
-  #         label = colnames(store$uploaded_df)[i],
-  #         choices = c('Categorical', 'Continuous'),
-  #         selected = default_data_types[i]
-  #       )
-  #     })
-  #   )
-  # })
-  
-  # TODO: overwrite data types names when user saves new data types
-  # observeEvent(input$analysis_data_button_changeDataTypes_save, {
-  #   validate(need(length(colnames(store$uploaded_df)) > 0, "No dataframe uploaded"))
-  #   input_ids <- paste0("analysis_data_rename_", seq_along(colnames(store$uploaded_df)))
-  #   inputted_name_values <- reactiveValuesToList(input)[input_ids]
-  #   colnames(store$uploaded_df) <- inputted_name_values
-  # })
-  
   # table of selected dataset
   output$analysis_data_table <- DT::renderDataTable({
     
@@ -302,6 +244,7 @@ shinyServer(function(input, output, session) {
     )
   
   # update select inputs when the input data changes
+  # TODO: does this need to be eager or can it lazy via reactive()?
   observeEvent(store$uploaded_df, {
     
     # stop here if data hasn't been uploaded
@@ -503,12 +446,12 @@ shinyServer(function(input, output, session) {
     
     # new column names
     # TODO: update these with better labels
-    new_col_names <- paste0(c('Z', 'Y', 'X'),
-                            "_",
-                            colnames(store$user_modified_df))
+    old_col_names <- colnames(store$user_modified_df)
+    new_col_names <- paste0(c('Z', 'Y', rep('X', length(old_col_names)-2)),
+                            "_", old_col_names)
 
     # # save original column names
-    # store$selected_df_original_names <- all_selected_vars
+    store$selected_df_original_names <- old_col_names
     
     # # save the column names by their respective class
     # # TODO: UNIT TEST THIS!!!
@@ -568,8 +511,8 @@ shinyServer(function(input, output, session) {
     
     # update selects on balance plots
     # TODO: exclude categorical vars here???
-    cols <- store$selected_df_numeric_vars
-    X_cols <- cols[stringr::str_starts(cols, "X")]
+    # cols <- store$selected_df_numeric_vars
+    X_cols <- cols[stringr::str_starts(col_names, "X")]
     updateSelectInput(session = session,
                       inputId = 'analysis_plot_balance_select_var',
                       choices = X_cols,
@@ -884,13 +827,6 @@ shinyServer(function(input, output, session) {
     # TODO estimate the time remaining empirically?
     shinyWidgets::show_alert(
       title = 'Fitting BART model...',
-      # text = "Please wait",
-      # type = 'info',
-      # text = tags$div(
-      #   class = 'spinner-grow',
-      #   role = 'status',
-      #   tags$span(class = 'sr-only', "Loading...")
-      # ),
       text = tags$div(
         img(src = file.path('img', 'tree.gif'),
             width = "50%")
@@ -948,7 +884,7 @@ shinyServer(function(input, output, session) {
       kableExtra::kable_styling(bootstrap_options = c("hover", "condensed"))
   })
   
-  # render the interpretation text
+  # TODO: render the interpretation text
   
   
   # ITE plot

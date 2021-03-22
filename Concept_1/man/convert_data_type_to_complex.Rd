@@ -20,3 +20,6 @@ The inverse of convert_data_type_to_simple(). Converts a dataframe to new data t
 \seealso{
 \code{\link{convert_data_type_to_simple}}
 }
+\author{
+Joe Marlo
+}
