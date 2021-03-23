@@ -28,6 +28,25 @@ model_page <- tabPanel(title = "Model",
                                                   'Chi Squared Test' = 'chisq'),
                                       selected = 1
                                     ),
+                                    
+                                    
+                                    h4('Specify Moderators'),
+                                    awesomeRadio(
+                                      inputId = "analysis_model_moderator_yes_no", 
+                                      inline = T,
+                                      label = "Pre-Specify Moderation Tests", 
+                                      choices = c('Yes', 'No'), 
+                                      selected = 'No'
+                                    ),
+                                    
+                                    conditionalPanel(
+                                      condition = "input.analysis_model_moderator_yes_no == 'Yes'", 
+                                      selectInput(inputId = "analysis_model_moderator_vars",
+                                                  label = "Select Moderators From Covariates",
+                                                  choices = X_names,
+                                                  multiple = TRUE)), 
+                                    br(),br(),
+
                                     htmlOutput(outputId = 'analysis_model_text_support_noinput'),
                                     HTML('<details><summary>Advanced options</summary>'),
                                     br(),
@@ -43,6 +62,7 @@ model_page <- tabPanel(title = "Model",
                                       choices = c('BART', 'generalized linear model','do not fit propensity scores'), 
                                       selected = 'BART'
                                     ),
+
                                     br(),
                                     HTML('</details><br>'),
                                     br(),
@@ -52,7 +72,7 @@ model_page <- tabPanel(title = "Model",
                                       onclick = "openConceptsPage('Concept3')",
                                       'Help me'
                                     ),
-                                    br(),br(),
+
                                     div(
                                       class = 'backNextContainer',
                                       actionButton(inputId = "analysis_model_button_back",
