@@ -9,7 +9,7 @@
 #' @return ggplot object
 #' @export
 
-plot_diagnostic_common_support <- function(.model, .rule = c('none', 'sd', 'chi'){
+plot_diagnostic_common_support <- function(.model, .rule = c('none', 'sd', 'chi')){
 
   # create SD plot ----------------------------------------------------------
   # calculate summary stats
