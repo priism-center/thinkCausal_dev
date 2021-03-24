@@ -3,12 +3,13 @@
 #' Returns a ggplot common support plot
 #'
 #' @param .model a model produced by bartCause::bartc(). Typically store$model_results
+#' @param .rule
 #' @author George Perrett, Joe Marlo
 #'
 #' @return ggplot object
 #' @export
 
-plot_diagnostic_common_support <- function(.model, .rule){
+plot_diagnostic_common_support <- function(.model, .rule = c('none', 'sd', 'chi'){
 
   # create SD plot ----------------------------------------------------------
   # calculate summary stats
@@ -64,7 +65,7 @@ plot_diagnostic_common_support <- function(.model, .rule){
     return(sd_plot)
   }
   
-  if(.rule == 'sd'){
+  if(.rule == 'chi'){
     return(chi_sqr_plot)
   }
 
