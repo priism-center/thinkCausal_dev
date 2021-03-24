@@ -16,8 +16,11 @@ model_page <- tabPanel(title = "Model",
                                     awesomeRadio(
                                       inputId = "analysis_model_radio_estimand",
                                       label = "Select Causal Estimand",
-                                      choices = c('ATE', 'ATT', 'ATC'),
-                                      selected = 1
+                                      choices = c('ATE', 
+                                                  'ATT', 
+                                                  'ATC', 
+                                                  'Unsure of Estimand' = 'unsure'),
+                                      selected = NULL
                                     ),
                                     htmlOutput(outputId = 'analysis_model_text_estimand_noinput'),
                                     awesomeRadio(
@@ -25,8 +28,9 @@ model_page <- tabPanel(title = "Model",
                                       label = "Common Support Rule",
                                       choices = c('None' = "none", 
                                                   'Standard Deviation' = 'sd', 
-                                                  'Chi Squared Test' = 'chisq'),
-                                      selected = 1
+                                                  'Chi Squared Test' = 'chisq', 
+                                                  'Unsure of Common Support Rule' = 'unsure'),
+                                      selected = NULL
                                     ),
                                     
                                     
