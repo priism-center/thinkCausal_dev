@@ -26,5 +26,7 @@ thinkCausal is federally funded project devoted to building scaffolded causal in
     │   ├── NAMESPACE           # Unused but required for required for documenting R functions via devtools
     │   ├── server.R            # Server-side code for Shiny app
     │   └── UI.R                # Main UI framework
+    ├── Concept_dev             # New pages under development
     ├── vignettes.Rmd           # Stories defining hypothetical users
+    ├── screenshot.png          # Social cover
     └── README.md
