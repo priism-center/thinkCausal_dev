@@ -77,7 +77,7 @@ ui <- navbarPage(
                          "The distribution of classes across the treatment
                          variable is random with respect to the potential outcomes."),
                        p("If tretment assignment is conditionally independent of 
-                         $y_0$ and $y_1$, then the treatment assignment is said 
+                         y_0 and y_1, then the treatment assignment is said 
                          to be strongly ignorable."),
                        p("$$Y_0, Y_1 \\perp T | X$$")
                ),
