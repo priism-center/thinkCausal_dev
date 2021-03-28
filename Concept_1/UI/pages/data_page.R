@@ -38,7 +38,13 @@ data_page <- tabPanel(
                                     'Help me'),
                         br(), br(),
                         actionButton(inputId = "analysis_data_load_button_next",
-                                     label = "Next")
+                                     label = "Next"),
+                        br(), br(),
+                        HTML('<details><summary>Advanced options</summary>'),
+                        p("Have a large number of variables? Upload your data in [this format] to bypass the variable selection and data formating process."),
+                        'TODO: add downloaded template and upload process',
+                        br(),
+                        HTML('</details><br>'),
                       ),
                       mainPanel(
                         br(),

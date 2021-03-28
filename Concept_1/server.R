@@ -285,22 +285,26 @@ shinyServer(function(input, output, session) {
         add_rank_list(
           input_id = "analysis_data_dragdrop_covariates",
           text = strong("Covariates"),
-          labels = auto_columns$X
+          labels = auto_columns$X,
+          options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
           input_id = "analysis_data_dragdrop_treatment",
           text = strong("Treatment"),
-          labels = auto_columns$Z
+          labels = auto_columns$Z,
+          options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
           input_id = "analysis_data_dragdrop_response",
           text = strong("Response"),
-          labels = auto_columns$Y
+          labels = auto_columns$Y,
+          options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
           input_id = "analysis_data_dragdrop_delete",
           text = strong("Exclude these variables"),
-          labels = NULL
+          labels = NULL,
+          options = sortable_options(multiDrag = TRUE)
         )
       )
     )
