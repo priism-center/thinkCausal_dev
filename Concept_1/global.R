@@ -8,6 +8,7 @@ library(shinyBS)
 library(shinyjs)
 library(shiny)
 library(shinyWidgets) # for slider skin
+library(sortable) # for drag and drop divs
 library(arm) # currently just for lalonde dataset
 library(viridis) # for color blind sensitive colors
 library(bartCause)

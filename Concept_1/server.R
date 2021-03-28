@@ -236,76 +236,113 @@ shinyServer(function(input, output, session) {
   })
   
   # vector of selector ids
-  analysis_data_select_selector_ids <-
-    c(
-      "analysis_data_select_select_zcol",
-      "analysis_data_select_select_ycol",
-      "analysis_data_select_select_xcol"
-    )
+  # analysis_data_select_selector_ids <-
+  #   c(
+  #     "analysis_data_select_select_zcol",
+  #     "analysis_data_select_select_ycol",
+  #     "analysis_data_select_select_xcol"
+  #   )
   
   # update select inputs when the input data changes
   # TODO: does this need to be eager or can it lazy via reactive()?
-  observeEvent(store$uploaded_df, {
+  # observeEvent(store$uploaded_df, {
+  #   
+  #   # stop here if data hasn't been uploaded
+  #   validate(need(nrow(store$uploaded_df) > 0,
+  #                 "Data must be first uploaded. Please see 'Data' tab."))
+  #   
+  #   # infer which columns are Z, Y, and X columns for smart defaults
+  #   auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
+  #   
+  #   all_colnames <- colnames(store$uploaded_df)
+  #   
+  #   # fill the dropdown options with the colnames
+  #   for (i in 1:3){
+  #     updateSelectInput(session = session,
+  #                       inputId = analysis_data_select_selector_ids[i],
+  #                       choices = all_colnames,
+  #                       selected = auto_columns[[i]]
+  #     )
+  #   }
+  # })
+  
+  # render the drag and drop UI
+  output$analysis_data_UI_dragdrop <- renderUI({
     
     # stop here if data hasn't been uploaded
     validate(need(nrow(store$uploaded_df) > 0,
-                  "Data must be first uploaded. Please see 'Data' tab."))
+                  "Data must be first uploaded"))
     
     # infer which columns are Z, Y, and X columns for smart defaults
     auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
     
-    all_colnames <- colnames(store$uploaded_df)
-    
-    # fill the dropdown options with the colnames
-    for (i in 1:3){
-      updateSelectInput(session = session,
-                        inputId = analysis_data_select_selector_ids[i],
-                        choices = all_colnames,
-                        selected = auto_columns[[i]]
+    # render the UI
+    tagList(
+      bucket_list(
+        header = "Drag the variables to their respective roles",
+        group_name = "analysis_data_dragdrop",
+        orientation = "horizontal",
+        add_rank_list(
+          input_id = "analysis_data_dragdrop_covariates",
+          text = "Covariates",
+          labels = auto_columns$X
+        ),
+        add_rank_list(
+          input_id = "analysis_data_dragdrop_treatment",
+          text = "Treatment",
+          labels = auto_columns$Z
+        ),
+        add_rank_list(
+          input_id = "analysis_data_dragdrop_response",
+          text = "Response",
+          labels = auto_columns$Y
+        )
       )
-    }
+    )
   })
   
   # plot the DAG
-  output$analysis_data_plot_DAG <- renderPlot({
-    
-    # stop here if data hasn't been uploaded
-    validate(need(nrow(store$uploaded_df) > 0,
-                  "Data must be first uploaded. Please see 'Data' tab."))
-    
-    # get user inputs
-    cols_z <- input$analysis_data_select_select_zcol
-    cols_y <- input$analysis_data_select_select_ycol
-    cols_x <- input$analysis_data_select_select_xcol
-    
-    # plot it
-    p <- plot_DAG(cols_z, cols_y, cols_x)
-    
-    return(p)
-  })
+  # output$analysis_data_plot_DAG <- renderPlot({
+  #   
+  #   # stop here if data hasn't been uploaded
+  #   validate(need(nrow(store$uploaded_df) > 0,
+  #                 "Data must be first uploaded. Please see 'Data' tab."))
+  #   
+  #   # get user inputs
+  #   cols_z <- input$analysis_data_select_select_zcol
+  #   cols_y <- input$analysis_data_select_select_ycol
+  #   cols_x <- input$analysis_data_select_select_xcol
+  #   
+  #   # plot it
+  #   p <- plot_DAG(cols_z, cols_y, cols_x)
+  #   
+  #   return(p)
+  # })
   
   # create new dataframe when user saves column assignments
   observeEvent(input$analysis_data_button_columnAssignSave, {
     
     # get user inputs
-    cols_z <- input$analysis_data_select_select_zcol
-    cols_y <- input$analysis_data_select_select_ycol
-    cols_x <- input$analysis_data_select_select_xcol
+    cols_z <- input$analysis_data_dragdrop_treatment #input$analysis_data_select_select_zcol
+    cols_y <- input$analysis_data_dragdrop_response #input$analysis_data_select_select_ycol
+    cols_x <- input$analysis_data_dragdrop_covariates #input$analysis_data_select_select_xcol
     all_cols <- unlist(c(cols_z, cols_y, cols_x))
 
     # are there duplicate selections?
     all_unique <- isTRUE(length(all_cols) == length(unique(all_cols)))
+    z_is_only_one <- length(cols_z) == 1
+    y_is_only_one <- length(cols_y) == 1
+    all_good <- isTRUE(all(c(all_unique, z_is_only_one, y_is_only_one)))
     
     # launch error message
-    if (!all_unique){
+    if (!all_good){
       shinyWidgets::show_alert(
-        title = 'Duplicative column assignment',
-        text = "At least one column has been selected for two different assignments. Please correct before saving.",
+        title = "Whoops, there's an issue with variable assignment",
+        text = "Either treatment or response have more than one column or somehow there's duplicate columns. Please correct before saving.",
         type = 'error'
       )
     }
-    
-    validate(need(all_unique, "There are duplicate column selections"))
+    validate(need(all_good, "There are duplicate column selections"))
     
     # use the uploaded df as the template
     col_assignment_df <- store$uploaded_df
@@ -323,10 +360,13 @@ shinyServer(function(input, output, session) {
     store$col_assignment_df <- col_assignment_df
     
     # launch success message
-    shinyWidgets::show_alert(
-      title = 'Column assignments saved',
-      type = 'success'
-    )
+    # shinyWidgets::show_alert(
+    #   title = 'Column assignments saved',
+    #   type = 'success'
+    # )
+    
+    # move to next page
+    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Select Data")
   })
   
   

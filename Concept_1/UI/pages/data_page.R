@@ -19,16 +19,16 @@ data_page <- tabPanel(
                         awesomeCheckbox(inputId = "analysis_data_header", 
                                         label = "Data contains a header row", 
                                         value = TRUE),
-                        selectInput(inputId = "analysis_data_select_select_ycol",
-                                    label = "Select Response (Y) Column",
-                                    choices = NULL),
-                        selectInput(inputId = "analysis_data_select_select_zcol",
-                                    label = "Select Treatment (Z) Column",
-                                    choices = NULL),
-                        selectInput(inputId = "analysis_data_select_select_xcol",
-                                    label = "Select Covariates (X) Columns",
-                                    choices = NULL,
-                                    multiple = TRUE),
+                        # selectInput(inputId = "analysis_data_select_select_ycol",
+                        #             label = "Select Response (Y) Column",
+                        #             choices = NULL),
+                        # selectInput(inputId = "analysis_data_select_select_zcol",
+                        #             label = "Select Treatment (Z) Column",
+                        #             choices = NULL),
+                        # selectInput(inputId = "analysis_data_select_select_xcol",
+                        #             label = "Select Covariates (X) Columns",
+                        #             choices = NULL,
+                        #             multiple = TRUE),
                         actionButton(inputId = 'analysis_data_button_columnAssignSave',
                                      label = 'Save column assignments'),
                         br(),br(),
@@ -42,8 +42,9 @@ data_page <- tabPanel(
                       ),
                       mainPanel(
                         br(),
-                        plotOutput(outputId = 'analysis_data_plot_DAG',
-                                   height = '600px')
+                        # plotOutput(outputId = 'analysis_data_plot_DAG',
+                        #            height = '600px')
+                        uiOutput(outputId = 'analysis_data_UI_dragdrop')
                       )
                     )
            ),
