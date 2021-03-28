@@ -14,30 +14,42 @@
 #' clean_detect_ZYX_columns(x)
 clean_detect_ZYX_columns <- function(input_colnames) {
   # TODO: instead of regex, do string distance?
+  # TODO: require Z,Y to be starting?
   
-  Z_potentials <- c("Z", "trt", "treat", "treatment")
-  Y_potentials <- c("Y", "response", "rsp")
+  Z_potentials <- c("^Z", "trt", "treat", "treatment")
+  Y_potentials <- c("^Y", "response", "rsp")
   all_col_names <- input_colnames
   
   # find Z column
   Z_matches <- sapply(X = all_col_names, FUN = function(col){
-    any(stringr::str_detect(string = col, pattern = Z_potentials))
+    any(
+      stringr::str_detect(
+        string = col, 
+        pattern = regex(Z_potentials, ignore_case = TRUE)
+      )
+    )
   })
   Z <- all_col_names[Z_matches][1]
   
   # find Y columns
   all_col_names_ex_Z <- setdiff(all_col_names, Z)
   Y_matches <- sapply(X = all_col_names_ex_Z, FUN = function(col){
-    any(stringr::str_detect(string = col, pattern = Y_potentials))
+    any(
+      stringr::str_detect(
+        string = col, 
+        pattern = regex(Y_potentials, ignore_case = TRUE)
+      )
+    )
   })
   Y <- all_col_names_ex_Z[Y_matches][1]
   
   # defaults if none are found
   all_col_names_ex_Y <- setdiff(all_col_names, Y)
-  if (isTRUE(is.na(Z))) Z <- all_col_names_ex_Y[1]
+  if (isTRUE(is.na(Z))) Z <- NULL #all_col_names_ex_Y[1]
   all_col_names_ex_Z <- setdiff(all_col_names, Z)
-  if (isTRUE(is.na(Y))) Y <- all_col_names_ex_Z[1]
+  if (isTRUE(is.na(Y))) Y <- NULL #all_col_names_ex_Z[1]
+  X <- setdiff(all_col_names, c(Z, Y))
   
-  matched_cols <- list(Z = Z, Y = Y, X = setdiff(all_col_names, c(Z, Y)))
+  matched_cols <- list(Z = Z, Y = Y, X = X)
   return(matched_cols)
 }

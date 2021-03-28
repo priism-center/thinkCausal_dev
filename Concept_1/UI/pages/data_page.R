@@ -30,7 +30,7 @@ data_page <- tabPanel(
                         #             choices = NULL,
                         #             multiple = TRUE),
                         actionButton(inputId = 'analysis_data_button_columnAssignSave',
-                                     label = 'Save column assignments'),
+                                     label = 'Save role assignments'),
                         br(),br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',

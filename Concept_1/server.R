@@ -8,10 +8,10 @@ shinyServer(function(input, output, session) {
   
   # data page
   observeEvent(input$analysis_data_load_button_next, {
-    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Select Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
   })
   observeEvent(input$analysis_data_select_button_back, {
-    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Load Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
   })
   observeEvent(input$analysis_data_select_button_next, {
     
@@ -284,18 +284,23 @@ shinyServer(function(input, output, session) {
         orientation = "horizontal",
         add_rank_list(
           input_id = "analysis_data_dragdrop_covariates",
-          text = "Covariates",
+          text = strong("Covariates"),
           labels = auto_columns$X
         ),
         add_rank_list(
           input_id = "analysis_data_dragdrop_treatment",
-          text = "Treatment",
+          text = strong("Treatment"),
           labels = auto_columns$Z
         ),
         add_rank_list(
           input_id = "analysis_data_dragdrop_response",
-          text = "Response",
+          text = strong("Response"),
           labels = auto_columns$Y
+        ),
+        add_rank_list(
+          input_id = "analysis_data_dragdrop_delete",
+          text = strong("Exclude these variables"),
+          labels = NULL
         )
       )
     )
@@ -332,13 +337,14 @@ shinyServer(function(input, output, session) {
     all_unique <- isTRUE(length(all_cols) == length(unique(all_cols)))
     z_is_only_one <- length(cols_z) == 1
     y_is_only_one <- length(cols_y) == 1
-    all_good <- isTRUE(all(c(all_unique, z_is_only_one, y_is_only_one)))
+    x_more_than_zero <- length(cols_x) > 0
+    all_good <- isTRUE(all(c(all_unique, z_is_only_one, y_is_only_one, x_more_than_zero)))
     
     # launch error message
     if (!all_good){
       shinyWidgets::show_alert(
         title = "Whoops, there's an issue with variable assignment",
-        text = "Either treatment or response have more than one column or somehow there's duplicate columns. Please correct before saving.",
+        text = "Did you miss an variable assignment? Or either treatment or response have more than one column or somehow there's duplicate columns. Please correct before saving.",
         type = 'error'
       )
     }
@@ -366,7 +372,7 @@ shinyServer(function(input, output, session) {
     # )
     
     # move to next page
-    updateTabsetPanel(session, inputId ="analysis_data_tabs", selected = "Select Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
   })
   
   
