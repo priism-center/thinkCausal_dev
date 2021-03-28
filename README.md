@@ -30,3 +30,6 @@ thinkCausal is federally funded project devoted to building scaffolded causal in
     ├── vignettes.Rmd           # Stories defining hypothetical users
     ├── screenshot.png          # Social cover
     └── README.md
+
+### Random dev to-dos
+- Move progress bar to fixed position in right side of .navbar

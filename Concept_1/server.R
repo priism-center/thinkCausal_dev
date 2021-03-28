@@ -146,6 +146,7 @@ shinyServer(function(input, output, session) {
   # })
   
   # add dataframe to store object
+  # TODO: does this need to be eager or can it be lazy via reactive()? 
   observeEvent(uploaded_df(), {
     
     # retrieve the raw uploaded data frame
@@ -159,7 +160,7 @@ shinyServer(function(input, output, session) {
   
   
   # maintain a user modified dataframe that is continuous updated
-  # TODO: does this need to be eager or can it lazy via reactive()? 
+  # TODO: does this need to be eager or can it be lazy via reactive()? 
   observe({
     
     # stop here if columns haven't been assigned
@@ -277,7 +278,7 @@ shinyServer(function(input, output, session) {
     auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
     
     # render the UI
-    tagList(
+    drag_drop_html <- tagList(
       bucket_list(
         header = "Drag the variables to their respective roles",
         group_name = "analysis_data_dragdrop",
@@ -308,6 +309,8 @@ shinyServer(function(input, output, session) {
         )
       )
     )
+    
+    return(drag_drop_html)
   })
   
   # plot the DAG
@@ -366,7 +369,7 @@ shinyServer(function(input, output, session) {
     store$column_assignments$y <- cols_y
     store$column_assignments$x <- cols_x
     
-    # store it
+    # store the dataframe
     store$col_assignment_df <- col_assignment_df
     
     # launch success message
@@ -500,20 +503,20 @@ shinyServer(function(input, output, session) {
     new_col_names <- paste0(c('Z', 'Y', rep('X', length(old_col_names)-2)),
                             "_", old_col_names)
 
-    # # save original column names
+    # save original column names
     store$selected_df_original_names <- old_col_names
-    
-    # # save the column names by their respective class
-    # # TODO: UNIT TEST THIS!!!
-    # classes_categorical <- c('logical', 'character', 'factor')
-    # classes_continuous <- c('numeric', 'double', 'integer')
-    # cols_by_class <- split(names(store$selected_df), sapply(store$selected_df, function(x) paste(class(x), collapse = " ")))
-    # store$selected_df_categorical_vars <- as.vector(unlist(cols_by_class[classes_categorical]))
-    # store$selected_df_numeric_vars <- as.vector(unlist(cols_by_class[classes_continuous]))
-    
+        
     # create new dataframe of just the selected vars and rename them
     store$selected_df <- store$user_modified_df
     colnames(store$selected_df) <- new_col_names
+
+    # save the column names by their respective class
+    # TODO: UNIT TEST THIS!!!
+    classes_categorical <- c('logical', 'character', 'factor')
+    classes_continuous <- c('numeric', 'double', 'integer')
+    cols_by_class <- split(names(store$selected_df), sapply(store$selected_df, function(x) paste(class(x), collapse = " ")))
+    store$selected_df_categorical_vars <- as.vector(unlist(cols_by_class[classes_categorical]))
+    store$selected_df_numeric_vars <- as.vector(unlist(cols_by_class[classes_continuous]))
     
     # update selects on Descriptive plots page
     col_names <- colnames(store$selected_df)
@@ -561,7 +564,7 @@ shinyServer(function(input, output, session) {
     
     # update selects on balance plots
     # TODO: exclude categorical vars here???
-    # cols <- store$selected_df_numeric_vars
+    cols <- store$selected_df_numeric_vars
     X_cols <- cols[stringr::str_starts(col_names, "X")]
     updateSelectInput(session = session,
                       inputId = 'analysis_plot_balance_select_var',
@@ -573,18 +576,9 @@ shinyServer(function(input, output, session) {
                       choices = X_cols,
                       selected = X_cols
     )
-  })
-  
-  # table of selected dataset
-  output$analysis_data_select_table <- DT::renderDataTable({
     
-    # render the table
-    tab <- create_datatable(
-      store$selected_df,
-      selection = "none"
-    )
+    # TODO: move user to next page?
     
-    return(tab)
   })
   
   

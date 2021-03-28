@@ -91,11 +91,10 @@ data_page <- tabPanel(
                         ),
                         hr(style = "height: 1px; background-color: #bfbfbf"),
                         h4("Your data", style = "padding: 0; margin: 0"),
-                        wellPanel( #TODO: remove well and make the js data.table scrollable instead?
+                        wellPanel(
                           style = "overflow-y:scroll; max-height: 400px; background-color: transparent; overflow-y: scroll",
                           DT::dataTableOutput('analysis_data_table')
-                        ),
-                        DT::dataTableOutput('analysis_data_select_table')
+                        )
                       )
               )
            )

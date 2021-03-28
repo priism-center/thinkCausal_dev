@@ -34,7 +34,7 @@ convert_data_type_to_simple <- function(.data){
   simple_data_types <- dplyr::left_join(
     x = data.frame(complex = as.vector(raw_data_types)),
     y = data_type_mapping,
-    by = 'complex')
+    by = 'complex')$simple
   
-  return(simple_data_types$simple)
+  return(simple_data_types)
 }
