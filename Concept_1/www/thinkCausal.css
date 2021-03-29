@@ -466,3 +466,18 @@ border 0 fixes the buttons moving around when you hover / click */
 .progress {
   height: 1rem;
 }
+
+/*drag-and-drop items*/
+.rank-list-item {
+  border: 0.2rem solid white !important;;
+  border-radius: 0px !important;
+}
+
+.rank-list-item:hover {
+  background-color: #e6dfe8 !important;
+}
+
+.rank-list-item.sortable-selected, .rank-list-item.sortable-chosen {
+  background-color: #5c5980 !important;
+  color: white !important;
+}

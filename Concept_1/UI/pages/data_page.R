@@ -7,6 +7,7 @@ data_page <- tabPanel(
                     sidebarLayout(
                       sidebarPanel(
                         h4("Upload your data"),
+                        HTML("<p>Data should be rectangular and in <a href='https://en.wikipedia.org/wiki/Wide_and_narrow_data' target='_blank' rel='noopener noreferrer'>wide format</a> where each column represents one variable.</p>"),
                         div(id = "upload_file_div",
                           fileInput(inputId = "analysis_data_upload", 
                                     label = "Choose File",
