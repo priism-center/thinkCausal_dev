@@ -73,7 +73,7 @@ model_page <- tabPanel(title = "Model",
                                       onclick = "openConceptsPage('Concept3')",
                                       'Help me'
                                     ),
-                                    br(),
+                                    br(),br(),
                                     div(
                                       class = 'backNextContainer',
                                       actionButton(inputId = "analysis_model_button_back",

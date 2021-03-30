@@ -33,3 +33,4 @@ thinkCausal is federally funded project devoted to building scaffolded causal in
 
 ### Random dev to-dos
 - Move progress bar to fixed position in right side of .navbar
+- the validate(need()) messages should be more user-friendly

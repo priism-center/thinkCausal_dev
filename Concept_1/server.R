@@ -400,7 +400,7 @@ shinyServer(function(input, output, session) {
     indices <- seq_along(all_col_names)
     
     # create vector of column type names
-    column_types <- c('Treatment', 'Outcome', rep('Confounder', length(all_col_names)-2))
+    column_types <- c('Treatment', 'Response', rep('Confounder', length(all_col_names)-2))
     
     # render the header to the table
     UI_header <- fluidRow(

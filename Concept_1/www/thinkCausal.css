@@ -1,4 +1,7 @@
-/* most of this CSS overrides the default bootstrap*/
+/* 
+most of this CSS overrides the default bootstrap
+main color palette: #938497 #558B6E #D7837F #E6DFE8 #F5F5F5
+*/
 
 body {
   padding: 5px 20px 20px 5px;
@@ -68,6 +71,9 @@ summary{
   color: #fff;
   background-color: #5c5980;
 }
+#nav > li:hover {
+  background-color: #eeefef;
+}
 
 /* nav dropdowns */
 .dropdown-menu > li > a {
@@ -101,6 +107,10 @@ summary{
   line-height: 1.42857143;
   border: 1px solid transparent;
   border-radius: 0 0 0 0;
+}
+
+.nav-tabs > li:hover > a {
+  color: #5c5980;
 }
 
 /* dropdowns */
@@ -463,6 +473,10 @@ border 0 fixes the buttons moving around when you hover / click */
   background-color: #938497 !important;
 }
 
+.btn.btn-default.help:hover {
+  background-color: #a997ad !important;
+}
+
 .progress {
   height: 1rem;
 }
@@ -471,6 +485,7 @@ border 0 fixes the buttons moving around when you hover / click */
 .rank-list-item {
   border: 0.2rem solid white !important;;
   border-radius: 0px !important;
+  background-color: #F5F5F5 !important;
 }
 
 .rank-list-item:hover {
