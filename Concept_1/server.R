@@ -777,6 +777,25 @@ shinyServer(function(input, output, session) {
   
   # specify model -----------------------------------------------------------
   
+                           
+  # pop ups for estimand and common support help 
+  
+  observeEvent(input$analysis_model_radio_estimand, {
+    if(input$analysis_model_radio_estimand == 'unsure'){
+      shinyWidgets::sendSweetAlert(
+        session,
+        title = "I would like to lean more about casual estimands:",
+        text = NULL,
+        type = NULL,
+        btn_labels = c("Yes", "No"),
+        btn_colors = "#3085d6",
+        html = TRUE,
+        closeOnClickOutside = FALSE,
+        showCloseButton = FALSE,
+        width = NULL
+      )
+    }
+  })
   # render text output to summarize the users inputs
   output$analysis_model_summary <- renderText({
     
