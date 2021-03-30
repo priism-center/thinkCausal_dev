@@ -796,6 +796,24 @@ shinyServer(function(input, output, session) {
       )
     }
   })
+   
+     observeEvent(input$analysis_model_radio_estimand, {
+    if(input$analysis_model_radio_support == 'unsure'){
+      shinyWidgets::sendSweetAlert(
+        session,
+        title = "I would like to lean more about common support:",
+        text = NULL,
+        type = NULL,
+        btn_labels = c("Yes", "No"),
+        btn_colors = "#3085d6",
+        html = TRUE,
+        closeOnClickOutside = FALSE,
+        showCloseButton = FALSE,
+        width = NULL
+      )
+    }
+  })
+                           
   # render text output to summarize the users inputs
   output$analysis_model_summary <- renderText({
     
