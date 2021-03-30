@@ -60,7 +60,7 @@ data_page <- tabPanel(
                     sidebarLayout(
                       sidebarPanel(
                         h4("Rename and verify your data"),
-                        p("Ensure your data is properly named and the data types are correct."),
+                        p("Ensure your data is named and the data types are correct."),
                         br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',

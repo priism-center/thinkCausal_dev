@@ -80,21 +80,21 @@ convert_data_type_to_complex <- function(.data, .simple_data_types, new_levels){
 # for (i in seq_along(new_data_types)){
 #   col_to_change <- cols_to_change[i]
 #   new_data_type <- new_data_types[i]
-#   
+# 
 #   # prompt user for input if necessary
-#   # TODO: I think this should be outside of the function; the user should be prompted within 
+#   # TODO: I think this should be outside of the function; the user should be prompted within
 #     # shiny server and results passed as an argument to this function via new_levels
-#   
-#   
+# 
+# 
 #   # get function to convert to new datatype
 #   new_complex_data_type <- data_type_mapping$conversion_function[data_type_mapping$simple == new_data_type][[1]]
 #   conversion_function <- eval(parse(text = new_complex_data_type))
-#   
+# 
 #   # make the change
 #   .data[, col_to_change] <- conversion_function(.data[, col_to_change])
 # }
 # 
 # get_levels <- function(type){
-#   # 
+#   #
 # }
 

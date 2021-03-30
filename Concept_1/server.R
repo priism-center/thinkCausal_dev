@@ -159,7 +159,7 @@ shinyServer(function(input, output, session) {
   })
   
   
-  # maintain a user modified dataframe that is continuous updated
+  # maintain a user modified dataframe that is continuously updated
   # TODO: does this need to be eager or can it be lazy via reactive()? 
   observe({
     
@@ -183,6 +183,8 @@ shinyServer(function(input, output, session) {
     # change data type
     user_entered_dataTypes <- as.character(current_values[paste0("analysis_data_", indices, '_changeDataType')])
     print(user_entered_dataTypes)
+    
+    # new_data_types <- 
     # user_modified_df <- convert_data_type_to_complex(user_modified_df, user_entered_dataTypes)
     
     # TODO?
@@ -274,7 +276,7 @@ shinyServer(function(input, output, session) {
     validate(need(nrow(store$uploaded_df) > 0,
                   "Data must be first uploaded"))
     
-    # infer which columns are Z, Y, and X columns for smart defaults
+    # infer which columns are Z, Y, and X columns (i.e. smart defaults)
     auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
     
     # render the UI
@@ -357,21 +359,15 @@ shinyServer(function(input, output, session) {
     }
     validate(need(all_good, "There are duplicate column selections"))
     
-    # use the uploaded df as the template
-    col_assignment_df <- store$uploaded_df
-        
-    # select only columns the user specified
-    col_assignment_df <- col_assignment_df[, all_cols]
+    # store the new dataframe using the uploaded df as the template
+    store$col_assignment_df <- store$uploaded_df[, all_cols]
     
     # save columns assignments
     store$column_assignments <- NULL
     store$column_assignments$z <- cols_z
     store$column_assignments$y <- cols_y
     store$column_assignments$x <- cols_x
-    
-    # store the dataframe
-    store$col_assignment_df <- col_assignment_df
-    
+
     # launch success message
     # shinyWidgets::show_alert(
     #   title = 'Column assignments saved',
@@ -400,11 +396,11 @@ shinyServer(function(input, output, session) {
     indices <- seq_along(all_col_names)
     
     # create vector of column type names
-    column_types <- c('Treatment', 'Response', rep('Confounder', length(all_col_names)-2))
+    column_types <- c('Treatment', 'Response', rep('Covariate', length(all_col_names)-2))
     
     # render the header to the table
     UI_header <- fluidRow(
-      column(2, h5('Type')),
+      column(2, h5('Role')),
       column(3, h5('Column name')),
       column(2, h5('Data type')),
       column(3, h5('Levels')),
@@ -456,6 +452,45 @@ shinyServer(function(input, output, session) {
     
     # combine the header and the rows
     UI_table <- tagList(UI_header, UI_grid)
+    
+    # # add listeners to each data type dropdown that notify when the value changes
+    # lapply(indices, function(i){
+    #   
+    #   # get id of this dropdown
+    #   data_type_input <- paste0("analysis_data_", i, "_changeDataType")
+    #   
+    #   # add the listener
+    #   observeEvent(input[[data_type_input]], {
+    #     
+    #     # TODO: resume here; this initiall launches a bunch of unneccesary alerts
+    # 
+    #     input_value <- input[[data_type_input]]
+    #     column_values <- store$col_assignment_df[, i]
+    # 
+    #     # did the data type change to a binary value and is it coercible to binary?
+    #     is_binary <- input_value == 'Binary'
+    #     if (isTRUE(is_binary)){
+    #       
+    #       # coerce to binary
+    #       coerced_values <- readr::parse_logical(as.character(column_values))
+    #       is_not_coercible <- any(is.na(coerced_values))
+    # 
+    #       # launch alert if it is binary and not coercible
+    #       if (isTRUE(is_not_coercible)){
+    #         shinyWidgets::show_alert(
+    #           title = 'Please specify the levels of the input?',
+    #           text = tags$div(
+    #             actionButton(
+    #               inputId = 'analysis_model_button_popup',
+    #               label = 'Take me to the Data tab')
+    #           ),
+    #           type = 'error',
+    #           btn_labels = NA
+    #         )
+    #       }
+    #     }
+    #   })
+    # })
 
     return(UI_table)
   })
