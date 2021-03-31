@@ -183,7 +183,7 @@ shinyServer(function(input, output, session) {
     # TODO
     # change data type
     user_entered_dataTypes <- as.character(current_values[paste0("analysis_data_", indices, '_changeDataType')])
-    print(user_entered_dataTypes)
+    # print(user_entered_dataTypes)
     
     # new_data_types <- 
     # user_modified_df <- convert_data_type_to_complex(user_modified_df, user_entered_dataTypes)
@@ -256,7 +256,7 @@ shinyServer(function(input, output, session) {
   #                 "Data must be first uploaded. Please see 'Data' tab."))
   #   
   #   # infer which columns are Z, Y, and X columns for smart defaults
-  #   auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
+  #   auto_columns <- clean_detect_ZYX_columns(store$uploaded_df)
   #   
   #   all_colnames <- colnames(store$uploaded_df)
   #   
@@ -278,8 +278,8 @@ shinyServer(function(input, output, session) {
                   "Data must be first uploaded"))
     
     # infer which columns are Z, Y, and X columns (i.e. smart defaults)
-    auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
-    
+    auto_columns <- clean_detect_ZYX_columns(store$uploaded_df)
+
     # render the UI
     drag_drop_html <- tagList(
       bucket_list(
@@ -307,7 +307,7 @@ shinyServer(function(input, output, session) {
         add_rank_list(
           input_id = "analysis_data_dragdrop_delete",
           text = strong("Exclude these variables"),
-          labels = NULL,
+          labels = auto_columns$ID,
           options = sortable_options(multiDrag = TRUE)
         )
       )
@@ -458,7 +458,10 @@ shinyServer(function(input, output, session) {
   })
   
   # update levels and percentNAs fields with actual data
-  observeEvent(store$user_modified_df, {
+  # TODO: this fails to update if user goes back and reassigns the dataset; if the user then clicks on 
+    # on rename or data type then it updates
+  observe_multiple <- reactive(list(store$user_modified_df, input$analysis_data_button_columnAssignSave))
+  observeEvent(observe_multiple(), {
 
     # stop here if columns haven't been assigned
     validate(need(nrow(store$col_assignment_df) > 0,
@@ -799,7 +802,7 @@ shinyServer(function(input, output, session) {
     if(input$analysis_model_radio_estimand == 'unsure'){
       shinyWidgets::sendSweetAlert(
         session,
-        title = "I would like to lean more about casual estimands:",
+        title = "I would like to learn more about causal estimands:",
         text = NULL,
         type = NULL,
         btn_labels = c("Yes", "No"),
@@ -818,7 +821,7 @@ shinyServer(function(input, output, session) {
     if (input$analysis_model_radio_support == 'unsure'){
       shinyWidgets::sendSweetAlert(
         session,
-        title = "I would like to lean more about common support:",
+        title = "I would like to learn more about common support:",
         text = NULL,
         type = NULL,
         btn_labels = c("Yes", "No"),
@@ -1068,6 +1071,8 @@ shinyServer(function(input, output, session) {
     selected_columns <- colnames(store$col_assignment_df)
     column_names <- colnames(store$user_modified_df)
     
+    # TODO: add data type changes
+    
     # model
     estimand <- base::tolower(input$analysis_model_radio_estimand)
     common_support <- input$analysis_model_radio_support
@@ -1094,10 +1099,27 @@ shinyServer(function(input, output, session) {
       paste0(time, '_thinkCausal_log.R')
     },
     content <- function(filename){
+      
+      # go to a temp dir to avoid permission issues
+      # owd <- setwd(tempdir())
+      # on.exit(setwd(owd))
+      # files <- NULL;
+      
       # combine with clean_auto_convert_logicals.R script and zip it
+      # TODO
+      # functionFile <- file("clean_auto_convert_logicals.R")
+      # writeLines(attributes(attributes(clean_auto_convert_logicals)$srcref)$srcfile$lines)
+      # close(functionFile)
+      # files <- "clean_auto_convert_logicals.R"
+      
+      # log file
       fileConn <- file(filename)
       writeLines(log_contents(), fileConn)
       close(fileConn)
+      # files <- c('script.R', files)
+      
+      # create the zip file
+      # zip(filename, files)
     }
   )
   

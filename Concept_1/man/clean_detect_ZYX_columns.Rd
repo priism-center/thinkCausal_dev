@@ -4,20 +4,26 @@
 \alias{clean_detect_ZYX_columns}
 \title{Attempt to detect which columns of a dataframe are Z, Y, and X}
 \usage{
-clean_detect_ZYX_columns(input_colnames)
+clean_detect_ZYX_columns(.data)
 }
 \arguments{
-\item{input_colnames}{character vector of column names}
+\item{.data}{a dataframe}
 }
 \value{
-a list denoting which column names are Z, Y, and X
+a list denoting which column names are Z, Y, X, and ID
 }
 \description{
-Attempts to auto detect which columns are treatment and response based on the column name alone. If none are detected, then returns the first two respectively.
+Attempts to auto detect which columns are treatment, response, or ID columns. Treatment and response are detected based on column name alone; ID is based on column name and the values. If none are detected, then columns are categorized as 'X'. Will only return one item (the first) for Z, Y, and ID.
 }
 \examples{
-x <- c("treatment", "rsp", "dummy1", "dummy2")
-clean_detect_ZYX_columns(x)
+.data <- data.frame(
+ treatment = c(TRUE, TRUE, FALSE, TRUE, FALSE),
+ rsp = c(0.808, 0.296,-1.579,-1.272, 0.627),
+ ID = c(0.808, 0.296,-1.579,-1.272, 0.627),
+ dummyID = 1:5,
+ dummy1 = c(34, 35, 10, 5, 38)
+)
+clean_detect_ZYX_columns(.data)
 }
 \author{
 Joe Marlo

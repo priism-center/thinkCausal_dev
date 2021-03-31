@@ -4,7 +4,16 @@
 \alias{create_log}
 \title{Build a reproducible 'log' which mimics the thinkCausal work-flow}
 \usage{
-create_log()
+create_log(
+  uploaded_file_name,
+  uploaded_file_type,
+  uploaded_file_header,
+  uploaded_file_delim,
+  selected_columns,
+  column_names,
+  estimand,
+  common_support
+)
 }
 \value{
 string

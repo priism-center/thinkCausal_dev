@@ -31,6 +31,16 @@ Tortor vitae purus faucibus ornare. Leo in vitae turpis massa sed elementum temp
 
 Mauris augue neque gravida in fermentum. Enim blandit volutpat maecenas volutpat. Consectetur adipiscing elit ut aliquam purus sit amet luctus. At imperdiet dui accumsan sit amet nulla facilisi morbi. Gravida quis blandit turpis cursus in hac habitasse platea dictumst. Eleifend donec pretium vulputate sapien. Eu nisl nunc mi ipsum faucibus vitae. Morbi non arcu risus quis varius. Enim nulla aliquet porttitor lacus luctus accumsan. Neque vitae tempus quam pellentesque nec. Ipsum dolor sit amet consectetur adipiscing elit ut aliquam. Quis vel eros donec ac odio. Donec et odio pellentesque diam volutpat commodo sed.
 
+### Data loading
+#### Uploading your data
+Data should be rectangular, wide data and can be a .csv, .txt, .xlsx, .dta, or .spss file. If you are uploading a .txt file then the delimiter will also need to be specified (usually this is a tab or comma). If your data does not include a header row then uncheck the 'Data ocntains a header row' checkmark and you will be able to rename your columns on the 'Select data' page.
+
+#### Variable roles
+Each column of your dataset must be matched to one of four roles: Covariate, Treatment, Response, or Exclude. These roles are auto-populated based on the column name and column values. You can change the roles by dragging-and-dropping the column names to each respective bucket. Treatment and Response should contain only one column respectively. Please exclude any ID columns or other irrelevant columns from your dataset.
+
+#### Size limitations
+Upload files are limited to 10mb.
+
 ### Concept 4
 Et egestas quis ipsum suspendisse ultrices gravida. Non nisi est sit amet facilisis magna etiam tempor. Tellus in metus vulputate eu scelerisque felis imperdiet proin fermentum. Amet consectetur adipiscing elit pellentesque habitant morbi. Nec feugiat in fermentum posuere. Tincidunt tortor aliquam nulla facilisi cras. Aliquam id diam maecenas ultricies mi eget mauris. Massa massa ultricies mi quis hendrerit dolor. In tellus integer feugiat scelerisque varius morbi. Lacinia at quis risus sed vulputate odio ut enim blandit. Convallis tellus id interdum velit laoreet id donec ultrices.
 
