@@ -4,7 +4,7 @@
 \alias{plot_diagnostic_common_support}
 \title{Plot common support based on the standard deviation rule, chi squared rule or both}
 \usage{
-plot_diagnostic_common_support(.model, .rule)
+plot_diagnostic_common_support(.model, .rule = c("none", "sd", "chi"))
 }
 \arguments{
 \item{.model}{a model produced by bartCause::bartc(). Typically store$model_results}

@@ -495,6 +495,10 @@ border 0 fixes the buttons moving around when you hover / click */
   background-color: #F5F5F5 !important;
 }
 
+.rank-list.rank-list-empty {
+  border-radius: 0px !important;
+}
+
 .rank-list-item:hover {
   background-color: #e6dfe8 !important;
 }
@@ -502,4 +506,8 @@ border 0 fixes the buttons moving around when you hover / click */
 .rank-list-item.sortable-selected, .rank-list-item.sortable-chosen {
   background-color: #5c5980 !important;
   color: white !important;
+}
+
+#analysis_data_upload_progress {
+  height: 2rem;
 }

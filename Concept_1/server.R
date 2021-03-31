@@ -2,7 +2,7 @@
 shinyServer(function(input, output, session) {
   
   # initialize list to store variables  
-  store <- reactiveValues(uploaded_df = data.frame())
+  store <- reactiveValues(uploaded_df = data.frame(), log = list())
   
   # back next buttons -------------------------------------------------------
   
@@ -155,6 +155,7 @@ shinyServer(function(input, output, session) {
     # auto convert all of the logical columns
     auto_cleaned_df <- clean_auto_convert_logicals(uploaded_df) 
     
+    # add to store
     store$uploaded_df <- auto_cleaned_df
   })
   
@@ -402,8 +403,8 @@ shinyServer(function(input, output, session) {
     UI_header <- fluidRow(
       column(2, h5('Role')),
       column(3, h5('Column name')),
-      column(2, h5('Data type')),
-      column(3, h5('Levels')),
+      column(3, h5('Data type')),
+      column(2, h5('Levels')),
       column(2, h5('Percent NA'))
     )
     
@@ -424,14 +425,14 @@ shinyServer(function(input, output, session) {
                  label = NULL,
                  value = all_col_names[i])
         ),
-        column(width = 2, 
+        column(width = 3, 
                selectInput(
                  inputId = paste0("analysis_data_", i, "_changeDataType"),
                  label = NULL, 
                  choices = c('Continuous', 'Categorical', 'Binary'),
                  selected = default_data_types[i])
         ),
-        column(width = 3, 
+        column(width = 2, 
                shinyjs::disabled(
                  textInput(
                    inputId = paste0("analysis_data_", i, "_levels"),
@@ -452,61 +453,22 @@ shinyServer(function(input, output, session) {
     
     # combine the header and the rows
     UI_table <- tagList(UI_header, UI_grid)
-    
-    # # add listeners to each data type dropdown that notify when the value changes
-    # lapply(indices, function(i){
-    #   
-    #   # get id of this dropdown
-    #   data_type_input <- paste0("analysis_data_", i, "_changeDataType")
-    #   
-    #   # add the listener
-    #   observeEvent(input[[data_type_input]], {
-    #     
-    #     # TODO: resume here; this initiall launches a bunch of unneccesary alerts
-    # 
-    #     input_value <- input[[data_type_input]]
-    #     column_values <- store$col_assignment_df[, i]
-    # 
-    #     # did the data type change to a binary value and is it coercible to binary?
-    #     is_binary <- input_value == 'Binary'
-    #     if (isTRUE(is_binary)){
-    #       
-    #       # coerce to binary
-    #       coerced_values <- readr::parse_logical(as.character(column_values))
-    #       is_not_coercible <- any(is.na(coerced_values))
-    # 
-    #       # launch alert if it is binary and not coercible
-    #       if (isTRUE(is_not_coercible)){
-    #         shinyWidgets::show_alert(
-    #           title = 'Please specify the levels of the input?',
-    #           text = tags$div(
-    #             actionButton(
-    #               inputId = 'analysis_model_button_popup',
-    #               label = 'Take me to the Data tab')
-    #           ),
-    #           type = 'error',
-    #           btn_labels = NA
-    #         )
-    #       }
-    #     }
-    #   })
-    # })
 
     return(UI_table)
   })
   
   # update levels and percentNAs fields with actual data
   observeEvent(store$user_modified_df, {
-    
+
     # stop here if columns haven't been assigned
     validate(need(nrow(store$col_assignment_df) > 0,
                   "Columns must first be assigned. Please see 'Load data' tab."))
-    
+
     # original data column indices
     indices <- seq_along(colnames(store$col_assignment_df))
-    
+
     lapply(X = indices, function(i) {
-      
+
       # update the levels
       col_levels <- unique(store$col_assignment_df[[i]])
       updateTextInput(
@@ -514,7 +476,7 @@ shinyServer(function(input, output, session) {
         inputId = paste0("analysis_data_", i, "_levels"),
         value = col_levels
       )
-      
+
       # update the percent NA
       percent_NA <- mean(is.na(store$user_modified_df[[i]]))
       percent_NA <- paste0(round(percent_NA, 3) * 100, "%")
@@ -526,10 +488,61 @@ shinyServer(function(input, output, session) {
     })
   })
   
+  # # add listeners to each data type dropdown that notify when the value changes
+  # observeEvent(nrow(store$col_assignment_df), {
+  # 
+  #   req(nrow(store$col_assignment_df) > 0)
+  # 
+  #   # set indices to map over
+  #   indices <- seq_along(store$col_assignment_df)
+  # 
+  #   # require data types to render first
+  #   data_type_values <- reactiveValuesToList(input)[paste0("analysis_data_", indices, "_changeDataType")]
+  #   req(all(data_type_values %in% c('Continuous', 'Categorical', 'Binary')))
+  # 
+  #   # add the listeners
+  #   lapply(indices, function(i){
+  # 
+  #     # get id of this dropdown
+  #     data_type_input <- paste0("analysis_data_", i, "_changeDataType")
+  # 
+  #     # add the listener
+  #     observeEvent(input[[data_type_input]], {
+  # 
+  #       # TODO: resume here; this initially launches a bunch of unnecessary alerts
+  # 
+  #       # get the current values
+  #       input_value <- input[[data_type_input]]
+  #       column_values <- store$col_assignment_df[, i]
+  # 
+  #       # did the data type change to a binary value and is it coercible to binary?
+  #       is_binary <- input_value == 'Binary'
+  #       if (isTRUE(is_binary)){
+  # 
+  #         # coerce to binary
+  #         coerced_values <- readr::parse_logical(as.character(column_values))
+  #         is_not_coercible <- any(is.na(coerced_values))
+  # 
+  #         # launch alert if it is binary and not coercible
+  #         if (isTRUE(is_not_coercible)){
+  #           shinyWidgets::show_alert(
+  #             title = 'Please specify the levels of the input?',
+  #             text = tags$div(
+  #               # actionButton(
+  #               #   inputId = 'analysis_model_button_popup',
+  #               #   label = 'Take me to the Data tab')
+  #             ),
+  #             type = 'error',
+  #             btn_labels = NA
+  #           )
+  #         }
+  #       }
+  #     })
+  #   })
+  # })
 
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
-  # TODO: fixed issue caused by column name changes
   observeEvent(input$analysis_data_save, {
     
     # new column names
@@ -779,8 +792,10 @@ shinyServer(function(input, output, session) {
   
                            
   # pop ups for estimand and common support help 
-  
   observeEvent(input$analysis_model_radio_estimand, {
+    
+    req(input$analysis_model_radio_estimand)
+    
     if(input$analysis_model_radio_estimand == 'unsure'){
       shinyWidgets::sendSweetAlert(
         session,
@@ -796,9 +811,11 @@ shinyServer(function(input, output, session) {
       )
     }
   })
-   
-     observeEvent(input$analysis_model_radio_estimand, {
-    if(input$analysis_model_radio_support == 'unsure'){
+  observeEvent(input$analysis_model_radio_support, {
+    
+    req(input$analysis_model_radio_support)
+      
+    if (input$analysis_model_radio_support == 'unsure'){
       shinyWidgets::sendSweetAlert(
         session,
         title = "I would like to lean more about common support:",
@@ -1034,6 +1051,55 @@ shinyServer(function(input, output, session) {
     return(p)
   })
   
+  # log
+  # TODO: this hasn't been tested
+  log_contents <- reactive({
+    
+    # these probably should be stored in realtime and then extracted here
+    # this would prevent issues if user goes back and changes something but doesn't save it
+    
+    # file inputs
+    uploaded_file_name <- input$analysis_data_upload$name
+    uploaded_file_type <-  tools::file_ext(uploaded_file_name)
+    uploaded_file_header <- input$analysis_data_header
+    uploaded_file_delim <- input$analysis_data_delim_value
+    
+    # get the selected columns and names
+    selected_columns <- colnames(store$col_assignment_df)
+    column_names <- colnames(store$user_modified_df)
+    
+    # model
+    estimand <- base::tolower(input$analysis_model_radio_estimand)
+    common_support <- input$analysis_model_radio_support
+    
+    # create the log
+    log_contents <- create_log(
+      uploaded_file_name = uploaded_file_name,
+      uploaded_file_type = uploaded_file_type,
+      uploaded_file_header = uploaded_file_header,
+      uploaded_file_delim = uploaded_file_delim,
+      selected_columns = selected_columns,
+      column_names = column_names,
+      estimand = estimand,
+      common_support = common_support
+    )
+    
+    return(log_contents)
+  })
+  
+  # download log
+  output$analysis_results_button_download <- downloadHandler(
+    filename <-  function() {
+      time <- gsub("-|:| ", "", Sys.time())
+      paste0(time, '_thinkCausal_log.R')
+    },
+    content <- function(filename){
+      # combine with clean_auto_convert_logicals.R script and zip it
+      fileConn <- file(filename)
+      writeLines(log_contents(), fileConn)
+      close(fileConn)
+    }
+  )
   
   # concepts ----------------------------------------------------------------
   

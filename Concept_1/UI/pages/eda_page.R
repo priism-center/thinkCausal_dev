@@ -17,8 +17,8 @@ eda_page <- tabPanel(
             inputId = "analysis_eda_select_plot_type",
             label = "Plot type:",
             multiple = FALSE,
-            choices = c("Pairs", "Scatter", "Histogram", "Density", "Boxplot"),
-            selected = "Pairs"
+            choices = c("Scatter", "Histogram", "Density", "Boxplot"), #"Pairs"
+            selected = "Scatter"
           ),
           conditionalPanel(
             condition = "input.analysis_eda_select_plot_type == 'Pairs'",

@@ -14,8 +14,8 @@
 #' clean_detect_ZYX_columns(x)
 clean_detect_ZYX_columns <- function(input_colnames) {
   # TODO: instead of regex, do string distance?
-  # TODO: require Z,Y to be starting?
-  
+
+  # set list of potential column names to match
   Z_potentials <- c("^Z", "trt", "treat", "treatment")
   Y_potentials <- c("^Y", "response", "rsp")
   all_col_names <- input_colnames
