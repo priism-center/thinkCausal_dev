@@ -44,5 +44,8 @@ results_page <- tabPanel(
                  )
                )
              )
-           )))
+           )
+          )
+        )
+  )
 
