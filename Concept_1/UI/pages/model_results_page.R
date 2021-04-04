@@ -35,7 +35,12 @@ results_page <- tabPanel(
                    title = 'Conditional individual treatment effects',
                    br(),
                    plotOutput(outputId = 'analysis_results_plot_CITE',
-                              height = 500)
+                              height = 500), 
+                   tabPanel(
+                     title = 'Moderating effects',
+                     br(),
+                     plotOutput(outputId = 'analysis_results_plot_CATE',
+                                height = 500)
                  )
                )
              )
