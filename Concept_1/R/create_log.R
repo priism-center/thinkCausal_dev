@@ -5,6 +5,8 @@
 #' @export
 create_log <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, estimand, common_support){
   
+  # TODO: this adds two indent spaces for some reason to final file
+  
   # choose which file readr was used
   file_readr <- switch(
     uploaded_file_type,
@@ -22,8 +24,7 @@ create_log <- function(uploaded_file_name, uploaded_file_type, uploaded_file_hea
   # add data type changes
   
   # construct strings for each section
-  log_head <- "
-  library(tidyverse)
+  log_head <- "library(tidyverse)
   library(bartCause)
   library(plotBart)
   source('clean_auto_convert_logicals.R')

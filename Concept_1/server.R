@@ -708,17 +708,35 @@ shinyServer(function(input, output, session) {
     validate(need(is.data.frame(store$selected_df), 
                   "Data must be first uploaded and selected. Please see 'Data' tab."))
     
+    # get variables for input into plotting functions
+    X <- store$selected_df
+    col_names <- colnames(X)
+    treatment_col <- col_names[stringr::str_starts(col_names, "Z_")]
+    response_col <- col_names[stringr::str_starts(col_names, "Y_")]
+    confounder_cols <- setdiff(col_names, c(treatment_col, response_col)) # TODO: should this be input$analysis_plot_overlap_select_var?
+    plt_type <- input$analysis_plot_overlap_method
+    
     # plot either the variables or the 1 dimension propensity scores
-    if(input$dim.red == 1){
-      plot_overlap_vars(.data = store$selected_df, 
-                        selected_cols = input$analysis_plot_overlap_select_var, 
-                        plt_type = input$overlap.type)
+    if(input$analysis_plot_overlap_type == 1){
+      p <- plot_overlap_vars(
+        .data = X,
+        treatment_col = treatment_col,
+        confounder_cols = input$analysis_plot_overlap_select_var, 
+        plt_type = plt_type
+      )
     }
     
-    else if(input$dim.red == 2){
-      plot_overlap_pScores(.data = store$selected_df, 
-                           plt_type = input$overlap.type)
+    else if(input$analysis_plot_overlap_type == 2){
+      p <- plot_overlap_pScores(
+        .data = X,
+        treatment_col = treatment_col,
+        response_col = response_col,
+        confounder_cols = confounder_cols, 
+        plt_type = plt_type
+      )
     }
+    
+    return(p)
   })
   
   # create the balance plot
@@ -733,7 +751,13 @@ shinyServer(function(input, output, session) {
                   "No numeric columns selected"))
     
     # plot it
-    p <- plot_balance(.data = store$selected_df, selected_cols = input$analysis_plot_balance_select_var)
+    X <- store$selected_df
+    col_names <- colnames(X)
+    treatment_col <- col_names[stringr::str_starts(col_names, "Z_")]
+    confounder_cols <- input$analysis_plot_balance_select_var
+    p <- plot_balance(.data = X, 
+                      treatment_col = treatment_col, 
+                      confounder_cols = confounder_cols)
     
     return(p)
   })
@@ -1044,11 +1068,11 @@ shinyServer(function(input, output, session) {
                   "Model must first be fitted on the 'Model' tab"))
     
     # retrieve all the confounder columns
-    X <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+    confounders <- colnames(store$selected_df[, 3:ncol(store$selected_df)])
     
     # plot it
     # TODO see TODOs for plot_cate_test()
-    # p <- plot_cate_test(.model = store$model_results, confounders = X)
+    # p <- plot_cate_test(.model = store$model_results, confounders = confounders)
     p <- NULL
     
     return(p)

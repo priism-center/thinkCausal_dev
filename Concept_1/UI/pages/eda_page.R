@@ -196,16 +196,22 @@ eda_page <- tabPanel(
             choices = X_names,
             selected = X_names
           ),
-          awesomeRadio(inputId = "dim.red",
-                       label = "View:", inline = T, 
-                       choices = c("By Variables" = 1, 
-                                   "One Number Summary" = 2), 
-                       selected = 1),
+          awesomeRadio(
+            inputId = "analysis_plot_overlap_type",
+            label = "View:", 
+            inline = TRUE, 
+            choices = c("By Variables" = 1, 
+                        "One Number Summary" = 2),
+            selected = 1
+          ),
           br(),
-          awesomeRadio(inputId = "overlap.type",
-                       label = "Plot Type:", inline = T, 
-                       choices = c('Histogram', 'Density'), 
-                       selected = 'Histogram'),
+          awesomeRadio(
+            inputId = "analysis_plot_overlap_method",
+            label = "Plot Type:", 
+            inline = TRUE, 
+            choices = c('Histogram', 'Density'), 
+            selected = 'Histogram'
+          ),
           br(),
           tags$button(type = 'button',
                       class = 'btn btn-default help',

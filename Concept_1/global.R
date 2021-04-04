@@ -11,10 +11,11 @@ library(shinyWidgets) # for slider skin
 library(sortable) # for drag and drop divs
 library(arm) # currently just for lalonde dataset
 library(viridis) # for color blind sensitive colors
+library(plotBart) # devtools::install_github("joemarlo/plotBart")
 library(bartCause)
 theme_set(theme_minimal())
 options(shiny.reactlog = TRUE) # for testing; when running, hit Ctrl-F3 to see the reactivity tree
-options(shiny.maxRequestSize = 10*1024^2) # increase maximum file size limit to 10mb
+options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size limit to 10mb
 
 # toy dataset
 data(lalonde)
