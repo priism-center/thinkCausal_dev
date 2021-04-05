@@ -857,6 +857,8 @@ shinyServer(function(input, output, session) {
       )
     }
   })
+  
+ 
                            
   # render text output to summarize the users inputs
   output$analysis_model_summary <- renderText({
@@ -1146,6 +1148,22 @@ shinyServer(function(input, output, session) {
       # zip(filename, files)
     }
   )
+  
+
+# Moderators  -------------------------------------------------------------
+
+moderators_x <- reactive({
+  validate(need(is(store$model_results, "bartcFit"), 
+                "Model must first be fitted on the 'Model' tab"))
+  mods <- names(store$selected_df[, 3:ncol(store$selected_df)])
+  return(mods)
+})
+
+output$explor_moderators <- renderUI({
+  selectInput(inputId = "analysis_model_moderator_vars", 
+              label = "Select Moderator:", 
+              choices = moderators_x())
+})
   
   # concepts ----------------------------------------------------------------
   

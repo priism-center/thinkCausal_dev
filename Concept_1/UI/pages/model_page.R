@@ -44,7 +44,7 @@ model_page <- tabPanel(title = "Model",
                                       condition = "input.analysis_model_moderator_yes_no == 'Yes'", 
                                       selectInput(inputId = "analysis_model_moderator_vars",
                                                   label = "Select Moderators From Covariates",
-                                                  choices = X_names,
+                                                  choices = NULL,
                                                   multiple = TRUE)
                                     ), 
                                     br(),br(),

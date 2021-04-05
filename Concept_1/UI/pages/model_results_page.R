@@ -22,28 +22,16 @@ results_page <- tabPanel(
                create_progress_bar(7/7*100)
              ),
              mainPanel(
-               br(),
-               tabsetPanel(
-                 id = "analysis_results_tabs",
-                 tabPanel(
-                   title = "Individual treatment effects",
-                   br(),
+               # br(),
+               # tabsetPanel(
+               #   id = "analysis_results_tabs",
+               #   tabPanel(
+               #     title = "Estimated Treatment Effect",
+               #     br(),
                    plotOutput(outputId = 'analysis_results_plot_ITE',
                               height = 500)
-                 ),
-                 tabPanel(
-                   title = 'Conditional individual treatment effects',
-                   br(),
-                   plotOutput(outputId = 'analysis_results_plot_CITE',
-                              height = 500), 
-                   tabPanel(
-                     title = 'Moderating effects',
-                     br(),
-                     plotOutput(outputId = 'analysis_results_plot_CATE',
-                                height = 500)
-                 )
-               )
-             )
+             #   )
+             # )
            )
           )
         )
