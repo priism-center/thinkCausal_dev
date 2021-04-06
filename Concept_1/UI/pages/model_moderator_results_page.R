@@ -22,8 +22,6 @@ moderator_page <- tabPanel(
   title = "Treatment Moderators",
   tabsetPanel(
     id = "moderator_tabs",
-    conditionalPanel(
-      condition = "input.analysis_model_moderator_yes_no == 'Yes'",
     tabPanel(
       title = 'Pre-Specifed Moderation Tests', 
       sidebarLayout(
@@ -34,7 +32,6 @@ moderator_page <- tabPanel(
           #uiOutput('explor_moderators')
         ),
         mainPanel()
-      )
     )), 
     tabPanel(title = 'Estimated Variable Importance',
              sidebarLayout(
@@ -46,7 +43,16 @@ moderator_page <- tabPanel(
                               label = 'Veiw:', 
                               choices = c('Plot (top 10 confounders)', 'Table (all confounders)'))
                ),
-               mainPanel()
+               mainPanel(
+                 conditionalPanel(condition = "input.variable_importance_view == 'Plot (top 10 confounders)'", 
+                 plotOutput(outputId = "variable_importance_plot", 
+                            height = 500)), 
+                 conditionalPanel(condition = "input.variable_importance_view == 'Table (all confounders)'",
+                                    dataTableOutput(outputId ="variable_importance_table", 
+                                                    height = 500))
+                 
+                 
+               )
              )),
     tabPanel(
       title = 'Exploratory Moderation Tests', 

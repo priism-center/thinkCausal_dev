@@ -1152,6 +1152,26 @@ shinyServer(function(input, output, session) {
 
 # Moderators  -------------------------------------------------------------
 
+# call variable importance function 
+  
+
+output$variable_importance_plot <- renderPlot({
+  validate(need(is(store$model_results, "bartcFit"), 
+                "Model must first be fitted on the 'Model' tab"))
+  conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+  p <- plot_variable_importance(store$model_results, confounders = conf, out = 'plot')
+  return(p)
+})
+  
+  output$variable_importance_table <- DT::renderDataTable({
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be fitted on the 'Model' tab"))
+    conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+    p <- plot_variable_importance(store$model_results, confounders = conf, out = 'table')
+    return(p)
+  })
+  
+
 moderators_x <- reactive({
   validate(need(is(store$model_results, "bartcFit"), 
                 "Model must first be fitted on the 'Model' tab"))

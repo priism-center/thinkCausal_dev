@@ -41,8 +41,8 @@ plot_variable_importance <- function(.model, confounders, out = 'all'){
     geom_point(size = 4) + 
     labs(x = 'Importance', y = 'Variable', title = 'Potential Moderators')
   
-  if(out == 'all'){
-    results <- list(p1, importance_table)
+  if(out ==  'all'){
+    results(list(p1, importance_table))
   }
   
   if(out == 'plot'){
@@ -50,7 +50,7 @@ plot_variable_importance <- function(.model, confounders, out = 'all'){
   }
   
   if(out == 'table'){
-    results <- table
+    results <- data.frame(importance_table)
   }
   
   return(results)
