@@ -4,11 +4,11 @@
 # Subtitle: Page - regression for causal
 # 
 # Data Created: 03/15/2021
-# Data Modified: 03/25/2021
+# Data Modified: 04/01/2021
 #
 # ----- ----- ----- ----- version
 # 
-# Ver: 1.0
+# Ver: 1.1
 # 
 # Description: illustrate why ignorability is important for causal inference 
 #              using regression analysis.
@@ -41,11 +41,6 @@ alpha_generator <- function(pretest, lwr, upp) {
   return(min(lwr_alpha, upp_alpha))
 }
 
-# Toggle -----------------------------------------------------------------------
-# Toggle to show/hide solution for group assignment
-group_solution_out <- TRUE  
-group_solution_2_out <- FALSE 
-
 # Color palette ----------------------------------------------------------------
 blue <- "#335C81"
 red <- "#F42C04"
@@ -67,7 +62,11 @@ ui <- navbarPage(
              sidebarPanel(
                numericInput(inputId="tau", label = "Treatment Effect:", value = 5, min=0),
                hr(),
-               checkboxInput(inputId="ignor", label = "Ignorable?", value = TRUE),
+               checkboxInput(inputId="var1", label = "Variable 1", value = TRUE),
+               checkboxInput(inputId="var2", label = "Variable 2", value = TRUE),
+               checkboxInput(inputId="var3", label = "Variable 3", value = TRUE),
+               checkboxInput(inputId="var4", label = "Variable 4", value = TRUE),
+               checkboxInput(inputId="var5", label = "Variable 5", value = TRUE),
                numericInput(inputId="sampsize", label="Sample Size:", value = 1000, min = 10)
              ), # <END lm-simulator-sidebarLayout-sidebarPanel>
              
@@ -85,7 +84,7 @@ ui <- navbarPage(
                br(),
                plotOutput("plot0", width = "80%"),
                br(),
-               tableOutput("res0"),
+               verbatimTextOutput("res0"),
                br()
              ) # <END lr-simulator-sidebarLayout-mainPanel>
            ) # <END lr-simulator-sidebarLayout>
@@ -103,76 +102,52 @@ server <- function (input, output) {
   dgp <- eventReactive(
     eventExpr = input$generate, 
     valueExpr = {
-      X <-  rnorm(n = input$sampsize, mean = 0, sd = 2)
-      X1 <- rnorm(n = input$sampsize, mean = 5, sd = 2)
-      if (input$ignor) {
-        Z <- sample(c(0, 1), size = input$sampsize, replace = TRUE)
-      } else {
-        alpha <- alpha_generator(pretest = X, lwr = .05, upp = .95)
-        p <- exp(alpha * X) / (1 + exp(alpha * X))
-        Z <- rbinom(n = input$sampsize, size = 1, prob = p)
+      var1 <- rnorm(n = input$sampsize, mean = 5, sd = 2)
+      var2 <- rnorm(n = input$sampsize, mean = 6, sd = 2)
+      var3 <- rnorm(n = input$sampsize, mean = 7, sd = 2)
+      var4 <- rnorm(n = input$sampsize, mean = 8, sd = 2)
+      var5 <- rnorm(n = input$sampsize, mean = 9, sd = 2)
+      Y <- var1 + var2 + var3 + var4 + var5 + error(input$sampsize)
+      data0 <- data.frame(Y)
+      if (input$var1) {
+        data0 <- cbind(data0, var1)
       }
-      Y0 <- X + X1 + error(input$sampsize)
-      Y1 <- X + X1 + input$tau + error(input$sampsize)
-      Y  <- ifelse(
-        Z == 1,
-        yes = Y1,
-        no  = Y0
-      )
-      return(data0 = data.frame(
-        X,
-        X1,
-        Y,
-        Y0,
-        Y1,
-        Z
-      ))
+      if (input$var2) {
+        data0 <- cbind(data0, var2)
+      }
+      if (input$var3) {
+        data0 <- cbind(data0, var3)
+      }
+      if (input$var4) {
+        data0 <- cbind(data0, var4)
+      }
+      if (input$var5) {
+        data0 <- cbind(data0, var5)
+      }
+      return(data0)
     }
   )
-  mod_lm_ignor <- reactive({
-    data0 <- dgp()
-    return(
-      lm(Y ~ Z + X + X1, data = data0)
-    )
-  })
-  mod_lm_no_ignor <- reactive({
-    data0 <- dgp()
-    return(
-      lm(Y ~ Z + X1, data = data0)
-    )
-  })
-  
+
   observeEvent(input$generate, {
-    
-    if (input$ignor) {
-      mod_out <- mod_lm_ignor()
-    } else {
-      mod_out <- mod_lm_no_ignor()
-    }
-    
-    beta0 <- as.numeric(summary(mod_out)$coefficients[1])
-    coef_Z <- as.numeric(summary(mod_out)$coefficients[2])
-    r_sq <- summary(mod_out)$r.squared
-    
-    output$plot0 <- renderPlot(
-      expr = {
-        data0 <- dgp()
-        ggplot(data0, aes(x = X, y = Y, color = factor(Z))) + 
-          geom_point() + 
-          xlab("Pretest Scores") +
-          ylab("Observed Outcome") + 
-          labs(title = "Distribution of Observed Outcomes", color = "Treated?") +
-          scale_color_manual(values = c(blue, red)) +
-          theme_minimal(base_line_size = 0.4)
-      }
-    )
-    output$res0 <- renderTable(expr = {
-      dd <- data.frame(
-        Intercept   = beta0,
-        SATE        = coef_Z,
-        `R Squared` = r_sq
-      )
-      xtable(dd)
+
+    # beta0 <- as.numeric(summary(mod_out)$coefficients[1])
+    # coefs <- as.numeric(summary(mod_out)$coefficients[2])
+    # r_sq <- summary(mod_out)$r.squared
+    # 
+    # output$plot0 <- renderPlot(
+    #   expr = {
+    #     data0 <- dgp()
+    #     ggplot(data0, aes(x = X, y = Y, color = factor(Z))) +
+    #       geom_point() +
+    #       xlab("Pretest Scores") +
+    #       ylab("Observed Outcome") +
+    #       labs(title = "Distribution of Observed Outcomes", color = "Treated?") +
+    #       scale_color_manual(values = c(blue, red)) +
+    #       theme_minimal(base_line_size = 0.4)
+    #   }
+    # )
+    output$res0 <- renderPrint(expr = {
+      lm(Y ~ ., data = dgp())
     })
     
   }) # <END server-lr-simulator>
