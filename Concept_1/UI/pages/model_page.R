@@ -9,7 +9,7 @@ model_page <- tabPanel(title = "Model",
                                       choices = c('Non-Random (Observational)' = 'non_random', 
                                                   'Random (Experimental)' = 'random', 
                                                   'Quasi-Random (Natural Experiment)' = 'quasi'),
-                                      selected = 1
+                                      selected = 5
                                       ),
                                     htmlOutput(outputId = 'analysis_model_text_design'),
                                     htmlOutput(outputId = 'analysis_model_text_design_noinput'),
@@ -20,7 +20,7 @@ model_page <- tabPanel(title = "Model",
                                                   'ATT', 
                                                   'ATC', 
                                                   'Unsure of Estimand' = 'unsure'),
-                                      selected = NULL
+                                      selected = 5
                                     ),
                                     htmlOutput(outputId = 'analysis_model_text_estimand_noinput'),
                                     awesomeRadio(
@@ -30,7 +30,7 @@ model_page <- tabPanel(title = "Model",
                                                   'Standard Deviation' = 'sd', 
                                                   'Chi Squared Test' = 'chisq', 
                                                   'Unsure of Common Support Rule' = 'unsure'),
-                                      selected = NULL
+                                      selected = 5
                                     ),
                                     h4('Specify Moderators'),
                                     awesomeRadio(
@@ -44,7 +44,7 @@ model_page <- tabPanel(title = "Model",
                                       condition = "input.analysis_model_moderator_yes_no == 'Yes'", 
                                       selectInput(inputId = "analysis_model_moderator_vars",
                                                   label = "Select Moderators From Covariates",
-                                                  choices = X_names,
+                                                  choices = NULL,
                                                   multiple = TRUE)
                                     ), 
                                     br(),br(),
@@ -73,7 +73,7 @@ model_page <- tabPanel(title = "Model",
                                       onclick = "openConceptsPage('Concept3')",
                                       'Help me'
                                     ),
-                                    br(),
+                                    br(),br(),
                                     div(
                                       class = 'backNextContainer',
                                       actionButton(inputId = "analysis_model_button_back",

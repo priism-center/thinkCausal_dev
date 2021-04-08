@@ -7,6 +7,7 @@ data_page <- tabPanel(
                     sidebarLayout(
                       sidebarPanel(
                         h4("Upload your data"),
+                        HTML("<p>Data should be rectangular and in <a href='https://en.wikipedia.org/wiki/Wide_and_narrow_data' target='_blank' rel='noopener noreferrer'>wide format</a> where each column represents one variable.</p>"),
                         div(id = "upload_file_div",
                           fileInput(inputId = "analysis_data_upload", 
                                     label = "Choose File",
@@ -34,17 +35,17 @@ data_page <- tabPanel(
                         br(),br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',
-                                    onclick = "openConceptsPage('Concept3')",
+                                    onclick = "openConceptsPage('Dataloading')",
                                     'Help me'),
                         br(), br(),
                         actionButton(inputId = "analysis_data_load_button_next",
                                      label = "Next"),
                         br(), br(),
-                        HTML('<details><summary>Advanced options</summary>'),
-                        p("Have a large number of variables? Upload your data in [this format] to bypass the variable selection and data formating process."),
-                        'TODO: add downloaded template and upload process',
-                        br(),
-                        HTML('</details><br>'),
+                        # HTML('<details><summary>Advanced options</summary>'),
+                        # p("2.0 feature: Have a large number of variables? Upload your data in [this format] to bypass the variable selection and data formating process."),
+                        # 'TODO: add downloaded template and upload process',
+                        # br(),
+                        # HTML('</details><br>'),
                       ),
                       mainPanel(
                         br(),
@@ -59,7 +60,7 @@ data_page <- tabPanel(
                     sidebarLayout(
                       sidebarPanel(
                         h4("Rename and verify your data"),
-                        p("Ensure your data is properly named and the data types are correct."),
+                        p("Ensure your data is named and the data types are correct."),
                         br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',

@@ -4,12 +4,12 @@
 \alias{convert_data_type_to_complex}
 \title{Convert human readable data type to R data}
 \usage{
-convert_data_type_to_complex(.data, .simple_data_types)
+convert_data_type_to_complex(.data, .simple_data_types, new_levels)
 }
 \arguments{
 \item{.data}{a dataframe}
 
-\item{.simple_data_types}{human readable data types from convert_data_type_to_simple. Must be length == ncol(.data)}
+\item{.simple_data_types}{human readable data types from list("Categorical", "Binary", "Continuous"). Must be length == ncol(.data)}
 }
 \value{
 a dataframe with dim == dim(.data)

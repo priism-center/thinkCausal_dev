@@ -2,7 +2,7 @@
 shinyServer(function(input, output, session) {
   
   # initialize list to store variables  
-  store <- reactiveValues(uploaded_df = data.frame())
+  store <- reactiveValues(uploaded_df = data.frame(), log = list())
   
   # back next buttons -------------------------------------------------------
   
@@ -155,11 +155,12 @@ shinyServer(function(input, output, session) {
     # auto convert all of the logical columns
     auto_cleaned_df <- clean_auto_convert_logicals(uploaded_df) 
     
+    # add to store
     store$uploaded_df <- auto_cleaned_df
   })
   
   
-  # maintain a user modified dataframe that is continuous updated
+  # maintain a user modified dataframe that is continuously updated
   # TODO: does this need to be eager or can it be lazy via reactive()? 
   observe({
     
@@ -182,7 +183,9 @@ shinyServer(function(input, output, session) {
     # TODO
     # change data type
     user_entered_dataTypes <- as.character(current_values[paste0("analysis_data_", indices, '_changeDataType')])
-    print(user_entered_dataTypes)
+    # print(user_entered_dataTypes)
+    
+    # new_data_types <- 
     # user_modified_df <- convert_data_type_to_complex(user_modified_df, user_entered_dataTypes)
     
     # TODO?
@@ -253,7 +256,7 @@ shinyServer(function(input, output, session) {
   #                 "Data must be first uploaded. Please see 'Data' tab."))
   #   
   #   # infer which columns are Z, Y, and X columns for smart defaults
-  #   auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
+  #   auto_columns <- clean_detect_ZYX_columns(store$uploaded_df)
   #   
   #   all_colnames <- colnames(store$uploaded_df)
   #   
@@ -274,9 +277,9 @@ shinyServer(function(input, output, session) {
     validate(need(nrow(store$uploaded_df) > 0,
                   "Data must be first uploaded"))
     
-    # infer which columns are Z, Y, and X columns for smart defaults
-    auto_columns <- clean_detect_ZYX_columns(colnames(store$uploaded_df))
-    
+    # infer which columns are Z, Y, and X columns (i.e. smart defaults)
+    auto_columns <- clean_detect_ZYX_columns(store$uploaded_df)
+
     # render the UI
     drag_drop_html <- tagList(
       bucket_list(
@@ -304,7 +307,7 @@ shinyServer(function(input, output, session) {
         add_rank_list(
           input_id = "analysis_data_dragdrop_delete",
           text = strong("Exclude these variables"),
-          labels = NULL,
+          labels = auto_columns$ID,
           options = sortable_options(multiDrag = TRUE)
         )
       )
@@ -357,21 +360,15 @@ shinyServer(function(input, output, session) {
     }
     validate(need(all_good, "There are duplicate column selections"))
     
-    # use the uploaded df as the template
-    col_assignment_df <- store$uploaded_df
-        
-    # select only columns the user specified
-    col_assignment_df <- col_assignment_df[, all_cols]
+    # store the new dataframe using the uploaded df as the template
+    store$col_assignment_df <- store$uploaded_df[, all_cols]
     
     # save columns assignments
     store$column_assignments <- NULL
     store$column_assignments$z <- cols_z
     store$column_assignments$y <- cols_y
     store$column_assignments$x <- cols_x
-    
-    # store the dataframe
-    store$col_assignment_df <- col_assignment_df
-    
+
     # launch success message
     # shinyWidgets::show_alert(
     #   title = 'Column assignments saved',
@@ -400,14 +397,14 @@ shinyServer(function(input, output, session) {
     indices <- seq_along(all_col_names)
     
     # create vector of column type names
-    column_types <- c('Treatment', 'Outcome', rep('Confounder', length(all_col_names)-2))
+    column_types <- c('Treatment', 'Response', rep('Covariate', length(all_col_names)-2))
     
     # render the header to the table
     UI_header <- fluidRow(
-      column(2, h5('Type')),
+      column(2, h5('Role')),
       column(3, h5('Column name')),
-      column(2, h5('Data type')),
-      column(3, h5('Levels')),
+      column(3, h5('Data type')),
+      column(2, h5('Levels')),
       column(2, h5('Percent NA'))
     )
     
@@ -428,14 +425,14 @@ shinyServer(function(input, output, session) {
                  label = NULL,
                  value = all_col_names[i])
         ),
-        column(width = 2, 
+        column(width = 3, 
                selectInput(
                  inputId = paste0("analysis_data_", i, "_changeDataType"),
                  label = NULL, 
                  choices = c('Continuous', 'Categorical', 'Binary'),
                  selected = default_data_types[i])
         ),
-        column(width = 3, 
+        column(width = 2, 
                shinyjs::disabled(
                  textInput(
                    inputId = paste0("analysis_data_", i, "_levels"),
@@ -461,17 +458,20 @@ shinyServer(function(input, output, session) {
   })
   
   # update levels and percentNAs fields with actual data
-  observeEvent(store$user_modified_df, {
-    
+  # TODO: this fails to update if user goes back and reassigns the dataset; if the user then clicks on 
+    # on rename or data type then it updates
+  observe_multiple <- reactive(list(store$user_modified_df, input$analysis_data_button_columnAssignSave))
+  observeEvent(observe_multiple(), {
+
     # stop here if columns haven't been assigned
     validate(need(nrow(store$col_assignment_df) > 0,
                   "Columns must first be assigned. Please see 'Load data' tab."))
-    
+
     # original data column indices
     indices <- seq_along(colnames(store$col_assignment_df))
-    
+
     lapply(X = indices, function(i) {
-      
+
       # update the levels
       col_levels <- unique(store$col_assignment_df[[i]])
       updateTextInput(
@@ -479,7 +479,7 @@ shinyServer(function(input, output, session) {
         inputId = paste0("analysis_data_", i, "_levels"),
         value = col_levels
       )
-      
+
       # update the percent NA
       percent_NA <- mean(is.na(store$user_modified_df[[i]]))
       percent_NA <- paste0(round(percent_NA, 3) * 100, "%")
@@ -491,10 +491,61 @@ shinyServer(function(input, output, session) {
     })
   })
   
+  # # add listeners to each data type dropdown that notify when the value changes
+  # observeEvent(nrow(store$col_assignment_df), {
+  # 
+  #   req(nrow(store$col_assignment_df) > 0)
+  # 
+  #   # set indices to map over
+  #   indices <- seq_along(store$col_assignment_df)
+  # 
+  #   # require data types to render first
+  #   data_type_values <- reactiveValuesToList(input)[paste0("analysis_data_", indices, "_changeDataType")]
+  #   req(all(data_type_values %in% c('Continuous', 'Categorical', 'Binary')))
+  # 
+  #   # add the listeners
+  #   lapply(indices, function(i){
+  # 
+  #     # get id of this dropdown
+  #     data_type_input <- paste0("analysis_data_", i, "_changeDataType")
+  # 
+  #     # add the listener
+  #     observeEvent(input[[data_type_input]], {
+  # 
+  #       # TODO: resume here; this initially launches a bunch of unnecessary alerts
+  # 
+  #       # get the current values
+  #       input_value <- input[[data_type_input]]
+  #       column_values <- store$col_assignment_df[, i]
+  # 
+  #       # did the data type change to a binary value and is it coercible to binary?
+  #       is_binary <- input_value == 'Binary'
+  #       if (isTRUE(is_binary)){
+  # 
+  #         # coerce to binary
+  #         coerced_values <- readr::parse_logical(as.character(column_values))
+  #         is_not_coercible <- any(is.na(coerced_values))
+  # 
+  #         # launch alert if it is binary and not coercible
+  #         if (isTRUE(is_not_coercible)){
+  #           shinyWidgets::show_alert(
+  #             title = 'Please specify the levels of the input?',
+  #             text = tags$div(
+  #               # actionButton(
+  #               #   inputId = 'analysis_model_button_popup',
+  #               #   label = 'Take me to the Data tab')
+  #             ),
+  #             type = 'error',
+  #             btn_labels = NA
+  #           )
+  #         }
+  #       }
+  #     })
+  #   })
+  # })
 
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
-  # TODO: fixed issue caused by column name changes
   observeEvent(input$analysis_data_save, {
     
     # new column names
@@ -657,17 +708,35 @@ shinyServer(function(input, output, session) {
     validate(need(is.data.frame(store$selected_df), 
                   "Data must be first uploaded and selected. Please see 'Data' tab."))
     
+    # get variables for input into plotting functions
+    X <- store$selected_df
+    col_names <- colnames(X)
+    treatment_col <- col_names[stringr::str_starts(col_names, "Z_")]
+    response_col <- col_names[stringr::str_starts(col_names, "Y_")]
+    confounder_cols <- setdiff(col_names, c(treatment_col, response_col)) # TODO: should this be input$analysis_plot_overlap_select_var?
+    plt_type <- input$analysis_plot_overlap_method
+    
     # plot either the variables or the 1 dimension propensity scores
-    if(input$dim.red == 1){
-      plot_overlap_vars(.data = store$selected_df, 
-                        selected_cols = input$analysis_plot_overlap_select_var, 
-                        plt_type = input$overlap.type)
+    if(input$analysis_plot_overlap_type == 1){
+      p <- plot_overlap_vars(
+        .data = X,
+        treatment_col = treatment_col,
+        confounder_cols = input$analysis_plot_overlap_select_var, 
+        plt_type = plt_type
+      )
     }
     
-    else if(input$dim.red == 2){
-      plot_overlap_pScores(.data = store$selected_df, 
-                           plt_type = input$overlap.type)
+    else if(input$analysis_plot_overlap_type == 2){
+      p <- plot_overlap_pScores(
+        .data = X,
+        treatment_col = treatment_col,
+        response_col = response_col,
+        confounder_cols = confounder_cols, 
+        plt_type = plt_type
+      )
     }
+    
+    return(p)
   })
   
   # create the balance plot
@@ -682,7 +751,13 @@ shinyServer(function(input, output, session) {
                   "No numeric columns selected"))
     
     # plot it
-    p <- plot_balance(.data = store$selected_df, selected_cols = input$analysis_plot_balance_select_var)
+    X <- store$selected_df
+    col_names <- colnames(X)
+    treatment_col <- col_names[stringr::str_starts(col_names, "Z_")]
+    confounder_cols <- input$analysis_plot_balance_select_var
+    p <- plot_balance(.data = X, 
+                      treatment_col = treatment_col, 
+                      confounder_cols = confounder_cols)
     
     return(p)
   })
@@ -742,6 +817,49 @@ shinyServer(function(input, output, session) {
   
   # specify model -----------------------------------------------------------
   
+                           
+  # pop ups for estimand and common support help 
+  observeEvent(input$analysis_model_radio_estimand, {
+    
+    req(input$analysis_model_radio_estimand)
+    
+    if(input$analysis_model_radio_estimand == 'unsure'){
+      shinyWidgets::sendSweetAlert(
+        session,
+        title = "I would like to learn more about causal estimands:",
+        text = NULL,
+        type = NULL,
+        btn_labels = c("Yes", "No"),
+        btn_colors = "#3085d6",
+        html = TRUE,
+        closeOnClickOutside = FALSE,
+        showCloseButton = FALSE,
+        width = NULL
+      )
+    }
+  })
+  observeEvent(input$analysis_model_radio_support, {
+    
+    req(input$analysis_model_radio_support)
+      
+    if (input$analysis_model_radio_support == 'unsure'){
+      shinyWidgets::sendSweetAlert(
+        session,
+        title = "I would like to learn more about common support:",
+        text = NULL,
+        type = NULL,
+        btn_labels = c("Yes", "No"),
+        btn_colors = "#3085d6",
+        html = TRUE,
+        closeOnClickOutside = FALSE,
+        showCloseButton = FALSE,
+        width = NULL
+      )
+    }
+  })
+  
+ 
+                           
   # render text output to summarize the users inputs
   output$analysis_model_summary <- renderText({
     
@@ -952,16 +1070,120 @@ shinyServer(function(input, output, session) {
                   "Model must first be fitted on the 'Model' tab"))
     
     # retrieve all the confounder columns
-    X <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+    confounders <- colnames(store$selected_df[, 3:ncol(store$selected_df)])
     
     # plot it
     # TODO see TODOs for plot_cate_test()
-    # p <- plot_cate_test(.model = store$model_results, confounders = X)
+    # p <- plot_cate_test(.model = store$model_results, confounders = confounders)
     p <- NULL
     
     return(p)
   })
   
+  # log
+  # TODO: this hasn't been tested
+  log_contents <- reactive({
+    
+    # these probably should be stored in realtime and then extracted here
+    # this would prevent issues if user goes back and changes something but doesn't save it
+    
+    # file inputs
+    uploaded_file_name <- input$analysis_data_upload$name
+    uploaded_file_type <-  tools::file_ext(uploaded_file_name)
+    uploaded_file_header <- input$analysis_data_header
+    uploaded_file_delim <- input$analysis_data_delim_value
+    
+    # get the selected columns and names
+    selected_columns <- colnames(store$col_assignment_df)
+    column_names <- colnames(store$user_modified_df)
+    
+    # TODO: add data type changes
+    
+    # model
+    estimand <- base::tolower(input$analysis_model_radio_estimand)
+    common_support <- input$analysis_model_radio_support
+    
+    # create the log
+    log_contents <- create_log(
+      uploaded_file_name = uploaded_file_name,
+      uploaded_file_type = uploaded_file_type,
+      uploaded_file_header = uploaded_file_header,
+      uploaded_file_delim = uploaded_file_delim,
+      selected_columns = selected_columns,
+      column_names = column_names,
+      estimand = estimand,
+      common_support = common_support
+    )
+    
+    return(log_contents)
+  })
+  
+  # download log
+  output$analysis_results_button_download <- downloadHandler(
+    filename <-  function() {
+      time <- gsub("-|:| ", "", Sys.time())
+      paste0(time, '_thinkCausal_log.R')
+    },
+    content <- function(filename){
+      
+      # go to a temp dir to avoid permission issues
+      # owd <- setwd(tempdir())
+      # on.exit(setwd(owd))
+      # files <- NULL;
+      
+      # combine with clean_auto_convert_logicals.R script and zip it
+      # TODO
+      # functionFile <- file("clean_auto_convert_logicals.R")
+      # writeLines(attributes(attributes(clean_auto_convert_logicals)$srcref)$srcfile$lines)
+      # close(functionFile)
+      # files <- "clean_auto_convert_logicals.R"
+      
+      # log file
+      fileConn <- file(filename)
+      writeLines(log_contents(), fileConn)
+      close(fileConn)
+      # files <- c('script.R', files)
+      
+      # create the zip file
+      # zip(filename, files)
+    }
+  )
+  
+
+# Moderators  -------------------------------------------------------------
+
+# call variable importance function 
+  
+
+output$variable_importance_plot <- renderPlot({
+  validate(need(is(store$model_results, "bartcFit"), 
+                "Model must first be fitted on the 'Model' tab"))
+  conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+  p <- plot_variable_importance(store$model_results, confounders = conf, out = 'plot')
+  return(p)
+})
+  
+  output$variable_importance_table <- DT::renderDataTable({
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be fitted on the 'Model' tab"))
+    conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+    p <- plot_variable_importance(store$model_results, confounders = conf, out = 'table')
+    return(p)
+  })
+  
+
+moderators_x <- reactive({
+  validate(need(is(store$model_results, "bartcFit"), 
+                "Model must first be fitted on the 'Model' tab"))
+  mods <- names(store$selected_df[, 3:ncol(store$selected_df)])
+  return(mods)
+})
+
+output$explor_moderators <- renderUI({
+  selectInput(inputId = "analysis_model_moderator_vars", 
+              label = "Select Moderator:", 
+              choices = moderators_x())
+})
   
   # concepts ----------------------------------------------------------------
   

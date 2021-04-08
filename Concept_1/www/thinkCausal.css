@@ -1,4 +1,7 @@
-/* most of this CSS overrides the default bootstrap*/
+/* 
+most of this CSS overrides the default bootstrap
+main color palette: #938497 #558B6E #D7837F #E6DFE8 #F5F5F5
+*/
 
 body {
   padding: 5px 20px 20px 5px;
@@ -68,6 +71,9 @@ summary{
   color: #fff;
   background-color: #5c5980;
 }
+#nav > li:hover {
+  background-color: #eeefef;
+}
 
 /* nav dropdowns */
 .dropdown-menu > li > a {
@@ -103,6 +109,10 @@ summary{
   border-radius: 0 0 0 0;
 }
 
+.nav-tabs > li:hover > a {
+  color: #5c5980;
+}
+
 /* dropdowns */
 .selectize-input, .form-control {
   border: 1px solid #cccccc;
@@ -131,6 +141,13 @@ summary{
 .selectize-input.focus {
   border-color: #5c5980;
   /*color: #f5f5f5 !important;*/
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(92, 89, 128, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(92, 89, 128, 0.6);
+}
+
+.form-control.shiny-bound-input:focus {
+  border-color: #5c5980;
   outline: 0;
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(92, 89, 128, 0.6);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(92, 89, 128, 0.6);
@@ -463,6 +480,34 @@ border 0 fixes the buttons moving around when you hover / click */
   background-color: #938497 !important;
 }
 
+.btn.btn-default.help:hover {
+  background-color: #a997ad !important;
+}
+
 .progress {
   height: 1rem;
+}
+
+/*drag-and-drop items*/
+.rank-list-item {
+  border: 0.2rem solid white !important;;
+  border-radius: 0px !important;
+  background-color: #F5F5F5 !important;
+}
+
+.rank-list.rank-list-empty {
+  border-radius: 0px !important;
+}
+
+.rank-list-item:hover {
+  background-color: #e6dfe8 !important;
+}
+
+.rank-list-item.sortable-selected, .rank-list-item.sortable-chosen {
+  background-color: #5c5980 !important;
+  color: white !important;
+}
+
+#analysis_data_upload_progress {
+  height: 2rem;
 }
