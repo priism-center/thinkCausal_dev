@@ -4,11 +4,11 @@
 # Subtitle: Page - regression for causal
 # 
 # Data Created: 03/15/2021
-# Data Modified: 04/01/2021
+# Data Modified: 04/08/2021
 #
 # ----- ----- ----- ----- version
 # 
-# Ver: 1.1
+# Ver: 1.02
 # 
 # Description: illustrate why ignorability is important for causal inference 
 #              using regression analysis.
