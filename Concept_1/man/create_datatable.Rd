@@ -4,9 +4,13 @@
 \alias{create_datatable}
 \title{Create a pretty datatable}
 \usage{
-create_datatable(...)
+create_datatable(.data, digits = 3, ...)
 }
 \arguments{
+\item{.data}{a dataframe}
+
+\item{digits}{number of digits to round continuous columns to}
+
 \item{...}{arguments to be passed to DT::datatable. Typically a dataframe}
 }
 \value{

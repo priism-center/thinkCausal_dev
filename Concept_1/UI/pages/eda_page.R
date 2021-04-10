@@ -185,7 +185,7 @@ eda_page <- tabPanel(
       sidebarLayout(
         sidebarPanel(
           width = 4,
-          h4("Check Common Support"),
+          h4("Check common support"),
           selectInput(
             inputId = "analysis_plot_overlap_select_var",
             label = "Select Variables for Overlap Check:",
@@ -239,7 +239,7 @@ tabPanel(title = "Balance Plots",
          sidebarLayout(
            sidebarPanel(
              width = 4,
-             h4("Visualize Balance Between Treatment and Control"),
+             h4("Visualize balance between treatment and control"),
              selectInput(
                inputId = "analysis_plot_balance_select_var",
                label = "Select Variables for Balance Check:",
