@@ -27,6 +27,14 @@ model_results <- bartCause::bartc(
 
 # functions to test -------------------------------------------------------
 
+classes_categorical <- c('logical', 'character', 'factor')
+classes_continuous <- c('numeric', 'double', 'integer')
+cols_by_class <- split(colnames(X), sapply(X, function(x) class(x)[1]))
+store$selected_df_categorical_vars <- as.vector(unlist(cols_by_class[classes_categorical]))
+store$selected_df_numeric_vars <- as.vector(unlist(cols_by_class[classes_continuous]))
+
+
+
 plot_exploration(
   .data = X,
   plot_type = 'Boxplot', #c("Pairs", 'Scatter', 'Histogram', 'Density', 'Boxplot'),
@@ -44,3 +52,4 @@ plot_exploration(
   .facet_second = 'None',
   include_regression = 'None'
   )
+

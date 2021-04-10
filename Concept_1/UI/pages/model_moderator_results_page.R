@@ -45,11 +45,13 @@ moderator_page <- tabPanel(
                ),
                mainPanel(
                  conditionalPanel(condition = "input.variable_importance_view == 'Plot (top 10 confounders)'", 
-                 plotOutput(outputId = "variable_importance_plot", 
-                            height = 500)), 
+                                  br(),
+                                  plotOutput(outputId = "variable_importance_plot", 
+                                             height = 500)), 
                  conditionalPanel(condition = "input.variable_importance_view == 'Table (all confounders)'",
-                                    dataTableOutput(outputId ="variable_importance_table", 
-                                                    height = 500))
+                                  br(),
+                                  dataTableOutput(outputId ="variable_importance_table",
+                                                  height = 500))
                  
                  
                )

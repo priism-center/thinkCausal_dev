@@ -12,7 +12,6 @@
 #' 
 #' @seealso \code{\link{convert_data_type_to_simple}}
 #'
-#' @examples
 convert_data_type_to_complex <- function(.data, .simple_data_types, new_levels){
 
   if (!isTRUE(ncol(.data) == length(.simple_data_types))) stop('ncol(.data) must equal length(.simple_data_types)')

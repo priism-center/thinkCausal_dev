@@ -11,13 +11,13 @@ eda_page <- tabPanel(
       sidebarLayout(
         sidebarPanel(
           width = 4,
-          h4("Explore the data using scatter plots, histograms, density plots, and boxplots"),
+          h4("Explore the data visually"),
           br(),
           selectInput(
             inputId = "analysis_eda_select_plot_type",
             label = "Plot type:",
             multiple = FALSE,
-            choices = c("Scatter", "Histogram", "Density", "Boxplot"), #"Pairs"
+            choices = c("Scatter", "Histogram", "Barplot", "Density", "Boxplot"), #"Pairs"
             selected = "Scatter"
           ),
           conditionalPanel(
@@ -90,10 +90,10 @@ eda_page <- tabPanel(
                 choices = c('None', 'Include'),
                 selected = 'None'
               ),
-              bsPopover(id = 'analysis_eda_variable_regression',
-                        title = "Linear regression",
-                        content = 'Apply a linear regression (y ~ x) to each subgroup of your plot. If you facet on a variable, then the regressions will be calculated per each facet group.',
-                        placement = 'top'),
+              # bsPopover(id = 'analysis_eda_variable_regression',
+              #           title = "Linear regression",
+              #           content = 'Apply a linear regression (y ~ x) to each subgroup of your plot. If you facet on a variable, then the regressions will be calculated per each facet group.',
+              #           placement = 'top'),
             ), 
             conditionalPanel(
               condition = "input.analysis_eda_select_plot_type == 'Histogram'",
@@ -117,20 +117,20 @@ eda_page <- tabPanel(
             ),
             selectInput(
               inputId = "analysis_eda_variable_facet",
-              label = "Facet variable: ",
+              label = "Subgrouping variable: ",
               multiple = FALSE,
               choices = c("None", categorical_names),
               selected = "None"
             ),
-            bsPopover(id = 'analysis_eda_variable_facet',
-                      title = "Facet variable",
-                      content = 'Faceting splits the data by one or more variables and then plots these subsets.',
-                      placement = 'top'),
+            # bsPopover(id = 'analysis_eda_variable_facet',
+            #           title = "Facet variable",
+            #           content = 'Faceting splits the data by one or more variables and then plots these subsets.',
+            #           placement = 'top'),
             conditionalPanel(
               condition = "input.analysis_eda_variable_facet != 'None'",
               selectInput(
                 inputId = "analysis_eda_variable_facet_second",
-                label = "Second facet variable: ",
+                label = "Second subgrouping variable: ",
                 multiple = FALSE,
                 choices = c("None"),
                 selected = "None"
@@ -169,9 +169,6 @@ eda_page <- tabPanel(
         mainPanel(
           width = 6,
           br(),
-          absolutePanel(id = "analysis_eda_loading_message",
-                        HTML("Please wait. Building plot..."),
-                        style = "z-index: -2;"),
           plotOutput(outputId = 'analysis_eda_plot',
                      height = 600,
                      brush = brushOpts(id = "analysis_eda_plot_brush")),

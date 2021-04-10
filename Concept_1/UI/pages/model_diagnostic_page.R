@@ -17,7 +17,6 @@ diagnostics_page <- tabPanel(
         create_progress_bar(6/7*100)
       ),
       mainPanel(
-        br(),
         tabsetPanel(
           id = "analysis_diagnostics_tabs",
           tabPanel(

@@ -549,10 +549,12 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_data_save, {
     
     # new column names
-    # TODO: update these with better labels
     old_col_names <- colnames(store$user_modified_df)
-    new_col_names <- paste0(c('Z', 'Y', rep('X', length(old_col_names)-2)),
-                            "_", old_col_names)
+    new_col_names <- paste0(c('Z', 
+                              'Y', 
+                              rep('X', length(old_col_names)-2)),
+                            "_", 
+                            old_col_names)
 
     # save original column names
     store$selected_df_original_names <- old_col_names
@@ -562,61 +564,69 @@ shinyServer(function(input, output, session) {
     colnames(store$selected_df) <- new_col_names
 
     # save the column names by their respective class
-    # TODO: UNIT TEST THIS!!!
-    classes_categorical <- c('logical', 'character', 'factor')
-    classes_continuous <- c('numeric', 'double', 'integer')
-    cols_by_class <- split(names(store$selected_df), sapply(store$selected_df, function(x) paste(class(x), collapse = " ")))
-    store$selected_df_categorical_vars <- as.vector(unlist(cols_by_class[classes_categorical]))
-    store$selected_df_numeric_vars <- as.vector(unlist(cols_by_class[classes_continuous]))
+    store$column_types <- clean_detect_column_types(store$selected_df)
     
     # update selects on Descriptive plots page
     col_names <- colnames(store$selected_df)
-    categorical_names <- store$selected_df_categorical_var
+    cols_categorical <- store$column_types$categorical
+    cols_continuous <- store$column_types$continuous
+    
+    # get smart defaults for the plotting variables
+    column_treatment <- new_col_names[stringr::str_starts(new_col_names, "Z")]
+    column_response <- new_col_names[stringr::str_starts(new_col_names, "Y")]
+    plot_vars <- clean_detect_plot_vars(.column_types = store$column_types, 
+                                        .treatment_column = column_treatment, 
+                                        .response_column = column_response)
+    
+    # updateSelectInput(
+    #   session = session,
+    #   inputId = "analysis_eda_variable_pairs_vars",
+    #   choices = new_col_names,
+    #   selected = new_col_names
+    # )
     updateSelectInput(
       session = session,
-      inputId = "analysis_eda_variable_pairs_vars",
-      choices = col_names,
-      selected = col_names
+      inputId = "analysis_eda_select_plot_type",
+      selected = plot_vars$plot_type
     )
     updateSelectInput(
       session = session,
       inputId = "analysis_eda_variable_x",
-      choices = col_names,
-      selected = col_names[1]
+      choices = new_col_names,
+      selected = plot_vars$X
     )
     updateSelectInput(
       session = session,
       inputId = "analysis_eda_variable_y",
-      choices = col_names,
-      selected = col_names[2]
+      choices = new_col_names,
+      selected = plot_vars$Y
     )
     updateSelectInput(
       session = session,
       inputId = "analysis_eda_variable_fill",
-      choices = col_names,
-      selected = col_names[12]
+      choices = c("None", new_col_names),
+      selected = plot_vars$fill
     )
     updateSelectInput(
       session = session,
       inputId = "analysis_eda_variable_size",
-      choices = col_names,
-      selected = col_names[4]
+      choices = c("None", new_col_names),
+      selected = plot_vars$size
     )
     updateSelectInput(
       session = session,
       inputId = "analysis_eda_variable_group",
-      choices = categorical_names
+      choices = c("None", cols_categorical),
+      selected = plot_vars$grouping
     )
     updateSelectInput(
       session = session,
       inputId = "analysis_eda_variable_facet",
-      choices = c("None", categorical_names) #TODO: this isn't updating
+      choices = c("None", cols_categorical)
     )
     
     # update selects on balance plots
-    # TODO: exclude categorical vars here???
-    cols <- store$selected_df_numeric_vars
-    X_cols <- cols[stringr::str_starts(col_names, "X")]
+    X_cols <- cols_continuous[stringr::str_starts(cols_continuous, "X")]
     updateSelectInput(session = session,
                       inputId = 'analysis_plot_balance_select_var',
                       choices = X_cols,
@@ -628,8 +638,9 @@ shinyServer(function(input, output, session) {
                       selected = X_cols
     )
     
-    # TODO: move user to next page?
-    
+    # move to next page
+    updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
+    updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
   })
   
   
@@ -644,23 +655,32 @@ shinyServer(function(input, output, session) {
     validate(need(is.data.frame(store$selected_df), 
                   "Data must be first uploaded and selected. Please see 'Data' tab."))
     
-    p <- plot_exploration(
-      .data = store$selected_df, #TODO: formalize sampling?
-      .plot_type = input$analysis_eda_select_plot_type,
-      .x = input$analysis_eda_variable_x,
-      .y = input$analysis_eda_variable_y,
-      .fill = input$analysis_eda_variable_fill,
-      .fill_static = "#5c5980",
-      .size = input$analysis_eda_variable_size,
-      .alpha = input$analysis_eda_variable_alpha,
-      .vars_pairs = input$analysis_eda_variable_pairs_vars,
-      .n_bins = input$analysis_eda_variable_n_bins,
-      .jitter = input$analysis_eda_check_jitter,
-      .groups = input$analysis_eda_variable_group,
-      .facet = input$analysis_eda_variable_facet,
-      .facet_second = input$analysis_eda_variable_facet_second,
-      .include_regression = input$analysis_eda_variable_regression
+    p <- tryCatch({
+        plot_exploration(
+          .data = store$selected_df, #TODO: formalize sampling?
+          .plot_type = input$analysis_eda_select_plot_type,
+          .x = input$analysis_eda_variable_x,
+          .y = input$analysis_eda_variable_y,
+          .fill = input$analysis_eda_variable_fill,
+          .fill_static = "#5c5980",
+          .size = input$analysis_eda_variable_size,
+          .alpha = input$analysis_eda_variable_alpha,
+          .vars_pairs = input$analysis_eda_variable_pairs_vars,
+          .n_bins = input$analysis_eda_variable_n_bins,
+          .jitter = input$analysis_eda_check_jitter,
+          .groups = input$analysis_eda_variable_group,
+          .facet = input$analysis_eda_variable_facet,
+          .facet_second = input$analysis_eda_variable_facet_second,
+          .include_regression = input$analysis_eda_variable_regression
+        )
+      }
+      # warning = function(e) NULL,
+      # error = function(e) NULL
     )
+    
+    # TODO: this doesn't catch the error codes
+    # validate(need(is.ggplot(p), 
+    #               "Variable selection is not valid. Please try another combination."))
     
     return(p)
   })
@@ -696,7 +716,7 @@ shinyServer(function(input, output, session) {
       updateSelectInput(
         session = session,
         inputId = "analysis_eda_variable_facet_second",
-        choices = setdiff(c("None", categorical_names), input$analysis_eda_variable_facet)
+        choices = setdiff(c("None", store$column_types$categorical), input$analysis_eda_variable_facet)
       )
     }
   })
@@ -708,12 +728,17 @@ shinyServer(function(input, output, session) {
     validate(need(is.data.frame(store$selected_df), 
                   "Data must be first uploaded and selected. Please see 'Data' tab."))
     
+    # stop here if there are no numeric columns selected
+    validate(need(length(input$analysis_plot_overlap_select_var) > 0,
+                  "No continuous columns available or currently selected"))
+    
     # get variables for input into plotting functions
     X <- store$selected_df
     col_names <- colnames(X)
     treatment_col <- col_names[stringr::str_starts(col_names, "Z_")]
     response_col <- col_names[stringr::str_starts(col_names, "Y_")]
-    confounder_cols <- setdiff(col_names, c(treatment_col, response_col)) # TODO: should this be input$analysis_plot_overlap_select_var?
+    cols_continuous <- store$column_types$continuous
+    confounder_cols <- cols_continuous[stringr::str_starts(cols_continuous, "X")]
     plt_type <- input$analysis_plot_overlap_method
     
     # plot either the variables or the 1 dimension propensity scores
@@ -748,7 +773,7 @@ shinyServer(function(input, output, session) {
     
     # stop here if there are no numeric columns selected
     validate(need(length(input$analysis_plot_balance_select_var) > 0,
-                  "No numeric columns selected"))
+                  "No continuous columns available or currently selected"))
     
     # plot it
     X <- store$selected_df
@@ -1150,40 +1175,39 @@ shinyServer(function(input, output, session) {
   )
   
 
-# Moderators  -------------------------------------------------------------
-
-# call variable importance function 
+  # Moderators  -------------------------------------------------------------
   
-
-output$variable_importance_plot <- renderPlot({
-  validate(need(is(store$model_results, "bartcFit"), 
-                "Model must first be fitted on the 'Model' tab"))
-  conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
-  p <- plot_variable_importance(store$model_results, confounders = conf, out = 'plot')
-  return(p)
-})
+  # plot variable importance 
+  output$variable_importance_plot <- renderPlot({
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be fitted on the 'Model' tab"))
+    conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+    p <- plot_variable_importance(store$model_results, confounders = conf, out = 'plot')
+    return(p)
+  })
   
+  # render table of variable importance
   output$variable_importance_table <- DT::renderDataTable({
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
-    p <- plot_variable_importance(store$model_results, confounders = conf, out = 'table')
-    return(p)
+    tab <- plot_variable_importance(store$model_results, confounders = conf, out = 'table')
+    return(tab)
+  })
+    
+  moderators_x <- reactive({
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be fitted on the 'Model' tab"))
+    mods <- names(store$selected_df[, 3:ncol(store$selected_df)])
+    return(mods)
   })
   
-
-moderators_x <- reactive({
-  validate(need(is(store$model_results, "bartcFit"), 
-                "Model must first be fitted on the 'Model' tab"))
-  mods <- names(store$selected_df[, 3:ncol(store$selected_df)])
-  return(mods)
-})
-
-output$explor_moderators <- renderUI({
-  selectInput(inputId = "analysis_model_moderator_vars", 
-              label = "Select Moderator:", 
-              choices = moderators_x())
-})
+  output$explor_moderators <- renderUI({
+    selectInput(inputId = "analysis_model_moderator_vars", 
+                label = "Select Moderator:", 
+                choices = moderators_x())
+  })
+  
   
   # concepts ----------------------------------------------------------------
   
