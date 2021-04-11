@@ -1,12 +1,21 @@
-
 #' Build a reproducible script which mimics the thinkCausal work-flow
 #'
 #' @return string
 #' @export
+#' 
+#' @examples 
+#' create_script(
+#'  uploaded_file_name = 'test.csv',
+#'  uploaded_file_type = 'csv',
+#'  uploaded_file_header = 'TRUE',
+#'  uploaded_file_delim = ',',
+#'  selected_columns = c("Z", "Y", "X1", 'X2', "X3"),
+#'  column_names = c("treatment", "response", "covariate1", "covariate2", "covariate3"),
+#'  estimand = 'att',
+#'  common_support = 'none'
+#' )
 create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, estimand, common_support){
-  
-  # TODO: this adds two indent spaces for some reason to final file
-  
+
   # choose which file readr was used
   file_readr <- switch(
     uploaded_file_type,
@@ -24,44 +33,44 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   # add data type changes
   
   # construct strings for each section
-  script_head <- "library(tidyverse)
-  library(bartCause)
-  library(plotBart)
-  source('clean_auto_convert_logicals.R')
-  "
+  script_head <- paste0(
+  "library(tidyverse)", "\n",
+  "library(bartCause)", "\n",
+  "library(plotBart)", "\n",
+  "source('clean_auto_convert_logicals.R')",
+  "\n\n"
+  )
   
-  script_data_munge <- paste0("
-  # select columns and rename
-  X <- ", file_readr, "
-  X <- X[, ", selected_columns, "]
-  colnames(X) <- ", column_names, "
-  X <- clean_auto_convert_logicals(X)
-  "
+  script_data_munge <- paste0(
+  "# select columns and rename", "\n",
+  "X <- ", file_readr, "\n",
+  "X <- X[, ", selected_columns, "]", "\n",
+  "colnames(X) <- ", column_names, "\n",
+  "X <- clean_auto_convert_logicals(X)",
+  "\n\n"
   )
   
   script_model <- paste0(
-  "
-  # run model  
-  treatment_v <- X[, 1]
-  response_v <- X[, 2]
-  confounders_mat <- as.matrix(X[, 3:ncol(X)])
-  model_results <- bartCause::bartc(
+  "# run model", "\n",
+  "treatment_v <- X[, 1]", "\n",
+  "response_v <- X[, 2]", "\n",
+  "confounders_mat <- as.matrix(X[, 3:ncol(X)])", "\n",
+  "model_results <- bartCause::bartc(
     response = response_v,
     treatment = treatment_v,
     confounders = confounders_mat,
     estimand = '", estimand, "',
     commonSup.rule = '", common_support, "'
-  )
-  "
+  )",
+  "\n\n"
   )
   
   script_plots <- paste0(
-  "
-  # plot results and diagnostics
-  plot_ITE(X)
-  plot_trace(X)
-  plot_diagnostic_common_support(X, .rule = '", common_support, "')
-  "
+  "# plot results and diagnostics", "\n",
+  "plot_ITE(X)", "\n",
+  "plot_trace(X)", "\n",
+  "plot_diagnostic_common_support(X, .rule = '", common_support, "')",
+  "\n"
   )
   
   # combine into one string

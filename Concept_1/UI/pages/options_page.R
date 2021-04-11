@@ -3,7 +3,7 @@ options_page <- tabPanel(
   style = "padding-left: 3rem;",
   radioButtons(
     inputId = "settings_options_ggplot_theme",
-    label = "Plot themes",
+    label = "Plot aesthetic",
     choiceNames = c("Minimal", "Simple", "Classic", "Gray"),
     choiceValues = c('theme_minimal()', 'theme_bw()', 'theme_classic()', 'theme_gray()')
   ),

@@ -1,13 +1,13 @@
+library(shiny)
+
 # for reading data
 library(foreign)
 library(readstata13)
 library(openxlsx)
 
 # for javascript and Shiny tools
-library(shiny)
-library(shinyBS) # might be able to remove this (as of 2021-03-30)
 library(shinyjs) # for running javascript on the server-side
-library(shinyWidgets) # for slider skin; might be able to remove this (as of 2021-04-11)
+library(shinyWidgets) # for alerts
 library(DT) # for javascript datatables
 library(sortable) # for drag and drop divs
 
@@ -15,7 +15,6 @@ library(sortable) # for drag and drop divs
 library(tidyverse)
 library(patchwork) # for combining ggplots
 library(viridis) # for color blind sensitive colors
-# library(arm) # currently just for lalonde dataset
 
 # for bart
 library(plotBart) # devtools::install_github("joemarlo/plotBart")
@@ -54,7 +53,7 @@ analysis_model_text <- list(
 )
 
 
-# data and objects for the modules ----------------------------------------
+# # data and objects for the concepts modules -----------------------------
 
 # randomization module
 ## read in randomization df

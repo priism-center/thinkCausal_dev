@@ -7,7 +7,6 @@ log_page <- tabPanel(
     style = 'max-width: 300px'
   ),
   br(), br(), 
-  h4("Log: "),
   verbatimTextOutput(
     outputId = 'settings_log_text'
   )
