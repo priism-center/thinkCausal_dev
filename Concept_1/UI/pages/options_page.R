@@ -1,10 +1,10 @@
 options_page <- tabPanel(
-  "Options",
+  title = "Options",
   style = "padding-left: 3rem;",
   radioButtons(
     inputId = "settings_options_ggplot_theme",
     label = "Plot themes",
-    choiceNames = c("Minimal", "Black-and-white", "Classic", "Gray"),
+    choiceNames = c("Minimal", "Simple", "Classic", "Gray"),
     choiceValues = c('theme_minimal()', 'theme_bw()', 'theme_classic()', 'theme_gray()')
   ),
   radioButtons(

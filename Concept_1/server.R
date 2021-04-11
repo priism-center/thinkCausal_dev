@@ -90,7 +90,6 @@ shinyServer(function(input, output, session) {
     # extract the filepath and the filetype
     filepath <- input$analysis_data_upload$datapath
     filetype <- tools::file_ext(filepath)
-    # practice <- input$create_practice
     
     tryCatch({
       
@@ -148,6 +147,10 @@ shinyServer(function(input, output, session) {
   # add dataframe to store object
   # TODO: does this need to be eager or can it be lazy via reactive()? 
   observeEvent(uploaded_df(), {
+    
+    # add to log
+    log_event <- paste0('Uploaded ', input$analysis_data_upload$name)
+    store$log <- append(store$log, log_event)
     
     # retrieve the raw uploaded data frame
     uploaded_df <- uploaded_df()
@@ -338,9 +341,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_data_button_columnAssignSave, {
     
     # get user inputs
-    cols_z <- input$analysis_data_dragdrop_treatment #input$analysis_data_select_select_zcol
-    cols_y <- input$analysis_data_dragdrop_response #input$analysis_data_select_select_ycol
-    cols_x <- input$analysis_data_dragdrop_covariates #input$analysis_data_select_select_xcol
+    cols_z <- input$analysis_data_dragdrop_treatment
+    cols_y <- input$analysis_data_dragdrop_response 
+    cols_x <- input$analysis_data_dragdrop_covariates
     all_cols <- unlist(c(cols_z, cols_y, cols_x))
 
     # are there duplicate selections?
@@ -368,6 +371,13 @@ shinyServer(function(input, output, session) {
     store$column_assignments$z <- cols_z
     store$column_assignments$y <- cols_y
     store$column_assignments$x <- cols_x
+    
+    # add to log
+    log_event <- paste0('Assigned columns to roles: \n', 
+                        '\ttreatment: ', cols_z, '\n',
+                        '\tresponse: ', cols_y, '\n',
+                        '\tcovariates: ', paste0(cols_x, collapse = '; '))
+    store$log <- append(store$log, log_event)
 
     # launch success message
     # shinyWidgets::show_alert(
@@ -565,6 +575,17 @@ shinyServer(function(input, output, session) {
 
     # save the column names by their respective class
     store$column_types <- clean_detect_column_types(store$selected_df)
+    
+    # add to log
+    column_types <- convert_data_type_to_simple(store$selected_df)
+    log_event <- paste0(
+      'Saved columns with following specification: \n',
+      paste0(paste0("\t", new_col_names), 
+             " : ", 
+             column_types,
+             collapse = "\n")
+      )
+    store$log <- append(store$log, log_event)
     
     # update selects on Descriptive plots page
     col_names <- colnames(store$selected_df)
@@ -1043,6 +1064,19 @@ shinyServer(function(input, output, session) {
     # TODO: need way to test if actually have a good fit
     store$good_model_fit <- TRUE
     
+    # add to log
+    log_event <- paste0(
+      'Ran BART model with following specification: \n',
+      '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
+      '\t', 'Causal estimand: ', input$analysis_model_radio_estimand, '\n',
+      '\t', 'Common support rule: ', input$analysis_model_radio_support, '\n',
+      '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
+      '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
+      '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
+      '\t', 'Good model fit?', store$good_model_fit
+    )
+    store$log <- append(store$log, log_event)
+    
     # close the alert
     shinyWidgets::closeSweetAlert()
     
@@ -1107,7 +1141,7 @@ shinyServer(function(input, output, session) {
   
   # log
   # TODO: this hasn't been tested
-  log_contents <- reactive({
+  reproducible_script <- reactive({
     
     # these probably should be stored in realtime and then extracted here
     # this would prevent issues if user goes back and changes something but doesn't save it
@@ -1128,8 +1162,8 @@ shinyServer(function(input, output, session) {
     estimand <- base::tolower(input$analysis_model_radio_estimand)
     common_support <- input$analysis_model_radio_support
     
-    # create the log
-    log_contents <- create_log(
+    # create the script
+    reproducible_script <- create_script(
       uploaded_file_name = uploaded_file_name,
       uploaded_file_type = uploaded_file_type,
       uploaded_file_header = uploaded_file_header,
@@ -1140,14 +1174,14 @@ shinyServer(function(input, output, session) {
       common_support = common_support
     )
     
-    return(log_contents)
+    return(reproducible_script)
   })
   
-  # download log
+  # download reproducible script
   output$analysis_results_button_download <- downloadHandler(
     filename <-  function() {
       time <- gsub("-|:| ", "", Sys.time())
-      paste0(time, '_thinkCausal_log.R')
+      paste0(time, '_thinkCausal_script.R')
     },
     content <- function(filename){
       
@@ -1165,7 +1199,7 @@ shinyServer(function(input, output, session) {
       
       # log file
       fileConn <- file(filename)
-      writeLines(log_contents(), fileConn)
+      writeLines(reproducible_script(), fileConn)
       close(fileConn)
       # files <- c('script.R', files)
       
@@ -1242,5 +1276,31 @@ shinyServer(function(input, output, session) {
   observeEvent(input$settings_options_ggplot_theme, {
     ggplot2::theme_set(eval(parse(text = input$settings_options_ggplot_theme)))
   })
+  
+  
+  # log ---------------------------------------------------------------------
+
+  # print the log
+  # the log is created by appending text descriptions of events to store$log
+  output$settings_log_text <- renderText({
+    log <- store$log
+    if (length(log) == 0) log <- "No logged events to display"
+    log <- paste0(log, collapse = '\n\n')
+    return(log)
+  })
+  
+  # download the log
+  output$settins_log_download <- downloadHandler(
+    filename <-  function() {
+      time <- gsub("-|:| ", "", Sys.time())
+      paste0(time, '_thinkCausal_log.R')
+    },
+    content <- function(filename){
+      fileConn <- file(filename)
+      writeLines(paste0(store$log, collapse = '\n\n'), 
+                 fileConn)
+      close(fileConn)
+    }
+  )
   
 })

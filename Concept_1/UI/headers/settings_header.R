@@ -3,6 +3,6 @@ settings_header <- tabPanel(
   navlistPanel(
     widths = c(3, 9),
     options_page,
-    tabPanel("Log")
+    log_page
   )
 )

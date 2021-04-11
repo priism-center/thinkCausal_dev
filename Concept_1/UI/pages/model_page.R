@@ -35,7 +35,7 @@ model_page <- tabPanel(title = "Model",
                                     h4('Specify Moderators'),
                                     awesomeRadio(
                                       inputId = "analysis_model_moderator_yes_no", 
-                                      inline = T,
+                                      inline = TRUE,
                                       label = "Pre-Specify Moderation Tests", 
                                       choices = c('Yes', 'No'), 
                                       selected = 'No'
@@ -53,13 +53,13 @@ model_page <- tabPanel(title = "Model",
                                     HTML('<details><summary>Advanced options</summary>'),
                                     br(),
                                     awesomeRadio(
-                                      inputId = "",
+                                      inputId = "analysis_model_outcome",
                                       label = "model outcome with",
                                       choices = c('BART', "Weighted Propensity Score", 'TMLE'), 
                                       selected = 'BART'
                                     ),
                                     awesomeRadio(
-                                      inputId = "",
+                                      inputId = "analysis_model_pscore",
                                       label = "model propensity score fit with:",
                                       choices = c('BART', 'generalized linear model','do not fit propensity scores'), 
                                       selected = 'BART'

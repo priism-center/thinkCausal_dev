@@ -1,9 +1,9 @@
 
-#' Build a reproducible 'log' which mimics the thinkCausal work-flow
+#' Build a reproducible script which mimics the thinkCausal work-flow
 #'
 #' @return string
 #' @export
-create_log <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, estimand, common_support){
+create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, estimand, common_support){
   
   # TODO: this adds two indent spaces for some reason to final file
   
@@ -24,13 +24,13 @@ create_log <- function(uploaded_file_name, uploaded_file_type, uploaded_file_hea
   # add data type changes
   
   # construct strings for each section
-  log_head <- "library(tidyverse)
+  script_head <- "library(tidyverse)
   library(bartCause)
   library(plotBart)
   source('clean_auto_convert_logicals.R')
   "
   
-  log_data_munge <- paste0("
+  script_data_munge <- paste0("
   # select columns and rename
   X <- ", file_readr, "
   X <- X[, ", selected_columns, "]
@@ -39,7 +39,7 @@ create_log <- function(uploaded_file_name, uploaded_file_type, uploaded_file_hea
   "
   )
   
-  log_model <- paste0(
+  script_model <- paste0(
   "
   # run model  
   treatment_v <- X[, 1]
@@ -55,7 +55,7 @@ create_log <- function(uploaded_file_name, uploaded_file_type, uploaded_file_hea
   "
   )
   
-  log_plots <- paste0(
+  script_plots <- paste0(
   "
   # plot results and diagnostics
   plot_ITE(X)
@@ -65,7 +65,7 @@ create_log <- function(uploaded_file_name, uploaded_file_type, uploaded_file_hea
   )
   
   # combine into one string
-  log <- paste0(log_head, log_data_munge, log_model, log_plots)
+  script <- paste0(script_head, script_data_munge, script_model, script_plots)
   
-  return(log)
+  return(script)
 }
