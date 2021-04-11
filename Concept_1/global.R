@@ -1,31 +1,30 @@
-library(foreign) # for reading data
-library(readstata13) # for reading data
-library(openxlsx) # for reading data
-library(tidyverse)
-library(patchwork) # for combining ggplots
-library(DT) # for javascript datatables
+# for reading data
+library(foreign)
+library(readstata13)
+library(openxlsx)
+
+# for javascript and Shiny tools
+library(shiny)
 library(shinyBS) # might be able to remove this (as of 2021-03-30)
 library(shinyjs) # for running javascript on the server-side
-library(shiny)
-library(shinyWidgets) # for slider skin
+library(shinyWidgets) # for slider skin; might be able to remove this (as of 2021-04-11)
+library(DT) # for javascript datatables
 library(sortable) # for drag and drop divs
-library(arm) # currently just for lalonde dataset
+
+# for data munging and plotting
+library(tidyverse)
+library(patchwork) # for combining ggplots
 library(viridis) # for color blind sensitive colors
+# library(arm) # currently just for lalonde dataset
+
+# for bart
 library(plotBart) # devtools::install_github("joemarlo/plotBart")
 library(bartCause)
+
+# global options
 theme_set(theme_minimal())
 options(shiny.reactlog = TRUE) # for testing; when running, hit Ctrl-F3 to see the reactivity tree
 options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size limit to 10mb
-
-# toy dataset
-data(lalonde)
-user_data <- lalonde
-col_names <- names(user_data)
-X_names <- setdiff(col_names, "treat")
-categorical_names <- c("black", "hisp", "married", "nodegr", "treat") # will need to figure out automatically which vars are categorical
-user_data[categorical_names] <- map_dfc(categorical_names, function(col_name){
-  col <- as.logical(user_data[[col_name]])
-})
 
 # read in randomization df
 randomization_df <- read_csv(
@@ -44,9 +43,6 @@ rownames(randomization_df) <- 1:nrow(randomization_df)
 
 # violet color
 violet_col <- "#5c5980"
-
-# ensure there is a z column (we'll have to standardize column names in the background)
-user_data$z <- user_data$treat
 
 # text for model specification
 analysis_model_text <- list(

@@ -31,7 +31,9 @@ clean_names <- function(.names){
   .names <- stringr::str_replace_all(string = .names, pattern = ' ', replacement = '_')
   
   # replace % with 'percent'
-  .names <- stringr::str_replace_all(string = .names, pattern = '%', replacement = "_percent")
+  .names <- stringr::str_replace_all(string = .names, pattern = '%$', replacement = "_percent")
+  .names <- stringr::str_replace_all(string = .names, pattern = '^%', replacement = "percent_")
+  .names <- stringr::str_replace_all(string = .names, pattern = '%', replacement = "_percent_")
   
   # remove punctuation except underscore and period
   pat <- "(?![._])[[:punct:]]"

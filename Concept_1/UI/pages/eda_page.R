@@ -26,8 +26,8 @@ eda_page <- tabPanel(
               inputId = "analysis_eda_variable_pairs_vars",
               label = "Columns to plot",
               multiple = TRUE,
-              choices = col_names,
-              selected = col_names
+              choices = NULL,
+              selected = NULL
             )
           ),
           conditionalPanel(
@@ -36,8 +36,8 @@ eda_page <- tabPanel(
               inputId = "analysis_eda_variable_x",
               label = "X: ",
               multiple = FALSE,
-              choices = col_names,
-              selected = col_names[1]
+              choices = NULL,
+              selected = NULL
             ),
             conditionalPanel(
               condition = "input.analysis_eda_select_plot_type == 'Scatter'",
@@ -45,15 +45,15 @@ eda_page <- tabPanel(
                 inputId = "analysis_eda_variable_y",
                 label = "Y: ",
                 multiple = FALSE,
-                choices = col_names,
-                selected = col_names[2]
+                choices = NULL,
+                selected = NULL
               ),
               selectInput(
                 inputId = "analysis_eda_variable_fill",
                 label = "Fill color: ",
                 multiple = FALSE,
-                choices = col_names,
-                selected = col_names[12]
+                choices = NULL,
+                selected = NULL
               ),
               conditionalPanel(
                 condition = "input.analysis_eda_variable_fill == 'Cluster'",
@@ -80,8 +80,8 @@ eda_page <- tabPanel(
                 inputId = "analysis_eda_variable_size",
                 label = "Size: ",
                 multiple = FALSE,
-                choices = col_names,
-                selected = col_names[4]
+                choices = NULL,
+                selected = NULL
               ),
               selectInput(
                 inputId = "analysis_eda_variable_regression",
@@ -112,14 +112,14 @@ eda_page <- tabPanel(
                 inputId = "analysis_eda_variable_group",
                 label = "Grouping: ",
                 multiple = FALSE,
-                choices = categorical_names
+                choices = NULL
               )
             ),
             selectInput(
               inputId = "analysis_eda_variable_facet",
               label = "Subgrouping variable: ",
               multiple = FALSE,
-              choices = c("None", categorical_names),
+              choices = c("None", NULL),
               selected = "None"
             ),
             # bsPopover(id = 'analysis_eda_variable_facet',
@@ -167,7 +167,7 @@ eda_page <- tabPanel(
         ),
         
         mainPanel(
-          width = 6,
+          width = 8,
           br(),
           plotOutput(outputId = 'analysis_eda_plot',
                      height = 600,
@@ -190,8 +190,8 @@ eda_page <- tabPanel(
             inputId = "analysis_plot_overlap_select_var",
             label = "Select Variables for Overlap Check:",
             multiple = TRUE,
-            choices = X_names,
-            selected = X_names
+            choices = NULL,
+            selected = NULL
           ),
           awesomeRadio(
             inputId = "analysis_plot_overlap_type",
@@ -244,8 +244,8 @@ tabPanel(title = "Balance Plots",
                inputId = "analysis_plot_balance_select_var",
                label = "Select Variables for Balance Check:",
                multiple = TRUE,
-               choices = X_names,
-               selected = X_names
+               choices = NULL,
+               selected = NULL
              ),
              br(),
              tags$button(type = 'button',
