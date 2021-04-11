@@ -1235,5 +1235,12 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
   })
   
+
+  # options -----------------------------------------------------------------
+
+  # change plot theme
+  observeEvent(input$settings_options_ggplot_theme, {
+    ggplot2::theme_set(eval(parse(text = input$settings_options_ggplot_theme)))
+  })
   
 })

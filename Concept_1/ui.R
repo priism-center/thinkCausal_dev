@@ -43,12 +43,11 @@ shinyUI(
                 welcome_header,
                 concepts_header,
                 analysis_header, 
-                log_header
-                # help_dropdown
+                settings_header
                 )
         ),
 
         # load custom JavaScript
         tags$script(src = "navSlideOver.js")
-        )
+    )
 )

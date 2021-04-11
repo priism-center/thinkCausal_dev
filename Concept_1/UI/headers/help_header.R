@@ -1,2 +1,1 @@
-help_header <- navbarMenu(title = 'Help'
-)
+help_header <- navbarMenu(title = 'Help')
