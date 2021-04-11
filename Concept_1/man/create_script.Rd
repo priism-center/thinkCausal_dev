@@ -21,3 +21,15 @@ string
 \description{
 Build a reproducible script which mimics the thinkCausal work-flow
 }
+\examples{
+create_script(
+ uploaded_file_name = 'test.csv',
+ uploaded_file_type = 'csv',
+ uploaded_file_header = 'TRUE',
+ uploaded_file_delim = ',',
+ selected_columns = c("Z", "Y", "X1", 'X2', "X3"),
+ column_names = c("treatment", "response", "covariate1", "covariate2", "covariate3"),
+ estimand = 'att',
+ common_support = 'none'
+)
+}

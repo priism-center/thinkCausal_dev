@@ -165,6 +165,7 @@ shinyServer(function(input, output, session) {
   
   # maintain a user modified dataframe that is continuously updated
   # TODO: does this need to be eager or can it be lazy via reactive()? 
+    # a few things would need to be modified, primarily the resetting of the df
   observe({
     
     # stop here if columns haven't been assigned
@@ -174,26 +175,72 @@ shinyServer(function(input, output, session) {
     # use assigned dataframe as the template
     user_modified_df <- store$col_assignment_df
 
-    # get input indices and current input values
-    indices <- seq_along(user_modified_df)
-    current_values <- reactiveValuesToList(input)
-    
-    ## change column names
-    user_entered_names <- as.character(current_values[paste0("analysis_data_", indices, '_rename')])
-    user_entered_names <- clean_names(user_entered_names)
-    names(user_modified_df) <- user_entered_names
-    
-    # TODO
-    # change data type
-    user_entered_dataTypes <- as.character(current_values[paste0("analysis_data_", indices, '_changeDataType')])
-    # print(user_entered_dataTypes)
-    
-    # new_data_types <- 
-    # user_modified_df <- convert_data_type_to_complex(user_modified_df, user_entered_dataTypes)
-    
-    # TODO?
-    # change categorical levels
+    if (isTRUE(nrow(store$user_modified_df) > 0)){
+      
+      # get input indices and current input values
+      indices <- seq_along(user_modified_df)
+      current_values <- reactiveValuesToList(input)
+      
+      ## change column names
+      user_entered_names <- as.character(current_values[paste0("analysis_data_", indices, '_rename')])
+      user_entered_names <- clean_names(user_entered_names)
+      names(user_modified_df) <- user_entered_names
+      
+      # TODO: theres some issues here; may need to use promises: https://rstudio.github.io/promises/articles/motivation.html
+      # change data type
+      # current_dataTypes <- convert_data_type_to_simple(store$user_modified_df)
+      # user_entered_dataTypes <- as.character(current_values[paste0("analysis_data_", indices, '_changeDataType')])
+      # 
+      # if (all(user_entered_dataTypes != 'NULL')) {
+      #   pmap(list(colnames(store$user_modified_df), current_dataTypes, user_entered_dataTypes), 
+      #        function(column_name, current_dataType, new_dataType){
+      #          
+      #          if (current_dataType != new_dataType){
+      #            # c("Continuous", "Categorical", "Binary")
+      #            
+      #            # convert column to character
+      #            current_col_as_char <- as.character(store$user_modified_df[[column_name]])
+      #            
+      #            if (new_dataType == "Binary"){
+      #              auto_binary <- readr::parse_logical(as.character(current_col_as_char))
+      #              if (any(is.na(auto_binary))){
+      #                print("Issue auto converting column!!!")
+      # 
+      #                # launch popup so user can choose which values map to true/false
+      #                shinyWidgets::show_alert(
+      #                  title = "Please choose which value corresponds to true and false",
+      #                  text = tags$div(
+      #                    selectInput(
+      #                      inputId = "analysis_data_select_TRUE",
+      #                      label = "Value representing 'true'",
+      #                      choices = unique(current_col_as_char)
+      #                    ),
+      #                    selectInput(
+      #                      inputId = "analysis_data_select_FALSE",
+      #                      label = "Value representing 'false'",
+      #                      choices = unique(current_col_as_char)
+      #                    )
+      #                   ),
+      #                  type = 'info',
+      #                  btn_labels = c("Confirm"),
+      #                  closeOnClickOutside = FALSE,
+      #                  showCloseButton = FALSE
+      #                )
+      #              }
+      #             }
+      #            
+      #            print(paste0("Changing ", column_name, " from ", current_dataType, " to ", new_dataType))
+      #         }
+      #   })
+      # }
 
+      
+      # new_data_types <- 
+      # user_modified_df <- convert_data_type_to_complex(user_modified_df, user_entered_dataTypes)
+      
+      # TODO?
+      # change categorical levels
+    }
 
     # save the data to the store
     store$user_modified_df <- user_modified_df 
@@ -581,7 +628,7 @@ shinyServer(function(input, output, session) {
     log_event <- paste0(
       'Saved columns with following specification: \n',
       paste0(paste0("\t", new_col_names), 
-             " : ", 
+             ": ", 
              column_types,
              collapse = "\n")
       )
@@ -1037,7 +1084,8 @@ shinyServer(function(input, output, session) {
       title = 'Fitting BART model...',
       text = tags$div(
         img(src = file.path('img', 'tree.gif'),
-            width = "50%")
+            width = "50%"),
+        h5("...sometimes this takes a while..."),
       ),
       html = TRUE,
       btn_labels = NA,
@@ -1073,7 +1121,7 @@ shinyServer(function(input, output, session) {
       '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
       '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
       '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
-      '\t', 'Good model fit?', store$good_model_fit
+      '\t', 'Good model fit: ', store$good_model_fit
     )
     store$log <- append(store$log, log_event)
     
@@ -1139,7 +1187,7 @@ shinyServer(function(input, output, session) {
     return(p)
   })
   
-  # log
+  # reproducible script
   # TODO: this hasn't been tested
   reproducible_script <- reactive({
     
@@ -1197,7 +1245,7 @@ shinyServer(function(input, output, session) {
       # close(functionFile)
       # files <- "clean_auto_convert_logicals.R"
       
-      # log file
+      # write file
       fileConn <- file(filename)
       writeLines(reproducible_script(), fileConn)
       close(fileConn)
@@ -1297,8 +1345,8 @@ shinyServer(function(input, output, session) {
     },
     content <- function(filename){
       fileConn <- file(filename)
-      writeLines(paste0(store$log, collapse = '\n\n'), 
-                 fileConn)
+      log <- paste0(paste0(store$log, collapse = '\n\n'), "\n")
+      writeLines(log, fileConn)
       close(fileConn)
     }
   )
