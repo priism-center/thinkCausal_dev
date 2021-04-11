@@ -84,16 +84,14 @@ plot_exploration <- function(.data,
       p <- p +
         geom_jitter(aes_string(y = sym(as.character(.y)),
                                fill = if(is.null(.fill)) NULL else sym(.fill),
-                               color = if(is.null(.fill)) NULL else sym(.fill),
                                size = if(is.null(.size)) NULL else sym(.size)),
-                    alpha = .alpha)
+                    color = 'grey30', alpha = .alpha, shape = 21)
     } else {
       p <- p +
         geom_point(aes_string(y = sym(as.character(.y)),
                               fill = if(is.null(.fill)) NULL else sym(.fill),
-                              color = if(is.null(.fill)) NULL else sym(.fill),
                               size = if(is.null(.size)) NULL else sym(.size)),
-                   alpha = .alpha)
+                   color = 'grey30', alpha = .alpha, shape = 21)
     }
     
     # regression line
