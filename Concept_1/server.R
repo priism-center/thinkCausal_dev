@@ -1320,10 +1320,10 @@ shinyServer(function(input, output, session) {
 
   # options -----------------------------------------------------------------
 
-  # change plot theme
-  multi_observe <- reactive(list(input$settings_options_ggplot_theme, 
-                                 input$settings_options_ggplot_size))
-  observeEvent(multi_observe(), {
+  # change plot theme and font size
+  observe_theme_size <- reactive(list(input$settings_options_ggplot_theme, 
+                                      input$settings_options_ggplot_size))
+  observeEvent(observe_theme_size(), {
     theme_custom <- switch(
       input$settings_options_ggplot_theme,
       "Minimal" = ggplot2::theme_minimal, 

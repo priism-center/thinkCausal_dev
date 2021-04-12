@@ -1,6 +1,7 @@
 log_page <- tabPanel(
   title = "Log",
   style = "padding-left: 3rem;",
+  br(),
   downloadButton(
     outputId = 'settins_log_download',
     label = 'Download log',

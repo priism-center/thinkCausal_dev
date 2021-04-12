@@ -38,6 +38,8 @@ clean_detect_plot_vars <- function(.column_types, .treatment_column, .response_c
   grouping <- "None"
   facet <- "None"
   
+  # TODO implement response as logical
+  
   if (.response_column %in% .column_types$continuous){
     Y <- .response_column
     if (n_continuous > 0){
