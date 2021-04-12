@@ -152,9 +152,9 @@ eda_page <- tabPanel(
           checkboxInput(inputId = "analysis_eda_check_jitter",
                         label = "Jitter the points?",
                         value = FALSE),
-          actionButton(inputId = "analysis_eda_button_download",
-                       label = "Download the plot"),
-          br(),
+          # actionButton(inputId = "analysis_eda_button_download",
+          #              label = "Download the plot"),
+          # br(),
           HTML('</details><br>'),
           br(),br(),
           div(

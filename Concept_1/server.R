@@ -1321,8 +1321,18 @@ shinyServer(function(input, output, session) {
   # options -----------------------------------------------------------------
 
   # change plot theme
-  observeEvent(input$settings_options_ggplot_theme, {
-    ggplot2::theme_set(eval(parse(text = input$settings_options_ggplot_theme)))
+  multi_observe <- reactive(list(input$settings_options_ggplot_theme, 
+                                 input$settings_options_ggplot_size))
+  observeEvent(multi_observe(), {
+    theme_custom <- switch(
+      input$settings_options_ggplot_theme,
+      "Minimal" = ggplot2::theme_minimal, 
+      "Simple" = ggplot2::theme_bw, 
+      "Classic" = ggplot2::theme_classic, 
+      "Gray" = ggplot2::theme_gray
+    )
+    theme_custom <- theme_custom(base_size = input$settings_options_ggplot_size)
+    ggplot2::theme_set(theme_custom)
   })
   
   

@@ -4,13 +4,16 @@ options_page <- tabPanel(
   radioButtons(
     inputId = "settings_options_ggplot_theme",
     label = "Plot aesthetic",
-    choiceNames = c("Minimal", "Simple", "Classic", "Gray"),
-    choiceValues = c('theme_minimal()', 'theme_bw()', 'theme_classic()', 'theme_gray()')
+    choices = c("Minimal", "Simple", "Classic", "Gray")
+    # choiceValues = c('theme_minimal()', 'theme_bw()', 'theme_classic()', 'theme_gray()')
   ),
-  radioButtons(
-    inputId = "settings_options_temp",
-    label = "Another set of inputs",
-    choiceNames = c("Option1", "Option2", "Option3", "Option4"),
-    choiceValues = c(theme_minimal, theme_bw, theme_classic, theme_gray)
+  br(),
+  sliderInput(
+    inputId = "settings_options_ggplot_size",
+    label = "Plot font size",
+    min = 8,
+    max = 20,
+    value = 14,
+    step = 1
   )
 )

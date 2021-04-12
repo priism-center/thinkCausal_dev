@@ -36,7 +36,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   script_head <- paste0(
   "library(tidyverse)", "\n",
   "library(bartCause)", "\n",
-  "library(plotBart)", "\n",
+  "library(plotBart) #devtools::install_github('joemarlo/plotBart')", "\n",
   "source('clean_auto_convert_logicals.R')",
   "\n\n"
   )
@@ -60,16 +60,16 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
     treatment = treatment_v,
     confounders = confounders_mat,
     estimand = '", estimand, "',
-    commonSup.rule = '", common_support, "'
-  )",
+    commonSup.rule = '", common_support, "'\n",
+  ")",
   "\n\n"
   )
   
   script_plots <- paste0(
   "# plot results and diagnostics", "\n",
-  "plot_ITE(X)", "\n",
-  "plot_trace(X)", "\n",
-  "plot_diagnostic_common_support(X, .rule = '", common_support, "')",
+  "plot_ITE(model_results) + labs(title = 'My individual treatment effects')", "\n",
+  "plot_trace(model_results)", "\n",
+  "plot_diagnostic_common_support(model_results, .rule = '", common_support, "')",
   "\n"
   )
   

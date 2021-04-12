@@ -25,7 +25,7 @@ model_page <- tabPanel(title = "Model",
                                     htmlOutput(outputId = 'analysis_model_text_estimand_noinput'),
                                     awesomeRadio(
                                       inputId = "analysis_model_radio_support",
-                                      label = "Common Support Rule",
+                                      label = "Select common Support Rule",
                                       choices = c('None' = "none", 
                                                   'Standard Deviation' = 'sd', 
                                                   'Chi Squared Test' = 'chisq', 
@@ -54,13 +54,13 @@ model_page <- tabPanel(title = "Model",
                                     br(),
                                     awesomeRadio(
                                       inputId = "analysis_model_outcome",
-                                      label = "model outcome with",
+                                      label = "Model outcome with",
                                       choices = c('BART', "Weighted Propensity Score", 'TMLE'), 
                                       selected = 'BART'
                                     ),
                                     awesomeRadio(
                                       inputId = "analysis_model_pscore",
-                                      label = "model propensity score fit with:",
+                                      label = "Model propensity score fit with:",
                                       choices = c('BART', 'generalized linear model','do not fit propensity scores'), 
                                       selected = 'BART'
                                     ),
