@@ -706,7 +706,7 @@ shinyServer(function(input, output, session) {
                       selected = X_cols
     )
     updateSelectInput(session = session, 
-                  inputId = 'eda_moderators',
+                  inputId = 'eda_moderation',
                   choices = X_cols, 
                   selected = X_cols)
     
@@ -1283,7 +1283,7 @@ shinyServer(function(input, output, session) {
     
  output$cate_plot <- renderPlot({
 
-  p <- plot_cate(.model = store$model_results, confounder = input$eda_moderators
+  p <- plot_cate(.model = store$model_results, confounder = input$eda_moderation
                  )
 
   return(p)
