@@ -705,6 +705,10 @@ shinyServer(function(input, output, session) {
                       choices = X_cols,
                       selected = X_cols
     )
+    updateSelectInput(session = session, 
+                  inputId = 'eda_moderators',
+                  choices = X_cols, 
+                  selected = X_cols)
     
     # move to next page
     updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
@@ -1277,18 +1281,14 @@ shinyServer(function(input, output, session) {
     return(tab)
   })
     
-  moderators_x <- reactive({
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
-    mods <- names(store$selected_df[, 3:ncol(store$selected_df)])
-    return(mods)
-  })
+ output$cate_plot <- renderPlot({
+
+  p <- plot_cate(.model = store$model_results, confounder = input$eda_moderators
+                 )
+
+  return(p)
+})
   
-  output$explor_moderators <- renderUI({
-    selectInput(inputId = "analysis_model_moderator_vars", 
-                label = "Select Moderator:", 
-                choices = moderators_x())
-  })
   
   
   # concepts ----------------------------------------------------------------
