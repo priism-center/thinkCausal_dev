@@ -45,13 +45,11 @@ moderator_page <- tabPanel(
                ),
                mainPanel(
                  conditionalPanel(condition = "input.variable_importance_view == 'Plot (top 10 confounders)'", 
-                                  br(),
-                                  plotOutput(outputId = "variable_importance_plot", 
-                                             height = 500)), 
+                 plotOutput(outputId = "variable_importance_plot", 
+                            height = 500)), 
                  conditionalPanel(condition = "input.variable_importance_view == 'Table (all confounders)'",
-                                  br(),
-                                  dataTableOutput(outputId ="variable_importance_table",
-                                                  height = 500))
+                                    dataTableOutput(outputId ="variable_importance_table", 
+                                                    height = 500))
                  
                  
                )
@@ -63,14 +61,23 @@ moderator_page <- tabPanel(
           # selectInput(inputId = "analysis_model_moderator_vars",
           #             label = "Select Moderator:",
           #             choices = NULL)
-          awesomeRadio(
-            inputId = 'expore_type', 
-            label = 'Exploratory Plot View:', 
-            choices = c('Moderators', 'Variable Importance'),
-            selected = 'Moderators'),
-          uiOutput('explor_moderators')
+          # awesomeRadio(
+          #   inputId = 'expore_type', 
+          #   label = 'Exploratory Plot View:', 
+          #   choices = c('Moderators', 'Variable Importance'),
+          #   selected = 'Moderators'),
+          #uiOutput('explor_moderators')
+          selectInput(
+                      inputId = "eda_moderation",
+                      label = "Select Moderator:",
+                      multiple = FALSE,
+                      choices = NULL, 
+                      selected = NULL)
         ),
-        mainPanel()
+        mainPanel(
+          plotOutput(outputId = "cate_plot",
+                     height = 500)
+        )
       )
     )
   )
