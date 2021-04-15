@@ -8,7 +8,7 @@
 #
 # ----- ----- ----- ----- version
 # 
-# Ver: 1.02
+# Ver: 1.03
 # 
 # Description: illustrate why ignorability is important for causal inference 
 #              using regression analysis.
