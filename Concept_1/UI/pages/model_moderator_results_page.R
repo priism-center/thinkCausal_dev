@@ -31,7 +31,9 @@ moderator_page <- tabPanel(
                       choices = NULL)
           #uiOutput('explor_moderators')
         ),
-        mainPanel()
+        mainPanel(
+          br()
+        )
     )), 
     tabPanel(title = 'Estimated Variable Importance',
              sidebarLayout(
@@ -44,14 +46,13 @@ moderator_page <- tabPanel(
                               choices = c('Plot (top 10 confounders)', 'Table (all confounders)'))
                ),
                mainPanel(
+                 br(),
                  conditionalPanel(condition = "input.variable_importance_view == 'Plot (top 10 confounders)'", 
                  plotOutput(outputId = "variable_importance_plot", 
                             height = 500)), 
                  conditionalPanel(condition = "input.variable_importance_view == 'Table (all confounders)'",
-                                    dataTableOutput(outputId ="variable_importance_table", 
-                                                    height = 500))
-                 
-                 
+                                  dataTableOutput(outputId ="variable_importance_table", 
+                                                  height = 500))
                )
              )),
     tabPanel(
@@ -67,14 +68,14 @@ moderator_page <- tabPanel(
           #   choices = c('Moderators', 'Variable Importance'),
           #   selected = 'Moderators'),
           #uiOutput('explor_moderators')
-          selectInput(
-                      inputId = "eda_moderation",
+          selectInput(inputId = "analysis_moderators_select_explore",
                       label = "Select Moderator:",
                       multiple = FALSE,
                       choices = NULL, 
                       selected = NULL)
         ),
         mainPanel(
+          br(),
           plotOutput(outputId = "cate_plot",
                      height = 500)
         )

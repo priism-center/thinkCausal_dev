@@ -705,10 +705,12 @@ shinyServer(function(input, output, session) {
                       choices = X_cols,
                       selected = X_cols
     )
+    
+    # update selects on moderators page
     updateSelectInput(session = session, 
-                  inputId = 'eda_moderation',
-                  choices = X_cols, 
-                  selected = X_cols)
+                      inputId = 'analysis_moderators_select_explore',
+                      choices = X_cols,
+                      selected = X_cols)
     
     # move to next page
     updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
@@ -1233,30 +1235,30 @@ shinyServer(function(input, output, session) {
   output$analysis_results_button_download <- downloadHandler(
     filename <-  function() {
       time <- gsub("-|:| ", "", Sys.time())
-      paste0(time, '_thinkCausal_script.R')
+      paste0(time, '_thinkCausal_script.zip')
     },
     content <- function(filename){
       
       # go to a temp dir to avoid permission issues
-      # owd <- setwd(tempdir())
-      # on.exit(setwd(owd))
-      # files <- NULL;
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      files <- NULL;
       
-      # combine with clean_auto_convert_logicals.R script and zip it
-      # TODO
-      # functionFile <- file("clean_auto_convert_logicals.R")
-      # writeLines(attributes(attributes(clean_auto_convert_logicals)$srcref)$srcfile$lines)
-      # close(functionFile)
-      # files <- "clean_auto_convert_logicals.R"
+      # create file containing the clean_auto_convert_logicals function
+      functionFile <- file("clean_auto_convert_logicals.R")
+      writeLines(attributes(attributes(clean_auto_convert_logicals)$srcref)$srcfile$lines,
+                 functionFile)
+      close(functionFile)
+      files <- "clean_auto_convert_logicals.R"
       
-      # write file
-      fileConn <- file(filename)
+      # create the script file
+      fileConn <- file("thinkCausal_script.R")
       writeLines(reproducible_script(), fileConn)
       close(fileConn)
-      # files <- c('script.R', files)
+      files <- c('thinkCausal_script.R', files)
       
       # create the zip file
-      # zip(filename, files)
+      zip(filename, files)
     }
   )
   
@@ -1278,17 +1280,16 @@ shinyServer(function(input, output, session) {
                   "Model must first be fitted on the 'Model' tab"))
     conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
     tab <- plot_variable_importance(store$model_results, confounders = conf, out = 'table')
+    tab <- create_datatable(tab)
     return(tab)
   })
-    
- output$cate_plot <- renderPlot({
-
-  p <- plot_cate(.model = store$model_results, confounder = input$eda_moderation
-                 )
-
-  return(p)
-})
   
+  # plot the moderators
+  output$cate_plot <- renderPlot({
+    p <- plot_cate(.model = store$model_results, 
+                   confounder = input$analysis_moderators_select_explore)
+    return(p)
+  })
   
   
   # concepts ----------------------------------------------------------------

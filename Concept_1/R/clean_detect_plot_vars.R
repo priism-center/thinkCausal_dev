@@ -38,8 +38,7 @@ clean_detect_plot_vars <- function(.column_types, .treatment_column, .response_c
   grouping <- "None"
   facet <- "None"
   
-  # TODO implement response as logical
-  
+  # TODO see brainstorm matrix in slack
   if (.response_column %in% .column_types$continuous){
     Y <- .response_column
     if (n_continuous > 0){
@@ -56,8 +55,8 @@ clean_detect_plot_vars <- function(.column_types, .treatment_column, .response_c
       grouping <- .treatment_column
     } else {
       plot_type <- 'Barplot'
-      X <- .response_column
-      Y <- vars_continuous[1]
+      X <- vars_continuous[1]
+      Y <- .response_column
       grouping <- .treatment_column
     }
   } else stop("Outcome is somehow not classifed as either continuous or categorical")
