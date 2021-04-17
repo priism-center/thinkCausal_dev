@@ -34,6 +34,7 @@ clean_detect_plot_vars <- function(.column_types, .treatment_column, .response_c
   
   Y <- NULL
   fill <- .treatment_column
+  shape <- "None"
   size <- "None"
   grouping <- "None"
   facet <- "None"
@@ -66,6 +67,7 @@ clean_detect_plot_vars <- function(.column_types, .treatment_column, .response_c
     X = X,
     Y = Y,
     fill = fill,
+    shape = shape,
     size = size,
     grouping = grouping,
     facet = facet

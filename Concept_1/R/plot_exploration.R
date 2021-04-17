@@ -1,6 +1,6 @@
 #' General purpose plotting for EDA
 #'
-#' To be used within Shiny
+#' To be used programmatically. Not recommended for script/console use.
 #'
 #' @param .data typically store$selected_df
 #' @param .plot_type  one of c("Pairs", 'Scatter', 'Histogram', 'Density', 'Boxplot')
@@ -9,6 +9,7 @@
 #' @param .fill 
 #' @param .fill_static 
 #' @param .size 
+#' @param shape
 #' @param .alpha 
 #' @param .vars_pairs 
 #' @param .n_bins 
@@ -40,6 +41,7 @@
 #'  .fill = NULL,
 #'  .fill_static = "#5c5980",
 #'  .size = 'age',
+#'  .shape = 'None',
 #'  .alpha = 0.5,
 #'  .vars_pairs,
 #'  .n_bins = 30,
@@ -54,8 +56,9 @@ plot_exploration <- function(.data,
                              .x,
                              .y,
                              .fill,
-                             .fill_static = "#5c5980",
+                             .fill_static = "grey20",
                              .size,
+                             .shape,
                              .alpha = 0.9,
                              .vars_pairs,
                              .n_bins,
@@ -66,8 +69,10 @@ plot_exploration <- function(.data,
                              .include_regression = c("Include", "None")) {
   
   # convert "None"s to NULL
-  if (.fill == "None") .fill <- NULL
-  if (.size == "None") .size <- NULL
+  if (isTRUE(.fill == "None")) .fill <- NULL
+  .color <- .fill 
+  if (isTRUE(.size == "None")) .size <- NULL
+  if (isTRUE(.shape == "None")) .shape <- NULL
   
   # create base ggplot object
   p <- ggplot(.data, aes_string(x = sym(.x)))
@@ -84,14 +89,18 @@ plot_exploration <- function(.data,
       p <- p +
         geom_jitter(aes_string(y = sym(as.character(.y)),
                                fill = if(is.null(.fill)) NULL else sym(.fill),
-                               size = if(is.null(.size)) NULL else sym(.size)),
-                    color = 'grey30', alpha = .alpha, shape = 21)
+                               color = if(is.null(.color)) NULL else sym(.color),
+                               size = if(is.null(.size)) NULL else sym(.size),
+                               shape = if(is.null(.shape)) NULL else sym(.shape)
+                               ), alpha = .alpha)
     } else {
       p <- p +
         geom_point(aes_string(y = sym(as.character(.y)),
                               fill = if(is.null(.fill)) NULL else sym(.fill),
-                              size = if(is.null(.size)) NULL else sym(.size)),
-                   color = 'grey30', alpha = .alpha, shape = 21)
+                              color = if(is.null(.color)) NULL else sym(.color),
+                              size = if(is.null(.size)) NULL else sym(.size),
+                              shape = if(is.null(.shape)) NULL else sym(.shape),
+                              ), alpha = .alpha)
     }
     
     # regression line

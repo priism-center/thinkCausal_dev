@@ -273,22 +273,6 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  # table of selected dataset
-  output$analysis_data_table <- DT::renderDataTable({
-    
-    # stop here if columns haven't been assigned
-    validate(need(nrow(store$col_assignment_df) > 0,
-                  "Columns must first be assigned. Please see 'Load data' tab."))
-    
-    # create JS datatable
-    tab <- create_datatable(
-      store$user_modified_df,
-      selection = "none"
-    )
-    
-    return(tab)
-  })
-  
   # vector of selector ids
   # analysis_data_select_selector_ids <-
   #   c(
@@ -586,6 +570,22 @@ shinyServer(function(input, output, session) {
     })
   })
   
+  # table of selected dataset
+  output$analysis_data_table <- DT::renderDataTable({
+    
+    # stop here if columns haven't been assigned
+    validate(need(nrow(store$col_assignment_df) > 0,
+                  "Columns must first be assigned. Please see 'Load data' tab."))
+    
+    # create JS datatable
+    tab <- create_datatable(
+      store$user_modified_df,
+      selection = "none"
+    )
+    
+    return(tab)
+  })
+  
   # # add listeners to each data type dropdown that notify when the value changes
   # observeEvent(nrow(store$col_assignment_df), {
   # 
@@ -715,6 +715,12 @@ shinyServer(function(input, output, session) {
     )
     updateSelectInput(
       session = session,
+      inputId = "analysis_eda_variable_shape",
+      choices = c("None", cols_categorical),
+      selected = plot_vars$shape
+    )
+    updateSelectInput(
+      session = session,
       inputId = "analysis_eda_variable_size",
       choices = c("None", new_col_names),
       selected = plot_vars$size
@@ -773,7 +779,8 @@ shinyServer(function(input, output, session) {
           .x = input$analysis_eda_variable_x,
           .y = input$analysis_eda_variable_y,
           .fill = input$analysis_eda_variable_fill,
-          .fill_static = "#5c5980",
+          .fill_static = 'grey20', #"#5c5980",
+          .shape = input$analysis_eda_variable_shape,
           .size = input$analysis_eda_variable_size,
           .alpha = input$analysis_eda_variable_alpha,
           .vars_pairs = input$analysis_eda_variable_pairs_vars,
@@ -1391,7 +1398,7 @@ shinyServer(function(input, output, session) {
 
   # options -----------------------------------------------------------------
 
-  # change plot theme and font size
+  # change plot theme, font size, and point size
   theme_custom <- reactive({
     theme_custom <- switch(
       input$settings_options_ggplot_theme,
@@ -1400,7 +1407,8 @@ shinyServer(function(input, output, session) {
       "Classic" = ggplot2::theme_classic, 
       "Gray" = ggplot2::theme_gray
     )
-    theme_custom <- theme_custom(base_size = input$settings_options_ggplot_size)
+    update_geom_defaults("point", list(size = input$settings_options_ggplotPointSize)) # is this a memory hog?
+    theme_custom <- theme_custom(base_size = input$settings_options_ggplotTextSize)
     return(theme_custom)
   })
   

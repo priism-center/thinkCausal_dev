@@ -55,6 +55,13 @@ eda_page <- tabPanel(
                 choices = NULL,
                 selected = NULL
               ),
+              selectInput(
+                inputId = "analysis_eda_variable_shape",
+                label = "Shape: ",
+                multiple = FALSE,
+                choices = NULL,
+                selected = NULL
+              ),
               conditionalPanel(
                 condition = "input.analysis_eda_variable_fill == 'Cluster'",
                 selectInput(

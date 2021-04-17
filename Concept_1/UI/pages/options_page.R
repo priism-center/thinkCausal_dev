@@ -8,22 +8,30 @@ options_page <- tabPanel(
              inputId = "settings_options_ggplot_theme",
              label = "Plot aesthetic",
              choices = c("Minimal", "Simple", "Classic", "Gray")
-             # choiceValues = c('theme_minimal()', 'theme_bw()', 'theme_classic()', 'theme_gray()')
            ),
            br(),
            sliderInput(
-             inputId = "settings_options_ggplot_size",
+             inputId = "settings_options_ggplotTextSize",
              label = "Plot font size",
              min = 8,
              max = 20,
              value = 14,
              step = 1
            ),
+           br(),
+           sliderInput(
+             inputId = "settings_options_ggplotPointSize",
+             label = "Plot point size",
+             min = 1,
+             max = 10,
+             value = 3,
+             step = 1
+           ),
           ),
     column(width = 6,
            br(),
            plotOutput(outputId = 'settings_options_ggplot_preview',
-                      height = '300px')
+                      height = '400px')
     )
   ),
   br(),br(),
