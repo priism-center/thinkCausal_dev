@@ -511,3 +511,9 @@ border 0 fixes the buttons moving around when you hover / click */
 #analysis_data_upload_progress {
   height: 2rem;
 }
+
+/* make scrollbar always visible so site doesn't shift when it is visible */
+html {
+    overflow: -moz-scrollbars-vertical; 
+    overflow-y: scroll;
+}

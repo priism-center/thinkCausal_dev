@@ -466,7 +466,7 @@ shinyServer(function(input, output, session) {
     )
     
     # render the rows
-    UI_grid <- lapply(indices, FUN = function(i){
+    UI_grid <- lapply(indices, function(i){
       fluidRow(
         column(width = 2,
                shinyjs::disabled(
@@ -510,6 +510,44 @@ shinyServer(function(input, output, session) {
     
     # combine the header and the rows
     UI_table <- tagList(UI_header, UI_grid)
+    
+    # add default column types to store
+    store$current_simple_column_types <- default_data_types
+    
+    # # add observers to launch modal if user changes data type to binary
+    # lapply(indices, function(i){
+    #   input_id <- paste0("analysis_data_", i, "_changeDataType")
+    #   observeEvent(input[[input_id]], {
+    # 
+    #     previous_value <- store$current_simple_column_types[i]
+    #     new_value <- input[[input_id]]
+    # 
+    #     # update column types in store
+    #     store$current_simple_column_types[i] <- new_value
+    # 
+    #     if (new_value == 'Binary'){
+    #       shinyWidgets::show_alert(
+    #         title = 'Please specify the levels',
+    #         text = tags$div(
+    #           
+    #           actionButton(
+    #             inputId = paste0('analysis_data_', i, '_button_confirmLevel'),
+    #             label = 'Confirm')
+    #           ),
+    #         type = 'info',
+    #         btn_labels = NA,
+    #         closeOnClickOutside = FALSE
+    #       )
+    #     }
+    # 
+    #     print(store$current_simple_column_types)
+    #   })
+    # })
+    # 
+    # # add observers to record the input within the launched modals
+    # lapply(indices, function(i){
+    #   
+    # })
 
     return(UI_table)
   })
@@ -725,7 +763,6 @@ shinyServer(function(input, output, session) {
   output$analysis_eda_plot <- renderPlot({
     
     # stop here if data hasn't been uploaded and selected
-    # TODO: error messages here are hard to read
     validate(need(is.data.frame(store$selected_df), 
                   "Data must be first uploaded and selected. Please see 'Data' tab."))
     
@@ -775,7 +812,11 @@ shinyServer(function(input, output, session) {
   })
   
   # table of brushed data points from plot
-  output$analysis_eda_brush_info <- DT::renderDataTable(
+  output$analysis_eda_brush_info <- DT::renderDataTable({
+    
+    # stop here if data hasn't been uploaded and selected
+    validate(need(is.data.frame(store$selected_df), 
+                  "Data must be first uploaded and selected. Please see 'Data' tab."))
     
     # show only if there isn't faceting
     if (input$analysis_eda_variable_facet == "None" & input$analysis_eda_select_plot_type == 'Scatter') {
@@ -784,7 +825,8 @@ shinyServer(function(input, output, session) {
         brushedPoints(store$selected_df, input$analysis_eda_plot_brush),
         selection = "none"
       )
-    })
+    }
+  })
   
   # update second facet options so user cannot double facet on the same variable
   # b/c that causes an error
@@ -1372,7 +1414,8 @@ shinyServer(function(input, output, session) {
              shape = rep(LETTERS[1:5], 2)),
       aes(x = x, y = y, color = x, shape = shape)) +
         geom_point() +
-        labs(title = "thinkCausal")
+        labs(title = "thinkCausal",
+             color = 'color')
     
     # add theme
     p <- p + theme_custom()
