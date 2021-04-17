@@ -1,27 +1,4 @@
-
-# build custom theme
-theme_custom <- function()
-  ggplot2::theme_minimal(base_size = 14) +
-  ggplot2::theme(
-    strip.background = ggplot2::element_rect(
-      fill = "gray95",
-      color = 'white'),
-    strip.text = ggplot2::element_text(
-      color = "gray30",
-      size = 11,
-      face = "bold"
-    ),
-    text = ggplot2::element_text(family = "Helvetica",
-                        color = "gray30"),
-    legend.position = "bottom",
-    plot.caption = ggplot2::element_text(face = "italic",
-                                size = 8,
-                                color = 'grey50')
-  )
-
-# set custom theme
-# should allow the user to also choose theme_bw() for publication plots
-ggplot2::theme_set(theme_custom())
+# default theme is set on load by input$settings_options_ggplot_theme
 
 # set default continuous colors
 options(

@@ -756,6 +756,9 @@ shinyServer(function(input, output, session) {
     # validate(need(is.ggplot(p), 
     #               "Variable selection is not valid. Please try another combination."))
     
+    # add theme
+    p <- p + theme_custom()
+    
     return(p)
   })
   
@@ -835,6 +838,9 @@ shinyServer(function(input, output, session) {
       )
     }
     
+    # add theme
+    p <- p + theme_custom()
+    
     return(p)
   })
   
@@ -857,6 +863,9 @@ shinyServer(function(input, output, session) {
     p <- plot_balance(.data = X, 
                       treatment_col = treatment_col, 
                       confounder_cols = confounder_cols)
+    
+    # add theme
+    p <- p + theme_custom()
     
     return(p)
   })
@@ -895,6 +904,9 @@ shinyServer(function(input, output, session) {
     # call function
     p <- plot_trace(.model = store$model_results)
     
+    # add theme
+    p <- p + theme_custom()
+    
     return(p)
   })
   
@@ -907,12 +919,12 @@ shinyServer(function(input, output, session) {
     
     # plot it
     p <- plot_diagnostic_common_support(.model = store$model_results, 
-                                        .rule = input$analysis_model_radio_support)
+                                        .rule = input$analysis_model_radio_support,
+                                        .plot_theme = theme_custom)
     
     return(p)
   })
   
- 
   
   # specify model -----------------------------------------------------------
   
@@ -1172,6 +1184,9 @@ shinyServer(function(input, output, session) {
     # plot it
     p <- plot_ITE(.model = store$model_results)
     
+    # add theme
+    p <- p + theme_custom()
+    
     return(p)
   })
   
@@ -1189,6 +1204,9 @@ shinyServer(function(input, output, session) {
     # TODO see TODOs for plot_cate_test()
     # p <- plot_cate_test(.model = store$model_results, confounders = confounders)
     p <- NULL
+    
+    # add theme
+    p <- p + theme_custom()
     
     return(p)
   })
@@ -1269,8 +1287,13 @@ shinyServer(function(input, output, session) {
   output$variable_importance_plot <- renderPlot({
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
-    conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+    
+    conf <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
     p <- plot_variable_importance(store$model_results, confounders = conf, out = 'plot')
+    
+    # add theme
+    p <- p + theme_custom()
+    
     return(p)
   })
   
@@ -1286,8 +1309,13 @@ shinyServer(function(input, output, session) {
   
   # plot the moderators
   output$cate_plot <- renderPlot({
+    # plot it
     p <- plot_cate(.model = store$model_results, 
                    confounder = input$analysis_moderators_select_explore)
+    
+    # add theme
+    p <- p + theme_custom()
+    
     return(p)
   })
   
@@ -1322,9 +1350,7 @@ shinyServer(function(input, output, session) {
   # options -----------------------------------------------------------------
 
   # change plot theme and font size
-  observe_theme_size <- reactive(list(input$settings_options_ggplot_theme, 
-                                      input$settings_options_ggplot_size))
-  observeEvent(observe_theme_size(), {
+  theme_custom <- reactive({
     theme_custom <- switch(
       input$settings_options_ggplot_theme,
       "Minimal" = ggplot2::theme_minimal, 
@@ -1333,7 +1359,25 @@ shinyServer(function(input, output, session) {
       "Gray" = ggplot2::theme_gray
     )
     theme_custom <- theme_custom(base_size = input$settings_options_ggplot_size)
-    ggplot2::theme_set(theme_custom)
+    return(theme_custom)
+  })
+  
+  # update plot theme preview
+  output$settings_options_ggplot_preview <- renderPlot({
+    
+    # create dummy plot
+    p <- ggplot(
+      tibble(x = c(-19.0, 10.3, 8.4, 0.3, -1.8, 11.7, 9.6, 7.5, -13.0, 2.3),
+             y = c(2.1, -7.5, 0.9, 2.8, -0.8, -1.2, 6.7, 8.1, 4.0, 18.9),
+             shape = rep(LETTERS[1:5], 2)),
+      aes(x = x, y = y, color = x, shape = shape)) +
+        geom_point() +
+        labs(title = "thinkCausal")
+    
+    # add theme
+    p <- p + theme_custom()
+    
+    return(p)
   })
   
   
