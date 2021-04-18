@@ -1492,7 +1492,7 @@ shinyServer(function(input, output, session) {
   output$settins_log_download <- downloadHandler(
     filename <-  function() {
       time <- gsub("-|:| ", "", Sys.time())
-      paste0(time, '_thinkCausal_log.R')
+      paste0(time, '_thinkCausal_log.txt')
     },
     content <- function(filename){
       fileConn <- file(filename)
