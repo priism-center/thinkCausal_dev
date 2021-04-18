@@ -1397,7 +1397,7 @@ shinyServer(function(input, output, session) {
                   "Model must first be fitted on the 'Model' tab"))
     conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
     tab <- plot_variable_importance(store$model_results, confounders = conf, out = 'table')
-    tab <- create_datatable(tab)
+    tab <- create_datatable(tab, selection = "none")
     return(tab)
   })
   
