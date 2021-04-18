@@ -11,7 +11,7 @@ eda_page <- tabPanel(
       sidebarLayout(
         sidebarPanel(
           width = 4,
-          h4("Explore the data visually"),
+          h4("Explore your data visually"),
           br(),
           selectInput(
             inputId = "analysis_eda_select_plot_type",

@@ -2,7 +2,7 @@ model_page <- tabPanel(title = "Model",
                        tabPanel("Model",
                                 sidebarLayout(
                                   sidebarPanel(
-                                    h4('Specify Model'),
+                                    h4('Specify your model'),
                                     awesomeRadio(
                                       inputId = "analysis_model_radio_design", 
                                       label = 'Select Assignment of Treatment (Z):', 
@@ -15,7 +15,7 @@ model_page <- tabPanel(title = "Model",
                                     htmlOutput(outputId = 'analysis_model_text_design_noinput'),
                                     awesomeRadio(
                                       inputId = "analysis_model_radio_estimand",
-                                      label = "Select Causal Estimand",
+                                      label = "Select causal estimand",
                                       choices = c('ATE', 
                                                   'ATT', 
                                                   'ATC', 
@@ -25,14 +25,14 @@ model_page <- tabPanel(title = "Model",
                                     htmlOutput(outputId = 'analysis_model_text_estimand_noinput'),
                                     awesomeRadio(
                                       inputId = "analysis_model_radio_support",
-                                      label = "Select common Support Rule",
+                                      label = "Select common support rule",
                                       choices = c('None' = "none", 
                                                   'Standard Deviation' = 'sd', 
                                                   'Chi Squared Test' = 'chisq', 
                                                   'Unsure of Common Support Rule' = 'unsure'),
                                       selected = 5
                                     ),
-                                    h4('Specify Moderators'),
+                                    h4('Specify moderators'),
                                     awesomeRadio(
                                       inputId = "analysis_model_moderator_yes_no", 
                                       inline = TRUE,

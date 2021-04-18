@@ -49,6 +49,6 @@ X <- data.frame(
 column_types <- clean_detect_column_types(X)
 plot_vars <- clean_detect_plot_vars(column_types, 'treatment', 'response')
 test_that("clean_detect_plot_vars() output is correct", {
-  expect_equal(names(plot_vars), c('plot_type', 'X', 'Y', 'fill', 'size', 'grouping', 'facet'))
+  expect_equal(names(plot_vars), c('plot_type', 'X', 'Y', 'fill', 'shape', 'size', 'grouping', 'facet'))
   expect_type(plot_vars, 'list')
 })

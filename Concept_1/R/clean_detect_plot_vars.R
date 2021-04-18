@@ -58,7 +58,7 @@ clean_detect_plot_vars <- function(.column_types, .treatment_column, .response_c
       plot_type <- 'Barplot'
       X <- vars_continuous[1]
       Y <- .response_column
-      grouping <- .treatment_column
+      facet <- .treatment_column
     }
   } else stop("Outcome is somehow not classifed as either continuous or categorical")
   

@@ -10,8 +10,9 @@ plot_exploration(
   .x,
   .y,
   .fill,
-  .fill_static = "#5c5980",
+  .fill_static = "grey20",
   .size,
+  .shape,
   .alpha = 0.9,
   .vars_pairs,
   .n_bins,
@@ -57,7 +58,7 @@ plot_exploration(
 
 }
 \description{
-To be used within Shiny
+To be used programmatically. Not recommended for script/console use.
 }
 \examples{
 library(arm)
@@ -73,6 +74,7 @@ plot_exploration(
  .fill = NULL,
  .fill_static = "#5c5980",
  .size = 'age',
+ .shape = 'None',
  .alpha = 0.5,
  .vars_pairs,
  .n_bins = 30,

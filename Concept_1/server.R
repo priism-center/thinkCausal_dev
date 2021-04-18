@@ -764,6 +764,51 @@ shinyServer(function(input, output, session) {
   
   # EDA ---------------------------------------------------------------------
   
+  # only show continuous variables if histogram, boxplot, or boxplot is selected
+  # only show categorical if barplot
+  observeEvent(input$analysis_eda_select_plot_type, {
+    
+    plot_type <- input$analysis_eda_select_plot_type
+    selection_current <- input$analysis_eda_variable_x
+     
+    if (plot_type %in% c("Histogram", "Density", "Boxplot")){
+      
+      # update the available variables to just continuous and keep the current
+        # selection if its continuous
+      vars_continuous <- store$column_types$continuous
+      selection_new <- ifelse(selection_current %in% vars_continuous,
+                              selection_current,
+                              vars_continuous[1])
+      updateSelectInput(
+        session = session,
+        inputId = "analysis_eda_variable_x",
+        choices = vars_continuous,
+        selected = selection_new
+      ) 
+    } else if (plot_type == "Barplot") {
+      
+      # update the available variables to just categorical and keep the current
+        # selection if its categorical
+      vars_categorical <- store$column_types$categorical
+      selection_new <- ifelse(selection_current %in% vars_categorical,
+                              selection_current,
+                              vars_categorical[1])
+      updateSelectInput(
+        session = session,
+        inputId = "analysis_eda_variable_x",
+        choices = vars_categorical,
+        selected = selection_new
+      )
+    } else {
+      updateSelectInput(
+        session = session,
+        inputId = "analysis_eda_variable_x",
+        choices = colnames(store$selected_df),
+        selected = selection_current
+      ) 
+    }
+  })
+  
   # create the descriptive plots
   # build the exploration plots
   output$analysis_eda_plot <- renderPlot({

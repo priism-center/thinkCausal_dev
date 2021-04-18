@@ -10,6 +10,7 @@ library(shinyjs) # for running javascript on the server-side
 library(shinyWidgets) # for alerts
 library(DT) # for javascript datatables
 library(sortable) # for drag and drop divs
+library(kableExtra) # for one html table. Can easily replace with one custom function -- see https://github.com/joemarlo/sequenchr/blob/57375aebe59330cfcc02d69a7fd98ec476a6bf28/R/helpers.R#L173
 
 # for data munging and plotting
 library(tidyverse)
