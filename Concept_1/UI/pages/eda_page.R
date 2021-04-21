@@ -124,7 +124,7 @@ eda_page <- tabPanel(
             ),
             selectInput(
               inputId = "analysis_eda_variable_facet",
-              label = "Subgrouping variable: ",
+              label = "Panel variable: ",
               multiple = FALSE,
               choices = c("None", NULL),
               selected = "None"
@@ -137,7 +137,7 @@ eda_page <- tabPanel(
               condition = "input.analysis_eda_variable_facet != 'None'",
               selectInput(
                 inputId = "analysis_eda_variable_facet_second",
-                label = "Second subgrouping variable: ",
+                label = "Second panel variable: ",
                 multiple = FALSE,
                 choices = c("None"),
                 selected = "None"
