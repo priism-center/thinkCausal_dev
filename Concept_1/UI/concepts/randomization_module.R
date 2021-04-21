@@ -53,7 +53,7 @@ randomizationUI <- function(id) {
              )
 }
 
-randomizationServer <- function(id, plot_theme) {
+randomizationServer <- function(id, plot_theme = ggplot2::theme_get) {
   ns <- NS(id)
   
   moduleServer(
