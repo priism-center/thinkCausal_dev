@@ -53,7 +53,7 @@ randomizationUI <- function(id) {
              )
 }
 
-randomizationServer <- function(id) {
+randomizationServer <- function(id, plot_theme) {
   ns <- NS(id)
   
   moduleServer(
@@ -104,7 +104,8 @@ randomizationServer <- function(id) {
       
       # top plot    
       output$randomization_plot <- renderPlot({
-        randomization_df %>%
+        # create plot
+        p <- randomization_df %>%
           dplyr::select(-treat) %>%
           rownames_to_column() %>% 
           mutate(Group = if_else(rowname %in% selected_points$row_names,
@@ -114,11 +115,18 @@ randomizationServer <- function(id) {
           geom_point(aes(fill = Group), alpha = 0.7, size = 7, 
                      color = 'black', pch = 21, stroke = 1) +
           labs(fill = NULL)
+        
+        # add theme
+        p <- p + plot_theme()
+        
+        return(p)
       })
       
       # bottom plot
       output$randomization_tc_plot <- renderPlot({
-        randomization_df %>%
+        
+        # create plot
+        p <- randomization_df %>%
           dplyr::select(-treat) %>%
           rownames_to_column() %>%
           mutate(Group = if_else(rowname %in% selected_points$row_names,
@@ -132,6 +140,11 @@ randomizationServer <- function(id) {
                x = NULL,
                y = NULL) +
           theme(legend.position = 'none')
+        
+        # add theme
+        p <- p + plot_theme()
+        
+        return(p)
       })
     }
   )

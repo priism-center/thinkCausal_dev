@@ -738,26 +738,32 @@ shinyServer(function(input, output, session) {
     )
     
     # update selects on balance plots
-    X_cols <- cols_continuous[stringr::str_starts(cols_continuous, "X")]
+    X_cols <- new_col_names[stringr::str_starts(new_col_names, "X")]
+    X_cols_continuous <- cols_continuous[stringr::str_starts(cols_continuous, "X")]
     updateSelectInput(session = session,
                       inputId = 'analysis_plot_balance_select_var',
-                      choices = X_cols,
-                      selected = X_cols
+                      choices = X_cols_continuous,
+                      selected = X_cols_continuous
     )
     updateSelectInput(session = session,
                       inputId = 'analysis_plot_overlap_select_var',
-                      choices = X_cols,
-                      selected = X_cols
+                      choices = X_cols_continuous,
+                      selected = X_cols_continuous
     )
+    
+    # update moderator select on model page
+    updateSelectInput(session = session,
+                      inputId = 'analysis_model_moderator_vars',
+                      choices = X_cols)
     
     # update selects on moderators page
     updateSelectInput(session = session, 
-                      inputId = 'analysis_moderators_select_explore',
+                      inputId = 'analysis_moderators_explore_select',
                       choices = X_cols,
-                      selected = X_cols)
+                      selected = X_cols[1])
     
     # move to next page
-    updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
+    updateNavbarPage(session, inputId = "nav", selected = "Exploratory plots")
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
   })
   
@@ -1224,6 +1230,12 @@ shinyServer(function(input, output, session) {
     # TODO: need way to test if actually have a good fit
     store$good_model_fit <- TRUE
     
+    # update select on moderators page
+    updateSelectInput(session = session, 
+                      inputId = 'analysis_moderator_vars',
+                      choices = input$analysis_model_moderator_vars,
+                      selected = input$analysis_model_moderator_vars[1])
+    
     # add to log
     log_event <- paste0(
       'Ran BART model with following specification: \n',
@@ -1378,7 +1390,7 @@ shinyServer(function(input, output, session) {
   # Moderators  -------------------------------------------------------------
   
   # plot variable importance 
-  output$variable_importance_plot <- renderPlot({
+  output$analysis_moderator_varImportance_plot <- renderPlot({
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     
@@ -1392,7 +1404,7 @@ shinyServer(function(input, output, session) {
   })
   
   # render table of variable importance
-  output$variable_importance_table <- DT::renderDataTable({
+  output$analysis_moderator_varImportance_table <- DT::renderDataTable({
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
@@ -1402,10 +1414,13 @@ shinyServer(function(input, output, session) {
   })
   
   # plot the moderators
-  output$cate_plot <- renderPlot({
+  output$analysis_moderators_explore_plot <- renderPlot({
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be fitted on the 'Model' tab"))
+    
     # plot it
     p <- plot_cate(.model = store$model_results, 
-                   confounder = input$analysis_moderators_select_explore)
+                   confounder = input$analysis_moderators_explore_select)
     
     # add theme
     p <- p + theme_custom()
@@ -1426,7 +1441,7 @@ shinyServer(function(input, output, session) {
   })
   
   # run the randomization module
-  randomizationServer(id = 'concepts_randomization')
+  randomizationServer(id = 'concepts_randomization', plot_theme = theme_custom)
   
   
   # welcome page ------------------------------------------------------------

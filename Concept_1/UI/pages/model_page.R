@@ -32,23 +32,23 @@ model_page <- tabPanel(title = "Model",
                                                   'Unsure of Common Support Rule' = 'unsure'),
                                       selected = 5
                                     ),
+                                    br(),
                                     h4('Specify moderators'),
                                     awesomeRadio(
                                       inputId = "analysis_model_moderator_yes_no", 
                                       inline = TRUE,
-                                      label = "Pre-Specify Moderation Tests", 
+                                      label = "Pre-specify moderation tests", 
                                       choices = c('Yes', 'No'), 
                                       selected = 'No'
                                     ),
                                     conditionalPanel(
                                       condition = "input.analysis_model_moderator_yes_no == 'Yes'", 
                                       selectInput(inputId = "analysis_model_moderator_vars",
-                                                  label = "Select Moderators From Covariates",
+                                                  label = "Select moderators from covariates",
                                                   choices = NULL,
                                                   multiple = TRUE)
                                     ), 
-                                    br(),br(),
-
+                                    br(),
                                     htmlOutput(outputId = 'analysis_model_text_support_noinput'),
                                     HTML('<details><summary>Advanced options</summary>'),
                                     br(),

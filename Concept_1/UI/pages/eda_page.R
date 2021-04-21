@@ -1,5 +1,5 @@
 eda_page <- tabPanel(
-  title = "Exploratory Plots", #htmlOutput("exploration_tab_name"),
+  title = "Exploratory plots",
   tabsetPanel(
     id = "analysis_plot_tabs", 
     tabPanel(

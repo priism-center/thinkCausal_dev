@@ -2,7 +2,7 @@ concepts_header <- navbarMenu(
   title = 'Concepts',
   concepts_page,
   "-----",
-  tabPanel(title = "Test your Understanding", 
+  tabPanel(title = "Test your understanding", 
            includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))), 
   tabPanel(title = 'Randomization', 
            randomizationUI(id = "concepts_randomization")),
