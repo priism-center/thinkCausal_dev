@@ -102,8 +102,20 @@ ui <- navbarPage(
 # Server -----------------------------------------------------------------------
 server <- function (input, output) {
   
+  toListen <- reactive({
+    list(
+      input$var1,
+      input$var2,
+      input$var3,
+      input$var4,
+      input$var5,
+      input$tau,
+      input$sampsize
+    )
+  })
+  
   dgp <- eventReactive(
-    eventExpr = input$generate, 
+    eventExpr = toListen(),
     valueExpr = {
       X <- rnorm(n = input$sampsize, mean = 0, sd = 2)
       var1 <- rnorm(n = input$sampsize, mean = 5, sd = 2)
@@ -139,7 +151,7 @@ server <- function (input, output) {
     }
   )
   dgp_full <- eventReactive(
-    eventExpr = input$generate, 
+    eventExpr = toListen(),
     valueExpr = {
       X <- rnorm(n = input$sampsize, mean = 0, sd = 2)
       var1 <- rnorm(n = input$sampsize, mean = 5, sd = 2)
@@ -173,7 +185,8 @@ server <- function (input, output) {
   #   )
   # })
 
-  observeEvent(input$generate, {
+  observeEvent(eventExpr = toListen(), 
+               handlerExpr = {
     data0 <- dgp()
     mod_lm <- lm(Y ~ ., data = data0)
     data0 <- dgp_full()
@@ -193,7 +206,8 @@ server <- function (input, output) {
       ggplot(data1, aes(x = x, y = y)) + 
         geom_point() + 
         geom_errorbar(aes(ymin = y - sd, ymax = y + sd), width = .2,
-                      position = position_dodge(.9))
+                      position = position_dodge(.9)) +
+        theme_minimal()
     )
     output$res0 <- renderTable(expr = {
       xtable(data1)
