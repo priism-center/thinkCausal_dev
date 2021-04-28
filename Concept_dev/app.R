@@ -27,20 +27,6 @@ error <- function (n) {
     rnorm(n = n, mean = 0, sd = 1)
   )
 }
-alpha_generator <- function(pretest, lwr, upp) {
-  # Calculates the log-odds scale for treatment 
-  # Param: pretest: a vector of pretest scores 
-  # Param: lwr: lower bound of the alpha
-  # Param: upp: upper bound of the alpha
-  
-  # Compute the lower and upper bounds of pretest
-  lwr_pre <- log(lwr / (1 - lwr))
-  upp_pre <- log(upp / (1 - upp))
-  # Compare the log-odds scale of lower and upper bounds and return the lowest lwr_alpha <- lwr_pre / min(pretest)
-  lwr_alpha <- lwr_pre / min(pretest)
-  upp_alpha <- upp_pre / max(pretest)
-  return(min(lwr_alpha, upp_alpha))
-}
 
 # Color palette ----------------------------------------------------------------
 blue <- "#335C81"
@@ -68,8 +54,8 @@ ui <- navbarPage(
                checkboxInput(inputId="var3", label = "Variable 3", value = TRUE),
                checkboxInput(inputId="var4", label = "Variable 4", value = TRUE),
                checkboxInput(inputId="var5", label = "Variable 5", value = TRUE),
-               checkboxInput(inputId="var6", label = "Variable 6", value = FALSE),
-               checkboxInput(inputId="var7", label = "Variable 7", value = FALSE),
+               checkboxInput(inputId="var6", label = "Variable 6", value = TRUE),
+               checkboxInput(inputId="var7", label = "Variable 7", value = TRUE),
                checkboxInput(inputId="var8", label = "Variable 8", value = FALSE),
                checkboxInput(inputId="var9", label = "Variable 9", value = TRUE),
                checkboxInput(inputId="var_bi", label = "Variable 10 (Binary)", value = TRUE),
