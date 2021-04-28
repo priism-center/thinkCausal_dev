@@ -4,7 +4,7 @@
 # Subtitle: Page - regression for causal
 # 
 # Data Created: 03/15/2021
-# Data Modified: 04/15/2021
+# Data Modified: 04/28/2021
 #
 # ----- ----- ----- ----- version
 # 
@@ -13,6 +13,7 @@
 # Description: illustrate why ignorability is important for causal inference 
 #              using regression analysis.
 
+# Dependencies -----------------------------------------------------------------
 library(shiny)
 library(shinythemes)
 library(xtable)
@@ -48,7 +49,7 @@ red <- "#F42C04"
 # UI ---------------------------------------------------------------
 ui <- navbarPage(
 
-  title = "Test - Page - Regression for Causal",
+  title = "Dev - Page - Regression for Causal",
   
   #      Fit a regression model with simulated data
   tabPanel(title="Ignorability", class = "reg-ignor",
@@ -60,14 +61,20 @@ ui <- navbarPage(
            # Sidebar: a slider and selection inputs ----
            sidebarLayout(
              sidebarPanel(
-               numericInput(inputId="tau", label = "Treatment Effect:", value = 5, min=0),
+               numericInput(inputId="tau", label = "Treatment Effect:", value = 10, min=0),
                hr(),
-               checkboxInput(inputId="var1", label = "Variable 1", value = FALSE),
-               checkboxInput(inputId="var2", label = "Variable 2", value = FALSE),
+               checkboxInput(inputId="var1", label = "Variable 1", value = TRUE),
+               checkboxInput(inputId="var2", label = "Variable 2", value = TRUE),
                checkboxInput(inputId="var3", label = "Variable 3", value = TRUE),
                checkboxInput(inputId="var4", label = "Variable 4", value = TRUE),
                checkboxInput(inputId="var5", label = "Variable 5", value = TRUE),
-               numericInput(inputId="sampsize", label="Sample Size:", value = 1000, min = 10)
+               checkboxInput(inputId="var6", label = "Variable 6", value = FALSE),
+               checkboxInput(inputId="var7", label = "Variable 7", value = FALSE),
+               checkboxInput(inputId="var8", label = "Variable 8", value = FALSE),
+               checkboxInput(inputId="var9", label = "Variable 9", value = TRUE),
+               checkboxInput(inputId="var_bi", label = "Variable 10 (Binary)", value = TRUE),
+               numericInput(inputId="sampsize", label="Sample Size:", value = 1000, min = 10),
+               actionButton(inputId="gen", label = "Resample")
              ), # <END lm-simulator-sidebarLayout-sidebarPanel>
              
              mainPanel(
@@ -80,11 +87,12 @@ ui <- navbarPage(
                          to be strongly ignorable."),
                        p("$$Y_0, Y_1 \\perp T | X$$")
                ),
-               actionButton(inputId="generate", label = "Generate Data and Fit Model"),                 
                br(),
                plotOutput("plot0", width = "80%"),
                br(),
                tableOutput("res0"),
+               br(),
+               plotOutput("plot1", width = "80%"),
                br(),
                verbatimTextOutput("res1"),
                br(),
@@ -109,27 +117,71 @@ server <- function (input, output) {
       input$var3,
       input$var4,
       input$var5,
+      input$var6,
+      input$var7,
+      input$var8,
+      input$var9,
+      input$var_bi,
       input$tau,
-      input$sampsize
+      input$sampsize,
+      input$gen
     )
   })
-  
-  dgp <- eventReactive(
-    eventExpr = toListen(),
-    valueExpr = {
-      X <- rnorm(n = input$sampsize, mean = 0, sd = 2)
+
+  observeEvent(
+    eventExpr = toListen(), 
+    handlerExpr = {
+      X <- rnorm(n = input$sampsize, mean = 0, sd = 20)
       var1 <- rnorm(n = input$sampsize, mean = 5, sd = 2)
-      var2 <- rnorm(n = input$sampsize, mean = 6, sd = 2)
-      var3 <- rnorm(n = input$sampsize, mean = 7, sd = 2)
-      var4 <- rnorm(n = input$sampsize, mean = 8, sd = 2)
-      var5 <- rnorm(n = input$sampsize, mean = 9, sd = 2)
+      var2 <- rnorm(n = input$sampsize, mean = 6, sd = 3)
+      var3 <- rnorm(n = input$sampsize, mean = 7, sd = 4)
+      var4 <- rnorm(n = input$sampsize, mean = 8, sd = 5)
+      var5 <- rnorm(n = input$sampsize, mean = 9, sd = 6)
+      var6 <- rnorm(n = input$sampsize, mean = 20, sd =10)
+      var7 <- rnorm(n = input$sampsize, mean = 25, sd = 11)
+      var8 <- rnorm(n = input$sampsize, mean = 30, sd = 15)
+      var9 <- rnorm(n = input$sampsize, mean = 35, sd = 18)
+      var_bi <- sample(c(0, 50), size = input$sampsize, replace = TRUE)
+      Y0 <- X + error(input$sampsize)
+      if (input$var1) {
+        Y0 <- Y0 + var1
+      }
+      if (input$var2) {
+        Y0 <- Y0 + var2
+      }
+      if (input$var3) {
+        Y0 <- Y0 + var3
+      }
+      if (input$var4) {
+        Y0 <- Y0 + var4
+      }
+      if (input$var5) {
+        Y0 <- Y0 + var5
+      }
+      if (input$var6) {
+        Y0 <- Y0 + var6
+      }
+      if (input$var7) {
+        Y0 <- Y0 + var7
+      }
+      if (input$var8) {
+        Y0 <- Y0 + var8
+      }
+      if (input$var9) {
+        Y0 <- Y0 + var9
+      }
+      if (input$var_bi) {
+        Y0 <- Y0 + var_bi
+      }
+      Y_0 <- X + var1 + var2 + var3 + var4 + var5 + 
+        var6 + var7 + var8 + var9 + var_bi + error(input$sampsize)
+      Y1 <- X + var1 + var2 + var3 + var4 + var5 + 
+                var6 + var7 + var8 + var9 + var_bi + input$tau + error(input$sampsize)
       Z <- sample(c(0, 1), size = input$sampsize, replace = TRUE)
-      Y0 <- X + var1 + var2 + var3 + var4 + var5 +             error(input$sampsize)
-      Y1 <- X + var1 + var2 + var3 + var4 + var5 + input$tau + error(input$sampsize)
       Y <- ifelse(
-        Z == 1,
+        Z == 1, 
         yes = Y1,
-        no  = Y0
+        no = Y0
       )
       data0 <- data.frame(Y, X, Z)
       if (input$var1) {
@@ -147,76 +199,64 @@ server <- function (input, output) {
       if (input$var5) {
         data0 <- cbind(data0, var5)
       }
-      return(data0)
-    }
-  )
-  dgp_full <- eventReactive(
-    eventExpr = toListen(),
-    valueExpr = {
-      X <- rnorm(n = input$sampsize, mean = 0, sd = 2)
-      var1 <- rnorm(n = input$sampsize, mean = 5, sd = 2)
-      var2 <- rnorm(n = input$sampsize, mean = 6, sd = 2)
-      var3 <- rnorm(n = input$sampsize, mean = 7, sd = 2)
-      var4 <- rnorm(n = input$sampsize, mean = 8, sd = 2)
-      var5 <- rnorm(n = input$sampsize, mean = 9, sd = 2)
-      Z <- sample(c(0, 1), size = input$sampsize, replace = TRUE)
-      Y0 <- X + var1 + var2 + var3 + var4 + var5 +             error(input$sampsize)
-      Y1 <- X + var1 + var2 + var3 + var4 + var5 + input$tau + error(input$sampsize)
+      if (input$var6) {
+        data0 <- cbind(data0, var6)
+      }
+      if (input$var7) {
+        data0 <- cbind(data0, var7)
+      }
+      if (input$var8) {
+        data0 <- cbind(data0, var8)
+      }
+      if (input$var9) {
+        data0 <- cbind(data0, var9)
+      }
+      if (input$var_bi) {
+        data0 <- cbind(data0, var_bi)
+      }
       Y <- ifelse(
-        Z == 1,
+        Z == 1, 
         yes = Y1,
-        no  = Y0
+        no = Y_0
       )
-      return(data0 = data.frame(
-        X, var1, var2, var3, var4, var5, Z, Y
-      ))
-    }
-  )
-  # mod_lm <- reactive({
-  #   data0 <- dgp()
-  #   return(
-  #     lm(Y ~ ., data = data0)
-  #   )
-  # })
-  # mod_lm_full <- reactive({
-  #   data0 <- dgp_full()
-  #   return(
-  #     lm(Y ~ ., data = data0)
-  #   )
-  # })
-
-  observeEvent(eventExpr = toListen(), 
-               handlerExpr = {
-    data0 <- dgp()
-    mod_lm <- lm(Y ~ ., data = data0)
-    data0 <- dgp_full()
-    mod_lm_full <- lm(Y ~ ., data = data0)
-    unbiased_Z <- summary(mod_lm_full)$coefficients['Z', 'Estimate']
-    sd_unbiased <- summary(mod_lm_full)$coefficients['Z', 'Std. Error']
-    estimated_Z <- summary(mod_lm)$coefficients['Z', 'Estimate']
-    sd_estimated <- summary(mod_lm)$coefficients['Z', 'Std. Error']
-    
-    data1 <- data.frame(
-      x = c("Truth", "Unbiased", "Problematic"),
-      y = c(input$tau, unbiased_Z, estimated_Z),
-      sd = c(0, sd_unbiased, sd_estimated)
-    )
+      data1 <- data.frame(
+        X, var1, var2, var3, var4, var5, var6, var7, var8, var9, var_bi, Z, Y
+      )
+      
+      mod_lm <- lm(Y ~ ., data = data0)
+      mod_lm_full <- lm(Y ~ ., data = data1)
+      
+      unbiased_Z <- summary(mod_lm_full)$coefficients['Z', 'Estimate']
+      sd_unbiased <- summary(mod_lm_full)$coefficients['Z', 'Std. Error']
+      estimated_Z <- summary(mod_lm)$coefficients['Z', 'Estimate']
+      sd_estimated <- summary(mod_lm)$coefficients['Z', 'Std. Error']
+      
+      dat_out <- data.frame(
+        Category = c("Actual", "Unbiased", "Problematic"),
+        Estimate = c(input$tau, unbiased_Z, estimated_Z),
+        Std.Dev = c(0, sd_unbiased, sd_estimated)
+      )
 
     output$plot0 <- renderPlot(
-      ggplot(data1, aes(x = x, y = y)) + 
-        geom_point() + 
-        geom_errorbar(aes(ymin = y - sd, ymax = y + sd), width = .2,
+      ggplot(dat_out, aes(x = Category, y = Estimate)) + 
+        geom_point(aes(color = Category), size = 4) + 
+        geom_errorbar(aes(ymin = Estimate - Std.Dev, ymax = Estimate + Std.Dev), 
+                      width = .2,
                       position = position_dodge(.9)) +
-        theme_minimal()
+        theme_minimal() + 
+        xlab("") +
+        ylab("Estimated Treatment Effects")
+    )
+    output$plot1 <- renderPlot(
+      ggplot() +
+        geom_point(data = data0, aes(x = X, y = Y0), color = "blue", size = 1) +
+        geom_point(data = data1, aes(x = X, y = Y1), color = "red", size = 1) +
+        theme_minimal() + 
+        xlab("Pretest") +
+        ylab("Outcome")
     )
     output$res0 <- renderTable(expr = {
-      xtable(data1)
-    })
-    output$res1 <- renderPrint(expr = {
-      summary(mod_lm)
-    })
-    output$res2 <- renderPrint(expr = {
-      summary(mod_lm_full)
+      xtable(dat_out)
     })
     
   }) # <END server-lr-simulator>
