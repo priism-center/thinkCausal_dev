@@ -117,16 +117,17 @@ server <- function (input, output) {
   observeEvent(
     eventExpr = toListen(), 
     handlerExpr = {
+      # Reduce contrast to reveal the noise in the Unbiased category -----------
       X <- rnorm(n = input$sampsize, mean = 0, sd = 20)
       var1 <- rnorm(n = input$sampsize, mean = 5, sd = 2)
       var2 <- rnorm(n = input$sampsize, mean = 6, sd = 3)
       var3 <- rnorm(n = input$sampsize, mean = 7, sd = 4)
       var4 <- rnorm(n = input$sampsize, mean = 8, sd = 5)
       var5 <- rnorm(n = input$sampsize, mean = 9, sd = 6)
-      var6 <- rnorm(n = input$sampsize, mean = 20, sd =10)
-      var7 <- rnorm(n = input$sampsize, mean = 25, sd = 11)
-      var8 <- rnorm(n = input$sampsize, mean = 30, sd = 15)
-      var9 <- rnorm(n = input$sampsize, mean = 35, sd = 18)
+      var6 <- rnorm(n = input$sampsize, mean = 10, sd = 5)
+      var7 <- rnorm(n = input$sampsize, mean = 15, sd = 10)
+      var8 <- rnorm(n = input$sampsize, mean = 10, sd = 10)
+      var9 <- rnorm(n = input$sampsize, mean = 15, sd = 10)
       var_bi <- sample(c(0, 50), size = input$sampsize, replace = TRUE)
       Y0 <- X + error(input$sampsize)
       if (input$var1) {
