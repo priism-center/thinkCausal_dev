@@ -41,13 +41,13 @@ ui <- navbarPage(
   tabPanel(title="Ignorability", class = "reg-ignor",
            withMathJax(),
            div(    id = "reg-ignor-title",
-                   h3("Why Ignorability is Important")
+                   h3("The Ignorability Assumption in Causal Inference")
            ),
            hr(), 
            # Sidebar: a slider and selection inputs ----
            sidebarLayout(
              sidebarPanel(
-               numericInput(inputId="tau", label = "Treatment Effect:", value = 10, min=0),
+               numericInput(inputId="tau", label = "Treatment Effect:", value = 5, min=0),
                hr(),
                checkboxInput(inputId="var1", label = "Variable 1", value = TRUE),
                checkboxInput(inputId="var2", label = "Variable 2", value = TRUE),
@@ -77,8 +77,6 @@ ui <- navbarPage(
                plotOutput("plot0", width = "80%"),
                br(),
                tableOutput("res0"),
-               br(),
-               plotOutput("plot1", width = "80%"),
                br(),
                verbatimTextOutput("res1"),
                br(),
@@ -118,16 +116,16 @@ server <- function (input, output) {
     eventExpr = toListen(), 
     handlerExpr = {
       # Reduce contrast to reveal the noise in the Unbiased category -----------
-      X <- rnorm(n = input$sampsize, mean = 0, sd = 20)
-      var1 <- rnorm(n = input$sampsize, mean = 5, sd = 2)
-      var2 <- rnorm(n = input$sampsize, mean = 6, sd = 3)
-      var3 <- rnorm(n = input$sampsize, mean = 7, sd = 4)
-      var4 <- rnorm(n = input$sampsize, mean = 8, sd = 5)
-      var5 <- rnorm(n = input$sampsize, mean = 9, sd = 6)
-      var6 <- rnorm(n = input$sampsize, mean = 10, sd = 5)
-      var7 <- rnorm(n = input$sampsize, mean = 15, sd = 10)
-      var8 <- rnorm(n = input$sampsize, mean = 10, sd = 10)
-      var9 <- rnorm(n = input$sampsize, mean = 15, sd = 10)
+      X <- rnorm(n = input$sampsize, mean = 5, sd = 1)
+      var1 <- rnorm(n = input$sampsize, mean = 1, sd = 3)
+      var2 <- rnorm(n = input$sampsize, mean = 1, sd = 3)
+      var3 <- rnorm(n = input$sampsize, mean = 1, sd = 3)
+      var4 <- rnorm(n = input$sampsize, mean = 1, sd = 3)
+      var5 <- rnorm(n = input$sampsize, mean = 1, sd = 3)
+      var6 <- rnorm(n = input$sampsize, mean = 1, sd = 4)
+      var7 <- rnorm(n = input$sampsize, mean = 1, sd = 4)
+      var8 <- rnorm(n = input$sampsize, mean = 1, sd = 4)
+      var9 <- rnorm(n = input$sampsize, mean = 1, sd = 44)
       var_bi <- sample(c(0, 50), size = input$sampsize, replace = TRUE)
       Y0 <- X + error(input$sampsize)
       if (input$var1) {
@@ -226,10 +224,11 @@ server <- function (input, output) {
 
     output$plot0 <- renderPlot(
       ggplot(dat_out, aes(x = Category, y = Estimate)) + 
-        geom_point(aes(color = Category), size = 4) + 
+        geom_point(aes(color = Category), size = 5) + 
         geom_errorbar(aes(ymin = Estimate - Std.Dev, ymax = Estimate + Std.Dev), 
                       width = .2,
-                      position = position_dodge(.9)) +
+                      position = position_dodge(.9),
+                      size = .5) +
         theme_minimal() + 
         xlab("") +
         ylab("Estimated Treatment Effects")
