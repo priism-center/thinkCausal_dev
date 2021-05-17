@@ -3,46 +3,64 @@ moderator_page <- tabPanel(
   tabsetPanel(
     id = "moderator_tabs",
     tabPanel(
-      title = 'Pre-Specifed Moderation Tests', 
+      title = 'Individual Treatment Effects', 
       sidebarLayout(
         sidebarPanel(
-          selectInput(inputId = "analysis_moderator_vars",
-                      label = "Select moderator:",
-                      choices = NULL)
+          awesomeRadio(inputId = 'icate_type', 
+                       label = "Plot Type:", 
+                       choices = c('Ordered Effects', 'Histigram'), 
+                       selected = 'Ordered Effects')
         ),
         mainPanel(
-          br()
+          br(),
+          conditionalPanel(condition = "input.icate_type == 'Ordered Effects'",
+                           plotOutput(outputId = "ordered_icate",
+                                      height = 500)),
+          
+          conditionalPanel(condition = "input.icate_type == 'Histigram'",
+                           plotOutput(outputId = "histigram_icate",
+                                      height = 500))
         )
     )), 
-    tabPanel(title = 'Estimated Variable Importance',
+    tabPanel(title = 'Predictors of Individual Treatment Effects',
              sidebarLayout(
                sidebarPanel(
                  h5("Variable importance interpretation"),
                  p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
                  br(),
-                 awesomeRadio(inputId = 'analysis_moderator_varImportance_radio', 
-                              label = 'Show plot or table:', 
-                              choices = c('Plot (top 10 confounders)', 'Table (all confounders)'))
+
+                 awesomeRadio(inputId = 'set_tree_depth', 
+                              label = 'Tree Depth', 
+                              choices = list('1' = 1, '2' = 2, '3' = 3), 
+                              inline = T, 
+                              selected = '2')
                ),
                mainPanel(
                  br(),
-                 conditionalPanel(condition = "input.analysis_moderator_varImportance_radio == 'Plot (top 10 confounders)'", 
-                 plotOutput(outputId = "analysis_moderator_varImportance_plot", 
-                            height = 500)), 
-                 conditionalPanel(condition = "input.analysis_moderator_varImportance_radio == 'Table (all confounders)'",
-                                  dataTableOutput(outputId ="analysis_moderator_varImportance_table", 
-                                                  height = 500))
+                 plotOutput(outputId = "analysis_moderator_single_tree", 
+                            height = 500)
+                 
                )
              )),
     tabPanel(
-      title = 'Exploratory Moderation Tests', 
+      title = 'Moderation Tests', 
       sidebarLayout(
         sidebarPanel(
-          selectInput(inputId = "analysis_moderators_explore_select",
-                      label = "Select moderator:",
-                      multiple = FALSE,
-                      choices = NULL, 
-                      selected = NULL)
+          awesomeRadio(inputId = 'moderation_type_class', 
+                       label = 'Select Moderation Test:', 
+                       choices = list('Pre-Specified' = 'pre',
+                                      'Exploratory' = 'exp',
+                                      'Learn more'), 
+                       selected = 'pre'
+                       ),
+          
+          conditionalPanel(condition = "input.moderation_type_class == 'exp'", 
+                           selectInput(inputId = "analysis_moderators_explore_select",
+                                       label = "Select moderator:",
+                                       multiple = FALSE,
+                                       choices = NULL, 
+                                       selected = NULL))
+
         ),
         mainPanel(
           br(),

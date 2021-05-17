@@ -443,8 +443,8 @@ shinyServer(function(input, output, session) {
     # render the header to the table
     UI_header <- fluidRow(
       column(2, h5('Role')),
-      column(3, h5('Column name')),
-      column(3, h5('Data type')),
+      column(3, h5('Rename variable')),
+      column(3, h5('Verify variable type')),
       column(2, h5('Levels')),
       column(2, h5('Percent NA'))
     )
@@ -740,6 +740,22 @@ shinyServer(function(input, output, session) {
     # update selects on balance plots
     X_cols <- new_col_names[stringr::str_starts(new_col_names, "X")]
     X_cols_continuous <- cols_continuous[stringr::str_starts(cols_continuous, "X")]
+    
+    # create moderator options 
+    X_mods <- as.data.frame(combinations(n = length(X_cols), r =2,  v = X_cols))
+    remove <- X_mods[X_mods$V1 %in% X_cols_continuous & X_mods$V2 %in% X_cols_continuous,]
+    X_mods <- X_mods %>% anti_join(remove)
+    X_mods <- X_mods %>% mutate(V1 = str_sub(V1, start = 3), 
+                                V2 = str_sub(V2, start = 3))
+    X_mods <- X_mods %>% 
+      mutate(mod = paste(V1, V2, sep = ' x ')) %>% 
+      dplyr::select(mod)
+    
+    X_mods <- X_mods$mod
+    X_mods <- c(str_sub(X_cols, start = 3), X_mods)
+    
+    
+    # update options for balance 
     updateSelectInput(session = session,
                       inputId = 'analysis_plot_balance_select_var',
                       choices = X_cols_continuous,
@@ -751,17 +767,16 @@ shinyServer(function(input, output, session) {
                       selected = X_cols_continuous
     )
     
-    # update moderator select on model page
+    # update moderator select on model page and moderator test page
     updateSelectInput(session = session,
                       inputId = 'analysis_model_moderator_vars',
-                      choices = X_cols)
+                      choices = X_mods)
     
-    # update selects on moderators page
-    updateSelectInput(session = session, 
+    updateSelectInput(session = session,
                       inputId = 'analysis_moderators_explore_select',
-                      choices = X_cols,
-                      selected = X_cols[1])
+                      choices = X_mods)
     
+
     # move to next page
     updateNavbarPage(session, inputId = "nav", selected = "Exploratory plots")
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
@@ -990,8 +1005,19 @@ shinyServer(function(input, output, session) {
         )
       )
     } else {
-      actionButton(inputId = "analysis_diagnostics_button_back",
-                   label = "Back to specify model")
+      # actionButton(inputId = "analysis_diagnostics_button_back",
+      #              label = "Back to specify model")
+      tagList(
+        div(
+          class = 'backNextContainer',
+          actionButton(inputId = "analysis_diagnostics_button_back",
+                       label = "Back to specify model"),
+          actionButton(inputId = "analysis_diagnostics_button_next",
+                       label = "Proceed to model results")
+        )
+      )
+      
+      
     }
   })
   
@@ -1018,10 +1044,17 @@ shinyServer(function(input, output, session) {
                   "Model must first be fitted on the 'Model' tab"))
     
     # plot it
-    p <- plot_diagnostic_common_support(.model = store$model_results, 
-                                        .rule = input$analysis_model_radio_support,
-                                        .plot_theme = theme_custom)
+    theme_pick <- theme_custom()
     
+    p1 <- plot_diagnostic_common_support(.model = store$model_results, 
+                                        .rule = 'sd')
+    p1 <- p1 + theme_custom()
+    
+    p2 <-  plot_diagnostic_common_support(.model = store$model_results, 
+                                          .rule = 'chi')
+    p2 <- p2 + theme_custom()
+    
+    p <- p1/p2
     return(p)
   })
   
@@ -1049,6 +1082,7 @@ shinyServer(function(input, output, session) {
       )
     }
   })
+  
   observeEvent(input$analysis_model_radio_support, {
     
     req(input$analysis_model_radio_support)
@@ -1236,6 +1270,11 @@ shinyServer(function(input, output, session) {
                       choices = input$analysis_model_moderator_vars,
                       selected = input$analysis_model_moderator_vars[1])
     
+    updateSelectInput(session = session, 
+                      inputId = 'analysis_moderators_explore_select',
+                      choices = input$analysis_moderators_explore_select,
+                      selected = NULL)
+    
     # add to log
     log_event <- paste0(
       'Ran BART model with following specification: \n',
@@ -1251,6 +1290,67 @@ shinyServer(function(input, output, session) {
     
     # close the alert
     shinyWidgets::closeSweetAlert()
+    
+    
+    # common support warning
+    
+    total <- sum(.model$sd.cf > max(.model$sd.obs) + sd(.model$sd.obs))
+    prop_sd <- round(total / length(.model$sd.cf), 2)*100
+    sd_output <- paste0(prop_sd, "% of cases would have been removed under the standard deviation common support rule")
+    
+    
+    total <- sum((.model$sd.cf / .model$sd.obs) ** 2 > 3.841)
+    prop_chi <- round(total / length(.model$sd.cf), 2)*100
+    chi_output <- paste0(prop_chi, "% of cases would have been removed under the chi squared common support rule")
+    common_support_message <- paste(sd_output, chi_output, sep = '\n')
+    
+    
+    if((prop_sd > 0 | prop_chi > 0) & input$analysis_model_radio_support == 'none'){
+      shinyWidgets::sendSweetAlert(
+        session,
+        title = 'Common Support Warning',
+        text = tags$div(sd_output,
+                        br(),  
+                        br(),
+                        chi_output, 
+                        br(), 
+                        br(),
+                        'How would you like to proceed?',
+                        br(),
+                        br(),
+                        div(class = 'backNextContainer', 
+                            style= "width:60%;display:inline-block;horizontal-align:center;",
+                        actionButton(inputId = 'common_support_opt1', 
+                                     label = 'Continue to results')
+                        ), 
+                        br(),
+                        br(),
+                        div(class = 'backNextContainer', 
+                            style= "width:60%;display:inline-block;horizontal-align:center;",
+                        actionButton(inputId = 'common_support_opt2', 
+                                     label = 'Change common support rule')),
+                        br(),
+                        br(),
+                        div(class = 'backNextContainer', 
+                            style= "width:60%;display:inline-block;horizontal-align:center;",
+                        actionButton(inputId = 'common_support_opt3', 
+                                     label = 'See common support diagnostics')),
+                        br(),
+                        br(),
+                        div(class = 'backNextContainer', 
+                            style= "width:60%;display:inline-block;horizontal-align:center;",
+                        actionButton(inputId = 'common_support_opt2', 
+                                     label = 'Learn more about common support rules'))
+                        ),
+        type = NULL,
+        btn_labels = NA,
+        btn_colors = "#3085d6",
+        html = TRUE,
+        closeOnClickOutside = FALSE,
+        showCloseButton = FALSE,
+        width = '75%'
+      )
+    }
     
     # move to next page based on model fit
     if (isTRUE(store$good_model_fit)){
@@ -1273,13 +1373,61 @@ shinyServer(function(input, output, session) {
     # extract estimates and format
     summary(store$model_results)$estimates %>% 
       t() %>% 
-      knitr::kable(digits = 3, format = 'html') %>% 
+      knitr::kable(digits = 1, format = 'html') %>% 
       kableExtra::kable_styling(bootstrap_options = c("hover", "condensed"))
   })
   
   # TODO: render the interpretation text
   
-  
+  # PATE plot 
+  output$analysis_results_plot_PATE <- renderPlot({
+    
+    # hold <- sum(input$show_interval == .8) > 0
+    # print(hold == T)
+    #print(input$show_interval == .8) 
+    # stop here if model isn't fit yet
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be fitted on the 'Model' tab"))
+    
+    if(input$show_reference == 'No'){
+      # plot it
+      p <-
+        plot_PATE(
+          .model = store$model_results,
+          type = input$plot_result_style,
+          ci_80 = sum(input$show_interval == .8) > 0,
+          ci_95 = sum(input$show_interval == .95) > 0,
+          .mean = sum(input$central_tendency == 'Mean') > 0,
+          .median = sum(input$central_tendency == 'Median') > 0,
+          reference = NULL
+        )
+      
+      # add theme
+      p <-
+        p + theme_custom() + theme(legend.position = c(0.1, 0.9),
+                                   legend.title = element_blank())
+    }
+   
+    if(input$show_reference != 'No'){
+      # plot it
+      p <-
+        plot_PATE(
+          .model = store$model_results,
+          type = input$plot_result_style,
+          ci_80 = sum(input$show_interval == .8) > 0,
+          ci_95 = sum(input$show_interval == .95) > 0,
+          .mean = sum(input$central_tendency == 'Mean') > 0,
+          .median = sum(input$central_tendency == 'Median') > 0,
+          reference = input$reference_bar
+        )
+      
+      # add theme
+      p <-
+        p + theme_custom() + theme(legend.position = c(0.1, 0.9),
+                                   legend.title = element_blank())
+    }
+    return(p)
+  })
   # ITE plot
   output$analysis_results_plot_ITE <- renderPlot({
     
@@ -1389,28 +1537,45 @@ shinyServer(function(input, output, session) {
 
   # Moderators  -------------------------------------------------------------
   
-  # plot variable importance 
-  output$analysis_moderator_varImportance_plot <- renderPlot({
+  ## ICATE plots
+  
+  # ordered icate
+  output$ordered_icate <- renderPlot({
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     
-    conf <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
-    p <- plot_variable_importance(store$model_results, confounders = conf, out = 'plot')
+    p <- plot_individual_effects(store$model_results, type = 'ordered')
     
-    # add theme
     p <- p + theme_custom()
     
     return(p)
   })
   
-  # render table of variable importance
-  output$analysis_moderator_varImportance_table <- DT::renderDataTable({
+  # histigram of icates
+  output$histigram_icate <- renderPlot({
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
-    conf = as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
-    tab <- plot_variable_importance(store$model_results, confounders = conf, out = 'table')
-    tab <- create_datatable(tab, selection = "none")
-    return(tab)
+    
+    p <- plot_individual_effects(store$model_results, type = 'histigram')
+    
+    p <- p + theme_custom()
+    
+    return(p)
+  })
+  
+  
+  
+  # Single decision tree on icates
+  output$analysis_moderator_single_tree <- renderPlot({
+    validate(need(is(store$model_results, "bartcFit"), 
+                  "Model must first be fitted on the 'Model' tab"))
+    
+    conf <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+    colnames(conf) <- str_sub(colnames(conf, 3))
+    p <- plot_single_tree(store$model_results, confounders = conf, depth = input$set_tree_depth)
+    
+    
+    return(p)
   })
   
   # plot the moderators
