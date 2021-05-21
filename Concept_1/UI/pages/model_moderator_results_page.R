@@ -1,5 +1,5 @@
 moderator_page <- tabPanel(
-  title = "Treatment moderators",
+  title = "Subgroup Results",
   tabsetPanel(
     id = "moderator_tabs",
     tabPanel(

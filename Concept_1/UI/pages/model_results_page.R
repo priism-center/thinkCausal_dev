@@ -1,5 +1,5 @@
 results_page <- tabPanel(
-  title = "Results", 
+  title = "Average Results", 
   tabPanel("Model", 
            sidebarLayout(
              sidebarPanel(
