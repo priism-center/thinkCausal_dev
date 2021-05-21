@@ -3,8 +3,7 @@ results_page <- tabPanel(
   tabPanel("Model", 
            sidebarLayout(
              sidebarPanel(
-               h4('Model results'),
-               htmlOutput('analysis_results_table_summary'),
+               
                h5("Results interpretation:"),
               awesomeRadio(inputId = 'interpretation', 
                            label = NULL,
@@ -75,10 +74,12 @@ results_page <- tabPanel(
                #     br(),
                   conditionalPanel(condition = "input.plot_result_type == 'Sample'", 
                                    plotOutput(outputId = 'analysis_results_plot_PATE',
-                                              height = 500)), 
+                                              height = 400)), 
                   conditionalPanel(condition = "input.plot_result_type == 'Individual'", 
                                    plotOutput(outputId = 'analysis_results_plot_ITE',
-                                              height = 500))
+                                              height = 400)), 
+                  h4('Model results'),
+                  htmlOutput('analysis_results_table_summary')
                    
              #   )
              # )

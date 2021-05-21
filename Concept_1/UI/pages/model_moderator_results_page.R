@@ -3,13 +3,22 @@ moderator_page <- tabPanel(
   tabsetPanel(
     id = "moderator_tabs",
     tabPanel(
-      title = 'Individual Treatment Effects', 
+      title = 'ICATE', 
       sidebarLayout(
         sidebarPanel(
-          awesomeRadio(inputId = 'icate_type', 
-                       label = "Plot Type:", 
-                       choices = c('Ordered Effects', 'Histigram'), 
-                       selected = 'Ordered Effects')
+          div(class = 'backNextContainer',
+              actionButton(inputId = 'icate_tree',
+                           label = 'ICATE Regression Tree')),
+          conditionalPanel(
+            condition = "input.analysis_model_moderator_yes_no == 'Yes'",
+            br(),
+            div(class = 'backNextContainer',
+                actionButton(inputId = 'pre_sub',
+                             label = 'Prespecified subgroup analysis'))),
+          br(),
+          div(class = 'backNextContainer',
+              actionButton(inputId = 'exp_sub',
+                           label = 'Exploratory subgroup analysis'))
         ),
         mainPanel(
           br(),
@@ -22,7 +31,7 @@ moderator_page <- tabPanel(
                                       height = 500))
         )
     )), 
-    tabPanel(title = 'Predictors of Individual Treatment Effects',
+    tabPanel(title = 'ICATE Regression Tree',
              sidebarLayout(
                sidebarPanel(
                  h5("Variable importance interpretation"),
@@ -43,31 +52,45 @@ moderator_page <- tabPanel(
                )
              )),
     tabPanel(
-      title = 'Moderation Tests', 
+      title = 'Subgroup Analyses', 
       sidebarLayout(
         sidebarPanel(
-          awesomeRadio(inputId = 'moderation_type_class', 
-                       label = 'Select Moderation Test:', 
-                       choices = list('Pre-Specified' = 'pre',
-                                      'Exploratory' = 'exp',
-                                      'Learn more'), 
-                       selected = 'pre'
-                       ),
+          conditionalPanel(condition = "input.analysis_model_moderator_yes_no == 'Yes'", 
+                           awesomeRadio(inputId = 'moderation_type_class', 
+                                        label = 'Type of Subgroup Analysis:', 
+                                        choices = c('Prespecified',
+                                                    'Exploratory'), 
+                                        selected = 'Prespecified')
+                           
+                           ),
           
-          conditionalPanel(condition = "input.moderation_type_class == 'exp'", 
+          conditionalPanel(condition = "input.moderation_type_class == 'Prespecified' & input.analysis_model_moderator_yes_no == 'Yes'", 
+                           selectInput(inputId = "analysis_moderator_vars",
+                                       label = "Group by:",
+                                       multiple = FALSE,
+                                       choices = NULL, 
+                                       selected = NULL)),
+          
+          conditionalPanel(condition = "input.moderation_type_class != 'Prespecified' & input.analysis_model_moderator_yes_no == 'Yes'", 
                            selectInput(inputId = "analysis_moderators_explore_select",
-                                       label = "Select moderator:",
+                                       label = "Group by:",
+                                       multiple = FALSE,
+                                       choices = NULL, 
+                                       selected = NULL)),
+          
+          conditionalPanel(condition = "input.analysis_model_moderator_yes_no == 'No'", 
+                           selectInput(inputId = "analysis_moderators_explore_select",
+                                       label = "Group by:",
                                        multiple = FALSE,
                                        choices = NULL, 
                                        selected = NULL))
-
+          
         ),
         mainPanel(
           br(),
           plotOutput(outputId = "analysis_moderators_explore_plot",
                      height = 500)
-        )
+        )))
       )
     )
-  )
-)
+  

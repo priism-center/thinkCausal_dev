@@ -1262,7 +1262,7 @@ shinyServer(function(input, output, session) {
     
     # store the results
     # TODO: need way to test if actually have a good fit
-    store$good_model_fit <- TRUE
+    #store$good_model_fit <- TRUE
     
     # update select on moderators page
     updateSelectInput(session = session, 
@@ -1270,10 +1270,10 @@ shinyServer(function(input, output, session) {
                       choices = input$analysis_model_moderator_vars,
                       selected = input$analysis_model_moderator_vars[1])
     
-    updateSelectInput(session = session, 
-                      inputId = 'analysis_moderators_explore_select',
-                      choices = input$analysis_moderators_explore_select,
-                      selected = NULL)
+    # updateSelectInput(session = session, 
+    #                   inputId = 'analysis_moderators_explore_select',
+    #                   choices = input$analysis_moderators_explore_select,
+    #                   selected = NULL)
     
     # add to log
     log_event <- paste0(
@@ -1294,13 +1294,13 @@ shinyServer(function(input, output, session) {
     
     # common support warning
     
-    total <- sum(.model$sd.cf > max(.model$sd.obs) + sd(.model$sd.obs))
-    prop_sd <- round(total / length(.model$sd.cf), 2)*100
+    total <- sum(store$model_results$sd.cf > max(store$model_results$sd.obs) + sd(store$model_results$sd.obs))
+    prop_sd <- round(total / length(store$model_results$sd.cf), 2)*100
     sd_output <- paste0(prop_sd, "% of cases would have been removed under the standard deviation common support rule")
     
     
-    total <- sum((.model$sd.cf / .model$sd.obs) ** 2 > 3.841)
-    prop_chi <- round(total / length(.model$sd.cf), 2)*100
+    total <- sum((store$model_results$sd.cf / store$model_resultsl$sd.obs) ** 2 > 3.841)
+    prop_chi <- round(total / length(store$model_results$sd.cf), 2)*100
     chi_output <- paste0(prop_chi, "% of cases would have been removed under the chi squared common support rule")
     common_support_message <- paste(sd_output, chi_output, sep = '\n')
     
@@ -1320,14 +1320,14 @@ shinyServer(function(input, output, session) {
                         br(),
                         div(class = 'backNextContainer', 
                             style= "width:60%;display:inline-block;horizontal-align:center;",
-                        actionButton(inputId = 'common_support_opt1', 
+                        actionButton(inputId = 'common_support_continue', 
                                      label = 'Continue to results')
                         ), 
                         br(),
                         br(),
                         div(class = 'backNextContainer', 
                             style= "width:60%;display:inline-block;horizontal-align:center;",
-                        actionButton(inputId = 'common_support_opt2', 
+                        actionButton(inputId = 'common_support_new_rule', 
                                      label = 'Change common support rule')),
                         br(),
                         br(),
@@ -1352,12 +1352,32 @@ shinyServer(function(input, output, session) {
       )
     }
     
-    # move to next page based on model fit
-    if (isTRUE(store$good_model_fit)){
+    
+    
+    
+    observeEvent(input$common_support_new_rule, {
+      updateNavbarPage(session, inputId = "nav", selected = "Model")
+      shinyWidgets::closeSweetAlert()
+    })
+    
+    observeEvent(input$common_support_continue, {
       updateNavbarPage(session, inputId = "nav", selected = "Results")
-    } else {
-      updateNavbarPage(session, inputId = "nav", selected = "Model diagnostics")
-    }
+      shinyWidgets::closeSweetAlert()
+    })
+    
+    
+    
+    
+    # move to next page based on model fit
+    if((prop_sd == 0 | prop_chi == 0) & input$analysis_model_radio_support == 'none'){
+      updateNavbarPage(session, inputId = "nav", selected = "Results")
+    } 
+    
+    if( input$analysis_model_radio_support != 'none'){
+      updateNavbarPage(session, inputId = "nav", selected = "Results")
+    } 
+    
+    
   })
   
   
