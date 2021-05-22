@@ -38,9 +38,9 @@ data_page <- tabPanel(
                                     onclick = "openConceptsPage('Dataloading')",
                                     'Help me'),
                         br(), br(),
-                        actionButton(inputId = "analysis_data_load_button_next",
-                                     label = "Next"),
-                        br(), br(),
+                        # actionButton(inputId = "analysis_data_load_button_next",
+                        #              label = "Next"),
+                        # br(), br(),
                         # HTML('<details><summary>Advanced options</summary>'),
                         # p("2.0 feature: Have a large number of variables? Upload your data in [this format] to bypass the variable selection and data formating process."),
                         # 'TODO: add downloaded template and upload process',
@@ -62,27 +62,31 @@ data_page <- tabPanel(
                         h4("Rename and verify your data"),
                         p("Ensure your data is named and the data types are correct."),
                         br(),
-                        tags$button(type = 'button',
-                                    class = 'btn btn-default help',
-                                    onclick = "openConceptsPage('Concept3')",
-                                    'Help me'),
-                        br(),br(),
                         div(
                           class = 'backNextContainer',
-                          actionButton(inputId = 'analysis_data_button_reset',
-                                       label = 'Reset variable changes'),
                           actionButton(inputId = 'analysis_data_save',
                                        label = 'Save changes')
                         ),
                         br(),
                         div(
                           class = 'backNextContainer',
+                          actionButton(inputId = 'analysis_data_button_reset',
+                                       label = 'Reset variable changes')
+                        ),
+                        br(),
+                        div(
+                          class = 'backNextContainer',
                           actionButton(inputId = "analysis_data_select_button_back",
                                        label = "Back"),
-                          actionButton(inputId = "analysis_data_select_button_next",
-                                       label = "Next")
+                          # actionButton(inputId = "analysis_data_select_button_next",
+                          #              label = "Next")
                           ),
                         br(),
+                        tags$button(type = 'button',
+                                    class = 'btn btn-default help',
+                                    onclick = "openConceptsPage('Concept3')",
+                                    'Help me'),
+                        br(),br(),
                         create_progress_bar(1/7*100)
                       ),
                       mainPanel(

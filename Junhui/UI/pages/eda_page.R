@@ -4,10 +4,10 @@ eda_page <- tabPanel(
     id = "analysis_plot_tabs", 
     tabPanel(
       title = "Descriptive Plots",
-      absolutePanel(id = "analysis_plots_descriptive_loading_message",
-                    br(),
-                    HTML("Data must be first uploaded and columns selected."),
-                    style = "z-index: -2;"),
+      # absolutePanel(id = "analysis_plots_descriptive_loading_message",
+      #               br(),
+      #               HTML("Data must be first uploaded and columns selected."),
+      #               style = "z-index: -2;"),
       sidebarLayout(
         sidebarPanel(
           width = 4,
@@ -170,7 +170,9 @@ eda_page <- tabPanel(
                          label = "Back"),
             actionButton(inputId = "analysis_plots_descriptive_button_next",
                          label = "Next")
-          )
+          ), br(),
+          p("Download the currently displayed plot:"),
+          downloadButton('download_descriptive_plot', label = "Download plot")
         ),
         
         mainPanel(
@@ -230,7 +232,10 @@ eda_page <- tabPanel(
                          label = "Next")
           ),
           br(),
-          create_progress_bar(3/7*100)
+          create_progress_bar(3/7*100),
+          br(),
+          p("Download the currently displayed plot:"),
+          downloadButton('download_overlap_plot', label = "Download plot")
         ),
         mainPanel(
           width = 8,
@@ -268,7 +273,10 @@ tabPanel(title = "Balance Plots",
                             label = "Next")
              ),
              br(),
-             create_progress_bar(4/7*100)
+             create_progress_bar(4/7*100),
+             br(),
+             p("Download the currently displayed plot:"),
+             downloadButton('download_balance_plot', label = "Download plot")
              # add advanced option to remove scale
            ),
            mainPanel(
