@@ -43,7 +43,8 @@ shinyUI(
                 welcome_header,
                 concepts_header,
                 analysis_header, 
-                settings_header
+                settings_header,
+                reproducibility_header
                 )
         ),
 

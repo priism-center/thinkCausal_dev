@@ -52,9 +52,6 @@ results_page <- tabPanel(
                                             step = 1),),
               
                br(),
-               downloadButton(outputId = "analysis_results_button_download",
-                              label = "Download script"),
-               br(), br(),
                tags$button(type = 'button',
                            class = 'btn btn-default help',
                            onclick = "openConceptsPage('Concept2')",

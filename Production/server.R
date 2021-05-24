@@ -7,28 +7,28 @@ shinyServer(function(input, output, session) {
   # back next buttons -------------------------------------------------------
   
   # data page
-  observeEvent(input$analysis_data_load_button_next, {
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
-  })
+  # observeEvent(input$analysis_data_load_button_next, {
+  #   updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
+  # })
   observeEvent(input$analysis_data_select_button_back, {
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
   })
-  observeEvent(input$analysis_data_select_button_next, {
-    
-    # ensure data has been selected first
-    data_has_been_selected <- isTRUE(nrow(store$selected_df) > 0)
-    if (isFALSE(data_has_been_selected)){
-      shinyWidgets::show_alert(
-        title = 'Please select and save columns assignments',
-        text = "Must be saved prior to proceeding",
-        type = 'error'
-      )
-    }
-    validate(need(data_has_been_selected, "No dataframe uploaded"))
-    
-    updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
-    updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
-  })
+  # observeEvent(input$analysis_data_select_button_next, {
+  # 
+  #   # ensure data has been selected first
+  #   data_has_been_selected <- isTRUE(nrow(store$selected_df) > 0)
+  #   if (isFALSE(data_has_been_selected)){
+  #     shinyWidgets::show_alert(
+  #       title = 'Please select and save columns assignments',
+  #       text = "Must be saved prior to proceeding",
+  #       type = 'error'
+  #     )
+  #   }
+  #   validate(need(data_has_been_selected, "No dataframe uploaded"))
+  #   
+  #   updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
+  #   updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
+  # })
   
   # plotting page
   observeEvent(input[['analysis_plots_descriptive_button_back']], {
@@ -832,45 +832,60 @@ shinyServer(function(input, output, session) {
   
   # create the descriptive plots
   # build the exploration plots
-  output$analysis_eda_plot <- renderPlot({
-    
+  
+  descriptive_plot <- reactive( {
     # stop here if data hasn't been uploaded and selected
-    validate(need(is.data.frame(store$selected_df), 
+    validate(need(is.data.frame(store$selected_df),
                   "Data must be first uploaded and selected. Please see 'Data' tab."))
     
     p <- tryCatch({
-        plot_exploration(
-          .data = store$selected_df, #TODO: formalize sampling?
-          .plot_type = input$analysis_eda_select_plot_type,
-          .x = input$analysis_eda_variable_x,
-          .y = input$analysis_eda_variable_y,
-          .fill = input$analysis_eda_variable_fill,
-          .fill_static = 'grey20', #"#5c5980",
-          .shape = input$analysis_eda_variable_shape,
-          .size = input$analysis_eda_variable_size,
-          .alpha = input$analysis_eda_variable_alpha,
-          .vars_pairs = input$analysis_eda_variable_pairs_vars,
-          .n_bins = input$analysis_eda_variable_n_bins,
-          .jitter = input$analysis_eda_check_jitter,
-          .groups = input$analysis_eda_variable_group,
-          .facet = input$analysis_eda_variable_facet,
-          .facet_second = input$analysis_eda_variable_facet_second,
-          .include_regression = input$analysis_eda_variable_regression
-        )
-      }
-      # warning = function(e) NULL,
-      # error = function(e) NULL
+      plot_exploration(
+        .data = store$selected_df, #TODO: formalize sampling?
+        .plot_type = input$analysis_eda_select_plot_type,
+        .x = input$analysis_eda_variable_x,
+        .y = input$analysis_eda_variable_y,
+        .fill = input$analysis_eda_variable_fill,
+        .fill_static = 'grey20', #"#5c5980",
+        .shape = input$analysis_eda_variable_shape,
+        .size = input$analysis_eda_variable_size,
+        .alpha = input$analysis_eda_variable_alpha,
+        .vars_pairs = input$analysis_eda_variable_pairs_vars,
+        .n_bins = input$analysis_eda_variable_n_bins,
+        .jitter = input$analysis_eda_check_jitter,
+        .groups = input$analysis_eda_variable_group,
+        .facet = input$analysis_eda_variable_facet,
+        .facet_second = input$analysis_eda_variable_facet_second,
+        .include_regression = input$analysis_eda_variable_regression
+      )
+    }
+    # warning = function(e) NULL,
+    # error = function(e) NULL
     )
     
     # TODO: this doesn't catch the error codes
-    # validate(need(is.ggplot(p), 
+    # validate(need(is.ggplot(p),
     #               "Variable selection is not valid. Please try another combination."))
     
     # add theme
-    p <- p + theme_custom()
+    p + theme_custom()
     
-    return(p)
+    # return(p)
   })
+  
+  output$analysis_eda_plot <- renderPlot({
+    descriptive_plot()
+  })
+  
+
+  output$download_descriptive_plot <- downloadHandler(
+    filename = 'descriptive_plot.png',
+    content = function(file) {
+      device <- function(..., width, height) {
+        grDevices::png(..., width = width, height = height,
+                       res = 300, units = "in")
+      }
+      ggsave(file, plot = descriptive_plot(), device = device)
+    })
   
   # text above the brush table
   output$analysis_eda_brush_text <- renderText({
@@ -914,7 +929,7 @@ shinyServer(function(input, output, session) {
   })
   
   # create the overlap plot
-  output$analysis_plot_overlap_plot <- renderPlot({
+  overlap_plot <- reactive({
     
     # stop here if data hasn't been uploaded and selected
     validate(need(is.data.frame(store$selected_df), 
@@ -954,14 +969,27 @@ shinyServer(function(input, output, session) {
     }
     
     # add theme
-    p <- p + theme_custom()
+    p + theme_custom()
     
-    return(p)
+    # return(p)
   })
   
+  output$analysis_plot_overlap_plot <- renderPlot({
+    overlap_plot()
+  })
+  
+  output$download_overlap_plot <- downloadHandler(
+    filename = 'overlap_plot.png',
+    content = function(file) {
+      device <- function(..., width, height) {
+        grDevices::png(..., width = width, height = height,
+                       res = 300, units = "in")
+      }
+      ggsave(file, plot = overlap_plot(), device = device)
+    })
+  
   # create the balance plot
-  output$analysis_plot_balance_plot <- renderPlot({
-    
+  balance_plot <- reactive({
     # stop here if data hasn't been uploaded and selected
     validate(need(is.data.frame(store$selected_df), 
                   "Data must be first uploaded and selected. Please see 'Data' tab."))
@@ -980,10 +1008,25 @@ shinyServer(function(input, output, session) {
                       confounder_cols = confounder_cols)
     
     # add theme
-    p <- p + theme_custom()
+    p + theme_custom()
     
-    return(p)
+    # return(p)
   })
+  
+  output$analysis_plot_balance_plot <- renderPlot({
+    balance_plot()
+  })
+  
+  output$download_balance_plot <- downloadHandler(
+    filename = 'balance_plot.png',
+    content = function(file) {
+      device <- function(..., width, height) {
+        grDevices::png(..., width = width, height = height,
+                       res = 300, units = "in")
+      }
+      ggsave(file, plot = balance_plot(), device = device)
+    })
+  
   
   # run the eda module server. the UI is rendered server side within an observeEvent function
   # edaServer(id = 'analysis_plots_descriptive', input_data = store$selected_df) #user_data) #
