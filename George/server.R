@@ -1299,8 +1299,8 @@ shinyServer(function(input, output, session) {
     sd_output <- paste0(prop_sd, "% of cases would have been removed under the standard deviation common support rule")
     
     
-    total <- sum((store$model_results$sd.cf / store$model_resultsl$sd.obs) ** 2 > 3.841)
-    prop_chi <- round(total / length(store$model_results$sd.cf), 2)*100
+    total_chi <- sum(((store$model_results$sd.cf / store$model_results$sd.obs) ** 2) > 3.841)
+    prop_chi <- round(total_chi / length(store$model_results$sd.cf), 2)*100
     chi_output <- paste0(prop_chi, "% of cases would have been removed under the chi squared common support rule")
     common_support_message <- paste(sd_output, chi_output, sep = '\n')
     
@@ -1320,27 +1320,27 @@ shinyServer(function(input, output, session) {
                         br(),
                         div(class = 'backNextContainer', 
                             style= "width:60%;display:inline-block;horizontal-align:center;",
+                            actionButton(inputId = 'common_support_opt3', 
+                                         label = 'See common support diagnostics')),
+                        br(),
+                        br(),
+                        div(class = 'backNextContainer', 
+                            style= "width:60%;display:inline-block;horizontal-align:center;",
+                            actionButton(inputId = 'common_support_new_rule', 
+                                         label = 'Change common support rule')),
+                        br(),
+                        br(),
+                        
+                        div(class = 'backNextContainer', 
+                            style= "width:60%;display:inline-block;horizontal-align:center;",
+                            actionButton(inputId = 'common_support_opt2', 
+                                         label = 'Learn more about common support rules')),
+                        br(),
+                        br(),
+                        div(class = 'backNextContainer', 
+                            style= "width:60%;display:inline-block;horizontal-align:center;",
                         actionButton(inputId = 'common_support_continue', 
-                                     label = 'Continue to results')
-                        ), 
-                        br(),
-                        br(),
-                        div(class = 'backNextContainer', 
-                            style= "width:60%;display:inline-block;horizontal-align:center;",
-                        actionButton(inputId = 'common_support_new_rule', 
-                                     label = 'Change common support rule')),
-                        br(),
-                        br(),
-                        div(class = 'backNextContainer', 
-                            style= "width:60%;display:inline-block;horizontal-align:center;",
-                        actionButton(inputId = 'common_support_opt3', 
-                                     label = 'See common support diagnostics')),
-                        br(),
-                        br(),
-                        div(class = 'backNextContainer', 
-                            style= "width:60%;display:inline-block;horizontal-align:center;",
-                        actionButton(inputId = 'common_support_opt2', 
-                                     label = 'Learn more about common support rules'))
+                                     label = 'Continue to results'))
                         ),
         type = NULL,
         btn_labels = NA,
@@ -1361,7 +1361,7 @@ shinyServer(function(input, output, session) {
     })
     
     observeEvent(input$common_support_continue, {
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
+      updateNavbarPage(session, inputId = "nav", selected = "Average Results")
       shinyWidgets::closeSweetAlert()
     })
     
@@ -1370,11 +1370,11 @@ shinyServer(function(input, output, session) {
     
     # move to next page based on model fit
     if((prop_sd == 0 | prop_chi == 0) & input$analysis_model_radio_support == 'none'){
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
+      updateNavbarPage(session, inputId = "nav", selected = "Average Results")
     } 
     
     if( input$analysis_model_radio_support != 'none'){
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
+      updateNavbarPage(session, inputId = "nav", selected = "Average Results")
     } 
     
     

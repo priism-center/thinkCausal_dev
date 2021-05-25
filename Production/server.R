@@ -1291,8 +1291,7 @@ shinyServer(function(input, output, session) {
     treatment_v <- store$selected_df[, 1]
     response_v <- store$selected_df[, 2]
     confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
-    
-    # TODO: dummy code categorical vars??
+    colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
     
     # run model    
     store$model_results <- bartCause::bartc(
@@ -1342,8 +1341,8 @@ shinyServer(function(input, output, session) {
     sd_output <- paste0(prop_sd, "% of cases would have been removed under the standard deviation common support rule")
     
     
-    total <- sum((store$model_results$sd.cf / store$model_resultsl$sd.obs) ** 2 > 3.841)
-    prop_chi <- round(total / length(store$model_results$sd.cf), 2)*100
+    total_chi <- sum(((store$model_results$sd.cf / store$model_results$sd.obs) ** 2) > 3.841)
+    prop_chi <- round(total_chi / length(store$model_results$sd.cf), 2)*100
     chi_output <- paste0(prop_chi, "% of cases would have been removed under the chi squared common support rule")
     common_support_message <- paste(sd_output, chi_output, sep = '\n')
     
@@ -1363,27 +1362,29 @@ shinyServer(function(input, output, session) {
                         br(),
                         div(class = 'backNextContainer', 
                             style= "width:60%;display:inline-block;horizontal-align:center;",
+                            actionButton(inputId = 'common_support_opt3', 
+                                         label = 'See common support diagnostics')),
+                        br(),
+                        br(),
+                        div(class = 'backNextContainer', 
+                            style= "width:60%;display:inline-block;horizontal-align:center;",
+                            actionButton(inputId = 'common_support_new_rule', 
+                                         label = 'Change common support rule')),
+                        
+                        br(),
+                        br(),
+                        div(class = 'backNextContainer', 
+                            style= "width:60%;display:inline-block;horizontal-align:center;",
+                            actionButton(inputId = 'common_support_opt2', 
+                                         label = 'Learn more about common support rules')),
+                        br(),
+                        br(),
+                        div(class = 'backNextContainer', 
+                            style= "width:60%;display:inline-block;horizontal-align:center;",
                         actionButton(inputId = 'common_support_continue', 
                                      label = 'Continue to results')
-                        ), 
-                        br(),
-                        br(),
-                        div(class = 'backNextContainer', 
-                            style= "width:60%;display:inline-block;horizontal-align:center;",
-                        actionButton(inputId = 'common_support_new_rule', 
-                                     label = 'Change common support rule')),
-                        br(),
-                        br(),
-                        div(class = 'backNextContainer', 
-                            style= "width:60%;display:inline-block;horizontal-align:center;",
-                        actionButton(inputId = 'common_support_opt3', 
-                                     label = 'See common support diagnostics')),
-                        br(),
-                        br(),
-                        div(class = 'backNextContainer', 
-                            style= "width:60%;display:inline-block;horizontal-align:center;",
-                        actionButton(inputId = 'common_support_opt2', 
-                                     label = 'Learn more about common support rules'))
+                        )
+
                         ),
         type = NULL,
         btn_labels = NA,
@@ -1491,43 +1492,7 @@ shinyServer(function(input, output, session) {
     }
     return(p)
   })
-  # ITE plot
-  output$analysis_results_plot_ITE <- renderPlot({
-    
-    # stop here if model isn't fit yet
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
-    
-    # plot it
-    p <- plot_ITE(.model = store$model_results)
-    
-    # add theme
-    p <- p + theme_custom()
-    
-    return(p)
-  })
-  
-  # conditional individual treatment effects plot
-  output$analysis_results_plot_CITE <- renderPlot({
-    
-    # stop here if model isn't fit yet
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
-    
-    # retrieve all the confounder columns
-    confounders <- colnames(store$selected_df[, 3:ncol(store$selected_df)])
-    
-    # plot it
-    # TODO see TODOs for plot_cate_test()
-    # p <- plot_cate_test(.model = store$model_results, confounders = confounders)
-    p <- NULL
-    
-    # add theme
-    p <- p + theme_custom()
-    
-    return(p)
-  })
-  
+
   # reproducible script
   # TODO: this hasn't been tested
   reproducible_script <- reactive({
@@ -1599,7 +1564,9 @@ shinyServer(function(input, output, session) {
   
 
   # Moderators  -------------------------------------------------------------
-  
+  observeEvent(input$go_to_subgroup_results, {
+    updateNavbarPage(session, inputId = "nav", selected = "Subgroup Results")
+  })
   ## ICATE plots
   
   # ordered icate
@@ -1646,6 +1613,19 @@ shinyServer(function(input, output, session) {
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     
+    shinyWidgets::show_alert(
+      title = 'Fitting BART model...',
+      text = tags$div(
+        img(src = file.path('img', 'tree.gif'),
+            width = "50%"),
+        h5("...sometimes this takes a while..."),
+      ),
+      html = TRUE,
+      btn_labels = NA,
+      closeOnClickOutside = FALSE
+    )
+    
+    
     # plot it
     p <- plot_cate(.model = store$model_results, 
                    confounder = input$analysis_moderators_explore_select)
@@ -1654,6 +1634,8 @@ shinyServer(function(input, output, session) {
     p <- p + theme_custom()
     
     return(p)
+    
+    shinyWidgets::closeSweetAlert()
   })
   
   
