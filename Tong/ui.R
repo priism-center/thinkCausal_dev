@@ -1,4 +1,4 @@
 
 ui <- fluidPage(
-  IgnorabilityUI("one")
+  IgnorabilityUI("AllConfounders")
 )
