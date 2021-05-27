@@ -767,13 +767,17 @@ shinyServer(function(input, output, session) {
                       selected = X_cols_continuous
     )
     
-    # update moderator select on model page and moderator test page
+    #update moderator select on model page and moderator test page
     updateSelectInput(session = session,
                       inputId = 'analysis_model_moderator_vars',
                       choices = X_mods)
-    
+
     updateSelectInput(session = session,
                       inputId = 'analysis_moderators_explore_select',
+                      choices = X_mods)
+    
+    updateSelectInput(session = session,
+                      inputId = 'analysis_moderators_explore_only',
                       choices = X_mods)
     
 
@@ -1306,16 +1310,13 @@ shinyServer(function(input, output, session) {
     # TODO: need way to test if actually have a good fit
     #store$good_model_fit <- TRUE
     
-    # update select on moderators page
-    updateSelectInput(session = session, 
+    # # update select on moderators page
+    updateSelectInput(session = session,
                       inputId = 'analysis_moderator_vars',
                       choices = input$analysis_model_moderator_vars,
                       selected = input$analysis_model_moderator_vars[1])
+
     
-    # updateSelectInput(session = session, 
-    #                   inputId = 'analysis_moderators_explore_select',
-    #                   choices = input$analysis_moderators_explore_select,
-    #                   selected = NULL)
     
     # add to log
     log_event <- paste0(
@@ -1609,34 +1610,35 @@ shinyServer(function(input, output, session) {
   })
   
   # plot the moderators
+  
+  
   output$analysis_moderators_explore_plot <- renderPlot({
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     
     shinyWidgets::show_alert(
-      title = 'Fitting BART model...',
+      title = 'Rendering Plot...',
       text = tags$div(
         img(src = file.path('img', 'tree.gif'),
-            width = "50%"),
+            width = "20%"),
         h5("...sometimes this takes a while..."),
       ),
       html = TRUE,
       btn_labels = NA,
-      closeOnClickOutside = FALSE
+      closeOnClickOutside = T
     )
-    
+
     
     # plot it
-    p <- plot_cate(.model = store$model_results, 
-                   confounder = input$analysis_moderators_explore_select)
+    p <- plot_continuous_sub(.model = store$model_results, 
+                   grouped_on = input$analysis_moderators_explore_select)
     
     # add theme
     p <- p + theme_custom()
-    
     return(p)
-    
-    shinyWidgets::closeSweetAlert()
   })
+  
+  
   
   
   # concepts ----------------------------------------------------------------
