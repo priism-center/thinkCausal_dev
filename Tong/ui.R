@@ -1,0 +1,4 @@
+
+ui <- fluidPage(
+  IgnorabilityUI("one")
+)
