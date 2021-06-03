@@ -11,19 +11,25 @@ ui <- fluidPage(
          td {border:1px solid #e0e0e0;height: 35px;}"
     )
   ),
-  title = 'Potential Outcomes',
-  p("Descriptive Example of treatment"),
-  p("ITE = Y1i - Y0i"),
-  p("In this example Tau is 5"),
-  div(id = "fixedtable",
-      fluidRow(column(10, align="center", 
-                      h2('Table 1: omniscient scenario'),
-                      hr(), 
-                      HTML('  
+  titlePanel( 'Potential Outcomes - 3'),
+  br(),
+  p("In this example Tau is 5 for students that don't participate in post-school program (post-school program = 0), 
+  and Tau is 10 for students that participate in post-school program (post-school program = 1)."),
+  p("The true sample average treatment effect (SATE)  =  7. However, the difference in means, 88.2 - 68.4 = 19.8, cannot recover the true SATE, 
+  because the groups whose outcomes we compare differ in their pre-treatment characteristics."),
+  p("Only those students who don’t participate in the postschool program select into the treatment, 
+  and their pre-treatment scores are higher than students who participate in the post-school program."),
+  div(
+    fluidRow(column(12, align="center", 
+                    h2('Table 1: omniscient scenario'),
+                    hr(), 
+                    HTML('  
 <table class="table table-bordered table-responsive-md table-striped text-center" id="table2">
   <thead>
     <tr>
       <th class="text-center"></th>
+      <th class="text-center">Postschool Program</th>
+      <th class="text-center">Pre-treatment Score</th>
       <th class="text-center">Treatment</th>
       <th class="text-center" colspan = "2">Potential Outcomes</th>
       <th class="text-center">Observed Outcomes</th>
@@ -32,6 +38,8 @@ ui <- fluidPage(
   <tbody>
     <tr>
       <td class="text-center">Student</td>
+      <td class="text-center">X1</td>
+      <td class="text-center">X2</td>
       <td class="text-center">Z</td>
       <td class="text-center">If Z =1, Y1</td>
       <td class="text-center">If Z = 0, Y0</td>
@@ -39,6 +47,8 @@ ui <- fluidPage(
     </tr>
     <tr>
       <td contenteditable="false">Blake</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">87</td>
       <td contenteditable="false">Yes</td>
       <td contenteditable="false">95</td>
       <td contenteditable="false">90</td>
@@ -46,20 +56,26 @@ ui <- fluidPage(
     </tr>
     <tr>
       <td contenteditable="false">Kennedy</td>
-      <td contenteditable="false">Yes</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">70</td>
+      <td contenteditable="false">No</td>
       <td contenteditable="false">80</td>
-      <td contenteditable="false">75</td>
-      <td contenteditable="false">80</td>
+      <td contenteditable="false">70</td>
+      <td contenteditable="false">70</td>
     </tr>
      <tr>
       <td contenteditable="false">Jordan</td>
-      <td contenteditable="false">Yes</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">64</td>
+      <td contenteditable="false">No</td>
       <td contenteditable="false">75</td>
-      <td contenteditable="false">70</td>
-      <td contenteditable="false">75</td>
+      <td contenteditable="false">65</td>
+      <td contenteditable="false">65</td>
     </tr>
     <tr>
       <td contenteditable="false">Taylor</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">71</td>
       <td contenteditable="false">Yes</td>
       <td contenteditable="false">77</td>
       <td contenteditable="false">72</td>
@@ -67,6 +83,8 @@ ui <- fluidPage(
     </tr>
     <tr>
       <td contenteditable="false">Billie</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">80</td>
       <td contenteditable="false">Yes</td>
       <td contenteditable="false">87</td>
       <td contenteditable="false">82</td>
@@ -74,27 +92,35 @@ ui <- fluidPage(
     </tr>
     <tr>
       <td contenteditable="false">Charlie</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">65</td>
       <td contenteditable="false">No</td>
       <td contenteditable="false">76</td>
-      <td contenteditable="false">71</td>
-      <td contenteditable="false">71</td>
+      <td contenteditable="false">66</td>
+      <td contenteditable="false">66</td>
     </tr>
     <tr>
       <td contenteditable="false">Casey</td>
-      <td contenteditable="false">No</td>
-      <td contenteditable="false">84</td>
-      <td contenteditable="false">79</td>
-      <td contenteditable="false">79</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">78</td>
+      <td contenteditable="false">Yes</td>
+      <td contenteditable="false">86</td>
+      <td contenteditable="false">81</td>
+      <td contenteditable="false">86</td>
     </tr>
     <tr>
       <td contenteditable="false">Alex</td>
-      <td contenteditable="false">No</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">88</td>
+      <td contenteditable="false">Yes</td>
       <td contenteditable="false">96</td>
       <td contenteditable="false">91</td>
-      <td contenteditable="false">91</td>
+      <td contenteditable="false">96</td>
     </tr>
     <tr>
       <td contenteditable="false">Parker</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">71</td>
       <td contenteditable="false">No</td>
       <td contenteditable="false">77</td>
       <td contenteditable="false">72</td>
@@ -102,21 +128,25 @@ ui <- fluidPage(
     </tr>
     <tr>
       <td contenteditable="false">Andi</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">69</td>
       <td contenteditable="false">No</td>
       <td contenteditable="false">79</td>
-      <td contenteditable="false">74</td>
-      <td contenteditable="false">74</td>
+      <td contenteditable="false">69</td>
+      <td contenteditable="false">69</td>
     </tr>
   </tbody>
 </table>'))
-      ),
-    fluidRow(column(10, align="center", 
+    ),
+    fluidRow(column(12, align="center", 
                     h2('Table 2: reality scenario'),
                     hr(), HTML('  
 <table class="table table-bordered table-responsive-md table-striped text-center" id="table3">
   <thead>
     <tr>
       <th class="text-center"></th>
+      <th class="text-center">Postschool Program</th>
+      <th class="text-center">Pre-treatment Score</th>
       <th class="text-center">Treatment</th>
       <th class="text-center" colspan = "2">Potential Outcomes</th>
       <th class="text-center">Observed Outcomes</th>
@@ -125,6 +155,8 @@ ui <- fluidPage(
   <tbody>
     <tr>
       <td class="text-center">Student</td>
+      <td class="text-center">X1</td>
+      <td class="text-center">X2</td>
       <td class="text-center">Z</td>
       <td class="text-center">If Z =1, Y1</td>
       <td class="text-center">If Z = 0, Y0</td>
@@ -132,6 +164,8 @@ ui <- fluidPage(
     </tr>
     <tr>
       <td contenteditable="false">Blake</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">87</td>
       <td contenteditable="false">Yes</td>
       <td contenteditable="false">95</td>
       <td contenteditable="false">?</td>
@@ -139,20 +173,26 @@ ui <- fluidPage(
     </tr>
     <tr>
       <td contenteditable="false">Kennedy</td>
-      <td contenteditable="false">Yes</td>
-      <td contenteditable="false">80</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">70</td>
+      <td contenteditable="false">No</td>
       <td contenteditable="false">?</td>
-      <td contenteditable="false">80</td>
+      <td contenteditable="false">70</td>
+      <td contenteditable="false">70</td>
     </tr>
      <tr>
       <td contenteditable="false">Jordan</td>
-      <td contenteditable="false">Yes</td>
-      <td contenteditable="false">75</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">64</td>
+      <td contenteditable="false">No</td>
       <td contenteditable="false">?</td>
-      <td contenteditable="false">75</td>
+      <td contenteditable="false">65</td>
+      <td contenteditable="false">65</td>
     </tr>
     <tr>
       <td contenteditable="false">Taylor</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">71</td>
       <td contenteditable="false">Yes</td>
       <td contenteditable="false">77</td>
       <td contenteditable="false">?</td>
@@ -160,6 +200,8 @@ ui <- fluidPage(
     </tr>
     <tr>
       <td contenteditable="false">Billie</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">80</td>
       <td contenteditable="false">Yes</td>
       <td contenteditable="false">87</td>
       <td contenteditable="false">?</td>
@@ -167,27 +209,35 @@ ui <- fluidPage(
     </tr>
     <tr>
       <td contenteditable="false">Charlie</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">65</td>
       <td contenteditable="false">No</td>
       <td contenteditable="false">?</td>
-      <td contenteditable="false">71</td>
-      <td contenteditable="false">71</td>
+      <td contenteditable="false">66</td>
+      <td contenteditable="false">66</td>
     </tr>
     <tr>
       <td contenteditable="false">Casey</td>
-      <td contenteditable="false">No</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">78</td>
+      <td contenteditable="false">Yes</td>
+      <td contenteditable="false">86</td>
       <td contenteditable="false">?</td>
-      <td contenteditable="false">79</td>
-      <td contenteditable="false">79</td>
+      <td contenteditable="false">86</td>
     </tr>
     <tr>
       <td contenteditable="false">Alex</td>
-      <td contenteditable="false">No</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">88</td>
+      <td contenteditable="false">Yes</td>
+      <td contenteditable="false">96</td>
       <td contenteditable="false">?</td>
-      <td contenteditable="false">91</td>
-      <td contenteditable="false">91</td>
+      <td contenteditable="false">96</td>
     </tr>
     <tr>
       <td contenteditable="false">Parker</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">71</td>
       <td contenteditable="false">No</td>
       <td contenteditable="false">?</td>
       <td contenteditable="false">72</td>
@@ -195,17 +245,19 @@ ui <- fluidPage(
     </tr>
     <tr>
       <td contenteditable="false">Andi</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">69</td>
       <td contenteditable="false">No</td>
       <td contenteditable="false">?</td>
-      <td contenteditable="false">74</td>
-      <td contenteditable="false">74</td>
+      <td contenteditable="false">69</td>
+      <td contenteditable="false">69</td>
     </tr>
   </tbody>
 </table>'))
     )),
-    fluidRow(column(10, h2('Table 3: testing', style = "text-align:center"),
-                    hr(), 
-                    HTML('
+  fluidRow(column(12, h2('Table 3: testing', style = "text-align:center"),
+                  hr(), 
+                  HTML('
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"/>
@@ -214,7 +266,7 @@ ui <- fluidPage(
 <script type="text/javascript">
 $(document).ready(function() {
   $("#submit").click(function() {
-    var t_vals = ["90", "75", "70", "72", "82", "76", "84", "96", "77", "79"];
+    var t_vals = ["90", "80", "75", "72", "82", "76", "81", "91", "77", "79"];
     var q_tot = 10;
     var q = 0;
     for (i = 1; i <= q_tot; i++) {
@@ -233,7 +285,7 @@ $(document).ready(function() {
       }
     };
     if (q == 10) {
-      $(".congrats").append("Congratulations! ☺").css("color", "green");;
+      $(".congrats").append("Congratulations! ☺").css("color", "green");
     }
    return false;
   });
@@ -273,6 +325,8 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
   <thead>
     <tr>
       <th class="text-center"></th>
+      <th class="text-center">Postschool Program</th>
+      <th class="text-center">Pre-treatment Score</th>
       <th class="text-center">Treatment</th>
       <th class="text-center" colspan = "2">Potential Outcomes</th>
       <th class="text-center">Observed Outcomes</th>
@@ -281,6 +335,8 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
   <tbody>
     <tr>
       <td class="text-center">Student</td>
+      <td class="text-center">X1</td>
+      <td class="text-center">X2</td>
       <td class="text-center">Z</td>
       <td class="text-center">If Z =1, Y1</td>
       <td class="text-center">If Z = 0, Y0</td>
@@ -288,6 +344,8 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
     </tr>
     <tr>
       <td contenteditable="false">Blake</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">87</td>
       <td contenteditable="false">Yes</td>
       <td contenteditable="false">95</td>
       <td contenteditable="true" id = "add1">?</td>
@@ -295,20 +353,26 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
     </tr>
     <tr>
       <td contenteditable="false">Kennedy</td>
-      <td contenteditable="false">Yes</td>
-      <td contenteditable="false">80</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">70</td>
+      <td contenteditable="false">No</td>
       <td contenteditable="true" id = "add2">?</td>
-      <td contenteditable="false">80</td>
+      <td contenteditable="false">70</td>
+      <td contenteditable="false">70</td>
     </tr>
      <tr>
       <td contenteditable="false">Jordan</td>
-      <td contenteditable="false">Yes</td>
-      <td contenteditable="false">75</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">64</td>
+      <td contenteditable="false">No</td>
       <td contenteditable="true" id = "add3">?</td>
-      <td contenteditable="false">75</td>
+      <td contenteditable="false">65</td>
+      <td contenteditable="false">65</td>
     </tr>
     <tr>
       <td contenteditable="false">Taylor</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">71</td>
       <td contenteditable="false">Yes</td>
       <td contenteditable="false">77</td>
       <td contenteditable="true" id = "add4">?</td>
@@ -316,6 +380,8 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
     </tr>
     <tr>
       <td contenteditable="false">Billie</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">80</td>
       <td contenteditable="false">Yes</td>
       <td contenteditable="false">87</td>
       <td contenteditable="true" id = "add5">?</td>
@@ -323,27 +389,35 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
     </tr>
     <tr>
       <td contenteditable="false">Charlie</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">65</td>
       <td contenteditable="false">No</td>
       <td contenteditable="true" id = "add6">?</td>
-      <td contenteditable="false">71</td>
-      <td contenteditable="false">71</td>
+      <td contenteditable="false">66</td>
+      <td contenteditable="false">66</td>
     </tr>
     <tr>
       <td contenteditable="false">Casey</td>
-      <td contenteditable="false">No</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">78</td>
+      <td contenteditable="false">Yes</td>
+      <td contenteditable="false">86</td>
       <td contenteditable="true" id = "add7">?</td>
-      <td contenteditable="false">79</td>
-      <td contenteditable="false">79</td>
+      <td contenteditable="false">86</td>
     </tr>
     <tr>
       <td contenteditable="false">Alex</td>
-      <td contenteditable="false">No</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">88</td>
+      <td contenteditable="false">Yes</td>
+      <td contenteditable="false">96</td>
       <td contenteditable="true" id = "add8">?</td>
-      <td contenteditable="false">91</td>
-      <td contenteditable="false">91</td>
+      <td contenteditable="false">96</td>
     </tr>
     <tr>
       <td contenteditable="false">Parker</td>
+      <td contenteditable="false">0</td>
+      <td contenteditable="false">71</td>
       <td contenteditable="false">No</td>
       <td contenteditable="true" id = "add9">?</td>
       <td contenteditable="false">72</td>
@@ -351,10 +425,12 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
     </tr>
     <tr>
       <td contenteditable="false">Andi</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">69</td>
       <td contenteditable="false">No</td>
       <td contenteditable="true" id = "add10">?</td>
-      <td contenteditable="false">74</td>
-      <td contenteditable="false">74</td>
+      <td contenteditable="false">69</td>
+      <td contenteditable="false">69</td>
     </tr>
   </tbody>
 </table>
@@ -367,11 +443,11 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
 <div class = "congrats"></div>
 '),
   br(), br())
-))
-  
-  server = function(input, output) {
+  ))
 
-  }
+server <- function(input, output) {
+  
+}
 
 shinyApp(ui,server)
 
