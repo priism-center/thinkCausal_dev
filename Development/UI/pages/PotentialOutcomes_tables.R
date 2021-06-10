@@ -1,7 +1,6 @@
 
 PotentialOutcomes_table1 <- 
-'  
-<table class="table table-bordered table-responsive-md table-striped text-center" id="table2">
+'<table class="table table-bordered table-responsive-md table-striped text-center" id="table2">
   <thead>
     <tr>
       <th class="text-center"></th>
@@ -184,7 +183,7 @@ PotentialOutcomes_table2 <-
 
 
 PotentialOutcomes_table3 <-
-  paste0('<script type="text/javascript">
+paste0('<script type="text/javascript">
 $(document).ready(function() {
   $("#submit").click(function() {
     var t_vals = ["90", "75", "70", "72", "82", "76", "84", "96", "77", "79"];
