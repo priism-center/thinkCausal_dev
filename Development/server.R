@@ -1654,7 +1654,7 @@ shinyServer(function(input, output, session) {
   
   # run the randomization module
   randomizationServer(id = 'concepts_randomization', plot_theme = theme_custom)
-  
+  PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
   
   # welcome page ------------------------------------------------------------
   

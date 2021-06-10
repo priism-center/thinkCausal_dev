@@ -4,6 +4,8 @@ concepts_header <- navbarMenu(
   "-----",
   tabPanel(title = "Test your understanding", 
            includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))), 
+  tabPanel(title = 'PotentialOutcomes',
+           PotentialOutcomesUI(id = "concepts_potentialoutcomes")),
   tabPanel(title = 'Randomization', 
            randomizationUI(id = "concepts_randomization")),
   tabPanel(title = "Fundamental problem",
