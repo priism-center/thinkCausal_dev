@@ -1,0 +1,499 @@
+---
+title: "Balance and Overlap"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, message=FALSE}
+library(ggpubr)
+library(tidyverse)
+library(shiny)
+```
+
+```{r, echo=FALSE}
+plot_scatterplot <- function(df){
+  df$Z <- as.factor(df$Z)
+  col_blue <- "blue"
+  col_red <- "red"
+  ggplot(df) + 
+    geom_point( aes(x = X, y = Y, color = Z ))+ 
+    xlab("X") + ylab("Observed Outcome") + 
+    labs(title = "Distribution of Observed Outcomes", color = "Treated?") + 
+    scale_color_manual(values = c(col_blue, col_red)) + 
+    theme_minimal(base_line_size = 0.4) + theme(legend.position="bottom")
+}
+
+plot_balance <- function(df){
+  colors <- c("0" = "blue", "1" = "red")
+  ggplot(data = df[which(df$Z == 0),], aes(x = X, color="0")) + geom_density() + 
+    geom_vline(aes(xintercept=mean(X), color="0"),  linetype="dashed", size=1) + 
+    geom_density(data = df[which(df$Z == 1),], aes(x = X, color="1")) + 
+    geom_vline(data = df[which(df$Z == 1),], aes(xintercept=mean(X), color="1"), linetype="dashed", size=1) +
+    labs(title = "Distribution of Covariate X", color = "Treated?") + 
+    scale_color_manual(values = colors) + 
+    theme_minimal(base_line_size = 0.4) + theme(legend.position="bottom")
+}
+
+plot_overlap <- function(df, nooverlap = FALSE){
+  df$Z <- as.factor(df$Z)
+  if(nooverlap == TRUE){
+    ggplot() + 
+      geom_histogram(data = df %>% filter(Z == 1), aes( x = X, y = ..density.., fill = Z), alpha = 0.8, boundary = 0) +
+      geom_histogram(data = df %>% filter(Z == 0), aes(x = X, y = -..density.., fill = Z), alpha = 0.8, boundary = 0) + 
+      labs(title = "Distribution of Covariate X") + 
+      scale_fill_manual("Treated?", values=c("blue","red")) + 
+      theme(legend.position="bottom") 
+  }else{
+    ggplot() + 
+      geom_histogram(data = df %>% filter(Z == 1), aes( x = X, y = ..density.., fill = Z), alpha = 0.8) +
+      geom_histogram(data = df %>% filter(Z == 0), aes(x = X, y = -..density.., fill = Z), alpha = 0.8) + 
+      labs(title = "Distribution of Covariate X") + 
+      scale_fill_manual("Treated?", values=c("blue","red")) + 
+      theme(legend.position="bottom") 
+  }
+}
+```
+
+
+## Balance
+
+In a **completely randomized design**, the treatment assignment is a random variable that is independent of all variables x that occur before treatment assignment. Under repeated randomizations, there will be no differences, **on average**, in the pre-treatment covariates, comparing treatment and control groups. Randomization ensures balance on average but not in any given sample, and imbalance can be large when sample size is small. The right plot shows balance in the covariate X between treatment and control groups while the left plot shows imbalance in the covariate X between treatment and control groups from a random assignment. The difference in means is an unbiased estimate of the treatment effect under a completely randomized design, but it is subject to sampling variation, and for this particular realization the estimate, 84.66 - 82.55 =  2.11, is far from the true treatment effect 5. 
+
+```{r, echo=FALSE}
+dgp_radomized_balanced <- function (n, beta_1, seed) {
+  set.seed(seed) 
+  pre_quiz <- rnorm(n = n, mean = 65, sd = 3)
+  beta_0 <- 10
+  tau <- 5
+  Z <- sample(x = c(0,1), size = n, replace = TRUE)
+  Y_0 <- beta_0 + beta_1 * pre_quiz + 0 + rnorm(n) 
+  Y_1 <- beta_0 + beta_1 * pre_quiz + tau + rnorm(n) 
+  Y <- ifelse(Z == 1, Y_1, Y_0)
+  output <- data.frame(Z, pre_quiz, Y_0, Y_1, Y)
+  colnames(output) <- c( "Z", "X", "Y_0", "Y_1", "Y")
+  return (output) 
+}
+df_balanced_sml <- dgp_radomized_balanced(n = 10, beta_1 = 1.1, seed = 88)
+df_balanced_lrg <- dgp_radomized_balanced(n = 1000, beta_1 = 1.1, seed = 88)
+```
+
+```{r, echo=FALSE}
+p1 <- plot_scatterplot(df_balanced_sml) 
+p2 <- plot_scatterplot(df_balanced_lrg) 
+ggarrange(p1,p2, ncol = 2, nrow = 1)
+```
+
+```{r, echo=FALSE}
+p3 <- plot_balance(df_balanced_sml)
+p4 <- plot_balance(df_balanced_lrg)
+ggarrange(p3,p4, ncol = 2, nrow = 1)
+```
+
+```{r}
+SATE_meandiff <- mean(df_balanced_sml[df_balanced_sml$Z == 1, ]$Y) - mean(df_balanced_sml[df_balanced_sml$Z == 0, ]$Y)
+SATE_meandiff
+```
+
+In an **observational study**, there can be systematic differences between groups of units that receive different treatments with respect to key covariates, x, that can affect the outcome, y. Such covariates that are associated with the treatment and the potential outcomes are typically called confounders or confounding covariates because if we observe differences in average outcomes across these groups, we can’t separately attribute these differences to the treatment or the confounders—the effect of the treatment is thus “confounded” by these variables.
+
+Imbalance with measured confounders occurs when the distributions of confounders differ for the
+treatment and control groups. This could manifest, for instance, as differences in means or standard deviations of a covariate between treatment and control groups. More generally, any differences in covariate distributions across groups can be referred to as lack of balance across groups. When treatment and control groups suffer from imbalance, the simple comparison of group averages, $\bar{y}_1− \bar{y}_0$, is not, in general, a good estimate of the average treatment effect. In the example below, the mean difference, 0.14, is far from the underlying and unobservable sample average treatment effect (SATE) of -0.5.
+
+
+```{r, echo=FALSE}
+dgp_overlap_unbalance <- function(n, seed){
+  set.seed(seed)
+  x <- runif(n)
+  p_z <- pmin(pmax(x,0.1), 0.8) # z is dependent on x
+  z <- rbinom(n = n, size = 1, prob = p_z)
+  y0 <- 2 * x
+  y1 <- y0 - 0.5
+  y <- ifelse(z==0, y0, y1) + 0.3*rnorm(n)
+  return(data.frame(X=x,Z=z,Y0 = y0, Y1 = y1, Y=y))
+}
+df_overlap_unbalance <- dgp_overlap_unbalance(1000, seed = 1234)
+plot_scatterplot(df_overlap_unbalance)
+```
+
+```{r, echo=FALSE}
+plot_balance(df_overlap_unbalance)
+```
+
+As the pre-treatment variable is unbalanced between the two groups, the mean difference is biased.
+
+```{r}
+SATE_meandiff <- mean(df_overlap_unbalance$Y[df_overlap_unbalance$Z == 1]) -
+  mean(df_overlap_unbalance$Y[df_overlap_unbalance$Z == 0])
+SATE_meandiff
+SATE <- mean(df_overlap_unbalance$Y1 - df_overlap_unbalance$Y0)
+SATE
+```
+
+
+## Overlap
+
+Overlap or common support describes the extent to which the support of the covariate data is the same between the treatment and control groups. There is complete overlap when there exist both treatment and control units in all neighborhoods of the covariate space. 
+
+```{r, echo=FALSE}
+df_balanced_lrg <- dgp_radomized_balanced(n = 1000, beta_1 = 1.1, seed = 58)
+plot_scatterplot(df_balanced_lrg)
+```
+
+```{r, echo=FALSE, message=FALSE}
+plot_overlap(df_balanced_lrg, nooverlap = T)
+```
+
+Lack of complete overlap in the confounders creates problems, because in that setting there are treatment observations for which we have no empirical counterfactuals (that is, control observations with the same covariate distribution) or vice versa. (a) Two distributions with no overlap; (b) two distributions with partial overlap; (c) a scenario in which the range of one distribution is a subset ofthe range of the other
+
+```{r, echo=FALSE}
+dgp_overlap <- function(n, tau, lwr, upp, seed, nooverlap = FALSE){
+  set.seed(seed)
+  X <- rnorm(n = n, mean = 0, sd = 1)
+  # Compare the log-odds scale of lower and upper bounds and return the lowest
+  lwr_pre <- log(lwr / (1 - lwr))
+  upp_pre <- log(upp / (1 - upp))
+  lwr_alpha <- lwr_pre / min(X)
+  upp_alpha <- upp_pre / max(X)
+  alpha <- min(lwr_alpha, upp_alpha)
+  p <- exp(alpha * X) / (1 + exp(alpha * X))
+  if(nooverlap == TRUE){
+    Z <- ifelse(X>=0, 1, 0)
+  }else{
+    Z <- rbinom(n = n, size = 1, prob = p)
+  }
+  Y0 <- X + rnorm(n = n, mean = 0, sd = 1)
+  Y1 <- X + tau + rnorm(n = n, mean = 0, sd = 1)
+  Y <- ifelse( Z == 1, Y1, Y0)
+  return(data.frame( X, Y, Y0, Y1, Z))
+}
+
+df_overlap1 <- dgp_overlap(100, 5, 0.05, 0.95, 123)
+df_overlap2 <- dgp_overlap(100, 5, 0.05, 0.95, 4)
+df_overlap3 <- dgp_overlap(100, 5, 0.5, 0.65, 1, nooverlap = TRUE)
+```
+
+
+```{r, echo=FALSE}
+p1 <- plot_scatterplot(df_overlap1) + theme(plot.title = element_text(size=8))
+p2 <- plot_scatterplot(df_overlap2) + theme(plot.title = element_text(size=8))
+p3 <- plot_scatterplot(df_overlap3) + theme(plot.title = element_text(size=8))
+ggarrange(p3, p2, p1, nrow = 1, ncol = 3)
+```
+
+```{r, echo=FALSE, message=FALSE}
+p1 <- plot_overlap(df_overlap1) + theme(plot.title = element_text(size=8))
+p2 <- plot_overlap(df_overlap2) + theme(plot.title = element_text(size=8))
+p3 <- plot_overlap(df_overlap3, nooverlap = T) + theme(plot.title = element_text(size=8))
+ggarrange(p3, p2, p1, nrow = 1, ncol = 3)
+```
+
+Since we rely on empirical counterfactual units to inform counterfactual outcomes, when treatment and control groups do not completely overlap, the data are inherently limited in what they can tell us about treatment effects in the regions of nonoverlap. In regions where the groups do not have covariate overlap, causal estimation is purely based on extrapolation. Hence, any inferences in the areas with no overlap would be sensitive to model-specification. 
+
+## Imbalance is not the same as lack of overlap
+
+Imbalance does not necessarily imply lack of complete overlap; conversely, lack of complete overlap does not necessarily result in imbalance in the sense of different average values in the two groups.
+
+### Non-overlap but balanced
+
+```{r, echo=FALSE}
+dgp_nonoverlap_balance <- function(n, seed){
+  set.seed(seed)
+  num_1 <- floor(n/2)
+  num_0 <- n - num_1
+  half <- floor(num_1/2)
+  x1 <- c(rnorm(half, mean = -2, sd = 1), rnorm(num_1-half, mean = 2, sd = 1))
+  x0 <- rnorm(num_0, mean = 0, sd = 1)
+  x <- c(x1, x0)
+  p_z <- ifelse(x<1&x>-1, 1, 0)
+  z <- rbinom(n = n, size = 1, prob = p_z)
+  y0 =  5 + x - 0.2*x^2 + rnorm(n)
+  y1 =  5 + x + 0.4*x^2 + 5 + rnorm(n)
+  y = ifelse(z == 0, y0, y1)
+  return(data.frame(X=x,Z=z,Y0 = y0, Y1 = y1, Y=y))
+}
+df_nonoverlap_balance <- dgp_nonoverlap_balance(1000, 1234)
+plot_scatterplot(df_nonoverlap_balance)
+```
+
+```{r, echo=FALSE, message=FALSE}
+p1 <- plot_balance(df_nonoverlap_balance)
+p2 <- plot_overlap(df_nonoverlap_balance, nooverlap = TRUE)
+ggarrange(p1, p2, nrow = 1, ncol = 2)
+```
+
+```{r}
+SATE_meandiff <- mean(df_nonoverlap_balance$Y[df_nonoverlap_balance$Z == 1]) -
+  mean(df_nonoverlap_balance$Y[df_nonoverlap_balance$Z == 0])
+SATE_meandiff
+
+SATE <- mean(df_nonoverlap_balance$Y1 - df_nonoverlap_balance$Y0)
+SATE
+```
+
+### Overlap but not balanced
+```{r, echo=FALSE}
+plot_scatterplot(df_overlap_unbalance)
+```
+
+If we look at the distribution of the covariance, X, it is clear that there is a difference between the groups.
+
+```{r, echo=FALSE, message=FALSE}
+p1 <- plot_balance(df_overlap_unbalance)
+p2 <- plot_overlap(df_overlap_unbalance)
+ggarrange(p1,p2, nrow = 1, ncol = 2)
+```
+
+As the pre-treatment variable is unbalanced between the two groups, the mean difference is biased.
+```{r}
+SATE_meandiff <- mean(df_overlap_unbalance$Y[df_overlap_unbalance$Z == 1]) -
+  mean(df_overlap_unbalance$Y[df_overlap_unbalance$Z == 0])
+SATE_meandiff
+SATE <- mean(df_overlap_unbalance$Y1 - df_overlap_unbalance$Y0)
+SATE
+```
+
+In this case linear regression has done well in identifying the correct ATE - which is good, but the data generating process was specifically designed to meet the assumptions. Let's look at a case where it might fail.
+
+```{r}
+model <- lm(Y~Z+X, data = df_overlap_unbalance)
+summary(model)
+```
+
+### Non-overlap and unbalanced
+
+```{r, echo=FALSE}
+dgp_nonoverlap_unbalance <- function(n, seed){
+  set.seed(seed)
+  Z <- rbinom(n = n, size = 1, prob = 0.5)
+  X <- ifelse(Z == 1, rnorm(n = n, mean = 40, sd = 10), rnorm(n = n, mean = 20, sd = 5))
+  Y_0 <- 72 + 3*sqrt(X) + rnorm(n = n, 0,1)
+  Y_1 <- 90 + exp(0.06*X) + rnorm(n = n, 0,1)
+  Y <- ifelse(Z==1, Y_1, Y_0)
+  output <- data.frame(Z, X, Y_0, Y_1, Y)
+  colnames(output) <- c( "Z", "X", "Y_0", "Y_1", "Y")
+  return(output)
+}
+
+df_nonoverlap_unbalance <- dgp_nonoverlap_unbalance(1000, 1234)
+model <- lm(Y ~ X + as.factor(Z), data = df_nonoverlap_unbalance)
+df_nonoverlap_unbalance$fitted <- model$fitted.values
+df_nonoverlap_unbalance$Z <- as.factor(df_nonoverlap_unbalance$Z)
+colors <- c("0" = "blue", "1" = "red")
+ggplot() + geom_point(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 1, ], aes(x = X, y = Y, color = "1")) + 
+  geom_point(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 0, ], aes(x = X, y = Y, color = "0")) + 
+  geom_line(data = df_nonoverlap_unbalance, aes(x = X, y = 90 + exp(0.06*X)), color = "red") +
+  geom_line(data = df_nonoverlap_unbalance, aes(x = X, y = 72 + 3*sqrt(X)), color = "blue") +
+  scale_color_manual("Treated?", values=colors) + 
+  geom_line(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 0, ], aes(x = X, y = fitted), linetype = "dashed") + 
+  geom_line(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 1, ], aes(x = X, y = fitted), linetype = "dashed") +
+  theme(legend.position="bottom")
+
+```
+
+```{r, echo=FALSE, message=FALSE}
+p1 <- plot_balance(df_nonoverlap_unbalance)
+p2 <- plot_overlap(df_nonoverlap_unbalance)
+ggarrange(p1, p2, nrow = 1, ncol = 2)
+```
+
+
+```{r}
+SATE_meandiff <- mean(df_nonoverlap_unbalance$Y[df_nonoverlap_unbalance$Z == 1]) - mean(df_nonoverlap_unbalance$Y[df_nonoverlap_unbalance$Z == 0])
+SATE_meandiff
+
+SATE <- mean(df_nonoverlap_unbalance$Y_1 - df_nonoverlap_unbalance$Y_0)
+SATE
+```
+
+The OLS estimator fails to capture the true effect. There just isn't enough information in the data to extrapolate fully into areas where there isn't overlap. Using flexible models such as BART would be the way to go.
+```{r}
+model1 <- lm(Y~as.factor(Z) + X, data = df_nonoverlap_unbalance)
+summary(model1)
+```
+
+## Testing
+
+```{r, echo=FALSE}
+df_generator <- function(balance_flag = TRUE, overlap_flag = TRUE, n = 100, 
+                         dg_type1 = 'linear', dg_type0 = 'poly2', seed = 1234) {
+  ## inputs:
+  # balance_flag - indicator if the generated data for the two groups are balanced in x
+  # overlag_flat - indicator if the generated data for the two groups overlap in x 
+  # n - total (two groups) number of data points
+  # dg_type1 - the underlying formula of data generator for treatment group, linear or poly2
+  # dg_type0 - the underlying formula of data generator for control group, linear or poly2
+  
+  set.seed(seed)
+  
+  z <- rbinom(n, 1, 0.5)
+  
+  num_1 <- sum(z==1)
+  
+  num_0 <- n - num_1
+  
+  x <- rnorm(n, mean = 1, sd = 1)
+  for (i in 1:n) {
+    if(z[i] == 0){
+      if (balance_flag & overlap_flag) {
+        
+        x[i] <- rnorm(1, mean = 1, sd = 1)
+        
+      } else if (balance_flag & !overlap_flag) {
+        
+        x[i] <- turncated_rnorm(1, mean = 1, sd = 1, lwbd = -0.85, upbd = 2.85)
+        
+      } else if (overlap_flag & !balance_flag) {
+        
+        x1_range <- range(x[z==1])
+        
+        x[i] <- turncated_rnorm(1, mean = 0, sd = 2, lwbd = x1_range[1], upbd = x1_range[2])
+        
+      } else if (!balance_flag & !overlap_flag) {
+        
+        x[i] <- turncated_rnorm(1, mean = 0, sd = 1, lwbd = -0.5, upbd = 1.5)
+        
+      }
+    }
+  }
+  
+  if (dg_type1 == 'linear') {
+    
+    y1 <- 1.2 * x - 0.5 + rnorm(n, mean = 0, sd = 0.3)
+    
+  } else if (dg_type1 == 'poly2') {
+    
+    y1 <- 1.2 * x^2 - 0.95 * x + 0.5 + rnorm(n, mean = 0, sd = 0.3)
+    
+  }
+  
+  if (dg_type0 == 'linear') {
+    
+    y0 <- 1.35 * x - 0.75 + rnorm(n, mean = 0, sd = 0.3)
+    
+  } else if (dg_type0 == 'poly2') {
+    
+    y0 <- 1.1 * x^2 - 0.75 * x + 0.65 + rnorm(n, mean = 0, sd = 0.3)
+    
+  }
+  
+  y <- ifelse(z==1, y1, y0)
+  
+  df <- data.frame(Z = z, X = x, Y_0 = y0, Y_1 = y1, Y = y)
+  
+  return(df)
+}
+
+
+turncated_rnorm <- function(num, mean, sd, lwbd, upbd) {
+  
+  k <- 0
+  
+  x <- c()
+  
+  while (k < num) {
+    
+    tmp_x <- rnorm(1, mean = mean, sd = sd)
+    
+    if (tmp_x < lwbd | tmp_x > upbd) {
+      
+      tmp_x <- rnorm(1, mean = mean, sd = sd)
+      
+    } else {
+      
+      x <- c(x, tmp_x)
+      
+      k <- k + 1
+      
+    }
+  }
+  
+  return(x)
+}
+```
+
+
+```{r, echo=FALSE}
+balance_flag <- reactiveValues(data = TRUE)
+overlap_flag <- reactiveValues(data = TRUE)
+dg_type1 <- reactiveValues(data = 'linear')
+dg_type0 <- reactiveValues(data = 'linear')
+seed <- reactiveValues(data = 123)
+
+  renderPlot({
+    df <- df_generator(balance_flag = balance_flag$data, overlap_flag = overlap_flag$data, n = 1000, 
+                       dg_type1 = dg_type1$data, dg_type0 = dg_type0$data, seed = seed$data)
+    plot_scatterplot(df)
+    
+  })
+  
+  renderPlot({
+    df <- df_generator(balance_flag = balance_flag$data, overlap_flag = overlap_flag$data, n = 1000, 
+                       dg_type1 = dg_type1$data, dg_type0 = dg_type0$data, seed = seed$data)
+    p1 <- plot_balance(df)
+    p2 <- plot_overlap(df)
+    ggarrange(p1,p2, nrow = 1, ncol = 2)
+  })
+  
+inputPanel( fluidPage(
+  fluidRow(column(width = 12,
+           selectInput("balance_overlap", label = "Choose the answer that you think correctly describes the plot:",
+              choices = c('Balanced and overlap', 'Imbalanced and overlap', 'Balanced and non-overlap', 'Imbalanced and non-overlap'), 
+              selected = 'Balanced and overlap'))),
+           
+  fluidRow(column(width = 6,
+                  actionButton('submit', label = "Submit"), 
+                  actionButton('nextone', label = 'Next')),
+           column(width = 6,textOutput("result")))
+  
+))
+observeEvent(input$submit,{
+  if(balance_flag$data == TRUE & overlap_flag$data == TRUE){
+    if(input$balance_overlap == "Balanced and overlap"){
+      output$result <- renderText("Correct!")
+    }else{
+      output$result <- renderText("Wrong")
+    }}else if(balance_flag$data == TRUE & overlap_flag$data == FALSE){
+      if(input$balance_overlap == "Balanced and non-overlap"){
+      output$result <- renderText("Correct!")
+    }else{
+      output$result <- renderText("Wrong")
+    }
+    
+    }else if(balance_flag$data == FALSE & overlap_flag$data == TRUE){
+      if(input$balance_overlap == "Imbalanced and overlap"){
+      output$result <- renderText("Correct!")
+    }else{
+      output$result <- renderText("Wrong")
+    }
+    }else if(balance_flag$data == FALSE & overlap_flag$data == FALSE){
+      if(input$balance_overlap == "Imbalanced and non-overlap"){
+      output$result <- renderText("Correct!")
+    }else{
+      output$result <- renderText("Wrong")
+    }
+  }
+})
+
+observeEvent(input$nextone, {
+  balance_flag$data <- sample(c(TRUE, FALSE), 1)
+  overlap_flag$data <- sample(c(TRUE, FALSE), 1)
+  dg_type1$data <- sample(c('linear', 'poly2'), 1)
+  dg_type0$data <- sample(c('linear', 'poly2'), 1)
+  seed$data <- sample(1:10000, 1)
+})
+
+```
+
+
+
+
+
+
+
+
+
+
