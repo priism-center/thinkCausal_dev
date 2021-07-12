@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ggpubr)
 library(tidyverse)
 library(shiny)
+library(bartCause)
+library(ggforce)
 ```
 
 ```{r, echo=FALSE}
@@ -45,14 +47,14 @@ plot_overlap <- function(df, nooverlap = FALSE){
       geom_histogram(data = df %>% filter(Z == 1), aes( x = X, y = ..density.., fill = Z), alpha = 0.8, boundary = 0) +
       geom_histogram(data = df %>% filter(Z == 0), aes(x = X, y = -..density.., fill = Z), alpha = 0.8, boundary = 0) + 
       labs(title = "Distribution of Covariate X") + 
-      scale_fill_manual("Treated?", values=c("blue","red")) + 
+      scale_fill_manual("Treated?", values=c("blue","red")) + theme_minimal(base_line_size = 0.4) +
       theme(legend.position="bottom") 
   }else{
     ggplot() + 
       geom_histogram(data = df %>% filter(Z == 1), aes( x = X, y = ..density.., fill = Z), alpha = 0.8) +
       geom_histogram(data = df %>% filter(Z == 0), aes(x = X, y = -..density.., fill = Z), alpha = 0.8) + 
       labs(title = "Distribution of Covariate X") + 
-      scale_fill_manual("Treated?", values=c("blue","red")) + 
+      scale_fill_manual("Treated?", values=c("blue","red")) + theme_minimal(base_line_size = 0.4) +
       theme(legend.position="bottom") 
   }
 }
@@ -100,8 +102,7 @@ SATE_meandiff
 
 In an **observational study**, there can be systematic differences between groups of units that receive different treatments with respect to key covariates, x, that can affect the outcome, y. Such covariates that are associated with the treatment and the potential outcomes are typically called confounders or confounding covariates because if we observe differences in average outcomes across these groups, we can’t separately attribute these differences to the treatment or the confounders—the effect of the treatment is thus “confounded” by these variables.
 
-Imbalance with measured confounders occurs when the distributions of confounders differ for the
-treatment and control groups. This could manifest, for instance, as differences in means or standard deviations of a covariate between treatment and control groups. More generally, any differences in covariate distributions across groups can be referred to as lack of balance across groups. When treatment and control groups suffer from imbalance, the simple comparison of group averages, $\bar{y}_1− \bar{y}_0$, is not, in general, a good estimate of the average treatment effect. In the example below, the mean difference, 0.14, is far from the underlying and unobservable sample average treatment effect (SATE) of -0.5.
+Imbalance with measured confounders occurs when the distributions of confounders differ for the treatment and control groups. This could manifest, for instance, as differences in means or standard deviations of a covariate between treatment and control groups. More generally, any differences in covariate distributions across groups can be referred to as lack of balance across groups. When treatment and control groups suffer from imbalance, the simple comparison of group averages, $\bar{y}_1− \bar{y}_0$, is not, in general, a good estimate of the average treatment effect. In the example below, the mean difference, 0.14, is far from the underlying and unobservable sample average treatment effect (SATE) of -0.5.
 
 
 ```{r, echo=FALSE}
@@ -150,9 +151,15 @@ plot_overlap(df_balanced_lrg, nooverlap = T)
 Lack of complete overlap in the confounders creates problems, because in that setting there are treatment observations for which we have no empirical counterfactuals (that is, control observations with the same covariate distribution) or vice versa. (a) Two distributions with no overlap; (b) two distributions with partial overlap; (c) a scenario in which the range of one distribution is a subset ofthe range of the other
 
 ```{r, echo=FALSE}
-dgp_overlap <- function(n, tau, lwr, upp, seed, nooverlap = FALSE){
+delta_c = 5
+a1 = 0.5
+b1 = 5
+a0 = -0.5
+b0 = 5
+
+dgp_overlap <- function(n, delta_c = 5, a1 = 0.5, b1 = 5, a0 = -0.5, b0 = 5, lwr, upp, seed = 100, nooverlap = FALSE, subset_flag = FALSE){
   set.seed(seed)
-  X <- rnorm(n = n, mean = 0, sd = 1)
+  X <- rnorm(n = n, mean = 0, sd = 3)
   # Compare the log-odds scale of lower and upper bounds and return the lowest
   lwr_pre <- log(lwr / (1 - lwr))
   upp_pre <- log(upp / (1 - upp))
@@ -160,20 +167,24 @@ dgp_overlap <- function(n, tau, lwr, upp, seed, nooverlap = FALSE){
   upp_alpha <- upp_pre / max(X)
   alpha <- min(lwr_alpha, upp_alpha)
   p <- exp(alpha * X) / (1 + exp(alpha * X))
-  if(nooverlap == TRUE){
-    Z <- ifelse(X>=0, 1, 0)
+  if(nooverlap){
+    Z <- ifelse(p>=0.5, 1, 0)
+  }else if (subset_flag){
+    Z <- c(rbinom(n = floor(n * 0.6), size = 1, prob = p[1:floor(n * 0.6)]), rep(0, n - floor(n * 0.6)))
   }else{
     Z <- rbinom(n = n, size = 1, prob = p)
   }
-  Y0 <- X + rnorm(n = n, mean = 0, sd = 1)
-  Y1 <- X + tau + rnorm(n = n, mean = 0, sd = 1)
+  Y0 <- a0 * X^2 + b0 * X + rnorm(n = n, mean = 0, sd = 2)
+  Y1 <- a1 * X^2 + b1 * X + delta_c + rnorm(n = n, mean = 0, sd = 2)
   Y <- ifelse( Z == 1, Y1, Y0)
   return(data.frame( X, Y, Y0, Y1, Z))
 }
 
-df_overlap1 <- dgp_overlap(100, 5, 0.05, 0.95, 123)
-df_overlap2 <- dgp_overlap(100, 5, 0.05, 0.95, 4)
-df_overlap3 <- dgp_overlap(100, 5, 0.5, 0.65, 1, nooverlap = TRUE)
+
+
+df_overlap3 <- dgp_overlap(n = 100, delta_c = 5, lwr = 0.05, upp = 0.95, nooverlap = TRUE)
+df_overlap2 <- dgp_overlap(n = 100, delta_c = 5, lwr = 0.05, upp = 0.95)
+df_overlap1 <- dgp_overlap(n = 100, delta_c = 5, lwr = 0.05, upp = 0.95, subset_flag = TRUE)
 ```
 
 
@@ -193,6 +204,73 @@ ggarrange(p3, p2, p1, nrow = 1, ncol = 3)
 
 Since we rely on empirical counterfactual units to inform counterfactual outcomes, when treatment and control groups do not completely overlap, the data are inherently limited in what they can tell us about treatment effects in the regions of nonoverlap. In regions where the groups do not have covariate overlap, causal estimation is purely based on extrapolation. Hence, any inferences in the areas with no overlap would be sensitive to model-specification. 
 
+Suppose we are interested in estimating the treatment effect in the middle example above, and in the example X is only one confounding covariate — that is, only one predictor X is necessary to satisfy ignorability. The red dots correspond to the units who received the treatment; the blue dots correspond to the units who did not receive the treatment. The dashed lines are regression lines fit to the observed data. Because there are no control units with high X and no treatment units with low X, the linear model, to create counterfactual predictions, is forced to extrapolate over portions of the space where there are no data to support them. This causes an underestimate of the true average treatment effect. Allowing for an interaction does not solve the problem. You may see in the all-seeing plot where the red solid line represents the true relationship between the potential outcome for treatment receipt and the X, E(Y1|X), and the blue solid line represents the true relationship between the potential outcome for the control condition and the X, E(Y0|X), the true causal effect at any level of the X is the vertical distance between the two solid lines. Each average causal effect is an average across the relevant subset of these individual-level causal effects. 
+
+```{r, echo=FALSE}
+inputPanel(selectInput("all_seeing", label = "Choose to see researchers' or all-seeing perspectives:",
+              choices = c("Researchers' view - fitting a linear regression", 
+                          "Researchers' view - fitting a linear regression with an interaction", 
+                          "All-seeing view"), 
+              selected = "Researchers' view - fitting a linear regression"))
+
+
+df_overlap2$Z <- as.factor(df_overlap2$Z)
+model <- lm(Y ~ X + Z, data = df_overlap2)
+model_interaction <- lm(Y ~ X*Z, data = df_overlap2)
+coef_model <- summary(model)$coefficients
+coef_model_interaction <- summary(model_interaction)$coefficients
+colors <- c("0" = "blue", "1" = "red")
+linetype <- c("linear model without interaction" = "dashed", "linear model with an interaction" = "dotted")
+
+renderPlot({
+   if(input$all_seeing == "Researchers' view - fitting a linear regression"){ 
+     ggplot() + geom_point(data = df_overlap2[df_overlap2$Z == 1, ], aes(x = X, y = Y, color = "1")) + 
+      geom_point(data = df_overlap2[df_overlap2$Z == 0, ], aes(x = X, y = Y, color = "0")) + 
+      scale_color_manual("Treated?", values=colors) + 
+      geom_line(data = df_overlap2, aes(x = X, y = coef_model[1] + coef_model[2] * X), linetype = "dashed") + 
+      geom_line(data = df_overlap2, aes(x = X, y = coef_model[1] + coef_model[2] * X + coef_model[3]), linetype = "dashed") +
+      theme_minimal(base_line_size = 0.4) + theme(legend.position="bottom") 
+   }else if(input$all_seeing == "Researchers' view - fitting a linear regression with an interaction"){
+     ggplot() + geom_point(data = df_overlap2[df_overlap2$Z == 1, ], aes(x = X, y = Y, color = "1")) + 
+      geom_point(data = df_overlap2[df_overlap2$Z == 0, ], aes(x = X, y = Y, color = "0")) + 
+      scale_color_manual("Treated?", values=colors) + 
+      geom_line(data = df_overlap2, aes(x = X, y = coef_model_interaction[1] + coef_model_interaction[2] * X), 
+                linetype = "dotted") + 
+      geom_line(data = df_overlap2, aes(x = X, y = coef_model_interaction[1] + 
+               (coef_model_interaction[2] + coef_model_interaction[4]) * X + coef_model_interaction[3]), 
+               linetype = "dotted") + theme_minimal(base_line_size = 0.4) + theme(legend.position="bottom")
+   }else{ # all-seeing view
+     ggplot() + geom_point(data = df_overlap2[df_overlap2$Z == 1, ], aes(x = X, y = Y, color = "1")) + 
+      geom_point(data = df_overlap2[df_overlap2$Z == 0, ], aes(x = X, y = Y, color = "0")) + 
+      geom_line(data = df_overlap2, aes(x = X, y = b1*X + a1*X^2 + delta_c), color = "red") +
+      geom_line(data = df_overlap2, aes(x = X, y = b0*X + a0*X^2), color = "blue") +
+      scale_color_manual("Treated?", values=colors) + 
+      geom_line(data = df_overlap2, aes(x = X, y = coef_model[1] + coef_model[2] * X, linetype = "linear model without interaction")) + 
+      geom_line(data = df_overlap2, aes(x = X, y = coef_model[1] + coef_model[2] * X + coef_model[3], 
+                                        linetype = "linear model without interaction")) +
+      geom_line(data = df_overlap2, aes(x = X, y = coef_model_interaction[1] + coef_model_interaction[2] * X, 
+                                        linetype = "linear model with an interaction")) + 
+      geom_line(data = df_overlap2, aes(x = X, y = coef_model_interaction[1] + (coef_model_interaction[2] + coef_model_interaction[4]) * X +
+                                          coef_model_interaction[3], linetype = "linear model with an interaction")) +
+       theme_minimal(base_line_size = 0.4) + theme(legend.position="bottom") + scale_linetype_manual( "Linetype", values=linetype)
+   }
+ })
+
+```
+
+```{r}
+summary(model)
+summary(model_interaction)
+```
+
+
+```{r}
+SATE <- mean(df_overlap2$Y1 - df_overlap2$Y0)
+SATE
+```
+
+
+
 ## Imbalance is not the same as lack of overlap
 
 Imbalance does not necessarily imply lack of complete overlap; conversely, lack of complete overlap does not necessarily result in imbalance in the sense of different average values in the two groups.
@@ -210,7 +288,7 @@ dgp_nonoverlap_balance <- function(n, seed){
   x <- c(x1, x0)
   p_z <- ifelse(x<1&x>-1, 1, 0)
   z <- rbinom(n = n, size = 1, prob = p_z)
-  y0 =  5 + x - 0.2*x^2 + rnorm(n)
+  y0 =  ifelse(x<1&x>-1, 5 + x - 0.2*x^2 - 10 + rnorm(n), 5 + x - 0.2*x^2 + rnorm(n))
   y1 =  5 + x + 0.4*x^2 + 5 + rnorm(n)
   y = ifelse(z == 0, y0, y1)
   return(data.frame(X=x,Z=z,Y0 = y0, Y1 = y1, Y=y))
@@ -239,7 +317,7 @@ SATE
 plot_scatterplot(df_overlap_unbalance)
 ```
 
-If we look at the distribution of the covariance, X, it is clear that there is a difference between the groups.
+If we look at the distribution of the covariate, X, it is clear that there is a difference between the groups.
 
 ```{r, echo=FALSE, message=FALSE}
 p1 <- plot_balance(df_overlap_unbalance)
@@ -278,19 +356,23 @@ dgp_nonoverlap_unbalance <- function(n, seed){
   return(output)
 }
 
-df_nonoverlap_unbalance <- dgp_nonoverlap_unbalance(1000, 1234)
-model <- lm(Y ~ X + as.factor(Z), data = df_nonoverlap_unbalance)
-df_nonoverlap_unbalance$fitted <- model$fitted.values
+df_nonoverlap_unbalance <- dgp_nonoverlap_unbalance(200, 1234)
 df_nonoverlap_unbalance$Z <- as.factor(df_nonoverlap_unbalance$Z)
+model_nonoverlap_unbalance <- lm(Y ~ X + Z, data = df_nonoverlap_unbalance)
+coef_nonoverlap_unbalance <- summary(model_nonoverlap_unbalance)$coefficients
+
 colors <- c("0" = "blue", "1" = "red")
 ggplot() + geom_point(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 1, ], aes(x = X, y = Y, color = "1")) + 
   geom_point(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 0, ], aes(x = X, y = Y, color = "0")) + 
   geom_line(data = df_nonoverlap_unbalance, aes(x = X, y = 90 + exp(0.06*X)), color = "red") +
   geom_line(data = df_nonoverlap_unbalance, aes(x = X, y = 72 + 3*sqrt(X)), color = "blue") +
   scale_color_manual("Treated?", values=colors) + 
-  geom_line(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 0, ], aes(x = X, y = fitted), linetype = "dashed") + 
-  geom_line(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 1, ], aes(x = X, y = fitted), linetype = "dashed") +
-  theme(legend.position="bottom")
+  geom_line(data = df_nonoverlap_unbalance, aes(x = X, y = coef_nonoverlap_unbalance[1] + coef_nonoverlap_unbalance[2] * X),
+            linetype = "dashed") + 
+  geom_line(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 1, ], 
+            aes(x = X, y = coef_nonoverlap_unbalance[1] + coef_nonoverlap_unbalance[2] * X + coef_nonoverlap_unbalance[3]),
+            linetype = "dashed") +
+  theme_minimal(base_line_size = 0.4) + theme(legend.position="bottom")
 
 ```
 
@@ -309,11 +391,87 @@ SATE <- mean(df_nonoverlap_unbalance$Y_1 - df_nonoverlap_unbalance$Y_0)
 SATE
 ```
 
-The OLS estimator fails to capture the true effect. There just isn't enough information in the data to extrapolate fully into areas where there isn't overlap. Using flexible models such as BART would be the way to go.
+```{r, echo=FALSE}
+# SATT <- mean(df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z==1,]$Y_1 - df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z==1,]$Y_0)
+# cat('SATT = ', SATT, '\n')
+
+# model_1 <- lm(Y_1~X, data = df_nonoverlap_unbalance)
+# model_0 <- lm(Y_0~X, data = df_nonoverlap_unbalance)
+# 
+# CATE <- mean(model_1$fitted.values - model_0$fitted.values)
+# cat('CATE = ', CATE, '\n')
+# CATT <- mean(model_1$fitted.values[df_nonoverlap_unbalance$Z==1] - model_0$fitted.values[df_nonoverlap_unbalance$Z==1])
+# cat('CATT = ', CATT)
+```
+
+The OLS estimator fails to capture the true effect. There just isn't enough information in the data to extrapolate fully into areas where there isn't overlap. Using flexible models such as BART would be the way to go. The BART point estimate (posterior mean) of the average effect of the treatment is 8.80 with 95% posterior interval (7.45, 10.15), much closer to the true SATE, 10.49.
+
 ```{r}
-model1 <- lm(Y~as.factor(Z) + X, data = df_nonoverlap_unbalance)
+# linear regression
+model1 <- lm(Y ~ X + Z, data = df_nonoverlap_unbalance)
 summary(model1)
 ```
+
+```{r, message=FALSE}
+# BART
+set.seed(123) # doesn't work,  result below different every time
+df_nonoverlap_unbalance$Z_val <- as.numeric(as.character(df_nonoverlap_unbalance$Z))
+fit <- bartc(response = Y, treatment = Z_val, confounders = X, data = df_nonoverlap_unbalance)
+summary(fit)
+```
+
+The dashed line in the figure below displays the BART fit to the data which is quite close to the true conditional expectation for most of the support except at values of X far from the area of strong overlap.
+
+```{r, echo=FALSE}
+y0_hat <- fitted(object = fit, type = 'y.0')
+y1_hat <- fitted(object = fit, type = 'y.1')
+
+df_BART <- data.frame(x=df_nonoverlap_unbalance$X, y0 = y0_hat, y1 = y1_hat)
+ggplot() + geom_point(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 1, ], aes(x = X, y = Y, color = "1")) + 
+  geom_point(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 0, ], aes(x = X, y = Y, color = "0")) + 
+  geom_line(data = df_nonoverlap_unbalance, aes(x = X, y = 90 + exp(0.06*X)), color = "red") +
+  geom_line(data = df_nonoverlap_unbalance, aes(x = X, y = 72 + 3*sqrt(X)), color = "blue") +
+  scale_color_manual("Treated?", values=colors) + 
+  theme_minimal(base_line_size = 0.4) + theme(legend.position="bottom") + 
+  geom_line(data = df_BART, aes(x = x, y = y0), linetype = 'dashed') +
+  geom_line(data = df_BART, aes(x = x, y = y1), linetype = 'dashed') 
+```
+
+The extrapolations of BART over areas of the covariate space where common support does not exist can lead to biased inferences because of the lack of information available to identify either E[Y(0) | X] or E[Y(1) | X] in these regions. After discarding observations in neighborhoods of the covariate space that lack sufficient common causal support using the BART rule 'sd', the interval cover the true treatment effect for the remaining sample.
+
+```{r, message=FALSE}
+fit1 <- bartc(response = Y, treatment = Z_val, confounders = X, data = df_nonoverlap_unbalance, commonSup.rule = 'sd')
+summary(fit1)
+```
+
+```{r}
+df_commonSup <- df_nonoverlap_unbalance[fit1$commonSup.sub,]
+SATT <- mean(df_commonSup[df_commonSup$Z==1,]$Y_1 - df_commonSup[df_commonSup$Z==1,]$Y_0)
+cat('SATT = ', SATT, '\n')
+```
+
+```{r}
+model_1 <- lm(Y_1~X, data = df_commonSup)
+model_0 <- lm(Y_0~X, data = df_commonSup)
+CATT <- mean(model_1$fitted.values[df_commonSup$Z==1] - model_0$fitted.values[df_commonSup$Z==1])
+cat('CATT = ', CATT)
+```
+
+SATT and CATT for the remaining units are 8.68 and 8.02, respectively. Our new BART estimate is 8.12 with 95% posterior interval (7.3, 8.9), which covers the SATT and CATT. In the plot below, points in circle are the observations discarded based on the BART rule.
+
+```{r, echo=FALSE}
+ggplot() + geom_point(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 1, ], aes(x = X, y = Y, color = "1")) + 
+  geom_point(data = df_nonoverlap_unbalance[df_nonoverlap_unbalance$Z == 0, ], aes(x = X, y = Y, color = "0")) + 
+  geom_line(data = df_nonoverlap_unbalance, aes(x = X, y = 90 + exp(0.06*X)), color = "red") +
+  geom_line(data = df_nonoverlap_unbalance, aes(x = X, y = 72 + 3*sqrt(X)), color = "blue") +
+  scale_color_manual("Treated?", values=colors) + 
+  theme_minimal(base_line_size = 0.4) + theme(legend.position="bottom") + 
+  geom_line(data = df_BART, aes(x = x, y = y0), linetype = 'dashed') +
+  geom_line(data = df_BART, aes(x = x, y = y1), linetype = 'dashed') +
+  geom_circle(data = df_nonoverlap_unbalance[!fit1$commonSup.sub,], aes(x0 = X, y0 = Y, r = 0.6))
+```
+
+
 
 ## Testing
 
@@ -447,9 +605,11 @@ inputPanel( fluidPage(
   fluidRow(column(width = 6,
                   actionButton('submit', label = "Submit"), 
                   actionButton('nextone', label = 'Next')),
-           column(width = 6,textOutput("result")))
+           column(width = 6,textOutput("result")),
+           br())
   
 ))
+
 observeEvent(input$submit,{
   if(balance_flag$data == TRUE & overlap_flag$data == TRUE){
     if(input$balance_overlap == "Balanced and overlap"){
