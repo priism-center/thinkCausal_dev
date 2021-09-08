@@ -9,7 +9,7 @@ moderator_page <- tabPanel(
 
         awesomeRadio(inputId = "icate_type",
                      label = 'Plot:',
-                     choices = c("Ordered ICATE", "Histogram of ICATE")),
+                     choices = list("Ordered ICATE" = 'ordered', "Histagram of ICATE" = 'histagram')),
         br(),
         br(),
         div(class = 'backNextContainer',
@@ -20,13 +20,9 @@ moderator_page <- tabPanel(
       ),
         mainPanel(
           br(),
-          conditionalPanel(condition = "input.icate_type == 'Ordered Effects'",
-                           plotOutput(outputId = "ordered_icate",
-                                      height = 500)),
-
-          conditionalPanel(condition = "input.icate_type == 'Histogram of ICATE'",
-                           plotOutput(outputId = "histigram_icate",
-                                      height = 500))
+  
+          plotOutput(outputId = "histigram_icate",
+                     height = 500)
         )
     )),
     tabPanel(title = 'ICATE Regression Tree',

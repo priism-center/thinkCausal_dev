@@ -30,7 +30,7 @@ plot_individual_effects <- function(.model, type = 'ordered'){
          subtitle = 'with 95% ci')
   }
   
-  if(type == 'histigram'){
+  if(type == 'histagram'){
     p <- icate %>% 
       ggplot(aes(icate.m)) + 
       geom_histogram()+ 

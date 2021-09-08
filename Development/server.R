@@ -1570,24 +1570,14 @@ shinyServer(function(input, output, session) {
   })
   ## ICATE plots
   
-  # ordered icate
-  output$ordered_icate <- renderPlot({
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
-    
-    p <- plot_individual_effects(store$model_results, type = 'ordered')
-    
-    p <- p + theme_custom()
-    
-    return(p)
-  })
+
   
   # histigram of icates
   output$histigram_icate <- renderPlot({
     validate(need(is(store$model_results, "bartcFit"), 
                   "Model must first be fitted on the 'Model' tab"))
     
-    p <- plot_individual_effects(store$model_results, type = 'histigram')
+    p <- plot_individual_effects(store$model_results, type = input$icate_type)
     
     p <- p + theme_custom()
     
@@ -1655,6 +1645,7 @@ shinyServer(function(input, output, session) {
   # run the randomization module
   randomizationServer(id = 'concepts_randomization', plot_theme = theme_custom)
   PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
+  #poServer(id = 'potential_outcomes_test')
   
   # welcome page ------------------------------------------------------------
   

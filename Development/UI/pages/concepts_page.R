@@ -17,9 +17,9 @@ concepts_page <- tabPanel(
     column(
       width = 4,
       wellPanel(
-        img(src = 'thumbnails/propensity.png'),
+        actionLink('concepts_link_Randomization',img(src = 'thumbnails/propensity.png')),
         br(),
-        h3("Potential Outcomes"),
+        h3("Randomizaion"),
         p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit.")
       )
     ),
@@ -28,7 +28,7 @@ concepts_page <- tabPanel(
       wellPanel(
         img(src = 'thumbnails/PO.png'),
         br(),
-        h3("Making fair comparisons"),
+        h3("PO"),
         p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit.")
       )
     ),
