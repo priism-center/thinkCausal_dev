@@ -28,31 +28,12 @@ PotentialOutcomesUI <- function(id){
                   hr(), 
                   HTML(PotentialOutcomes_table3))),
   
-  includeMarkdown("UI/markdowns/PotentialOutcomes_scenario2.md"),
-  
-  fluidRow(column(12, align="center", 
-                  h2('Table 1: all-knowing perspective'),
-                  hr(), 
-                  HTML(PotentialOutcomes_table4))),
-  fluidRow(column(12, align="center", 
-                  h2('Table 2: reality perspective'),
-                  hr(), 
-                  HTML(PotentialOutcomes_table5))),
   fluidRow(column(12, 
                   h2('Table 3: testing', style = "text-align:center"),
                   hr(), 
                   HTML(PotentialOutcomes_table6))),
   
   includeMarkdown("UI/markdowns/PotentialOutcomes_scenario3.md"),
-  
-  fluidRow(column(12, align="center", 
-                  h2('Table 1: all-knowing perspective'),
-                  hr(), 
-                  HTML(PotentialOutcomes_table7))),
-  fluidRow(column(12, align="center", 
-                  h2('Table 2: reality perspective'),
-                  hr(), 
-                  HTML(PotentialOutcomes_table8))),
   fluidRow(column(12, 
                   h2('Table 3: testing', style = "text-align:center"),
                   hr(), 
@@ -68,7 +49,7 @@ PotentialOutcomesServer <- function(id) {
       ns <- session$ns
       
       observeEvent(input$correct_number, {
-        if(input$correct_number == 10){
+        if(input$correct_number == 4){
           show_alert(
             title = "All Correct!!",
             text = "You can move on to next part!",
@@ -85,7 +66,7 @@ PotentialOutcomesServer <- function(id) {
       })
       
       observeEvent(input$correct_number2, {
-        if(input$correct_number2 == 10){
+        if(input$correct_number2 == 4){
           show_alert(
             title = "All Correct!!",
             text = "You can move on to next part!",
@@ -102,7 +83,7 @@ PotentialOutcomesServer <- function(id) {
       })
       
       observeEvent(input$correct_number3, {
-        if(input$correct_number3 == 10){
+        if(input$correct_number3 == 4){
           show_alert(
             title = "All Correct!!",
             text = "You can move on to learning next concept!",
