@@ -300,6 +300,7 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
 <div>
     <input id="submit" type="button" value="Submit" />
 </div>
+<br>
 <div>
     <input id="clear" type="button" value="Clear" />
 </div>
