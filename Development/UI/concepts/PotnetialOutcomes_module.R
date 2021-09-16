@@ -9,7 +9,8 @@ PotentialOutcomesUI <- function(id){
          td {border:1px solid #e0e0e0;height: 35px;}"
       )
     ),
-    tabsetPanel(tabPanel('Learn', 
+    tabsetPanel(id = ns('tabs'),
+      tabPanel('Learn', 
                 fluidRow(
                   column(1), 
                   column(10,
@@ -202,7 +203,7 @@ PotentialOutcomesServer <- function(id) {
       
       
       observeEvent(input$to_practice,{
-        updateTabsetPanel(selected = 'Practice')
+        updateTabsetPanel(session = session, inputId = 'tabs', selected = 'Practice')
       })
       
       output$dag.1 <- renderPlot({
