@@ -1,3 +1,6 @@
+ns <- NS("concepts_potentialoutcomes")
+
+
 PotentialOutcomesUI <- function(id){ 
   fluidPage(
     tags$head(
@@ -166,35 +169,53 @@ PotentialOutcomesUI <- function(id){
                 fluidRow(column(1), column(4,actionButton(ns('to_practice'), 'Continue to Practice Section')))
     ), # end of learning tab 
     tabPanel('Practice',
-             div(
+            
                fluidRow(column(12, h3('Practice'),
                                p("Double click on missing cells and fill in the tables below to check your understanding of potential outcomes and the relationships between Y, Y1, Y0, Z and ITE.
-                       After you've entered your answers click submit to check your work."),
+                       After you've entered your answers click submit to check your work."))),
                                
-                               h4('Counterfactual Outcome Y1 and Y0', style = "text-align:center"),
-                               hr(), 
-                               HTML(PotentialOutcomes_table3)))),
-             div(
-               fluidRow(column(12, h4('Observed Outcome Y', style = "text-align:center"),
-                               hr(), 
-                               HTML(PotentialOutcomes_table6)))),
+             tabsetPanel(id = ns('Practice_Problems'), type = 'hidden',
+                         #tabPanel('Blank'), 
+                         tabPanel('Problem1', 
+                                  fluidRow(column(12, h4('Observed Outcome Y', style = "text-align:center"),
+                                                  hr(), 
+                                                  HTML(PotentialOutcomes_table6)))), 
+                         tabPanel('Problem2', 
+                                  fluidRow(column(12,  h4('Individual Treatment Effect ITE', style = "text-align:center"), 
+                                                  hr(), 
+                                                  HTML(PotentialOutcomes_table9)))), 
+                         tabPanel('Problem3', 
+                                  fluidRow(column(12, h4('Counterfactual Outcome Y1 and Y0', style = "text-align:center"), 
+                                                  hr(), 
+                                                  HTML(PotentialOutcomes_table3)))), 
+                         
+                         tabPanel('All', 
+                                  fluidRow(column(12, h4('Observed Outcome Y', style = "text-align:center"),
+                                                  hr(), 
+                                                  HTML(PotentialOutcomes_table6))), 
+                                  fluidRow(column(12,  h4('Individual Treatment Effect ITE', style = "text-align:center"), 
+                                                  hr(), 
+                                                  HTML(PotentialOutcomes_table9))), 
+                                  fluidRow(column(12, h4('Counterfactual Outcome Y1 and Y0', style = "text-align:center"), 
+                                                  hr(), 
+                                                  HTML(PotentialOutcomes_table3)))
+                                  )
+                         
+             ),
+        
+             fluidRow(column(4, actionButton(ns('to_learning'), 'Back to Learning Section')))
              
-             div(
-               fluidRow(column(12, h4('Individual Treatment Effect ITE', style = "text-align:center"),
-                               hr(), 
-                               HTML(PotentialOutcomes_table9))))
-             
+
              ) # end of practice tab 
-    
-    
     ) # end of tabset 
+
   )# end of page 
 }
 
 
 
 PotentialOutcomesServer <- function(id) {
-  
+
   moduleServer(
     id,
     function(input, output, session) {
@@ -205,6 +226,18 @@ PotentialOutcomesServer <- function(id) {
       observeEvent(input$to_practice,{
         updateTabsetPanel(session = session, inputId = 'tabs', selected = 'Practice')
       })
+      
+      observeEvent(input$to_learning,{
+        updateTabsetPanel(session = session, inputId = 'tabs', selected = 'Learn')
+      })
+      
+      # code to manage practice progression
+      practice_page <- reactiveVal(value = 0)
+      
+      practice_next <- reactive({
+        practice_page(practice_page() + 1)
+      })
+      
       
       output$dag.1 <- renderPlot({
         
@@ -395,13 +428,18 @@ PotentialOutcomesServer <- function(id) {
       })
       
       
-      observeEvent(input$correct_number, {
-        if(input$correct_number == 4){
-          show_alert(
-            title = "All Correct!!",
-            text = "You can move on to next part!",
-            type = "success"
-          )
+      observeEvent(input$correct_number2, {
+        if(input$correct_number2 == 4){
+          sendSweetAlert(session,
+                         title = "All Correct!!", 
+                         type = 'success', 
+                         showCloseButton = FALSE, 
+                         btn_labels = NA,
+                         closeOnClickOutside = TRUE,
+                         text = tags$div(div(class = 'backNextContainer', 
+                                             style= "width:60%;display:inline-block;horizontal-align:center;",
+                                             actionButton(inputId = ns('to_practice2'), 
+                                                          label = 'Continue to Next Question'))))
         }else{
           show_alert(
             title = "Wrong",
@@ -412,31 +450,28 @@ PotentialOutcomesServer <- function(id) {
         
       })
       
-      observeEvent(input$correct_number2, {
-        if(input$correct_number2 == 4){
-          show_alert(
-            title = "All Correct!!",
-            text = "You can move on to next part!",
-            type = "success"
-          )
-        }else{
-          show_alert(
-            title = "Wrong",
-            text = "Please check which one(s) you answered incorrect and try again!",
-            type = "error"
-          )
-        }
-        
+      
+      observeEvent(input$to_practice2, {
+        updateTabsetPanel(session = session,inputId = 'Practice_Problems', selected = 'Problem2')
+        shinyWidgets::closeSweetAlert()
       })
+      
+      
+      
       
       
       observeEvent(input$correct_number3, {
         if(input$correct_number3 == 4){
-          show_alert(
-            title = "All Correct!!",
-            text = "You can move on to learning next concept!",
-            type = "success"
-          )
+          sendSweetAlert(session,
+                         title = "All Correct!!", 
+                         type = 'success', 
+                         showCloseButton = FALSE, 
+                         btn_labels = NA,
+                         closeOnClickOutside = TRUE,
+                         text = tags$div(div(class = 'backNextContainer', 
+                                             style= "width:60%;display:inline-block;horizontal-align:center;",
+                                             actionButton(inputId = ns('to_practice3'), 
+                                                          label = 'Continue to Next Question'))))
         }else{
           show_alert(
             title = "Wrong",
@@ -446,6 +481,69 @@ PotentialOutcomesServer <- function(id) {
         }
         
       })
+      
+      
+      observeEvent(input$to_practice3, {
+        updateTabsetPanel(session = session,inputId = 'Practice_Problems', selected = 'Problem3')
+        shinyWidgets::closeSweetAlert()
+      })
+      
+      
+      
+      
+      observeEvent(input$correct_number, {
+        if(input$correct_number == 4){
+          sendSweetAlert(session,
+                         title = "All Correct!!", 
+                         type = 'success', 
+                         showCloseButton = FALSE, 
+                         btn_labels = NA,
+                         closeOnClickOutside = TRUE,
+                         text = tags$div(div(class = 'backNextContainer', 
+                                             style= "width:60%;display:inline-block;horizontal-align:center;",
+                                             actionButton(inputId = ns('review'), 
+                                                          label = 'Review Practice Questions'), 
+                                             br(), 
+                                             br(),
+                                             actionButton(inputId = ns('to_learning'), 
+                                                          label = 'Back to Learning Section'), 
+                                             br(), 
+                                             br(),
+                                             actionButton(inputId = 'new_topic', 
+                                                          label = 'Move on to Next Topic'))))
+        }else{
+          show_alert(
+            title = "Wrong",
+            text = "Please check which one(s) you answered incorrect and try again!",
+            type = "error"
+          )
+        }
+        
+      })
+      
+      
+      observeEvent(input$review, {
+        updateTabsetPanel(session = session,inputId = 'Practice_Problems', selected = 'All')
+        shinyWidgets::closeSweetAlert()
+      })
+      
+      # 
+      # observeEvent(input$correct_number3, {
+      #   if(input$correct_number3 == 4){
+      #     show_alert(
+      #       title = "All Correct!!",
+      #       text = "You can move on to learning next concept!",
+      #       type = "success"
+      #     )
+      #   }else{
+      #     show_alert(
+      #       title = "Wrong",
+      #       text = "Please check which one(s) you answered incorrect and try again!",
+      #       type = "error"
+      #     )
+      #   }
+      #   
+      # })
       
       
       
