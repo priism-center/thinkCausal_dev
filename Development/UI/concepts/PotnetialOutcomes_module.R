@@ -65,7 +65,7 @@ PotentialOutcomesUI <- function(id){
                          p("The individual treatment effect (ITE) is the causal effect of the fish oil supplements for an individual.
     For any given individual, their ITE is defined as 
       the difference between their two potential outcomes. If Aki had taken the fish oil supplements, Aki's 
-      blood pressure would have decreased by 5 points compared to what would have happend if he didn't take the supplements. If Audrey had taken the 
+      blood pressure would have decreased by 5 points compared to what would have happend if Aki didn't take the supplements. If Audrey had taken the 
       Audrey's blood pressure would have decreased by 7 points."),
                          
                          plotOutput(ns('dag.6')),
@@ -106,13 +106,8 @@ PotentialOutcomesUI <- function(id){
                                           can only see one outcome per person highlighting 
                                           the difficulty of discovering these effects. 
                                           We can use this to think about what we might 
-                                          o with these data and the disconnect between 
-                                          what we can estimate and the truth. For 
-                                          instance consider the difference between 
-                                          the sample average treatment effect,
-                                          SATE (the mean of all the ITEs in the sample) 
-                                          and the difference in mean outcomes between 
-                                          those who receive the supplements and those who do not."),
+                                          do with these data and the disconnect between 
+                                          what we can estimate and the truth."),
                          
                          br(), 
                          

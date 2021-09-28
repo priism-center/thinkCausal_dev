@@ -1,5 +1,5 @@
 analysis_header <- navbarMenu(
-  title = 'Analysis',
+  title = 'Analyze',
   data_page,
   eda_page,
   model_page,

@@ -1,49 +1,58 @@
 
 PotentialOutcomes_table1 <- 
-'<table class="table table-bordered table-responsive-md table-striped text-center" id="table2">
+  '<table class="table table-bordered table-responsive-md table-striped text-center" id="table2">
   <thead>
     <tr>
       <th class="text-center"></th>
       <th class="text-center">Treatment</th>
       <th class="text-center" colspan = "2">Potential Outcomes</th>
       <th class="text-center">Observed Outcomes</th>
+      <th class="text-center">Individual Treatment Effect</th>
+
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td class="text-center">Student</td>
+      <td class="text-center"></td>
       <td class="text-center">Z</td>
-      <td class="text-center">If Z = 0, Y0</td>
-       <td class="text-center">If Z =1, Y1</td>
+      <td class="text-center">Y0</td>
+       <td class="text-center">Y1</td>
       <td class="text-center">Y</td>
+      <td class="text-center">ITE</td>
+
     </tr>
     <tr>
       <td contenteditable="false">Pengfei</td>
-      <td contenteditable="false">Yes</td>
-      <td contenteditable="false">90</td>
-      <td contenteditable="false">95</td>
-      <td contenteditable="false">95</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">121</td>
+      <td contenteditable="false">120</td>
+      <td contenteditable="false">120</td>
+      <td contenteditable="false">-1</td>
     </tr>
     <tr>
       <td contenteditable="false">Kennedy</td>
-      <td contenteditable="false">Yes</td>
-      <td contenteditable="false">75</td>
-      <td contenteditable="false">80</td>
-      <td contenteditable="false">80</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">131</td>
+      <td contenteditable="false">128</td>
+      <td contenteditable="false">128</td>
+      <td contenteditable="false">-3</td>
     </tr>
      <tr>
       <td contenteditable="false">Jordan</td>
       <td contenteditable="false">Yes</td>
-      <td contenteditable="false">70</td>
-      <td contenteditable="false">75</td>
-      <td contenteditable="false">75</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">140</td>
+      <td contenteditable="false">135</td>
+      <td contenteditable="false">135</td>
+      <td contenteditable="false">-5</td>
     </tr>
     <tr>
       <td contenteditable="false">Taylor</td>
-      <td contenteditable="false">Yes</td>
-      <td contenteditable="false">72</td>
-      <td contenteditable="false">77</td>
-      <td contenteditable="false">77</td>
+      <td contenteditable="false">1</td>
+      <td contenteditable="false">135</td>
+      <td contenteditable="false">129</td>
+      <td contenteditable="false">129</td>
+      <td contenteditable="false">-6</td>
     </tr>
     <tr>
       <td contenteditable="false">Billie</td>
@@ -91,7 +100,7 @@ PotentialOutcomes_table1 <-
 </table>'
 
 PotentialOutcomes_table2 <- 
-'<table class="table table-bordered table-responsive-md table-striped text-center" id="table3">
+  '<table class="table table-bordered table-responsive-md table-striped text-center" id="table3">
   <thead>
     <tr>
       <th class="text-center"></th>
@@ -183,7 +192,7 @@ PotentialOutcomes_table2 <-
 
 
 PotentialOutcomes_table3 <-
-paste0('<script type="text/javascript">
+  paste0('<script type="text/javascript">
 $(document).ready(function() {
   $("#submit").click(function() {
     var t_vals = ["121", "135", "127", "120"];
@@ -209,7 +218,6 @@ $(document).ready(function() {
   });
 });
 </script>
-
 <script type="text/javascript">
 $(document).ready(function() {
   $("#clear").click(function() {
@@ -222,15 +230,12 @@ $(document).ready(function() {
   });
 });
 </script>
-
 <script>
 window.onload = function(){
 const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-
 const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
     v1 !== "" && v2 !== "" && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-
 document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() => {
     const table = th.closest("table");
     Array.from(table.querySelectorAll("tr:nth-child(n+2)"))
@@ -247,7 +252,6 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <th class="text-center" colspan = "2">Potential Outcomes</th>
       <th class="text-center">Observed Outcomes</th>
       <th class="text-center">Treatment Effect</th>
-
     </tr>
   </thead>
   <tbody>
@@ -266,7 +270,6 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="true" id = "add1">FILL IN</td>
       <td contenteditable="false">115</td>
       <td contenteditable="false">-6</td>
-
     </tr>
     <tr>
       <td contenteditable="false">Kennedy</td>
@@ -275,7 +278,6 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="true" id = "add2">FILL IN</td>
       <td contenteditable="false">130</td>
       <td contenteditable="false">-5</td>
-
     </tr>
      <tr>
       <td contenteditable="false">Jordan</td>
@@ -284,7 +286,6 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">130</td>
       <td contenteditable="false">130</td>
        <td contenteditable="false">-3</td>
-
     </tr>
     <tr>
       <td contenteditable="false">Jordan</td>
@@ -293,7 +294,6 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">128</td>
       <td contenteditable="false">128</td>
       <td contenteditable="false">-8</td>
-
     </tr>
   </tbody>
 </table>
@@ -309,7 +309,7 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
 
 
 PotentialOutcomes_table6 <- 
-paste0('<script type="text/javascript">
+  paste0('<script type="text/javascript">
 $(document).ready(function() {
   $("#submit2").click(function() {
     var t_vals = ["116", "130", "122", "131"];
@@ -335,7 +335,6 @@ $(document).ready(function() {
   });
 });
 </script>
-
 <script type="text/javascript">
 $(document).ready(function() {
   $("#clear2").click(function() {
@@ -348,15 +347,12 @@ $(document).ready(function() {
   });
 });
 </script>
-
 <script>
 window.onload = function(){
 const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-
 const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
     v1 !== "" && v2 !== "" && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-
 document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() => {
     const table = th.closest("table");
     Array.from(table.querySelectorAll("tr:nth-child(n+2)"))
@@ -372,7 +368,6 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <th class="text-center">Treatment</th>
       <th class="text-center" colspan = "2">Potential Outcomes</th>
       <th class="text-center">Observed Outcomes</th>
-
     </tr>
   </thead>
   <tbody>
@@ -396,7 +391,6 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">137</td>
       <td contenteditable="false">130</td>
       <td contenteditable="true" id = "add2">FILL IN</td>
-
     </tr>
      <tr>
       <td contenteditable="false">Jordan</td>
@@ -425,7 +419,7 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
 
 
 PotentialOutcomes_table9 <-
-paste0('<script type="text/javascript">
+  paste0('<script type="text/javascript">
 $(document).ready(function() {
   $("#submit3").click(function() {
     var t_vals = ["-6", "-3", "-5", "-9"];
@@ -451,7 +445,6 @@ $(document).ready(function() {
   });
 });
 </script>
-
 <script type="text/javascript">
 $(document).ready(function() {
   $("#clear3").click(function() {
@@ -464,15 +457,12 @@ $(document).ready(function() {
   });
 });
 </script>
-
 <script>
 window.onload = function(){
 const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-
 const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
     v1 !== "" && v2 !== "" && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-
 document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() => {
     const table = th.closest("table");
     Array.from(table.querySelectorAll("tr:nth-child(n+2)"))
@@ -489,7 +479,6 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <th class="text-center" colspan = "2">Potential Outcomes</th>
       <th class="text-center">Observed Outcomes</th>
       <th class="text-center">Treatment Effect</th>
-
     </tr>
   </thead>
   <tbody>
@@ -516,7 +505,6 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">130</td>
       <td contenteditable="false">130</td>
       <td contenteditable="true" id = "add2">FILL IN</td>
-
     </tr>
      <tr>
       <td contenteditable="false">Jordan</td>
@@ -544,9 +532,3 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
 </div>
 <div class = "congrats"></div>
 ')
-
-
-
-
-
-

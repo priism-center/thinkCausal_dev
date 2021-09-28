@@ -1,5 +1,5 @@
 concepts_header <- navbarMenu(
-  title = 'Concepts',
+  title = 'Learn',
   concepts_page,
   "-----",
   tabPanel(title = "Test your understanding", 
