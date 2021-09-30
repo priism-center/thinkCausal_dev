@@ -14,7 +14,7 @@ welcome_header <- tabPanel(
                    actionLink("welcome_link_concepts", img(src = 'thumbnails/randomization.png')),
                    br(),
                    h3("Learn"),
-                   p("Interactivly learn the foundational concepts of casual inference.")
+                   p("Interactively learn the foundational concepts of casual inference.")
                  )
           ),
           # column(4, 
@@ -35,6 +35,7 @@ welcome_header <- tabPanel(
           )
         )
         ),
+    HTML(interactive_table)
     # h3("What is thinkCausal?"),
     # includeMarkdown('UI/markdowns/landing.md')
     )

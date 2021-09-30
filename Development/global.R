@@ -27,6 +27,10 @@ options(shiny.reactlog = TRUE) # for testing; when running, hit Ctrl-F3 to see t
 options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size limit to 10mb
 
 
+## delete
+interactive_table <- create_interactive_table(.data, correct_answers, NULL)
+##
+
 # data and objects --------------------------------------------------------
 
 # violet color
