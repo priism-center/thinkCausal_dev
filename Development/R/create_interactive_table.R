@@ -1,22 +1,54 @@
 
 
-.data <- tibble(Student = c('Blake', 'Kennedy', 'Jordan', 'Jordan'), 
-                Z = c(1, 1, 0, 0),
-                Y1 = c(115, 130, '?', '?'),
-                Y0 = c('?', '?', 130, 128),
-                Y = c(115, 130, 130, 128),
-                ITE = c(-6, -5, -2, -8))
-correct_answers <- c("121", "135", "127", "120")
-# correct_answers <- c("121", "135", )
+.data <- tibble(Student = c('Blake', 'Kennedy', 'Jordan', 'Jordan', 'John'), 
+                Z = c(1, 1, 0, 0, 0),
+                Y1 = c(115, 130, '?', '?', 120),
+                Y0 = c('?', '?', 130, 128, 130),
+                Y = c(115, 130, 130, 128, 130),
+                ITE = c(-6, -5, -2, -8, "?"))
+correct_answers <- c("121", "135", "127", "120", "5")
+# correct_answers <- c("121", "135", '120', '120')
+extra_header <- c('', 'Treatment', 'Potential Outcomes', 'Observed Outcomes', 'Treatment Effect')
+extra_header_widths <- c(1, 1, 2, 1, 1)
 
-create_interactive_table <- function(.data, correct_answers, extra_header, extra_header_widths, ns){
+#' Create a JavaScript table that has editable cells and checks for the correct input
+#'
+#' 
+#'
+#' @param .data a dataframe. Any cells that should require user input should be marked with a "?"
+#' @param correct_answers a vector of the correct answers that map to the "?" rowwise (left-to-right then top-to-bottom)
+#' @param extra_header a vector of column names
+#' @param extra_header_widths a vector of column widths that sum to length(extra_header). I.e. 1 = width of one column; 2 = width of two columns, etc.
+#' @param ns a string defining the name space (TBD)
+#'
+#' @return a string of JS and HTML code
+#' @export
+#'
+#' @examples
+#' .data <- tibble(
+#'   Student = c('Blake', 'Kennedy', 'Jordan', 'Jordan', 'John'), 
+#'   Z = c(1, 1, 0, 0, 0),
+#'  Y1 = c(115, 130, '?', '?', 120),
+#'  Y0 = c('?', '?', 130, 128, 130),
+#'  Y = c(115, 130, 130, 128, 130),
+#'  ITE = c(-6, -5, -2, -8, "?")
+#'  )
+#' correct_answers <- c("121", "135", "127", "120", "5")
+#' extra_header <- c('', 'Treatment', 'Potential Outcomes', 'Observed Outcomes', 'Treatment Effect')
+#' extra_header_widths <- c(1, 1, 2, 1, 1)
+#' html_string <- create_interactive_table(.data, correct_answers, extra_header, extra_header_widths)
+#' # HTML(html_string) within Shiny UI 
+create_interactive_table <- function(.data, correct_answers, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), ns){
   
   total_questions <- length(correct_answers)
   if (sum(.data == '?') != total_questions) stop('Every question mark should have a respective correct_answer')
   
-  # TODO: theres a disconnect b/t "correct_answers" and I think some math happening in the JS
-  # TODO: I think the correct_answers is mapped rowwise to the dataframe "?"
+  # TODO: theres a disconnect b/t "correct_answers" and I think some math happening in the JS?
+  # TODO: confirm that correct_answers is mapped rowwise to the dataframe "?"
+  # TODO: why is the second row *always* bold? CSS?
+  # TODO: solve namespace issues
   
+  # create code to download JS scripts and CSS
   js_downloads <-
   '
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -28,6 +60,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header, extra
   # ["121", "135", "127", "120"];
   correct_answers_char <- paste0("'", paste(correct_answers, collapse = "', '"), "'")
   
+  # create the JS code to check if all answers are correct
   js_check_values <- paste0(
   '
   <script type="text/javascript">
@@ -61,6 +94,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header, extra
   ',
   collapse = '')
   
+  # create the JS code that clears the inputs after button click
   js_clear_input <- paste0(
   '
   <script type="text/javascript">
@@ -99,40 +133,16 @@ create_interactive_table <- function(.data, correct_answers, extra_header, extra
   </script> 
   '
   
+  # create the HTML header 
   header <- create_header_html(.data, extra_header, extra_header_widths)
   html_table_header <- paste0('<table class="table table-bordered table-responsive-md table-striped text-center" id="table1">',
                               header)
-  
-  # TODO why is the second row always bold?
-  
-  # html_table_header <-
-  # '
-  # <table class="table table-bordered table-responsive-md table-striped text-center" id="table1">
-  #   <thead>
-  #     <tr>
-  #       <th class="text-center"></th>
-  #       <th class="text-center">Treatment</th>
-  #       <th class="text-center" colspan = "2">Potential Outcomes</th>
-  #       <th class="text-center">Observed Outcomes</th>
-  #       <th class="text-center">Treatment Effect</th>
-  # 
-  #     </tr>
-  #   </thead>
-  #   <tbody>
-  #     <tr>
-  #     <td class="text-center">Student</td>
-  #     <td class="text-center">Z</td>
-  #     <td class="text-center">Y1</td>
-  #     <td class="text-center">Y0</td>
-  #     <td class="text-center">Y</td>
-  #     <td class="text-center">ITE</td>
-  #   </tr>
-  # '
-  
-  # create the rows of the table
+
+  # create the HTML rows of the table
   rows <- create_row_html(.data)
   html_table_body <- paste0(rows, '</tbody></table>')
   
+  # create the HTML buttons
   html_buttons <- 
   '
   <div>
@@ -145,72 +155,78 @@ create_interactive_table <- function(.data, correct_answers, extra_header, extra
   '
   
   # concatenate the code into one string
-  html_code <-
-    paste0(
-      js_downloads,
-      js_check_values,
-      js_clear_input,
-      js_add_listener,
-      html_table_header,
-      html_table_body,
-      html_buttons
-    )
+  html_code <- paste0(
+    js_downloads,
+    js_check_values,
+    js_clear_input,
+    js_add_listener,
+    html_table_header,
+    html_table_body,
+    html_buttons
+  )
   
   return(html_code)
 }
 
 create_header_html <- function(.data, extra_header, extra_header_widths){
   
-  # TODO: make the header reactive to the data
+  if (!is.null(extra_header) & ncol(.data) != sum(extra_header_widths)) stop("extra_header_widths must sum to the number of columns in .data")
   
   header_first <- NULL
   if (!is.null(extra_header)){
-    header_first <- 
-      '
-          <thead>
-      <tr>
-        <th class="text-center"></th>
-        <th class="text-center">Treatment</th>
-        <th class="text-center" colspan = "2">Potential Outcomes</th>
-        <th class="text-center">Observed Outcomes</th>
-        <th class="text-center">Treatment Effect</th>
-  
-      </tr>
-    </thead>
-    '
     
-    header_second <- 
-      '
-      <tbody>
-      <tr>
-      <td class="text-center">Student</td>
-      <td class="text-center">Z</td>
-      <td class="text-center">Y1</td>
-      <td class="text-center">Y0</td>
-      <td class="text-center">Y</td>
-      <td class="text-center">ITE</td>
-      </tr>
-    '
+    # create an extra header (i.e. the very first row)
+    header_first <- paste0(
+      '<th class="text-center" colspan = "', 
+      extra_header_widths,
+      '">',
+      extra_header,
+      '</th>',
+      collapse = ''
+    )
+    
+    # add head html
+    header_first <- paste0(
+      '<thead><tr>',
+      header_first,
+      '</tr></thead>'
+    )
+    
+    # create the subheader for each column in the data
+    header_second <- paste0(
+      '<td class="text-center">',
+      colnames(.data),
+      '</td>',
+      collapse = ''
+    )
+    
+    # add head html
+    header_second <- paste0(
+      '<tbody><tr>',
+      header_second,
+      '</tr>'
+    )
       
   } else {
-    header_second <- 
-      '
-                <thead>
-      <tr>
-      <th class="text-center">Student</th>
-      <th class="text-center">Z</th>
-      <th class="text-center">Y1</th>
-      <th class="text-center">Y0</th>
-      <th class="text-center">Y</th>
-      <th class="text-center">ITE</th>
-      </tr>
-    </thead>
-    <tbody>
-    '
+    
+    # create a header for each column in the data
+    header_second <- paste0(
+      '<th class="text-center">',
+      colnames(.data),
+      '</th>',
+      collapse = ''
+    )
+    
+    # add head html
+    header_second <- paste0(
+      '<thead><tr>',
+      header_second,
+      '</tr></thead><tbody>'
+    )
   }
 
   # collapse into one string
-  html_header <- paste(header_first, header_second, collape = '')
+  html_header <- paste(header_first, header_second, collapse = '')
   
   return(html_header)
 }
