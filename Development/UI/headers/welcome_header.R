@@ -2,6 +2,7 @@ welcome_header <- tabPanel(
   title = 'Welcome', 
   mainPanel(
     width = 12,
+    verbatimTextOutput('testytest'),
     h2("thinkCausal"),
     h3('Getting Started'),
     p("Welcome to thinkCausal! Learn the fondations of causal inference through interactive tools. Analyze causal inference data through a point and click interface."),
@@ -34,8 +35,8 @@ welcome_header <- tabPanel(
                  )
           )
         )
-        ),
-    HTML(interactive_table)
+        )
+    # HTML(interactive_table)
     # h3("What is thinkCausal?"),
     # includeMarkdown('UI/markdowns/landing.md')
     )

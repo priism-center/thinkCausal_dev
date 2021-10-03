@@ -1707,7 +1707,7 @@ shinyServer(function(input, output, session) {
   })
   
   # download the log
-  output$settins_log_download <- downloadHandler(
+  output$settings_log_download <- downloadHandler(
     filename <-  function() {
       time <- gsub("-|:| ", "", Sys.time())
       paste0(time, '_thinkCausal_log.txt')
@@ -1719,5 +1719,8 @@ shinyServer(function(input, output, session) {
       close(fileConn)
     }
   )
+  
+  # example for interactive table output
+  # output$testytest <- renderText(get_table_values(input, 'mytable', ns = NS('yyp')))
   
 })

@@ -3,7 +3,7 @@ log_page <- tabPanel(
   style = "padding-left: 3rem;",
   br(),
   downloadButton(
-    outputId = 'settins_log_download',
+    outputId = 'settings_log_download',
     label = 'Download log',
     style = 'max-width: 300px'
   ),

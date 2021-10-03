@@ -13,7 +13,7 @@ library(sortable) # for drag and drop divs
 library(kableExtra) # for one html table. Can easily replace with one custom function -- see https://github.com/joemarlo/sequenchr/blob/57375aebe59330cfcc02d69a7fd98ec476a6bf28/R/helpers.R#L173
 
 # for data munging and plotting
-library(tidyverse)
+library(tidyverse) # TODO: split this up to the individual packages
 library(patchwork) # for combining ggplots
 library(viridis) # for color blind sensitive colors
 library(rpart.plot) # for plotting single regression tree
@@ -28,7 +28,7 @@ options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size li
 
 
 ## delete
-interactive_table <- create_interactive_table(.data, correct_answers, extra_header, extra_header_widths)
+# interactive_table <- create_interactive_table(.data, correct_answers, extra_header, extra_header_widths, table_id = 'mytable', ns = NS('yyp'))
 ##
 
 # data and objects --------------------------------------------------------
