@@ -34,8 +34,8 @@ welcome_header <- tabPanel(
                  )
           )
         )
-        )
-    # HTML(interactive_table)
+        ),
+    HTML(interactive_table)
     # h3("What is thinkCausal?"),
     # includeMarkdown('UI/markdowns/landing.md')
     )

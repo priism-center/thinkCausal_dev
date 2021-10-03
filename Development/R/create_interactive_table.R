@@ -2,8 +2,8 @@
 
 .data <- tibble(Student = c('Blake', 'Kennedy', 'Jordan', 'Jordan', 'John'), 
                 Z = c(1, 1, 0, 0, 0),
-                Y1 = c(115, 130, '?', '?', 120),
                 Y0 = c('?', '?', 130, 128, 130),
+                Y1 = c(115, 130, '?', '?', 120),
                 Y = c(115, 130, 130, 128, 130),
                 ITE = c(-6, -5, -2, -8, "?"))
 correct_answers <- c("121", "135", "127", "120", "5")
@@ -13,13 +13,16 @@ extra_header_widths <- c(1, 1, 2, 1, 1)
 
 #' Create a JavaScript table that has editable cells and checks for the correct input
 #'
-#' 
+#' Creates a JavaScript table from a dataframe with editable cells where dataframe=='?'. User must input correct answer into those editable cells. Often used to create potential outcomes quizzes.
 #'
 #' @param .data a dataframe. Any cells that should require user input should be marked with a "?"
 #' @param correct_answers a vector of the correct answers that map to the "?" rowwise (left-to-right then top-to-bottom)
-#' @param extra_header a vector of column names
-#' @param extra_header_widths a vector of column widths that sum to length(extra_header). I.e. 1 = width of one column; 2 = width of two columns, etc.
-#' @param ns a string defining the name space (TBD)
+#' @param extra_header optional. A vector of column names
+#' @param extra_header_widths required only if extra_header is provided. A vector of column widths that sum to length(extra_header). I.e. 1 = width of one column; 2 = width of two columns, etc.
+#' @param table_id optional. A string to use as the html ID for the table. If none is provided, then 'table-' + random 15 letters is used
+#' @param ns optional. A string defining the name space. To be used with shiny::NS
+#'
+#' @author Joe Marlo, Junhui Yang
 #'
 #' @return a string of JS and HTML code
 #' @export
@@ -38,15 +41,17 @@ extra_header_widths <- c(1, 1, 2, 1, 1)
 #' extra_header_widths <- c(1, 1, 2, 1, 1)
 #' html_string <- create_interactive_table(.data, correct_answers, extra_header, extra_header_widths)
 #' # HTML(html_string) within Shiny UI 
-create_interactive_table <- function(.data, correct_answers, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), ns){
+create_interactive_table <- function(.data, correct_answers, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, ns = NULL){
+
+  # TODO: why is the second row *always* bold? CSS?
   
   total_questions <- length(correct_answers)
   if (sum(.data == '?') != total_questions) stop('Every question mark should have a respective correct_answer')
   
-  # TODO: theres a disconnect b/t "correct_answers" and I think some math happening in the JS?
-  # TODO: confirm that correct_answers is mapped rowwise to the dataframe "?"
-  # TODO: why is the second row *always* bold? CSS?
-  # TODO: solve namespace issues
+  # manage namespace
+  if (is.null(ns)) ns <- function(input) input
+  if (is.null(table_id)) table_id <- paste0('table-', paste0(sample(letters, 15, replace = TRUE), collapse = ''))
+  table_id <- ns(table_id)
   
   # create code to download JS scripts and CSS
   js_downloads <-
@@ -58,6 +63,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   '
   
   # ["121", "135", "127", "120"];
+  # convert correct answers to a string
   correct_answers_char <- paste0("'", paste(correct_answers, collapse = "', '"), "'")
   
   # create the JS code to check if all answers are correct
@@ -70,18 +76,18 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
         var q_tot = ', total_questions, ';
         var q = 0;
         for (i = 1; i <= q_tot; i++) {
-          var r = $("#table1 #add" + i).text();
+          var r = $("#', table_id, ' #add" + i).text();
           r=parseInt(r);
           r = r.toString();
           r = r.replace(NaN, "FILL IN");
           if (r==t_vals[i-1]) {
             q = q + 1;
-            $("#table1 #add" + i).text(r);
-            $("#table1 #add" + i).append("    " + \'<span class="glyphicon glyphicon-ok" style="color:green"></span>\');
+            $("#', table_id, ' #add" + i).text(r);
+            $("#', table_id, ' #add" + i).append("    " + \'<span class="glyphicon glyphicon-ok" style="color:green"></span>\');
           }
           else {
-            $("#table1 #add" + i).text(r);
-            $("#table1 #add" + i).append("    " + \'<span class="glyphicon glyphicon-remove" style="color:red"></span>\');
+            $("#', table_id, ' #add" + i).text(r);
+            $("#', table_id, ' #add" + i).append("    " + \'<span class="glyphicon glyphicon-remove" style="color:red"></span>\');
           }
         };
         if (q == ', total_questions, ') {
@@ -102,7 +108,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
       $("#clear").click(function() {
         var q_tot = ', total_questions, ';
         for (i = 1; i <= q_tot; i++) {
-           $("#table1 #add" + i).text("FILL IN")
+           $("#', table_id, ' #add" + i).text("FILL IN")
         };
         $(".congrats").text("");
        return false;
@@ -135,7 +141,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   
   # create the HTML header 
   header <- create_header_html(.data, extra_header, extra_header_widths)
-  html_table_header <- paste0('<table class="table table-bordered table-responsive-md table-striped text-center" id="table1">',
+  html_table_header <- paste0('<table class="table table-bordered table-responsive-md table-striped text-center" id="', table_id, '">',
                               header)
 
   # create the HTML rows of the table
