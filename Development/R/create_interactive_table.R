@@ -46,6 +46,8 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   
   # TODO: why is the second row *always* bold? CSS?
   # TODO: clean up buttons with CSS?
+  # TODO: why is the table sortable if you click on the header?
+  # TODO: remove 'congrats' message once testing is finished
   
   total_questions <- length(correct_answers)
   if (sum(.data == '?') != total_questions) stop('Every question mark should have a respective correct_answer')
@@ -56,7 +58,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   table_id <- ns(table_id)
   
   # create code to download JS scripts and CSS
-  # TODO: is this neccessary? Works without it (unless its being sourced somewhere else in the script and it breaks all shiny outputs across the app)
+  # TODO: is this necessary? Works without it (unless its being sourced somewhere else in the script and it breaks all shiny outputs across the app)
   # js_downloads <-
   #   '
   # <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -74,7 +76,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
     '
   <script type="text/javascript">
     $(document).ready(function() {
-      $("#submit").click(function() {
+      $("#submit_', table_id, '").click(function() {
         var t_vals = [', correct_answers_char, ']; 
         var q_tot = ', total_questions, ';
         var q = 0;
@@ -111,7 +113,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
     '
   <script type="text/javascript">
     $(document).ready(function() {
-      $("#clear").click(function() {
+      $("#clear_', table_id, '").click(function() {
         var q_tot = ', total_questions, ';
         for (i = 1; i <= q_tot; i++) {
            $("#', table_id, ' #add" + i).text("FILL IN")
@@ -125,16 +127,16 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
     collapse = '')
   
   # TODO: what does this do? table still works after leaving it out
-  # js_add_listener <- 
+  # js_add_listener <-
   #   '
   # <script>
   #   window.onload = function(){
   #   const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-  #   
-  #   const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+  # 
+  #   const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
   #       v1 !== "" && v2 !== "" && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
   #       )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-  #   
+  # 
   #   document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() => {
   #       const table = th.closest("table");
   #       Array.from(table.querySelectorAll("tr:nth-child(n+2)"))
@@ -142,7 +144,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   #           .forEach(tr => table.appendChild(tr) );
   #   })));
   # }
-  # </script> 
+  # </script>
   # '
   
   # create the HTML header 
@@ -155,16 +157,17 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   html_table_body <- paste0(rows, '</tbody></table>')
   
   # create the HTML buttons
-  html_buttons <- 
+  html_buttons <- paste0(
     '
   <div>
-    <input id="submit" type="button" value="Submit" />
+    <input id="submit_', table_id, '" type="button" value="Submit" />
   </div>
   <div>
-      <input id="clear" type="button" value="Clear" />
+      <input id="clear_', table_id, '" type="button" value="Clear" />
   </div>
   <div class = "congrats"></div>
   '
+  )
   
   # concatenate the code into one string
   html_code <- paste0(

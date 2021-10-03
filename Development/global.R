@@ -28,7 +28,7 @@ options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size li
 
 
 ## delete
-# interactive_table <- create_interactive_table(.data, correct_answers, extra_header, extra_header_widths, table_id = 'mytable', ns = NS('yyp'))
+interactive_table <- create_interactive_table(.data, correct_answers, extra_header, extra_header_widths, table_id = 'mytable', ns = NS('yyp'))
 ##
 
 # data and objects --------------------------------------------------------
