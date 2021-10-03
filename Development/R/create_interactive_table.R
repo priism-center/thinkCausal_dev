@@ -47,7 +47,6 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   # TODO: why is the second row *always* bold? CSS?
   # TODO: clean up buttons with CSS?
   # TODO: why is the table sortable if you click on the header?
-  # TODO: remove 'congrats' message once testing is finished
   
   total_questions <- length(correct_answers)
   if (sum(.data == '?') != total_questions) stop('Every question mark should have a respective correct_answer')
@@ -97,9 +96,6 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
             $("#', table_id, ' #add" + i).append("    " + \'<span class="glyphicon glyphicon-remove" style="color:red"></span>\');
           }
         };
-        if (q == ', total_questions, ') {
-          $(".congrats").append("Congratulations!").css("color", "green");
-        }
         Shiny.setInputValue("user_input_', table_id, '", user_inputs);
        return false;
       });
@@ -118,7 +114,6 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
         for (i = 1; i <= q_tot; i++) {
            $("#', table_id, ' #add" + i).text("FILL IN")
         };
-        $(".congrats").text("");
        return false;
       });
     });
@@ -157,17 +152,14 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   html_table_body <- paste0(rows, '</tbody></table>')
   
   # create the HTML buttons
-  html_buttons <- paste0(
-    '
-  <div>
-    <input id="submit_', table_id, '" type="button" value="Submit" />
-  </div>
-  <div>
-      <input id="clear_', table_id, '" type="button" value="Clear" />
-  </div>
-  <div class = "congrats"></div>
-  '
-  )
+  html_buttons <- div(
+      class = 'backNextContainer',
+      actionButton(inputId = paste0('submit_', table_id), 
+                   label = 'Submit'),
+      actionButton(inputId = paste0('clear_', table_id),
+                   label = 'Clear'),
+      style = 'max-width:40rem'
+    )
   
   # concatenate the code into one string
   html_code <- paste0(
