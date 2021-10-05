@@ -253,7 +253,7 @@ create_row_html <- function(.data){
   # add in the html ids for the editable cells
   modify_ids <- paste0('add', seq_along(data_t[data_t == '?']))
   row_html[data_t == '?'] <- paste0(
-    '<td contenteditable="true" id = "',
+    '<td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "',
     modify_ids,
     '">FILL IN</td>'
   )

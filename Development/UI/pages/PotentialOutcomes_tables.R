@@ -267,7 +267,7 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">Blake</td>
       <td contenteditable="false">1</td>
       <td contenteditable="false">115</td>
-      <td contenteditable="true" id = "add1">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add1">FILL IN</td>
       <td contenteditable="false">115</td>
       <td contenteditable="false">-6</td>
     </tr>
@@ -275,14 +275,14 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">Kennedy</td>
       <td contenteditable="false">1</td>
       <td contenteditable="false">130</td>
-      <td contenteditable="true" id = "add2">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add2">FILL IN</td>
       <td contenteditable="false">130</td>
       <td contenteditable="false">-5</td>
     </tr>
      <tr>
       <td contenteditable="false">Jordan</td>
       <td contenteditable="false">0</td>
-      <td contenteditable="true" id = "add3">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add3">FILL IN</td>
       <td contenteditable="false">130</td>
       <td contenteditable="false">130</td>
        <td contenteditable="false">-3</td>
@@ -290,7 +290,7 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
     <tr>
       <td contenteditable="false">Jordan</td>
       <td contenteditable="false">0</td>
-      <td contenteditable="true" id = "add4">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add4">FILL IN</td>
       <td contenteditable="false">128</td>
       <td contenteditable="false">128</td>
       <td contenteditable="false">-8</td>
@@ -383,28 +383,28 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">1</td>
       <td contenteditable="false">121</td>
       <td contenteditable="false">116</td>
-      <td contenteditable="true" id = "add1">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add1">FILL IN</td>
     </tr>
     <tr>
       <td contenteditable="false">Kennedy</td>
       <td contenteditable="false">1</td>
       <td contenteditable="false">137</td>
       <td contenteditable="false">130</td>
-      <td contenteditable="true" id = "add2">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add2">FILL IN</td>
     </tr>
      <tr>
       <td contenteditable="false">Jordan</td>
       <td contenteditable="false">0</td>
       <td contenteditable="false">122</td>
       <td contenteditable="false">118</td>
-      <td contenteditable="true" id = "add3">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add3">FILL IN</td>
     </tr>
     <tr>
       <td contenteditable="false">Jordan</td>
       <td contenteditable="false">0</td>
       <td contenteditable="false">131</td>
       <td contenteditable="false">128</td>
-      <td contenteditable="true" id = "add4">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add4">FILL IN</td>
     </tr>
   </tbody>
 </table>
@@ -496,7 +496,7 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">127</td>
       <td contenteditable="false">121</td>
       <td contenteditable="false">121</td>
-      <td contenteditable="true" id = "add1">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add1">FILL IN</td>
     </tr>
     <tr>
       <td contenteditable="false">Kennedy</td>
@@ -504,7 +504,7 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">133</td>
       <td contenteditable="false">130</td>
       <td contenteditable="false">130</td>
-      <td contenteditable="true" id = "add2">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add2">FILL IN</td>
     </tr>
      <tr>
       <td contenteditable="false">Jordan</td>
@@ -512,7 +512,7 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">123</td>
       <td contenteditable="false">118</td>
       <td contenteditable="false">123</td>
-      <td contenteditable="true" id = "add3">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add3">FILL IN</td>
     </tr>
     <tr>
       <td contenteditable="false">Charlie</td>
@@ -520,7 +520,7 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() =
       <td contenteditable="false">130</td>
       <td contenteditable="false">121</td>
       <td contenteditable="false">130</td>
-      <td contenteditable="true" id = "add4">FILL IN</td>
+      <td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "add4">FILL IN</td>
     </tr>
   </tbody>
 </table>
