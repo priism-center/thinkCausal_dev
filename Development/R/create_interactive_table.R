@@ -255,3 +255,29 @@ get_table_values <- function(input, table_id, ns = NULL, convert_to_numeric = TR
   if (convert_to_numeric) raw_input <- suppressWarnings(as.numeric(raw_input))
   return(raw_input)
 }
+
+# goal is to wrap the create_interactive_table so we can either pass it a dataframe
+# OR have it generate a table on the fly
+create_table <- function(.data = NULL, n_rows, y_min, y_max, correct_answers, extra_header, extra_header_widths, table_id, ns){
+
+  if (is.null(.data)){
+    # generate data
+    # round numbers -- no decimals
+    # incorporate y min and max
+    # ...
+    
+    # .data <- the dataframe
+  }
+  
+  # convert to html code
+  html_code <- create_interactive_table(
+    .data = .data,
+    correct_answers = correct_answers,
+    extra_header = extra_header,
+    extra_header_widths = extra_header_widths,
+    table_id = table_id,
+    ns = ns
+  )
+  
+  return(html_code)
+}

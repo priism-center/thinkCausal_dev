@@ -1721,6 +1721,6 @@ shinyServer(function(input, output, session) {
   )
   
   # example for interactive table output
-  # output$testytest <- renderText(get_table_values(input, 'mytable', ns = NS('yyp')))
+  output$testytest <- renderText(get_table_values(input, 'mytable', ns = NS('yyp')))
   
 })
