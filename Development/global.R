@@ -79,7 +79,7 @@ rownames(randomization_df) <- 1:nrow(randomization_df)
 # read in all the UI and module files
 map(list.files('R', recursive = TRUE), function(file) source(file.path('R', file)))
 ## delete
-# interactive_table <- create_interactive_table(.data, correct_answers, extra_header, extra_header_widths, table_id = 'mytable', ns = NS('yyp'))
+interactive_table <- create_interactive_table(.data, correct_answers, extra_header, extra_header_widths, table_id = 'mytable', ns = NS('yyp'))
 ##
 map(list.files(file.path('UI', 'concepts')), function(file) source(file.path("UI", "concepts", file)))
 map(list.files(file.path('UI', 'pages')), function(file) source(file.path("UI", "pages", file)))

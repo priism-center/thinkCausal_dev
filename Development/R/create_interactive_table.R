@@ -7,7 +7,6 @@
                 Y = c(115, 130, 130, 128, 130),
                 ITE = c(-6, -5, -2, -8, "?"))
 correct_answers <- c("121", "135", "127", "120", "5")
-# correct_answers <- c("121", "135", '120', '120')
 extra_header <- c('', 'Treatment', 'Potential Outcomes', 'Observed Outcomes', 'Treatment Effect')
 extra_header_widths <- c(1, 1, 2, 1, 1)
 
@@ -45,7 +44,6 @@ extra_header_widths <- c(1, 1, 2, 1, 1)
 create_interactive_table <- function(.data, correct_answers, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, ns = NULL){
   
   # TODO: why is the second row *always* bold? CSS?
-  # TODO: clean up buttons with CSS?
   # TODO: why is the table sortable if you click on the header?
   
   total_questions <- length(correct_answers)
@@ -101,8 +99,8 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
       });
     });
   </script>
-  ',
-    collapse = '')
+  '
+    )
   
   # create the JS code that clears the inputs after button click
   js_clear_input <- paste0(
@@ -118,29 +116,8 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
       });
     });
   </script>
-  ',
-    collapse = '')
-  
-  # TODO: what does this do? table still works after leaving it out
-  # js_add_listener <-
-  #   '
-  # <script>
-  #   window.onload = function(){
-  #   const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-  # 
-  #   const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-  #       v1 !== "" && v2 !== "" && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-  #       )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-  # 
-  #   document.querySelectorAll("th").forEach(th => th.addEventListener("click", (() => {
-  #       const table = th.closest("table");
-  #       Array.from(table.querySelectorAll("tr:nth-child(n+2)"))
-  #           .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-  #           .forEach(tr => table.appendChild(tr) );
-  #   })));
-  # }
-  # </script>
-  # '
+  '
+    )
   
   # create the HTML header 
   header <- create_header_html(.data, extra_header, extra_header_widths)
@@ -166,7 +143,6 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
     # js_downloads,
     js_check_values,
     js_clear_input,
-    # js_add_listener,
     html_table_header,
     html_table_body,
     html_buttons
@@ -274,7 +250,7 @@ create_row_html <- function(.data){
 }
 
 get_table_values <- function(input, table_id, ns = NULL, convert_to_numeric = TRUE){
-  if (is.null(ns)) ns <- function(input) input
+  if (is.null(ns)) ns <- function(x) x
   table_id <- ns(table_id)
   table_id <- paste0('user_input_', table_id)
   raw_input <- input[[table_id]]
