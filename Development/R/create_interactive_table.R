@@ -6,7 +6,7 @@
                 Y1 = c(115, 130, '?', '?', 120),
                 Y = c(115, 130, 130, 128, 130),
                 ITE = c(-6, -5, -2, -8, "?"))
-correct_answers <- c("121", "135", "127", "120", "5")
+correct_answers <- c("121", "135", "128", "120", "-10")
 extra_header <- c('', 'Treatment', 'Potential Outcomes', 'Observed Outcomes', 'Treatment Effect')
 extra_header_widths <- c(1, 1, 2, 1, 1)
 
@@ -44,7 +44,6 @@ extra_header_widths <- c(1, 1, 2, 1, 1)
 create_interactive_table <- function(.data, correct_answers, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, ns = NULL){
   
   # TODO: why is the second row *always* bold? CSS?
-  # TODO: why is the table sortable if you click on the header?
   
   total_questions <- length(correct_answers)
   if (sum(.data == '?') != total_questions) stop('Every question mark should have a respective correct_answer')
@@ -55,7 +54,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   table_id <- ns(table_id)
   
   # create code to download JS scripts and CSS
-  # TODO: is this necessary? Works without it (unless its being sourced somewhere else in the script and it breaks all shiny outputs across the app)
+  # can safely remove this unless using tables in clean HTML environment
   # js_downloads <-
   #   '
   # <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -64,7 +63,6 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   # <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
   # '
   
-  # ["121", "135", "127", "120"];
   # convert correct answers to a string
   correct_answers_char <- paste0("'", paste(correct_answers, collapse = "', '"), "'")
   
@@ -82,7 +80,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
           var r = $("#', table_id, ' #add" + i).text();
           r = parseInt(r);
           r = r.toString();
-          r = r.replace(NaN, "FILL IN");
+          r = r.replace(NaN, "?");
           user_inputs[i-1] = r
           if (r==t_vals[i-1]) {
             q = q + 1;
@@ -110,7 +108,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
       $("#clear_', table_id, '").click(function() {
         var q_tot = ', total_questions, ';
         for (i = 1; i <= q_tot; i++) {
-           $("#', table_id, ' #add" + i).text("FILL IN")
+           $("#', table_id, ' #add" + i).text("?")
         };
        return false;
       });
@@ -229,9 +227,9 @@ create_row_html <- function(.data){
   # add in the html ids for the editable cells
   modify_ids <- paste0('add', seq_along(data_t[data_t == '?']))
   row_html[data_t == '?'] <- paste0(
-    '<td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" id = "',
+    '<td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" style="background-color: #e8e8e8; border: 2px dotted #919191" id = "',
     modify_ids,
-    '">FILL IN</td>'
+    '">?</td>'
   )
   
   # add in html row dividers
