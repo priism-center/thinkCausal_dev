@@ -158,7 +158,7 @@ create_header_html <- function(.data, extra_header, extra_header_widths){
     
     # create an extra header (i.e. the very first row)
     header_first <- paste0(
-      '<th class="text-center" colspan = "', 
+      '<th class="text-center" style="font-weight: 700;" colspan = "', 
       extra_header_widths,
       '">',
       extra_header,
@@ -175,7 +175,7 @@ create_header_html <- function(.data, extra_header, extra_header_widths){
     
     # create the subheader for each column in the data
     header_second <- paste0(
-      '<td class="text-center">',
+      '<td class="text-center" style="font-weight: 700;">',
       colnames(.data),
       '</td>',
       collapse = ''
@@ -192,7 +192,7 @@ create_header_html <- function(.data, extra_header, extra_header_widths){
     
     # create a header for each column in the data
     header_second <- paste0(
-      '<th class="text-center">',
+      '<th class="text-center" style="font-weight: 700;">',
       colnames(.data),
       '</th>',
       collapse = ''
