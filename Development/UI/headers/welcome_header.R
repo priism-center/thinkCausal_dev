@@ -4,7 +4,7 @@ welcome_header <- tabPanel(
     width = 12,
     h2("thinkCausal"),
     h3('Getting Started'),
-    p("Welcome to thinkCausal! Learn the fondations of causal inference through interactive tools. Analyze causal inference data through a point and click interface."),
+    p("Welcome to thinkCausal! Learn the foundations of causal inference through interactive tools. Analyze causal inference data through a point and click interface."),
     br(),
     div(id = 'conceptsGridHome',
         class = 'conceptsGrid',

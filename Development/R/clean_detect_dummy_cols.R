@@ -11,7 +11,8 @@
 #'
 #' @examples
 #' .data <- tibble(test = 1:5,
-#'                 to_dummy = c('level1', 'level1', 'level2', 'level2', 'level3'))
+#'                 to_dummy = c('level1', 'level1', 'level2', 'level2', 'level3'),
+#'                 to_dummy2 = c('char1', 'char3', 'char3', 'char2', 'char1'))
 #' .data <- fastDummies::dummy_cols(.data)
 #' clean_detect_dummy_cols(.data)
 clean_detect_dummy_cols <- function(.data){
@@ -31,14 +32,14 @@ clean_detect_dummy_cols <- function(.data){
 
   # test for rank deficiency
   is_dummy <- sapply(col_combinations, function(cols) is_rank_deficient(data_logical[, cols]))
-  contains_dummy <- any(is_dummy)
+  contains_dummy <- isTRUE(any(is_dummy))
   
   # pull out dummy column names
   dummy_cols <- NULL
   if (contains_dummy) {
     dummy_col_indices <- col_combinations[is_dummy]
     col_names <- colnames(data_logical)
-    dummy_cols <- sapply(dummy_col_indices, function(col_indices) col_names[col_indices])
+    dummy_cols <- lapply(dummy_col_indices, function(col_indices) col_names[col_indices])
   }
   
   rslts <- list(contains_dummy = contains_dummy, dummy_columns = dummy_cols)
