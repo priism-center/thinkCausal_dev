@@ -38,7 +38,3 @@ shiny::runGitHub("thinkCausal_dev", "gperrett", subdir = 'Development', launch.b
     ├── vignettes.Rmd           # Stories defining hypothetical users
     ├── screenshot.png          # Social cover
     └── README.md
-
-### Random dev to-dos
-- Move progress bar to fixed position in right side of .navbar
-- The validate(need()) messages should be more user-friendly
