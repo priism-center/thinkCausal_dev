@@ -30,10 +30,10 @@ extra_header_widths <- c(1, 1, 2, 1, 1)
 #' .data <- tibble(
 #'   Student = c('Blake', 'Kennedy', 'Jordan', 'Jordan', 'John'), 
 #'   Z = c(1, 1, 0, 0, 0),
-#'  Y1 = c(115, 130, '?', '?', 120),
-#'  Y0 = c('?', '?', 130, 128, 130),
-#'  Y = c(115, 130, 130, 128, 130),
-#'  ITE = c(-6, -5, -2, -8, "?")
+#'   Y1 = c(115, 130, '?', '?', 120),
+#'   Y0 = c('?', '?', 130, 128, 130),
+#'   Y = c(115, 130, 130, 128, 130),
+#'   ITE = c(-6, -5, -2, -8, "?")
 #'  )
 #' correct_answers <- c("121", "135", "127", "120", "5")
 #' extra_header <- c('', 'Treatment', 'Potential Outcomes', 'Observed Outcomes', 'Treatment Effect')
@@ -43,7 +43,7 @@ extra_header_widths <- c(1, 1, 2, 1, 1)
 #' # access the user inputs via get_table_values(<table_id>) within Shiny server
 create_interactive_table <- function(.data, correct_answers, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, ns = NULL){
   
-  # TODO: why is the second row *always* bold? CSS?
+  # TODO: issue with ? cell border getting cutoff when extra_header = NULL
   
   total_questions <- length(correct_answers)
   if (sum(.data == '?') != total_questions) stop('Every question mark should have a respective correct_answer')
@@ -118,12 +118,12 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
     )
   
   # create the HTML header 
-  header <- create_header_html(.data, extra_header, extra_header_widths)
+  header <- create_header_html(.data = .data, extra_header = extra_header, extra_header_widths = extra_header_widths)
   html_table_header <- paste0('<table class="table table-bordered table-responsive-md table-striped text-center" id="', table_id, '">',
                               header)
   
   # create the HTML rows of the table
-  rows <- create_row_html(.data)
+  rows <- create_row_html(.data = .data)
   html_table_body <- paste0(rows, '</tbody></table>')
   
   # create the HTML buttons
@@ -219,7 +219,7 @@ create_row_html <- function(.data){
   
   # surround the content with html denoting a row
   row_html <- paste0(
-    '<td contenteditable="false">',
+    '<td contenteditable="false" style="font-weight: 300">',
     as.matrix(data_t),
     '</td>'
   )
@@ -227,7 +227,7 @@ create_row_html <- function(.data){
   # add in the html ids for the editable cells
   modify_ids <- paste0('add', seq_along(data_t[data_t == '?']))
   row_html[data_t == '?'] <- paste0(
-    '<td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" style="background-color: #e8e8e8; border: 2px dotted #919191" id = "',
+    '<td contenteditable="true" onclick = "this.innerHTML=&#39;&nbsp;&#39;;" style="font-weight: 300; background-color: #e8e8e8; border: 2px dotted #919191;" id = "',
     modify_ids,
     '">?</td>'
   )
