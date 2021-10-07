@@ -1,0 +1,24 @@
+
+validate_data_uploaded <- function(store){
+  # stop here if data hasn't been uploaded
+  validate(need(nrow(store$uploaded_df) > 0,
+                "Data must be first uploaded"))
+}
+
+validate_data_selected <- function(store){
+  # stop here if data hasn't been uploaded and selected
+  validate(need(is.data.frame(store$selected_df),
+                "Data must be first uploaded and selected. Please see 'Data' tab."))
+}
+
+validate_columns_assigned <- function(store){
+  # stop here if columns haven't been assigned
+  validate(need(nrow(store$col_assignment_df) > 0,
+                "Columns must first be assigned. Please see 'Load data' tab."))
+}
+
+validate_model_fit <- function(store){
+  # stop here if model isn't fit yet
+  validate(need(is(store$model_results, "bartcFit"), 
+                "Model must first be fitted on the 'Model' tab"))
+}

@@ -112,7 +112,7 @@ shinyServer(function(input, output, session) {
       } else if (filetype == 'dta'){
         uploaded_file <- readstata13::read.dta13(file = filepath)
       } else if (filetype == 'xlsx'){
-        uploaded_file <- xlsx::read.xlsx(file = filepath)
+        uploaded_file <- xlsx::read.xlsx(file = filepath) #TODO: use xlsx or openxlsx?
       } else if (filetype == 'txt'){
         delim <- input$analysis_data_delim_value
         if (delim == "") delim <- ","
@@ -169,8 +169,7 @@ shinyServer(function(input, output, session) {
   observe({
     
     # stop here if columns haven't been assigned
-    validate(need(nrow(store$col_assignment_df) > 0,
-                  "Columns must first be assigned. Please see 'Load data' tab."))
+    validate_columns_assigned(store)
     
     # use assigned dataframe as the template
     user_modified_df <- store$col_assignment_df
@@ -286,8 +285,7 @@ shinyServer(function(input, output, session) {
   # observeEvent(store$uploaded_df, {
   #   
   #   # stop here if data hasn't been uploaded
-  #   validate(need(nrow(store$uploaded_df) > 0,
-  #                 "Data must be first uploaded. Please see 'Data' tab."))
+  #   validate_data_uploaded(store)
   #   
   #   # infer which columns are Z, Y, and X columns for smart defaults
   #   auto_columns <- clean_detect_ZYX_columns(store$uploaded_df)
@@ -308,8 +306,7 @@ shinyServer(function(input, output, session) {
   output$analysis_data_UI_dragdrop <- renderUI({
     
     # stop here if data hasn't been uploaded
-    validate(need(nrow(store$uploaded_df) > 0,
-                  "Data must be first uploaded"))
+    validate_data_uploaded(store)
     
     # infer which columns are Z, Y, and X columns (i.e. smart defaults)
     auto_columns <- clean_detect_ZYX_columns(store$uploaded_df)
@@ -354,8 +351,7 @@ shinyServer(function(input, output, session) {
   # output$analysis_data_plot_DAG <- renderPlot({
   #   
   #   # stop here if data hasn't been uploaded
-  #   validate(need(nrow(store$uploaded_df) > 0,
-  #                 "Data must be first uploaded. Please see 'Data' tab."))
+  #   validate_data_uploaded(store)
   #   
   #   # get user inputs
   #   cols_z <- input$analysis_data_select_select_zcol
@@ -427,8 +423,7 @@ shinyServer(function(input, output, session) {
   output$analysis_data_modify_UI <- renderUI({
 
     # stop here if columns haven't been assigned
-    validate(need(nrow(store$col_assignment_df) > 0,
-                  "Columns must first be assigned. Please see 'Load data' tab."))
+    validate_columns_assigned(store)
       
     # get default data types
     default_data_types <- convert_data_type_to_simple(store$col_assignment_df)
@@ -543,8 +538,7 @@ shinyServer(function(input, output, session) {
   observeEvent(observe_multiple(), {
 
     # stop here if columns haven't been assigned
-    validate(need(nrow(store$col_assignment_df) > 0,
-                  "Columns must first be assigned. Please see 'Load data' tab."))
+    validate_columns_assigned(store)
 
     # original data column indices
     indices <- seq_along(colnames(store$col_assignment_df))
@@ -574,8 +568,7 @@ shinyServer(function(input, output, session) {
   output$analysis_data_table <- DT::renderDataTable({
     
     # stop here if columns haven't been assigned
-    validate(need(nrow(store$col_assignment_df) > 0,
-                  "Columns must first be assigned. Please see 'Load data' tab."))
+    validate_columns_assigned(store)
     
     # create JS datatable
     tab <- create_datatable(
@@ -742,16 +735,14 @@ shinyServer(function(input, output, session) {
     X_cols_continuous <- cols_continuous[stringr::str_starts(cols_continuous, "X")]
     
     # create moderator options 
-    X_mods <- as.data.frame(combinations(n = length(X_cols), r =2,  v = X_cols))
+    X_mods <- combn(X_cols, m = 2) %>% t() %>% as.data.frame()
     remove <- X_mods[X_mods$V1 %in% X_cols_continuous & X_mods$V2 %in% X_cols_continuous,]
     X_mods <- X_mods %>% anti_join(remove)
     X_mods <- X_mods %>% mutate(V1 = str_sub(V1, start = 3), 
                                 V2 = str_sub(V2, start = 3))
     X_mods <- X_mods %>% 
       mutate(mod = paste(V1, V2, sep = ' x ')) %>% 
-      dplyr::select(mod)
-    
-    X_mods <- X_mods$mod
+      pull(mod)
     X_mods <- c(str_sub(X_cols, start = 3), X_mods)
     
     
@@ -839,8 +830,7 @@ shinyServer(function(input, output, session) {
   
   descriptive_plot <- reactive( {
     # stop here if data hasn't been uploaded and selected
-    validate(need(is.data.frame(store$selected_df),
-                  "Data must be first uploaded and selected. Please see 'Data' tab."))
+    validate_data_selected(store)
     
     p <- tryCatch({
       plot_exploration(
@@ -907,8 +897,8 @@ shinyServer(function(input, output, session) {
   output$analysis_eda_brush_info <- DT::renderDataTable({
     
     # stop here if data hasn't been uploaded and selected
-    validate(need(is.data.frame(store$selected_df), 
-                  "Data must be first uploaded and selected. Please see 'Data' tab."))
+    validate_data_selected(store)
+    
     
     # show only if there isn't faceting
     if (input$analysis_eda_variable_facet == "None" & input$analysis_eda_select_plot_type == 'Scatter') {
@@ -936,8 +926,7 @@ shinyServer(function(input, output, session) {
   overlap_plot <- reactive({
     
     # stop here if data hasn't been uploaded and selected
-    validate(need(is.data.frame(store$selected_df), 
-                  "Data must be first uploaded and selected. Please see 'Data' tab."))
+    validate_data_selected(store)
     
     # stop here if there are no numeric columns selected
     validate(need(length(input$analysis_plot_overlap_select_var) > 0,
@@ -995,8 +984,7 @@ shinyServer(function(input, output, session) {
   # create the balance plot
   balance_plot <- reactive({
     # stop here if data hasn't been uploaded and selected
-    validate(need(is.data.frame(store$selected_df), 
-                  "Data must be first uploaded and selected. Please see 'Data' tab."))
+    validate_data_selected(store)
     
     # stop here if there are no numeric columns selected
     validate(need(length(input$analysis_plot_balance_select_var) > 0,
@@ -1071,9 +1059,9 @@ shinyServer(function(input, output, session) {
   # trace plot
   output$analysis_diagnostics_plot_trace <- renderPlot({
     
-    # stop here if model is not run yet
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
+    # stop here if model isn't fit yet
+    validate_model_fit(store)
+    
     # call function
     p <- plot_trace(.model = store$model_results)
     
@@ -1086,22 +1074,20 @@ shinyServer(function(input, output, session) {
   # common support plot 
   output$analysis_diagnostics_plot_support <- renderPlot({
     
-    # stop here if model is not run yet
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
+    # stop here if model isn't fit yet
+    validate_model_fit(store)
     
-    # plot it
-    theme_pick <- theme_custom()
+    # plot it 
+    p1 <- plot_diagnostic_common_support(.model = store$model_results, .rule = 'sd')
+    p2 <-  plot_diagnostic_common_support(.model = store$model_results, .rule = 'chi')
     
-    p1 <- plot_diagnostic_common_support(.model = store$model_results, 
-                                        .rule = 'sd')
+    # add theme
     p1 <- p1 + theme_custom()
-    
-    p2 <-  plot_diagnostic_common_support(.model = store$model_results, 
-                                          .rule = 'chi')
     p2 <- p2 + theme_custom()
     
+    # combine into one patchwork plot
     p <- p1/p2
+    
     return(p)
   })
   
@@ -1429,17 +1415,18 @@ shinyServer(function(input, output, session) {
   # results -----------------------------------------------------------------
   
   # render the summary table
-  output$analysis_results_table_summary <- renderText({
-    
+  output$analysis_results_table_summary <- DT::renderDataTable({
+
     # stop here if model isn't fit yet
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
+    validate_model_fit(store)
     
     # extract estimates and format
-    summary(store$model_results)$estimates %>% 
-      t() %>% 
-      knitr::kable(digits = 1, format = 'html') %>% 
-      kableExtra::kable_styling(bootstrap_options = c("hover", "condensed"))
+    tab <- summary(store$model_results)$estimates %>% 
+      t() %>%
+      as.data.frame() %>% 
+      create_datatable(., selection = "none")
+    
+    return(tab)
   })
   
   # TODO: render the interpretation text
@@ -1450,9 +1437,9 @@ shinyServer(function(input, output, session) {
     # hold <- sum(input$show_interval == .8) > 0
     # print(hold == T)
     #print(input$show_interval == .8) 
+    
     # stop here if model isn't fit yet
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
+    validate_model_fit(store)
     
     if(input$show_reference == 'No'){
       # plot it
@@ -1571,11 +1558,11 @@ shinyServer(function(input, output, session) {
   ## ICATE plots
   
 
-  
-  # histigram of icates
+  # histogram of icates
   output$histigram_icate <- renderPlot({
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
+    
+    # stop here if model isn't fit yet
+    validate_model_fit(store)
     
     p <- plot_individual_effects(store$model_results, type = input$icate_type)
     
@@ -1588,8 +1575,9 @@ shinyServer(function(input, output, session) {
   
   # Single decision tree on icates
   output$analysis_moderator_single_tree <- renderPlot({
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
+    
+    # stop here if model isn't fit yet
+    validate_model_fit(store)
     
     conf <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
     colnames(conf) <- str_sub(colnames(conf, 3))
@@ -1603,8 +1591,9 @@ shinyServer(function(input, output, session) {
   
   
   output$analysis_moderators_explore_plot <- renderPlot({
-    validate(need(is(store$model_results, "bartcFit"), 
-                  "Model must first be fitted on the 'Model' tab"))
+    
+    # stop here if model isn't fit yet
+    validate_model_fit(store)
     
     shinyWidgets::show_alert(
       title = 'Rendering Plot...',

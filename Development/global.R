@@ -3,21 +3,27 @@ library(shiny)
 # for reading data
 library(foreign)
 library(readstata13)
-library(openxlsx)
+library(openxlsx) 
+
+# directly called libraries that aren't currently loaded
+# library(xlsx)
+# library(Hmisc)
 
 # for javascript and Shiny tools
 library(shinyjs) # for running javascript on the server-side
-library(shinyWidgets) # for alerts
+library(shinyWidgets) # for alerts -- replace with CSS and default shiny alerts? Joe TODO
 library(DT) # for javascript datatables
 library(sortable) # for drag and drop divs
-library(kableExtra) # for one html table. Can easily replace with one custom function -- see https://github.com/joemarlo/sequenchr/blob/57375aebe59330cfcc02d69a7fd98ec476a6bf28/R/helpers.R#L173
 
 # for data munging and plotting
 library(tidyverse) # TODO: split this up to the individual packages
-library(patchwork) # for combining ggplots
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(purrr)
+library(patchwork) # for combining ggplots; TODO: verify it is only used in plotBart
 library(viridis) # for color blind sensitive colors
 library(rpart.plot) # for plotting single regression tree
-library(gtools) # for combination function
 
 # for bart
 library(plotBart) # devtools::install_github("joemarlo/plotBart")

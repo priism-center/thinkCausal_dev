@@ -63,7 +63,8 @@ results_page <- tabPanel(
                             height = 400),
 
                   h4('Model results'),
-                  htmlOutput('analysis_results_table_summary')
+                  # htmlOutput('analysis_results_table_summary')
+                 DT::dataTableOutput('analysis_results_table_summary')
                    
              #   )
              # )

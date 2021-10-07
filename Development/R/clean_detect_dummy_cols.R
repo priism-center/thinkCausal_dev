@@ -1,6 +1,6 @@
 
 
-#' Detect if a dataframe has potential dummy columns
+#' Detect if a dataframe has dummy columns
 #'
 #' @param .data a dataframe
 #'
@@ -23,7 +23,7 @@ clean_detect_dummy_cols <- function(.data){
   data_logical <- .data[, is_logical]
   
   # stop if there is only one column
-  if (sum(is_logical) == 1) return(NULL)
+  if (sum(is_logical) <= 1) return(list(contains_dummy = contains_dummy, dummy_columns = NULL))
   
   # create all possible combinations of columns
   col_indices <- seq_along(data_logical)
@@ -48,10 +48,37 @@ clean_detect_dummy_cols <- function(.data){
 }
 
 is_rank_deficient <- function(.matrix){
-  # rank <- qr(.matrix)$rank 
+  # rank <- qr(.matrix)$rank
   # is_rank_deficient <- rank < ncol(.matrix) | rank < nrow(.matrix)
   
+  # this only works if reference column is included
   is_rank_deficient <- all(rowSums(.matrix) == 1)
   
   return(is_rank_deficient)
 }
+
+
+# tmp <- fastDummies::dummy_cols(.data, remove_first_dummy = T)[, 4:7]
+# tmp2 <- fastDummies::dummy_cols(.data)[, 4:9]
+# is_rank_deficient(tmp[,1:2])
+# is_rank_deficient(tmp2[, 1:3])
+# 
+# .matrix <- tmp2[, 1:4]
+# 
+# tmp_cor <- cor.test(.matrix[[1]], .matrix[[2]], method = 'spearman')
+# cor(.matrix[, -4])
+# cor(c(1,1,0,0), c(0,0, 1,1))
+# cor.test(c(1,1,0,0), c(0,0, 1,1),  method = 'spearman')
+
+# wilcox.test(.matrix[[1]] ~ .matrix[[2]])
+# 
+# cor(tmp2[,1:3])
+# 
+# lmmod <- lm(1:nrow(tmp) ~ tmp2[[1]] + tmp2[[2]] + tmp2[[3]])
+
+# goal is to create a popup that use can drag and drop grouppings that define the dummy code
+# prompt user only if more than one logical column that is not the outcome
+# could also integrate this into the XYZ selection page
+
+
+
