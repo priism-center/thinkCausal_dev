@@ -9,15 +9,16 @@ thinkCausal is federally funded project devoted to building scaffolded causal in
 
 ### Run the latest development build via R
 ``` r
-# packages <- c('shiny', 'foreign', 'readstata13', 'openxlsx', 'shinyjs', 'shinyWidgets', 'DT', 'kableExtra', 'sortable', 'tidyverse', 'patchwork', 'viridis', 'bartCause', 'rpart.plot', 'gtools')
+# packages <- c('shiny', 'foreign', 'readstata13', 'openxlsx', 'shinyjs', 'shinyWidgets', 'DT', 'sortable', 'tidyverse', 'patchwork', 'viridis', 'bartCause', 'rpart.plot')
 # install.packages(packages)
 # devtools::install_github('joemarlo/plotBart')
-shiny::runGitHub("thinkCausal_dev", "gperrett", subdir = 'Development', launch.browser = TRUE)
+shiny::runGitHub("thinkCausal_dev", "gperrett", subdir = 'thinkCausal', ref = 'v0.1.0',  launch.browser = TRUE)
 ```
 
 ### Folder structure
     .
-    ├── Concept_1               # Main project directory
+    ├── student_work            # Personal store for students
+    ├── thinkCausal             # Main project directory
     │   ├── data                # Test data
     │   ├── man                 # Compiled manual for functions
     │   ├── R                   # Functions
@@ -34,7 +35,7 @@ shiny::runGitHub("thinkCausal_dev", "gperrett", subdir = 'Development', launch.b
     │   ├── NAMESPACE           # Unused but required for required for documenting R functions via devtools
     │   ├── server.R            # Server-side code for Shiny app
     │   └── UI.R                # Main UI framework
-    ├── Concept_dev             # New pages under development
-    ├── vignettes.Rmd           # Stories defining hypothetical users
-    ├── screenshot.png          # Social cover
+    ├── writing                 # Store for vignettes and similar content
+    ├── LICENSE
+    ├── screenshot.png
     └── README.md
