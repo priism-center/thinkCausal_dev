@@ -258,16 +258,120 @@ get_table_values <- function(input, table_id, ns = NULL, convert_to_numeric = TR
 
 # goal is to wrap the create_interactive_table so we can either pass it a dataframe
 # OR have it generate a table on the fly
-create_table <- function(.data = NULL, n_rows, y_min, y_max, correct_answers, extra_header, extra_header_widths, table_id, ns){
 
+#' Automatically create a JavaScript table that has editable cells and checks for the correct input
+#'
+#' Automatically create a JavaScript table from a dataframe with editable cells where dataframe=='?'. User must input correct answer into those editable cells. Often used to create potential outcomes quizzes.
+#'
+#' @param .data optional. A dataframe to generate an interactive table. Any cells that should require user input should be marked with a "?"
+#' @param correct_answers required only if .data is provided. A vector of the correct answers that map to the "?" rowwise (left-to-right then top-to-bottom)
+#' @param n_rows an integer to use as the number of rows for the table
+#' @param y_min a numeric value to use as the lower bound of potential outcomes
+#' @param y_max a numeric value to use as the upper bound of potential outcomes
+#' @param ate a numeric value to use as an indicator of positive/negative and magnitude of ITEs
+#' @param po_question logical indicating if the questions (the places of '?') are at the columns of potential outcomes Y0 and Y1
+#' @param ite_question logical indicating if the questions (the places of '?') are at the column of ITE
+#' @param extra_header a vector of column names. If .data is provided, optional to specify; if .data is not provided, keep it equal NULL.
+#' @param extra_header_widths required only if extra_header is provided. A vector of column widths that sum to length(extra_header). I.e. 1 = width of one column; 2 = width of two columns, etc.
+#' @param table_id optional. A string to use as the html ID for the table. If none is provided, then 'table' + random 15 letters is used
+#' @param ns optional. A function defining the name space. To be used with shiny::NS
+#'
+#' @author Joe Marlo, Junhui Yang
+#'
+#' @return a string of JS and HTML code
+#' @export
+#'
+#' @examples
+#' html_string <- create_table(n_rows = 10, y_min = 50, y_max = 100, ate = -10, po_question = T, ite_question = T)
+#' # HTML(html_string) within Shiny UI 
+#' # access the user inputs via get_table_values(<table_id>) within Shiny server
+create_table <- function(.data = NULL, correct_answers = NULL, n_rows, y_min, y_max, ate, po_question = T, ite_question = T, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, ns = NULL){
+  
   if (is.null(.data)){
-    # generate data
-    # round numbers -- no decimals
-    # incorporate y min and max
-    # ...
     
-    # .data <- the dataframe
+    names <- c('Blake', 'Kennedy', 'Taylor', 'Jordan', 'John', 'Andrew', 'Billie', 'Charlie', 'Casey', 'Alex', 'Parker', 'Andi', 'Anthony', 'Katie', 'Zoe','Juan', 'Kevin','Pengfei','Ruohan','Yi')
+    
+    if(n_rows <= 20 & n_rows >= 4){
+      
+      Student <- sample(names, size = n_rows, replace = F)
+      Z <- rbinom(n_rows, size = 1, prob = 0.5)
+      while (sum(Z == 0) < 2 | sum(Z == 1) < 2) {
+        Z <- rbinom(n_rows, size = 1, prob = 0.5)
+      }
+      Z <-  sort(Z, decreasing = T)
+      
+      if(ate >= 0){
+        Y0 <- round(runif(n_rows, min = y_min, max = y_max - ate))
+        Y1 <-  Y0 + round(runif(n_rows, min = 0.7*ate, max = 1.3*ate))
+        Y <- ifelse(Z == 1, Y1, Y0)
+        ITE <- Y1 - Y0
+      }else if(ate < 0){
+        Y0 <- round(runif(n_rows, min = y_min + ate, max = y_max))
+        Y1 <-  Y0 + round(runif(n_rows, min = 1.3*ate, max = 0.7*ate))
+        Y <- ifelse(Z == 1, Y1, Y0)
+        ITE <- Y1 - Y0
+      }else{
+        stop('Please enter a numeric value')
+      }
+      
+    }else if(n_rows > 20){
+      
+      stop('Please enter the number of rows less than or equal to 20')
+      
+    }else{
+      
+      stop('Please enter the number of rows greater than or equal to 4')
+      
+    }
+    
+    df <- data.frame(Student, Z, Y0, Y1, Y, ITE)
+    df <- df %>% mutate(Y0 = as.character(Y0), Y1 = as.character(Y1), ITE = as.character(ITE))
+    
+    if(po_question == T & ite_question == T){
+      
+      idx_Z1 <- which(Z == 1)
+      idx_Z0 <- which(Z == 0)
+      number_questions_Z1 <- round(0.7*length(idx_Z1))
+      number_questions_Z0 <- round(0.7* length(idx_Z0))
+      
+      correct_answers <- c(df$Y0[1:number_questions_Z1],
+                           df$ITE[(number_questions_Z1 + 1):length(idx_Z1)],
+                           df$Y1[(length(idx_Z1) + 1):(length(idx_Z1) + number_questions_Z0)], 
+                           df$ITE[(length(idx_Z1) + number_questions_Z0 + 1):n_rows])
+      df$Y0[1:number_questions_Z1] <- '?'
+      df$Y1[(length(idx_Z1) + 1):(length(idx_Z1) + number_questions_Z0)] <- '?'
+      df$ITE[(number_questions_Z1 + 1):length(idx_Z1)] <- '?' 
+      df$ITE[(length(idx_Z1) + number_questions_Z0 + 1):n_rows] <- '?'
+      
+    }else if(po_question == T & ite_question == F){
+      
+      idx_Z0 <- which(Z == 0)
+      idx_Z1 <- which(Z == 1)
+      correct_answers <- c(df$Y0[idx_Z1], df$Y1[idx_Z0])
+      df$Y0[idx_Z1] <- '?'
+      df$Y1[idx_Z0] <- '?'
+      
+    }else if(po_question == F & ite_question == T){
+      
+      idx <- sort(sample(1:n_rows, size = round(0.5*n_rows)))
+      correct_answers <- df$ITE[idx]
+      df$ITE[idx] <- '?'
+      
+    }else{
+      
+      stop('Please select at least one type of questions')
+      
+    }
+    
+    .data <- df
+    
+    if(is.null(extra_header)){
+      extra_header <- c('', 'Treatment', 'Potential Outcomes', 'Observed Outcomes', 'Treatment Effect')
+      extra_header_widths <- c(1, 1, 2, 1, 1)
+    }
+    
   }
+  
   
   # convert to html code
   html_code <- create_interactive_table(
