@@ -22,7 +22,7 @@ library(dplyr)
 library(ggplot2)
 library(stringr) # TODO: can this be replaced with gsub* functions?
 library(purrr)
-library(patchwork) # for combining ggplots; TODO: verify it is only used in plotBart
+# library(patchwork) # for combining ggplots; TODO: verify it is only used in plotBart
 library(viridis) # for color blind sensitive colors
 library(rpart.plot) # for plotting single regression tree
 

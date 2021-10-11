@@ -671,8 +671,8 @@ shinyServer(function(input, output, session) {
     cols_continuous <- store$column_types$continuous
     
     # get smart defaults for the plotting variables
-    column_treatment <- grep("^Z_", new_col_names, value = TRUE) #new_col_names[stringr::str_starts(new_col_names, "Z")]
-    column_response <- grep("^Y_", new_col_names, value = TRUE) #new_col_names[stringr::str_starts(new_col_names, "Y")]
+    column_treatment <- grep("^Z_", new_col_names, value = TRUE)
+    column_response <- grep("^Y_", new_col_names, value = TRUE)
     plot_vars <- clean_detect_plot_vars(.column_types = store$column_types, 
                                         .treatment_column = column_treatment, 
                                         .response_column = column_response)
@@ -731,15 +731,16 @@ shinyServer(function(input, output, session) {
     )
     
     # update selects on balance plots
-    X_cols <- grep("^X_", new_col_names, value = TRUE) #new_col_names[stringr::str_starts(new_col_names, "X")]
-    X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE) #cols_continuous[stringr::str_starts(cols_continuous, "X")]
+    X_cols <- grep("^X_", new_col_names, value = TRUE)
+    X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
     
     # create moderator options 
     X_mods <- combn(X_cols, m = 2) %>% t() %>% as.data.frame()
     remove <- X_mods[X_mods$V1 %in% X_cols_continuous & X_mods$V2 %in% X_cols_continuous,]
-    X_mods <- X_mods %>% anti_join(remove)
-    X_mods <- X_mods %>% mutate(V1 = str_sub(V1, start = 3), 
-                                V2 = str_sub(V2, start = 3))
+    X_mods <- anti_join(X_mods, remove)
+    X_mods <- mutate(X_mods, 
+                     V1 = str_sub(V1, start = 3), 
+                     V2 = str_sub(V2, start = 3))
     X_mods <- X_mods %>% 
       mutate(mod = paste(V1, V2, sep = ' x ')) %>% 
       pull(mod)
@@ -935,36 +936,36 @@ shinyServer(function(input, output, session) {
     # get variables for input into plotting functions
     X <- store$selected_df
     col_names <- colnames(X)
-    treatment_col <- grep("^Z_", col_names, value = TRUE) #col_names[stringr::str_starts(col_names, "Z_")]
-    response_col <- grep("^Y_", col_names, value = TRUE) #col_names[stringr::str_starts(col_names, "Y_")]
+    treatment_col <- grep("^Z_", col_names, value = TRUE)
+    response_col <- grep("^Y_", col_names, value = TRUE) 
     cols_continuous <- store$column_types$continuous
-    confounder_cols <-  grep("^X_", cols_continuous, value = TRUE) #cols_continuous[stringr::str_starts(cols_continuous, "X")]
+    confounder_cols <- grep("^X_", cols_continuous, value = TRUE) 
     plt_type <- input$analysis_plot_overlap_method
     
     # plot either the variables or the 1 dimension propensity scores
     if(input$analysis_plot_overlap_type == 1){
-      p <- plot_overlap_vars(
+      p <- plotBart::plot_overlap_vars(
         .data = X,
-        treatment_col = treatment_col,
-        confounder_cols = input$analysis_plot_overlap_select_var, 
-        plt_type = plt_type
+        treatment = treatment_col,
+        confounders = input$analysis_plot_overlap_select_var, 
+        plot_type = plt_type
       )
     }
     
     else if(input$analysis_plot_overlap_type == 2){
-      p <- plot_overlap_pScores(
+      p <- plotBart::plot_overlap_pScores(
         .data = X,
-        treatment_col = treatment_col,
-        response_col = response_col,
-        confounder_cols = confounder_cols, 
-        plt_type = plt_type
+        treatment = treatment_col,
+        response = response_col,
+        confounders = confounder_cols, 
+        plot_type = plt_type
       )
     }
     
     # add theme
-    p + theme_custom()
+    p <- p + theme_custom()
     
-    # return(p)
+    return(p)
   })
   
   output$analysis_plot_overlap_plot <- renderPlot({
@@ -993,11 +994,13 @@ shinyServer(function(input, output, session) {
     # plot it
     X <- store$selected_df
     col_names <- colnames(X)
-    treatment_col <- grep("^Z_", col_names, value = TRUE) #col_names[stringr::str_starts(col_names, "Z_")]
+    treatment_col <- grep("^Z_", col_names, value = TRUE)
     confounder_cols <- input$analysis_plot_balance_select_var
-    p <- plot_balance(.data = X, 
-                      treatment_col = treatment_col, 
-                      confounder_cols = confounder_cols)
+    p <- plotBart::plot_balance(
+      .data = X, 
+      treatment = treatment_col, 
+      confounders = confounder_cols
+    )
     
     # add theme
     p + theme_custom()
@@ -1063,7 +1066,7 @@ shinyServer(function(input, output, session) {
     validate_model_fit(store)
     
     # call function
-    p <- plot_trace(.model = store$model_results)
+    p <- plotBart::plot_trace(.model = store$model_results)
     
     # add theme
     p <- p + theme_custom()
@@ -1078,15 +1081,10 @@ shinyServer(function(input, output, session) {
     validate_model_fit(store)
     
     # plot it 
-    p1 <- plot_diagnostic_common_support(.model = store$model_results, .rule = 'sd')
-    p2 <-  plot_diagnostic_common_support(.model = store$model_results, .rule = 'chi')
-    
-    # add theme
-    p1 <- p1 + theme_custom()
-    p2 <- p2 + theme_custom()
-    
-    # combine into one patchwork plot
-    p <- p1/p2
+    p <- plotBart::plot_diagnostic_common_support(
+      .model = store$model_results, 
+      rule = 'none',
+      plot_theme = theme_custom)
     
     return(p)
   })
@@ -1443,8 +1441,8 @@ shinyServer(function(input, output, session) {
     
     if(input$show_reference == 'No'){
       # plot it
-      p <-
-        plot_PATE(
+      # TODO: this is not in plotBart
+      p <- plot_PATE(
           .model = store$model_results,
           type = input$plot_result_style,
           ci_80 = sum(input$show_interval == .8) > 0,
@@ -1455,15 +1453,15 @@ shinyServer(function(input, output, session) {
         )
       
       # add theme
-      p <-
-        p + theme_custom() + theme(legend.position = c(0.1, 0.9),
-                                   legend.title = element_blank())
+      p <- p + 
+        theme_custom() + 
+        theme(legend.position = c(0.1, 0.9),
+              legend.title = element_blank())
     }
    
     if(input$show_reference != 'No'){
       # plot it
-      p <-
-        plot_PATE(
+      p <- plot_PATE(
           .model = store$model_results,
           type = input$plot_result_style,
           ci_80 = sum(input$show_interval == .8) > 0,
@@ -1474,10 +1472,12 @@ shinyServer(function(input, output, session) {
         )
       
       # add theme
-      p <-
-        p + theme_custom() + theme(legend.position = c(0.1, 0.9),
-                                   legend.title = element_blank())
+      p <- p + 
+        theme_custom() + 
+        theme(legend.position = c(0.1, 0.9),
+              legend.title = element_blank())
     }
+    
     return(p)
   })
 
@@ -1564,8 +1564,10 @@ shinyServer(function(input, output, session) {
     # stop here if model isn't fit yet
     validate_model_fit(store)
     
+    # TODO: this is not in plotBart
     p <- plot_individual_effects(store$model_results, type = input$icate_type)
     
+    # add theme
     p <- p + theme_custom()
     
     return(p)
@@ -1581,6 +1583,8 @@ shinyServer(function(input, output, session) {
     
     conf <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
     colnames(conf) <- str_sub(colnames(conf, 3))
+    
+    # TODO: this is not in plotBart
     p <- plot_single_tree(store$model_results, confounders = conf, depth = input$set_tree_depth)
     
     
@@ -1595,6 +1599,7 @@ shinyServer(function(input, output, session) {
     # stop here if model isn't fit yet
     validate_model_fit(store)
     
+    # TODO: this does not close once plot is finished
     shinyWidgets::show_alert(
       title = 'Rendering Plot...',
       text = tags$div(
@@ -1607,17 +1612,16 @@ shinyServer(function(input, output, session) {
       closeOnClickOutside = T
     )
 
-    
     # plot it
+    # TODO: this is not in plotBart
     p <- plot_continuous_sub(.model = store$model_results, 
-                   grouped_on = input$analysis_moderators_explore_select)
+                             grouped_on = input$analysis_moderators_explore_select)
     
     # add theme
     p <- p + theme_custom()
+    
     return(p)
   })
-  
-  
   
   
   # concepts ----------------------------------------------------------------
