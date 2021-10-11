@@ -316,6 +316,8 @@ get_table_values <- function(input, table_id, ns = NULL, convert_to_numeric = TR
 #' # access the user inputs via get_table_values(<table_id>) within Shiny server
 create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min = 50, y_max = 100, ate = 10, po_question = TRUE, ite_question = TRUE, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, ns = NULL){
   
+  # TODO: when po_question = FALSE and ite_question = TRUE, why are only three rows have '?'
+  
   # if .data is not provided, automatically generate a dataframe
   if (is.null(.data)){
     
@@ -351,12 +353,14 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
       
     # randomly assign treatment for the n_row students
     Z <- rbinom(n_rows, size = 1, prob = 0.5)
+    
     # re-assign treatment until each group has at least 2 students
     while (sum(Z == 0) < 2 | sum(Z == 1) < 2) {
       Z <- rbinom(n_rows, size = 1, prob = 0.5)
     }
+    
     # sort treatment by treated group first and then control group
-    Z <-  sort(Z, decreasing = T)
+    Z <- sort(Z, decreasing = T)
       
     if (ate >= 0){ # when ate is a positive value, generate Y1 greater than Y0
       Y0 <- round(runif(n_rows, min = y_min, max = y_max - ate))  
@@ -407,7 +411,10 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
     } else if (po_question == F & ite_question == T){ # generate questions ('?') for only ITE
       
       # randomly sample the indexes of half of the sample size
-      idx <- sort(sample(1:n_rows, size = round(0.5*n_rows)))
+      # TODO: why only half?
+      # idx <- sort(sample(1:n_rows, size = round(0.5*n_rows)))
+      idx <- 1:n_rows
+      
       # the sampled indexes are the rows for ITE questions
       correct_answers <- df$ITE[idx]
       df$ITE[idx] <- '?'

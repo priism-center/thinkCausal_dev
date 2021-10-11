@@ -16,6 +16,7 @@
 #' @return character vector
 #' @export
 #'
+#' @importFrom stringr str_replace_all
 #' @examples
 #' .names <- c("yes", "TRUE", "nope%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye')
 #' clean_names(.names)
@@ -30,7 +31,7 @@ clean_names <- function(.names){
   # replace spaces with underscore
   .names <- stringr::str_replace_all(string = .names, pattern = ' ', replacement = '_')
   
-  # replace % with 'percent'
+  # replace % with 'percent' depending on its location
   .names <- stringr::str_replace_all(string = .names, pattern = '%$', replacement = "_percent")
   .names <- stringr::str_replace_all(string = .names, pattern = '^%', replacement = "percent_")
   .names <- stringr::str_replace_all(string = .names, pattern = '%', replacement = "_percent_")

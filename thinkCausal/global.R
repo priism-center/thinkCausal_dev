@@ -4,6 +4,7 @@ library(shiny)
 library(foreign)
 library(readstata13)
 library(openxlsx) 
+library(readr)
 
 # directly called libraries that aren't currently loaded
 # library(xlsx)
@@ -19,7 +20,7 @@ library(sortable) # for drag and drop divs
 library(tidyverse) # TODO: split this up to the individual packages
 library(dplyr)
 library(ggplot2)
-library(stringr)
+library(stringr) # TODO: can this be replaced with gsub* functions?
 library(purrr)
 library(patchwork) # for combining ggplots; TODO: verify it is only used in plotBart
 library(viridis) # for color blind sensitive colors

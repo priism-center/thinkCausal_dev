@@ -671,8 +671,8 @@ shinyServer(function(input, output, session) {
     cols_continuous <- store$column_types$continuous
     
     # get smart defaults for the plotting variables
-    column_treatment <- new_col_names[stringr::str_starts(new_col_names, "Z")]
-    column_response <- new_col_names[stringr::str_starts(new_col_names, "Y")]
+    column_treatment <- grep("^Z_", new_col_names, value = TRUE) #new_col_names[stringr::str_starts(new_col_names, "Z")]
+    column_response <- grep("^Y_", new_col_names, value = TRUE) #new_col_names[stringr::str_starts(new_col_names, "Y")]
     plot_vars <- clean_detect_plot_vars(.column_types = store$column_types, 
                                         .treatment_column = column_treatment, 
                                         .response_column = column_response)
@@ -731,8 +731,8 @@ shinyServer(function(input, output, session) {
     )
     
     # update selects on balance plots
-    X_cols <- new_col_names[stringr::str_starts(new_col_names, "X")]
-    X_cols_continuous <- cols_continuous[stringr::str_starts(cols_continuous, "X")]
+    X_cols <- grep("^X_", new_col_names, value = TRUE) #new_col_names[stringr::str_starts(new_col_names, "X")]
+    X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE) #cols_continuous[stringr::str_starts(cols_continuous, "X")]
     
     # create moderator options 
     X_mods <- combn(X_cols, m = 2) %>% t() %>% as.data.frame()
@@ -935,10 +935,10 @@ shinyServer(function(input, output, session) {
     # get variables for input into plotting functions
     X <- store$selected_df
     col_names <- colnames(X)
-    treatment_col <- col_names[stringr::str_starts(col_names, "Z_")]
-    response_col <- col_names[stringr::str_starts(col_names, "Y_")]
+    treatment_col <- grep("^Z_", col_names, value = TRUE) #col_names[stringr::str_starts(col_names, "Z_")]
+    response_col <- grep("^Y_", col_names, value = TRUE) #col_names[stringr::str_starts(col_names, "Y_")]
     cols_continuous <- store$column_types$continuous
-    confounder_cols <- cols_continuous[stringr::str_starts(cols_continuous, "X")]
+    confounder_cols <-  grep("^X_", cols_continuous, value = TRUE) #cols_continuous[stringr::str_starts(cols_continuous, "X")]
     plt_type <- input$analysis_plot_overlap_method
     
     # plot either the variables or the 1 dimension propensity scores
@@ -993,7 +993,7 @@ shinyServer(function(input, output, session) {
     # plot it
     X <- store$selected_df
     col_names <- colnames(X)
-    treatment_col <- col_names[stringr::str_starts(col_names, "Z_")]
+    treatment_col <- grep("^Z_", col_names, value = TRUE) #col_names[stringr::str_starts(col_names, "Z_")]
     confounder_cols <- input$analysis_plot_balance_select_var
     p <- plot_balance(.data = X, 
                       treatment_col = treatment_col, 
