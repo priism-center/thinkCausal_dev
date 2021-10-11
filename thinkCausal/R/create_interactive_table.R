@@ -49,7 +49,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
   if (sum(.data == '?') != total_questions) stop('Every question mark should have a respective correct_answer')
   
   # manage namespace
-  if (is.null(ns)) ns <- function(input) input
+  if (is.null(ns)) ns <- function(x) x
   if (is.null(table_id)) table_id <- paste0('table', paste0(sample(letters, 15, replace = TRUE), collapse = ''))
   table_id <- ns(table_id)
   
@@ -247,6 +247,35 @@ create_row_html <- function(.data){
   return(row_html_collapsed)
 }
 
+#' Retrieve user inputted values from a table
+#' 
+#' Function to use on the server side to retreive the user input from an interactive table.
+#'
+#' @param input the global `input` object within Shiny server
+#' @param table_id string. The id assigned to the table when creating the table
+#' @param ns optional. A function defining the name space. To be used with shiny::NS
+#' @param convert_to_numeric defaults to TRUE. Automatically coerces values to numeric
+#'
+#' @author Joe Marlo
+#'
+#' @return
+#' @export
+#'
+#' @seealso \code{\link{create_interactive_table}}
+#'
+#' @examples
+#' .data <- tibble(
+#'   Student = c('Blake', 'Kennedy', 'Jordan', 'Jordan', 'John'), 
+#'   Z = c(1, 1, 0, 0, 0),
+#'   Y1 = c(115, 130, '?', '?', 120),
+#'   Y0 = c('?', '?', 130, 128, 130),
+#'   Y = c(115, 130, 130, 128, 130),
+#'   ITE = c(-6, -5, -2, -8, "?")
+#'  )
+#' correct_answers <- c("121", "135", "127", "120", "5")
+#' html_string <- create_interactive_table(.data, correct_answers, table_id = 'mytable')
+#' # HTML(html_string) within Shiny UI 
+#' # get_table_values(input, 'mytable') within Shiny server
 get_table_values <- function(input, table_id, ns = NULL, convert_to_numeric = TRUE){
   if (is.null(ns)) ns <- function(x) x
   table_id <- ns(table_id)
@@ -285,64 +314,75 @@ get_table_values <- function(input, table_id, ns = NULL, convert_to_numeric = TR
 #' html_string <- create_table(n_rows = 10, y_min = 50, y_max = 100, ate = -10, po_question = T, ite_question = T)
 #' # HTML(html_string) within Shiny UI 
 #' # access the user inputs via get_table_values(<table_id>) within Shiny server
-create_table <- function(.data = NULL, correct_answers = NULL, n_rows, y_min, y_max, ate, po_question = T, ite_question = T, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, ns = NULL){
+create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min = 50, y_max = 100, ate = 10, po_question = TRUE, ite_question = TRUE, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, ns = NULL){
   
   # if .data is not provided, automatically generate a dataframe
   if (is.null(.data)){
     
-    # 20 names that a table can randomly draw from
-    names <- c('Blake', 'Kennedy', 'Taylor', 'Jordan', 'John', 'Andrew', 'Billie', 'Charlie', 'Casey', 'Alex', 'Parker', 'Andi', 'Anthony', 'Katie', 'Zoe','Juan', 'Kevin','Pengfei','Ruohan','Yi')
+    if (n_rows > 20 | n_rows < 4) stop('n_rows must be between [4, 20]')
+    if (!is.numeric(ate)) stop('ate must be a numeric')
     
-    # the maximum number of rows is 20 and the minimum is 4 
-    if(n_rows <= 20 & n_rows >= 4){
+    # 20 names that a table can randomly draw from
+    names <- c(
+        'Blake',
+        'Kennedy',
+        'Taylor',
+        'Jordan',
+        'John',
+        'Andrew',
+        'Billie',
+        'Charlie',
+        'Casey',
+        'Alex',
+        'Parker',
+        'Andi',
+        'Anthony',
+        'Katie',
+        'Zoe',
+        'Juan',
+        'Kevin',
+        'Pengfei',
+        'Ruohan',
+        'Yi'
+      )
+    
+    # randomly draw n_row students' names  
+    Student <- sample(names, size = n_rows, replace = F)
       
-      # randomly draw n_row students' names  
-      Student <- sample(names, size = n_rows, replace = F)
-      
-      # randomly assign treatment for the n_row students
+    # randomly assign treatment for the n_row students
+    Z <- rbinom(n_rows, size = 1, prob = 0.5)
+    # re-assign treatment until each group has at least 2 students
+    while (sum(Z == 0) < 2 | sum(Z == 1) < 2) {
       Z <- rbinom(n_rows, size = 1, prob = 0.5)
-      # re-assign treatment until each group has at least 2 students
-      while (sum(Z == 0) < 2 | sum(Z == 1) < 2) {
-        Z <- rbinom(n_rows, size = 1, prob = 0.5)
-      }
-      # sort treatment by treated group first and then control group
-      Z <-  sort(Z, decreasing = T)
+    }
+    # sort treatment by treated group first and then control group
+    Z <-  sort(Z, decreasing = T)
       
-      if(ate >= 0){ # when ate is a positive value, generate Y1 greater than Y0
-        Y0 <- round(runif(n_rows, min = y_min, max = y_max - ate))  
-        Y1 <- Y0 + round(runif(n_rows, min = 0.7*ate, max = 1.3*ate)) # heterogeneous treatment effect for individuals, varying from 0.7*ate to 1.3*ate
-        Y <- ifelse(Z == 1, Y1, Y0)
-        ITE <- Y1 - Y0
-      }else if(ate < 0){ # when ate is a negative value, generate Y1 less than Y0
-        Y0 <- round(runif(n_rows, min = y_min + ate, max = y_max))
-        Y1 <- Y0 + round(runif(n_rows, min = 1.3*ate, max = 0.7*ate)) # heterogeneous treatment effect for individuals, varying from 1.3*ate to 0.7*ate
-        Y <- ifelse(Z == 1, Y1, Y0)
-        ITE <- Y1 - Y0
-      }else{ # if the ate entered is not a number
-        stop('Please enter a numeric value')
-      }
-      
-    }else if(n_rows > 20){ # if the n_rows entered is greater than 20, stop and prompt an error
-      
-      stop('Please enter the number of rows less than or equal to 20')
-      
-    }else{ # if the n_rows entered is less than 4, stop and prompt an error
-      
-      stop('Please enter the number of rows greater than or equal to 4')
-      
+    if (ate >= 0){ # when ate is a positive value, generate Y1 greater than Y0
+      Y0 <- round(runif(n_rows, min = y_min, max = y_max - ate))  
+      Y1 <- Y0 + round(runif(n_rows, min = 0.7*ate, max = 1.3*ate)) # heterogeneous treatment effect for individuals, varying from 0.7*ate to 1.3*ate
+      Y <- ifelse(Z == 1, Y1, Y0)
+      ITE <- Y1 - Y0
+    } else if (ate < 0){ # when ate is a negative value, generate Y1 less than Y0
+      Y0 <- round(runif(n_rows, min = y_min + ate, max = y_max))
+      Y1 <- Y0 + round(runif(n_rows, min = 1.3*ate, max = 0.7*ate)) # heterogeneous treatment effect for individuals, varying from 1.3*ate to 0.7*ate
+      Y <- ifelse(Z == 1, Y1, Y0)
+      ITE <- Y1 - Y0
     }
     
+    # create the dataframe
     df <- data.frame(Student, Z, Y0, Y1, Y, ITE)
-    df <- df %>% mutate(Y0 = as.character(Y0), Y1 = as.character(Y1), ITE = as.character(ITE))
+    df <- mutate(df, Y0 = as.character(Y0), Y1 = as.character(Y1), ITE = as.character(ITE))
     
-    if(po_question == T & ite_question == T){ # generate questions ('?') for both potential outcomes (Y1 and Y0) and ITE
+    if (po_question == T & ite_question == T){ # generate questions ('?') for both potential outcomes (Y1 and Y0) and ITE
       
       # get the indexes of rows that are of treated group and control group
       idx_Z1 <- which(Z == 1)
       idx_Z0 <- which(Z == 0)
+      
       # the number of questions for potential outcomes are 70% of the number of units in the two groups
-      number_questions_Z1 <- round(0.7*length(idx_Z1))
-      number_questions_Z0 <- round(0.7* length(idx_Z0))
+      number_questions_Z1 <- round(0.7 * length(idx_Z1))
+      number_questions_Z0 <- round(0.7 * length(idx_Z0))
       
       correct_answers <- c(df$Y0[1:number_questions_Z1], # the first 70% units in the treated group are designed for questions asking for Y0
                            df$ITE[(number_questions_Z1 + 1):length(idx_Z1)], # the rest 30% units in the treated group are designed for questions asking for ITE
@@ -353,7 +393,7 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows, y_min, y_
       df$Y1[(length(idx_Z1) + 1):(length(idx_Z1) + number_questions_Z0)] <- '?'
       df$ITE[(length(idx_Z1) + number_questions_Z0 + 1):n_rows] <- '?'
       
-    }else if(po_question == T & ite_question == F){ # generate questions ('?') for only potential outcomes (Y1 and Y0)
+    } else if (po_question == T & ite_question == F){ # generate questions ('?') for only potential outcomes (Y1 and Y0)
       
       # get the indexes of rows that are of treated group and control group
       idx_Z0 <- which(Z == 0)  
@@ -364,7 +404,7 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows, y_min, y_
       df$Y0[idx_Z1] <- '?'
       df$Y1[idx_Z0] <- '?'
       
-    }else if(po_question == F & ite_question == T){ # generate questions ('?') for only ITE
+    } else if (po_question == F & ite_question == T){ # generate questions ('?') for only ITE
       
       # randomly sample the indexes of half of the sample size
       idx <- sort(sample(1:n_rows, size = round(0.5*n_rows)))
@@ -372,16 +412,14 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows, y_min, y_
       correct_answers <- df$ITE[idx]
       df$ITE[idx] <- '?'
       
-    }else{ # if po_question == F & ite_question == F, ask for at least one of the argument set to be TRUE
-      
-      stop('Please select at least one type of questions')
-      
+    } else { # if po_question == F & ite_question == F, ask for at least one of the argument set to be TRUE
+      stop('At least one of po_question and ite_question must be TRUE')
     }
     
     .data <- df
     
     # if .data and extra_header are not provided, set default extra_header and extra_header_widths
-    if(is.null(extra_header)){
+    if (is.null(extra_header)){
       extra_header <- c('', 'Treatment', 'Potential Outcomes', 'Observed Outcomes', 'Treatment Effect')
       extra_header_widths <- c(1, 1, 2, 1, 1)
     }
@@ -389,7 +427,7 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows, y_min, y_
   }
   
   
-  # convert to html code
+  # convert the table into html code
   html_code <- create_interactive_table(
     .data = .data,
     correct_answers = correct_answers,
