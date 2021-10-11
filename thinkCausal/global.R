@@ -11,7 +11,7 @@ library(openxlsx)
 
 # for javascript and Shiny tools
 library(shinyjs) # for running javascript on the server-side
-library(shinyWidgets) # for alerts -- replace with CSS and default shiny alerts? Joe TODO
+library(shinyWidgets) # for slider skin; alerts -- replace with CSS and default shiny alerts? Joe TODO
 library(DT) # for javascript datatables
 library(sortable) # for drag and drop divs
 
