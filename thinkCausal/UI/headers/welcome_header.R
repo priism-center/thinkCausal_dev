@@ -35,6 +35,7 @@ welcome_header <- tabPanel(
           )
         )
         ),
+    actionButton('test_popup', 'pop up'),
     verbatimTextOutput('testytest'),
     HTML(interactive_table),
     br(),

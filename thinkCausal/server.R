@@ -1716,4 +1716,9 @@ shinyServer(function(input, output, session) {
   # example for interactive table output
   output$testytest <- renderText(get_table_values(input, 'mytable', ns = NS('yyp')))
   
+  # example of new popup
+  observeEvent(input$test_popup, {
+    show_popup_waiting(session = session)
+  })
+  
 })
