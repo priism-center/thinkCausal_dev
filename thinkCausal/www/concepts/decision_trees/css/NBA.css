@@ -213,9 +213,9 @@ footer > p {
   flex-shrink: 2;
 }
 
-#plotRankContainer {
+#plotContainer, #treeContainer {
   margin: 0 2rem 0 0;
-  max-width: 64%;
+  max-width: 45%;
   width: 100%;
 }
 
@@ -232,7 +232,7 @@ th {
   font-weight: 700;
 }
 
-#plotRank, #tableRank {
+#plot, #tree, #tableRank {
   border: 1px solid #E2E2E2;
   border-radius: 0.15rem;
   background-color: #fff;
@@ -259,7 +259,7 @@ th {
 }
 
 @media (max-width: 767px) {
-  #plotRankContainer {
+  #plotContainer, #treeContainer {
     max-width: 100%;
     margin: 0 0 2rem 0;
   }
@@ -349,4 +349,16 @@ th {
   -webkit-transform: rotate(45deg);
   box-shadow: 0 0 15px rgba(0,0,0,0.5);
   z-index: 999;
+}
+
+/* decision tree */
+#tree rect {
+  stroke: grey;
+  fill: white;
+}
+#tree line {
+  stroke-width: 1.5;
+  stroke-dasharray: 5, 5;
+  stroke: grey;
+  fill: none;
 }

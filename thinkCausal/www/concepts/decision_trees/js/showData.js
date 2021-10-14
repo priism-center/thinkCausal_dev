@@ -1,5 +1,12 @@
 function showJS(data){
-  buildPlot(store.ratings)
+  //buildPlot(store.ratings)
+  buildScatter(store.scatter_data);
+  buildTree(store.scatter_data);
+}
+
+function generateData(){
+  // in leui of data, generate the data instead
+  // generateData()
 }
 
 // read in the data
@@ -12,12 +19,12 @@ function loadData() {
         store = {},
         store.predictions = datasets[0];
         store.ratings = datasets[1];
-        store.data = datasets[2];
+        store.scatter_data = datasets[2];
         console.log("Loaded data:", store)
         return store;
     })
-    // in leui of data, generate the data instead
 }
 
 // run it
 loadData().then(showJS)
+// generateData().then(showJS)

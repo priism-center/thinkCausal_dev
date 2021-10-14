@@ -10,12 +10,12 @@ Binary decision trees create an interpretable decision making framework for maki
 <img src="concepts/decision_trees/img/diagram.png" width=40%>
 </p>
 
-Note that each split results in two outcomes (binary) and every possible condition leads to a terminal node. The model's splits can also be visualized has partitioning the parameter space. Since the decision tree makes binary splits along a parameter, the resulting boundaries will always be rectangular.
+Note that each split results in two outcomes (binary) and every possible condition leads to a terminal node. The model's splits can also be visualized has partitioning the feature space. Since the decision tree makes binary splits along a parameter, the resulting boundaries will always be rectangular.
 
 <p align="center">
 <img src="concepts/decision_trees/img/diagram_features.png" width=40%>
 </p>
 
-Try splitting the parameter space below to optimize the number of correct classifications. Refresh the data to see how your splits perform on new data. All data is generated from the same data generating function.
+Try splitting the feature space below to optimize the number of correct classifications. Refresh the data to see how your splits perform on new data. All data is generated from the same data generating function.
 
 <br><br>

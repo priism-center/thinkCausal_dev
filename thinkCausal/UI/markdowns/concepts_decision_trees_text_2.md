@@ -18,7 +18,5 @@ Convallis a cras semper auctor neque vitae tempus quam. Sed libero enim sed fauc
 
 Nunc pulvinar sapien et ligula ullamcorper malesuada proin libero. Ipsum faucibus vitae aliquet nec. Tristique senectus et netus et malesuada. Elementum curabitur vitae nunc sed velit dignissim sodales ut eu. Mattis rhoncus urna neque viverra justo. Mattis aliquam faucibus purus in.
 
-## How is BART different?
 
-Donec enim diam vulputate ut pharetra sit. Morbi tincidunt augue interdum velit euismod in pellentesque massa placerat. Et pharetra pharetra massa massa ultricies mi quis hendrerit dolor. Vel quam elementum pulvinar etiam non quam lacus suspendisse. Duis convallis convallis tellus id interdum velit laoreet. Convallis a cras semper auctor neque vitae tempus quam. Sed libero enim sed faucibus turpis in eu mi. At ultrices mi tempus imperdiet. Nunc pulvinar sapien et ligula ullamcorper malesuada proin libero. Ipsum faucibus vitae aliquet nec. Tristique senectus et netus et malesuada. Elementum curabitur vitae nunc sed velit dignissim sodales ut eu. Mattis rhoncus urna neque viverra justo. Mattis aliquam faucibus purus in.
 

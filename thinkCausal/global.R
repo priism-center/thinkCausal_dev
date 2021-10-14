@@ -22,9 +22,8 @@ library(dplyr)
 library(ggplot2)
 library(stringr) # TODO: can this be replaced with gsub* functions?
 library(purrr)
-# library(patchwork) # for combining ggplots; TODO: verify it is only used in plotBart
 library(viridis) # for color blind sensitive colors
-library(rpart.plot) # for plotting single regression tree
+library(rpart.plot) # for plotting single regression tree; tODO: move to plotBart?
 
 # for bart
 library(plotBart) # devtools::install_github("joemarlo/plotBart")
@@ -88,9 +87,6 @@ rownames(randomization_df) <- 1:nrow(randomization_df)
 map(list.files('R', recursive = TRUE), function(file) source(file.path('R', file)))
 ## delete
 interactive_table <- create_interactive_table(.data, correct_answers, extra_header, extra_header_widths, table_id = 'mytable', ns = NS('yyp'))
-interactive_table_auto_data_po <- create_table(n_rows = 6, y_min = 50, y_max = 100, ate = -10, po_question = T, ite_question = F)
-interactive_table_auto_data_ite <- create_table(n_rows = 6, y_min = 50, y_max = 100, ate = -10, po_question = F, ite_question = T)
-interactive_table_auto_data_both <- create_table(n_rows = 6, y_min = 50, y_max = 100, ate = -10, po_question = T, ite_question = T)
 ##
 map(list.files(file.path('UI', 'concepts')), function(file) source(file.path("UI", "concepts", file)))
 map(list.files(file.path('UI', 'pages')), function(file) source(file.path("UI", "pages", file)))

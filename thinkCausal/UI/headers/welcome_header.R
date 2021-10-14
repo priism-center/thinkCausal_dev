@@ -38,12 +38,7 @@ welcome_header <- tabPanel(
     actionButton('test_popup', 'pop up'),
     verbatimTextOutput('testytest'),
     HTML(interactive_table),
-    br(),
-    HTML(interactive_table_auto_data_po),
-    br(),
-    HTML(interactive_table_auto_data_ite),
-    br(),
-    HTML(interactive_table_auto_data_both)
+    br()
     # h3("What is thinkCausal?"),
     # includeMarkdown('UI/markdowns/landing.md')
     )
