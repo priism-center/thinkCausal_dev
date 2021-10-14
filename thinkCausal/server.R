@@ -1631,6 +1631,7 @@ shinyServer(function(input, output, session) {
   lapply(tab_titles, function(page_to_go_to) {
     page_id <- paste0("concepts_link_", tolower(gsub(' ', '_', page_to_go_to)))
     observeEvent(input[[page_id]], {
+      shinyjs::runjs("window.scrollTo(0, 0)")
       updateNavbarPage(session, "nav", page_to_go_to)
     })
   })
