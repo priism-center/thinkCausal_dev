@@ -17,9 +17,9 @@ concepts_page <- tabPanel(
     column(
       width = 4,
       wellPanel(
-        actionLink('concepts_link_Randomization',img(src = 'thumbnails/propensity.png')),
+        actionLink('concepts_link_randomization', img(src = 'thumbnails/propensity.png')),
         br(),
-        h3("Randomizaion"),
+        h3("Randomization"),
         p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit.")
       )
     ),
@@ -60,6 +60,15 @@ concepts_page <- tabPanel(
         br(),
         h3("Regression Trees vs Linear Regression"),
         p("Vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu  ad tempor, nam aliquet quis feugiat augue.")
+      )
+    ),
+    column(
+      width = 4,
+      wellPanel(
+        actionLink('concepts_link_decision_trees', img(src = 'thumbnails/decision_tree.png')),
+        br(),
+        h3("Decision trees"),
+        p("Tincidunt pellentesque viverra ultrices bibendum mauris duis ad tempor, nam aliquet quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor elementum eget eleifend nisi cubilia.")
       )
     )
     )
