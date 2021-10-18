@@ -11,7 +11,7 @@ shinyServer(function(input, output, session) {
   #   updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
   # })
   observeEvent(input$analysis_data_select_button_back, {
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Pivot Data")
   })
   # observeEvent(input$analysis_data_select_button_next, {
   # 
@@ -172,8 +172,8 @@ shinyServer(function(input, output, session) {
     validate_columns_assigned(store)
     
     # use assigned dataframe as the template
-    user_modified_df <- store$col_assignment_df
-
+    user_modified_df <- store$categorical_df  #! input data changed to the result of pivot data
+  
     if (isTRUE(nrow(store$user_modified_df) > 0)){
       
       # get input indices and current input values
@@ -249,12 +249,12 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_data_button_reset, {
     
     # reset dataframe
-    store$user_modified_df <- store$col_assignment_df
+    store$user_modified_df <- store$categorical_df #! input data changed to the result of pivot data
     
     ## reset UI
     # set indices to map over
-    all_col_names <- colnames(store$col_assignment_df)
-    default_data_types <- convert_data_type_to_simple(store$col_assignment_df)
+    all_col_names <- colnames(store$categorical_df)  #! input data changed to the result of pivot data
+    default_data_types <- convert_data_type_to_simple(store$categorical_df)  #! input data changed to the result of pivot data
     indices <- seq_along(all_col_names)
     
     # update the inputs
@@ -413,7 +413,115 @@ shinyServer(function(input, output, session) {
     # )
     
     # move to next page
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Pivot Data")
+  })
+  
+  # pivot data -------------------------------------------------------------
+  
+  number_groups <- reactiveValues(data = 1)
+  
+  output$analysis_data_UI_dragdrop_grouping <- renderUI({
+    
+    # stop here if data hasn't been uploaded
+    validate_data_uploaded(store)
+    
+    # infer variables that are of logical other than the treatment 
+    df <- store$col_assignment_df[,-1]
+    cat_var_names <- colnames(df)[unlist(lapply(sapply(df, unique), function(x) length(x) == 2))]
+ 
+    ## Todo: if detect the two values in a dummy are not of T/F or 0/1, then ask user to specify which is T and which is F
+    
+    # if there are more than one logical variables, show the grouping interface
+    if(length(cat_var_names) > 1){
+    
+      drag_drop_html_grouping <- 
+        tagList(
+          bucket_list(
+            header = "Drag the variables to their respective groups",
+            group_name = "analysis_data_dragdrop_grouping",
+            orientation = "horizontal",
+            
+            add_rank_list(
+              input_id = "analysis_data_dragdrop_grouping_variables",
+              text = strong("Variables"),
+              labels = cat_var_names,
+              options = sortable_options(multiDrag = TRUE)
+            )
+          ),
+          # allow user to add groups
+          lapply(c(1:number_groups$data), function(i){
+              bucket_list(
+                header = " ",
+                group_name = "analysis_data_dragdrop_grouping",
+                orientation = "horizontal",
+                
+                add_rank_list(
+                  input_id = paste0('analysis_data_categorical_group_', i),
+                  text = textInput(inputId = paste0("rename_group_", i), label = NULL, value = paste0("Group ", i)), # group names are editable
+                  labels = NULL,
+                  options = sortable_options(multiDrag = TRUE)
+                )
+              )
+          })
+        )
+      
+    }else{ # if there is zero or one logical variable, show the prompt to go to the next page
+      drag_drop_html_grouping <- tagList(
+        p("Your dataset has <= 1 logical variable. No need to group variables. Click 'Save groupings' to the next page." )
+      )
+    }
+    return(drag_drop_html_grouping)
+  })
+  
+  
+  # the number of group increases one when observe 'add a group' clicked
+  observeEvent(input$analysis_data_add_group, {
+    number_groups$data <- number_groups$data + 1
+  })
+  
+  # create new dataframe when user saves variable grouping
+  observeEvent(input$analysis_data_save_groupings, {
+    
+    store$categorical_df <- store$col_assignment_df
+    
+    for (i in 1:number_groups$data) {
+      
+      # find the column indexes of dummy variables in the same group 
+      input_id <- paste0("analysis_data_categorical_group_", i)
+      idx <- which(colnames(store$categorical_df) %in% input[[input_id]])
+     
+      # if there are more than one dummies in a group, convert the dummies to a categorical variable
+      if(length(idx) > 1){
+        tmp <- store$categorical_df[,idx]
+        # if the sum of all the categories in a row is zero, then the reference group is missing for the categorical variable, filling with NA
+        # otherwise, filling with the column name of the binary variable whose values is TRUE 
+        categorical <- apply(tmp, 1, function(x) ifelse(sum(x, na.rm = T) == 0, NA, colnames(tmp)[which(x == TRUE)]))
+        # remove the multiple dummies
+        store$categorical_df <- store$categorical_df[,-idx]
+        # add the new categorical variable into the dataset
+        store$categorical_df <- cbind(store$categorical_df, categorical)
+        # clean the user input name
+        name <- clean_names(input[[paste0("rename_group_", i)]])
+        colnames(store$categorical_df)[ncol(store$categorical_df)] <- name
+      }
+      
+    }
+    
+    # add to log
+    log_event <- 'Assigned dummy coded variables to groups: \n'
+    for (i in 1:number_groups$data){
+      input_id <- paste0("analysis_data_categorical_group_", i)
+      log_event <- paste0(log_event, '\tgroup', i, ': ', paste0(input[[input_id]], collapse = '; '), '\n')
+    }
+    print(log_event)
+    store$log <- append(store$log, log_event)
+    
+    # move to next page
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
+  })
+  
+  observeEvent(input$analysis_data_pivot_button_back, {
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
   })
   
   
@@ -424,12 +532,12 @@ shinyServer(function(input, output, session) {
 
     # stop here if columns haven't been assigned
     validate_columns_assigned(store)
-      
+    
     # get default data types
-    default_data_types <- convert_data_type_to_simple(store$col_assignment_df)
+    default_data_types <- convert_data_type_to_simple(store$categorical_df) #! input data changed to the result of pivot data  
     
     # set indices to map over
-    all_col_names <- colnames(store$col_assignment_df)
+    all_col_names <- colnames(store$categorical_df) #! input data changed to the result of pivot data
     indices <- seq_along(all_col_names)
     
     # create vector of column type names
@@ -541,12 +649,12 @@ shinyServer(function(input, output, session) {
     validate_columns_assigned(store)
 
     # original data column indices
-    indices <- seq_along(colnames(store$col_assignment_df))
+    indices <- seq_along(colnames(store$categorical_df)) #! input data changed to the result of pivot data
 
     lapply(X = indices, function(i) {
 
       # update the levels
-      col_levels <- unique(store$col_assignment_df[[i]])
+      col_levels <- unique(store$categorical_df[[i]]) #! input data changed to the result of pivot data
       updateTextInput(
         session = session,
         inputId = paste0("analysis_data_", i, "_levels"),

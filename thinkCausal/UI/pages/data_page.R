@@ -55,6 +55,43 @@ data_page <- tabPanel(
                       )
                     )
            ),
+           tabPanel(title = "Pivot Data",
+                    fluid = TRUE,
+                    sidebarLayout(
+                      sidebarPanel(
+                        h4("Group categorical variables in your data"),
+                        p("Empty groups will be ignored."),
+                        br(),
+                        div(
+                          class = 'backNextContainer',
+                          actionButton(inputId = 'analysis_data_add_group',
+                                       label = 'Add group')
+                        ),
+                        br(),
+                        div(
+                          class = 'backNextContainer',
+                          actionButton(inputId = 'analysis_data_save_groupings',
+                                       label = 'Save groupings')
+                        ),
+                        br(),
+                        div(
+                          class = 'backNextContainer',
+                          actionButton(inputId = "analysis_data_pivot_button_back",
+                                       label = "Back"),
+                        ),
+                        br(),
+                        tags$button(type = 'button',
+                                    class = 'btn btn-default help',
+                                    onclick = "openConceptsPage('Concept3')", # not sure where this is linked to
+                                    'Help me'),
+                        br(),br()
+                      ),
+                      mainPanel(
+                        br(),
+                        uiOutput(outputId = 'analysis_data_UI_dragdrop_grouping')
+                      )
+                    )
+           ),
            tabPanel(title = "Select Data",
                     fluid = TRUE,
                     sidebarLayout(
