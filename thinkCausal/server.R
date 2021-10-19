@@ -493,9 +493,9 @@ shinyServer(function(input, output, session) {
       # if there are more than one dummies in a group, convert the dummies to a categorical variable
       if(length(idx) > 1){
         tmp <- store$categorical_df[,idx]
-        # if the sum of all the categories in a row is zero, then the reference group is missing for the categorical variable, filling with NA
+        # if the sum of all the categories in a row is zero, then the reference group is missing for the categorical variable, filling with 'REFERENCE'
         # otherwise, filling with the column name of the binary variable whose values is TRUE 
-        categorical <- apply(tmp, 1, function(x) ifelse(sum(x, na.rm = T) == 0, NA, colnames(tmp)[which(x == TRUE)]))
+        categorical <- apply(tmp, 1, function(x) ifelse(sum(x, na.rm = T) == 0, 'REFERENCE', colnames(tmp)[which(x == TRUE)]))
         # remove the multiple dummies
         store$categorical_df <- store$categorical_df[,-idx]
         # add the new categorical variable into the dataset
