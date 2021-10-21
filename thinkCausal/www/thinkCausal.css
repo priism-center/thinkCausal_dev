@@ -353,7 +353,7 @@ border 0 fixes the buttons moving around when you hover / click */
   left: 0;
   background-color: #3e374a;
   overflow-x: hidden;
-  transition: 0.5s;
+  transition: 0.35s;
   padding-top: 1rem;
   -webkit-box-shadow: 400px 0px 300px rgba(74, 74, 74, 0.5);
   -moz-box-shadow: 400px 0px 300px rgba(74, 74, 74, 0.5);

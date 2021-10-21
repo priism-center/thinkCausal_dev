@@ -28,6 +28,7 @@ shinyUI(
                          HTML('<a style="cursor:pointer" class="closebtn" onclick="closeConcepts()">&times;</a>')
                      ),
                      tags$div(
+                         id = 'myMarkdown',
                          class = 'markdownContainer',
                          includeMarkdown(file.path("UI", "markdowns", 'help.md'))
                      )
