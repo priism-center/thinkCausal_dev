@@ -373,6 +373,10 @@ border 0 fixes the buttons moving around when you hover / click */
   color: #f1f1f1;
 }
 
+.conceptsSideBarContainer {
+  float: right;
+}
+
 .conceptsSideBarContainer p, .conceptsSideBarContainer h1, .conceptsSideBarContainer h2, .conceptsSideBarContainer h3, .conceptsSideBarContainer h4, .conceptsSideBarContainer h5 {
   color: #b0b0b0;
 }
