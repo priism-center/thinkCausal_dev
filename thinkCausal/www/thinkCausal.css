@@ -513,6 +513,13 @@ border 0 fixes the buttons moving around when you hover / click */
   color: white !important;
 }
 
+/* this makes the sortable bucket into a grid*/
+#sortable-wide-upload > .rank-list-item, 
+#sortable-wide-group > .rank-list-item  {
+  width: min(100%, 248px); 
+  float: left
+}
+
 #analysis_data_upload_progress {
   height: 2rem;
 }

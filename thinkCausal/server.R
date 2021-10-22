@@ -339,7 +339,8 @@ shinyServer(function(input, output, session) {
           input_id = "analysis_data_dragdrop_delete",
           text = strong("Exclude these variables"),
           labels = auto_columns$ID,
-          options = sortable_options(multiDrag = TRUE)
+          options = sortable_options(multiDrag = TRUE),
+          css_id = 'sortable-wide-upload'
         )
       )
     )
@@ -454,7 +455,8 @@ shinyServer(function(input, output, session) {
               input_id = "analysis_data_dragdrop_grouping_variables",
               text = strong("Ungrouped variables"),
               labels = ungrouped_vars,
-              options = sortable_options(multiDrag = TRUE)
+              options = sortable_options(multiDrag = TRUE),
+              css_id = 'sortable-wide-group'
             )
           ),
           # allow user to add groups

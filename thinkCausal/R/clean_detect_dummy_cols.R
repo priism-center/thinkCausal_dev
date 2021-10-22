@@ -70,7 +70,7 @@ clean_detect_dummy_cols_unique <- function(.data){
   group_size <- map_int(dummy_cols, length)
   all_potential_cols <- sort(unique(unlist(dummy_cols)))
   
-  # find which group each column in
+  # find which group each column is in
   is_in_group <- map(all_potential_cols, function(dummy){
     is_in_group <- map_lgl(dummy_cols, function(dummies) dummy %in% dummies)
     which(is_in_group)
@@ -82,8 +82,8 @@ clean_detect_dummy_cols_unique <- function(.data){
   duplicates <- names(duplicates[duplicates > 1])
   duplicates <- is_in_group[duplicates]
   
-  # for each duplicate, drop the smaller group
-  # if the same size, drop the first one
+  # for each duplicate, drop the smaller groups
+  # if the same size, retain the first one
   groups_to_drop <- map(duplicates, function(duplicate){
     sizes <- group_size[duplicate]
     biggest_group <- duplicate[which.max(unlist(sizes))]
