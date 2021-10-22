@@ -59,8 +59,8 @@ data_page <- tabPanel(
                     fluid = TRUE,
                     sidebarLayout(
                       sidebarPanel(
-                        h4("Group categorical variables in your data"),
-                        p("Empty groups will be ignored."),
+                        h4("Are any of these variables part of a natural group?"),
+                        p("Variables that have been dummy coded should be grouped together. Please verify any pre-filled groups. Empty groups will be ignored."),
                         br(),
                         div(
                           class = 'backNextContainer',

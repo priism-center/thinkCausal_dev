@@ -21,14 +21,15 @@ shinyUI(
         # div for help slide over
         tags$div(id = 'mySideBar',
                  class = 'conceptsSideBar',
-                 tags$div(class = 'conceptsSideBarContainer',
+                 tags$div(
+                     id = 'mySideBarContainer',
+                     class = 'conceptsSideBarContainer',
                      tags$div(
                          class = 'conceptsHeader',
                          h1("Help"),
                          HTML('<a style="cursor:pointer" class="closebtn" onclick="closeConcepts()">&times;</a>')
                      ),
                      tags$div(
-                         id = 'myMarkdown',
                          class = 'markdownContainer',
                          includeMarkdown(file.path("UI", "markdowns", 'help.md'))
                      )

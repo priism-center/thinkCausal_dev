@@ -344,6 +344,7 @@ border 0 fixes the buttons moving around when you hover / click */
 
 /* help slideover */
 /*https://www.w3schools.com/howto/howto_js_sidenav.asp*/
+/* or replace this with bootstrap https://getbootstrap.com/docs/5.0/components/offcanvas/ */
 .conceptsSideBar {
   height: 100%;
   width: 0;

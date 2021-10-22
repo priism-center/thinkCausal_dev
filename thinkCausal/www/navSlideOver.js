@@ -37,7 +37,7 @@ $('.conceptsSubHeader').each(function(){
 function resize_container(){
   let window_width = $(window).width();
   let x_width = Math.min(window_width, 700) + "px";
-  document.getElementById("myMarkdown").style.width = x_width;
+  document.getElementById("mySideBarContainer").style.width = x_width;
 }
 resize_container()
 $(window).resize(function() {

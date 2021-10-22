@@ -416,20 +416,29 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Pivot Data")
   })
   
+  
   # pivot data -------------------------------------------------------------
   
-  number_groups <- reactiveValues(data = 1)
+  # initiate counter of number of groups to un-dummy
+  store$n_dummy_groups <- 1
   
   output$analysis_data_UI_dragdrop_grouping <- renderUI({
     
-    # stop here if data hasn't been uploaded
-    validate_data_uploaded(store)
+    # stop here if data hasn't been uploaded and columns assigned
+    validate_columns_assigned(store)
     
     # infer variables that are of logical other than the treatment 
-    df <- store$col_assignment_df[,-1]
-    cat_var_names <- colnames(df)[unlist(lapply(sapply(df, unique), function(x) length(x) == 2))]
- 
-    ## Todo: if detect the two values in a dummy are not of T/F or 0/1, then ask user to specify which is T and which is F
+    df <- store$col_assignment_df[, -c(1:2)]
+    # cat_var_names <- colnames(df)[unlist(lapply(sapply(df, unique), function(x) length(x) == 2))]
+    cat_var_names <- colnames(df)[sapply(df, clean_detect_logical)]
+    
+    # infer which columns are grouped (i.e. smart defaults)
+    auto_groups <- clean_detect_dummy_cols_unique(df)
+    store$n_dummy_groups <- max(store$n_dummy_groups, length(auto_groups))
+    ungrouped_vars <- setdiff(cat_var_names, unlist(auto_groups))
+
+    ## TODO: if detect the two values in a dummy are not of T/F or 0/1, then ask user to specify which is T and which is F
+    ## TODO: 'add group' will overwrite the names
     
     # if there are more than one logical variables, show the grouping interface
     if(length(cat_var_names) > 1){
@@ -443,13 +452,13 @@ shinyServer(function(input, output, session) {
             
             add_rank_list(
               input_id = "analysis_data_dragdrop_grouping_variables",
-              text = strong("Variables"),
-              labels = cat_var_names,
+              text = strong("Ungrouped variables"),
+              labels = ungrouped_vars,
               options = sortable_options(multiDrag = TRUE)
             )
           ),
           # allow user to add groups
-          lapply(c(1:number_groups$data), function(i){
+          lapply(c(1:store$n_dummy_groups), function(i){
               bucket_list(
                 header = " ",
                 group_name = "analysis_data_dragdrop_grouping",
@@ -457,15 +466,17 @@ shinyServer(function(input, output, session) {
                 
                 add_rank_list(
                   input_id = paste0('analysis_data_categorical_group_', i),
-                  text = textInput(inputId = paste0("rename_group_", i), label = NULL, value = paste0("Group ", i)), # group names are editable
-                  labels = NULL,
+                  text = textInput(inputId = paste0("rename_group_", i), 
+                                   label = NULL, 
+                                   value = paste0("Group ", i)), # group names are editable
+                  labels = tryCatch(auto_groups[[i]], error = function(e) NULL), #NULL,
                   options = sortable_options(multiDrag = TRUE)
                 )
               )
           })
         )
       
-    }else{ # if there is zero or one logical variable, show the prompt to go to the next page
+    } else{ # if there is zero or one logical variable, show the prompt to go to the next page
       drag_drop_html_grouping <- tagList(
         p("Your dataset has <= 1 logical variable. No need to group variables. Click 'Save groupings' to the next page." )
       )
@@ -476,7 +487,7 @@ shinyServer(function(input, output, session) {
   
   # the number of group increases one when observe 'add a group' clicked
   observeEvent(input$analysis_data_add_group, {
-    number_groups$data <- number_groups$data + 1
+    store$n_dummy_groups <- store$n_dummy_groups + 1
   })
   
   # create new dataframe when user saves variable grouping
@@ -484,7 +495,7 @@ shinyServer(function(input, output, session) {
     
     store$categorical_df <- store$col_assignment_df
     
-    for (i in 1:number_groups$data) {
+    for (i in 1:store$n_dummy_groups) {
       
       # find the column indexes of dummy variables in the same group 
       input_id <- paste0("analysis_data_categorical_group_", i)
@@ -493,13 +504,17 @@ shinyServer(function(input, output, session) {
       # if there are more than one dummies in a group, convert the dummies to a categorical variable
       if(length(idx) > 1){
         tmp <- store$categorical_df[,idx]
+        
         # if the sum of all the categories in a row is zero, then the reference group is missing for the categorical variable, filling with 'REFERENCE'
         # otherwise, filling with the column name of the binary variable whose values is TRUE 
         categorical <- apply(tmp, 1, function(x) ifelse(sum(x, na.rm = T) == 0, 'REFERENCE', colnames(tmp)[which(x == TRUE)]))
+        
         # remove the multiple dummies
         store$categorical_df <- store$categorical_df[,-idx]
+        
         # add the new categorical variable into the dataset
         store$categorical_df <- cbind(store$categorical_df, categorical)
+        
         # clean the user input name
         name <- clean_names(input[[paste0("rename_group_", i)]])
         colnames(store$categorical_df)[ncol(store$categorical_df)] <- name
@@ -509,7 +524,7 @@ shinyServer(function(input, output, session) {
     
     # add to log
     log_event <- 'Assigned dummy coded variables to groups: \n'
-    for (i in 1:number_groups$data){
+    for (i in 1:store$n_dummy_groups){
       input_id <- paste0("analysis_data_categorical_group_", i)
       log_event <- paste0(log_event, '\tgroup', i, ': ', paste0(input[[input_id]], collapse = '; '), '\n')
     }
@@ -1490,8 +1505,6 @@ shinyServer(function(input, output, session) {
     }
     
     
-    
-    
     observeEvent(input$common_support_new_rule, {
       updateNavbarPage(session, inputId = "nav", selected = "Model")
       shinyWidgets::closeSweetAlert()
@@ -1660,6 +1673,7 @@ shinyServer(function(input, output, session) {
   
 
   # Moderators  -------------------------------------------------------------
+  
   observeEvent(input$go_to_subgroup_results, {
     updateNavbarPage(session, inputId = "nav", selected = "Subgroup Results")
   })
@@ -1700,8 +1714,6 @@ shinyServer(function(input, output, session) {
   })
   
   # plot the moderators
-  
-  
   output$analysis_moderators_explore_plot <- renderPlot({
     
     # stop here if model isn't fit yet

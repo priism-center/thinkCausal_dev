@@ -23,7 +23,7 @@ clean_detect_dummy_cols <- function(.data){
   data_logical <- .data[, is_logical]
   
   # stop if there is only one column
-  if (sum(is_logical) <= 1) return(list(contains_dummy = contains_dummy, dummy_columns = NULL))
+  if (sum(is_logical) <= 1) return(list(contains_dummy = FALSE, dummy_columns = NULL))
   
   # create all possible combinations of columns
   col_indices <- seq_along(data_logical)
@@ -57,28 +57,52 @@ is_rank_deficient <- function(.matrix){
   return(is_rank_deficient)
 }
 
+clean_detect_dummy_cols_unique <- function(.data){
+  # ensure no duplicate groupings
+  # returns the largest group if a given column shows up in two groups
+  # TODO: this is kind of a mess; I think it works well enough tho
+  
+  # get potential dummy columns
+  dummy_cols <- clean_detect_dummy_cols(.data)$dummy_columns
+  if (length(dummy_cols) <= 2) return(dummy_cols)
+  
+  # calculate group size
+  group_size <- map_int(dummy_cols, length)
+  all_potential_cols <- sort(unique(unlist(dummy_cols)))
+  
+  # find which group each column in
+  is_in_group <- map(all_potential_cols, function(dummy){
+    is_in_group <- map_lgl(dummy_cols, function(dummies) dummy %in% dummies)
+    which(is_in_group)
+  })
+  names(is_in_group) <- all_potential_cols
+  
+  # which groups have multiple items
+  duplicates <- map(is_in_group, length)
+  duplicates <- names(duplicates[duplicates > 1])
+  duplicates <- is_in_group[duplicates]
+  
+  # for each duplicate, drop the smaller group
+  # if the same size, drop the first one
+  groups_to_drop <- map(duplicates, function(duplicate){
+    sizes <- group_size[duplicate]
+    biggest_group <- duplicate[which.max(unlist(sizes))]
+    smaller_groups <- setdiff(duplicate, biggest_group)
+    return(smaller_groups)
+  })
+  filtered_groups <- dummy_cols[-unlist(groups_to_drop)]
+  
+  # if the above algo fails, just return the first group
+  col_counts <- table(unlist(filtered_groups))
+  if (any(col_counts > 1)) filtered_groups <- dummy_cols[1]
+  
+  return(filtered_groups)
+}
 
-# tmp <- fastDummies::dummy_cols(.data, remove_first_dummy = T)[, 4:7]
-# tmp2 <- fastDummies::dummy_cols(.data)[, 4:9]
-# is_rank_deficient(tmp[,1:2])
-# is_rank_deficient(tmp2[, 1:3])
-# 
-# .matrix <- tmp2[, 1:4]
-# 
-# tmp_cor <- cor.test(.matrix[[1]], .matrix[[2]], method = 'spearman')
-# cor(.matrix[, -4])
-# cor(c(1,1,0,0), c(0,0, 1,1))
-# cor.test(c(1,1,0,0), c(0,0, 1,1),  method = 'spearman')
-
-# wilcox.test(.matrix[[1]] ~ .matrix[[2]])
-# 
-# cor(tmp2[,1:3])
-# 
-# lmmod <- lm(1:nrow(tmp) ~ tmp2[[1]] + tmp2[[2]] + tmp2[[3]])
-
-# goal is to create a popup that use can drag and drop grouppings that define the dummy code
-# prompt user only if more than one logical column that is not the outcome
-# could also integrate this into the XYZ selection page
-
-
-
+# .data <- tibble(test = 1:5,
+#                 to_dummy = c('level1', 'level1', 'level2', 'level2', 'level3'),
+#                 to_dummy2 = c('char1', 'char3', 'char3', 'char2', 'char1'))
+# .data <- fastDummies::dummy_cols(.data)
+# .data <- bind_cols(.data, .data)
+# clean_detect_dummy_cols_unique(.data)
+      
