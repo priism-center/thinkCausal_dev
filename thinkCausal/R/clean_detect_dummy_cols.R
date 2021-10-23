@@ -29,7 +29,13 @@ clean_detect_dummy_cols <- function(.data){
   col_indices <- seq_along(data_logical)
   col_combinations <- sapply(col_indices[-1], function(m) combn(col_indices, m, simplify = FALSE))
   col_combinations <- unlist(col_combinations, recursive = FALSE)
+  
+  # limit to only combinations with less than 6 columns (for performance)
+  col_combinations <- col_combinations[map_int(col_combinations, length) < 6]
 
+  # limit to only consecutive columns (for performance)
+  col_combinations <- col_combinations[map_lgl(col_combinations, function(col_comb) all(diff(col_comb) == 1))]
+  
   # test for rank deficiency
   is_dummy <- sapply(col_combinations, function(cols) is_rank_deficient(data_logical[, cols]))
   contains_dummy <- isTRUE(any(is_dummy))

@@ -62,22 +62,15 @@ data_page <- tabPanel(
                         h4("Are any of these variables part of a natural group?"),
                         p("Variables that have been dummy coded should be grouped together. Please verify any pre-filled groups. Empty groups will be ignored."),
                         br(),
-                        div(
-                          class = 'backNextContainer',
-                          actionButton(inputId = 'analysis_data_add_group',
-                                       label = 'Add group')
-                        ),
-                        br(),
-                        div(
-                          class = 'backNextContainer',
-                          actionButton(inputId = 'analysis_data_save_groupings',
-                                       label = 'Save groupings')
-                        ),
-                        br(),
+                        actionButton(inputId = 'analysis_data_add_group',
+                                     label = 'Add group'),
+                        br(), br(),
                         div(
                           class = 'backNextContainer',
                           actionButton(inputId = "analysis_data_pivot_button_back",
                                        label = "Back"),
+                          actionButton(inputId = 'analysis_data_save_groupings',
+                                       label = 'Save groupings')
                         ),
                         br(),
                         tags$button(type = 'button',
@@ -99,24 +92,15 @@ data_page <- tabPanel(
                         h4("Rename and verify your data"),
                         p("Ensure your data is named and the data types are correct."),
                         br(),
-                        div(
-                          class = 'backNextContainer',
-                          actionButton(inputId = 'analysis_data_save',
-                                       label = 'Save changes')
-                        ),
-                        br(),
-                        div(
-                          class = 'backNextContainer',
-                          actionButton(inputId = 'analysis_data_button_reset',
-                                       label = 'Reset variable changes')
-                        ),
-                        br(),
+                        actionButton(inputId = 'analysis_data_button_reset',
+                                     label = 'Reset variable changes'),
+                        br(), br(),
                         div(
                           class = 'backNextContainer',
                           actionButton(inputId = "analysis_data_select_button_back",
                                        label = "Back"),
-                          # actionButton(inputId = "analysis_data_select_button_next",
-                          #              label = "Next")
+                          actionButton(inputId = 'analysis_data_save',
+                                       label = 'Save changes')
                           ),
                         br(),
                         tags$button(type = 'button',

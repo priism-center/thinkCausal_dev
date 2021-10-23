@@ -547,8 +547,9 @@ shinyServer(function(input, output, session) {
   # render UI for modifying the data
   output$analysis_data_modify_UI <- renderUI({
 
-    # stop here if columns haven't been assigned
+    # stop here if columns haven't been assigned and grouped
     validate_columns_assigned(store)
+    validate_data_grouped(store)
     
     # get default data types
     default_data_types <- convert_data_type_to_simple(store$categorical_df) #! input data changed to the result of pivot data  
@@ -662,8 +663,9 @@ shinyServer(function(input, output, session) {
   observe_multiple <- reactive(list(store$user_modified_df, input$analysis_data_button_columnAssignSave))
   observeEvent(observe_multiple(), {
 
-    # stop here if columns haven't been assigned
+    # stop here if columns haven't been assigned and grouped
     validate_columns_assigned(store)
+    validate_data_grouped(store)
 
     # original data column indices
     indices <- seq_along(colnames(store$categorical_df)) #! input data changed to the result of pivot data
@@ -692,8 +694,9 @@ shinyServer(function(input, output, session) {
   # table of selected dataset
   output$analysis_data_table <- DT::renderDataTable({
     
-    # stop here if columns haven't been assigned
+    # stop here if columns haven't been assigned and grouped
     validate_columns_assigned(store)
+    validate_data_grouped(store)
     
     # create JS datatable
     tab <- create_datatable(
