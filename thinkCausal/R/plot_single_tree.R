@@ -9,7 +9,8 @@
 #' @export 
 
 plot_single_tree <- function(.model, confounders, depth = 2){
-  if (!is(.model, "bartcFit")) stop(".model must be of class bartcFit")
+  
+  validate_model_fit_(.model)
   if (!is.matrix(confounders)) stop("confounders must be of class matrix")
   icate.m <- apply(extract(.model, 'icate'), 2, mean)
   

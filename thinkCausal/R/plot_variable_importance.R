@@ -7,7 +7,6 @@
 #' @author George Perrett, Joe Marlo
 #' @return a list containing variable importance plot & ordered table of confounders by scaled importance
 #' @export
-
 plot_variable_importance <- function(.model, confounders, out = 'all'){
   
   if (!is(.model, "bartcFit")) stop(".model must be of class bartcFit")

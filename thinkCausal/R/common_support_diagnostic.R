@@ -8,8 +8,9 @@
 #' @return a list containing variable importance plot & ordered table of confounders by scaled importance
 #' @export 
 
-plot_tree_diagmostic <- function(.model, depth = 2){
-  if (!is(.model, "bartcFit")) stop(".model must be of class bartcFit")
+plot_tree_diagnostic <- function(.model, depth = 2){
+
+  validate_model_fit_(.model)
   
   .data <- as.data.frame(.model$data.rsp@x)
   .data <- .data[1:(length(.data)-2)]

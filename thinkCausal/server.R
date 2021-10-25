@@ -437,6 +437,9 @@ shinyServer(function(input, output, session) {
     auto_groups <- clean_detect_dummy_cols_unique(df)
     store$n_dummy_groups <- max(store$n_dummy_groups, length(auto_groups))
     ungrouped_vars <- setdiff(cat_var_names, unlist(auto_groups))
+    
+    # show message to user indicating if we did or did not detect any variables
+    # TODO: show_message('We detected some variables that may be related....')
 
     ## TODO: if detect the two values in a dummy are not of T/F or 0/1, then ask user to specify which is T and which is F
     ## TODO: 'add group' will overwrite the names
@@ -956,8 +959,8 @@ shinyServer(function(input, output, session) {
   
   # create the descriptive plots
   # build the exploration plots
-  
   descriptive_plot <- reactive( {
+    
     # stop here if data hasn't been uploaded and selected
     validate_data_selected(store)
     
@@ -990,16 +993,15 @@ shinyServer(function(input, output, session) {
     #               "Variable selection is not valid. Please try another combination."))
     
     # add theme
-    p + theme_custom()
+    p <- p + theme_custom()
     
-    # return(p)
+    return(p)
   })
   
   output$analysis_eda_plot <- renderPlot({
     descriptive_plot()
   })
   
-
   output$download_descriptive_plot <- downloadHandler(
     filename = 'descriptive_plot.png',
     content = function(file) {
@@ -1027,7 +1029,6 @@ shinyServer(function(input, output, session) {
     
     # stop here if data hasn't been uploaded and selected
     validate_data_selected(store)
-    
     
     # show only if there isn't faceting
     if (input$analysis_eda_variable_facet == "None" & input$analysis_eda_select_plot_type == 'Scatter') {
@@ -1060,6 +1061,9 @@ shinyServer(function(input, output, session) {
     # stop here if there are no numeric columns selected
     validate(need(length(input$analysis_plot_overlap_select_var) > 0,
                   "No continuous columns available or currently selected"))
+    
+    # show message if there are many variables
+    if (length(input$analysis_plot_overlap_select_var) > 8) show_message('Building the plot. May take a while.')
     
     # get variables for input into plotting functions
     X <- store$selected_df
@@ -1119,6 +1123,9 @@ shinyServer(function(input, output, session) {
     validate(need(length(input$analysis_plot_balance_select_var) > 0,
                   "No continuous columns available or currently selected"))
     
+    # show message if there are many variables
+    if (length(input$analysis_plot_balance_select_var) > 8) show_message('Building the plot. May take a while.')
+    
     # plot it
     X <- store$selected_df
     col_names <- colnames(X)
@@ -1131,9 +1138,9 @@ shinyServer(function(input, output, session) {
     )
     
     # add theme
-    p + theme_custom()
+    p <- p + theme_custom()
     
-    # return(p)
+    return(p)
   })
   
   output$analysis_plot_balance_plot <- renderPlot({
@@ -1446,85 +1453,27 @@ shinyServer(function(input, output, session) {
     # close the alert
     shinyWidgets::closeSweetAlert()
     
-    
     # common support warning
+    common_support_check <- check_common_support(store$model_results)
     
-    total <- sum(store$model_results$sd.cf > max(store$model_results$sd.obs) + sd(store$model_results$sd.obs))
-    prop_sd <- round(total / length(store$model_results$sd.cf), 2)*100
-    sd_output <- paste0(prop_sd, "% of cases would have been removed under the standard deviation common support rule")
-    
-    
-    total_chi <- sum(((store$model_results$sd.cf / store$model_results$sd.obs) ** 2) > 3.841)
-    prop_chi <- round(total_chi / length(store$model_results$sd.cf), 2)*100
-    chi_output <- paste0(prop_chi, "% of cases would have been removed under the chi squared common support rule")
-    common_support_message <- paste(sd_output, chi_output, sep = '\n')
-    
-    
-    if((prop_sd > 0 | prop_chi > 0) & input$analysis_model_radio_support == 'none'){
-      shinyWidgets::sendSweetAlert(
-        session,
-        title = 'Common Support Warning',
-        text = tags$div(sd_output,
-                        br(),  
-                        br(),
-                        chi_output, 
-                        br(), 
-                        br(),
-                        'How would you like to proceed?',
-                        br(),
-                        br(),
-                        div(class = 'backNextContainer', 
-                            style= "width:60%;display:inline-block;horizontal-align:center;",
-                            actionButton(inputId = 'common_support_opt3', 
-                                         label = 'See common support diagnostics')),
-                        br(),
-                        br(),
-                        div(class = 'backNextContainer', 
-                            style= "width:60%;display:inline-block;horizontal-align:center;",
-                            actionButton(inputId = 'common_support_new_rule', 
-                                         label = 'Change common support rule')),
-                        
-                        br(),
-                        br(),
-                        div(class = 'backNextContainer', 
-                            style= "width:60%;display:inline-block;horizontal-align:center;",
-                            actionButton(inputId = 'common_support_opt2', 
-                                         label = 'Learn more about common support rules')),
-                        br(),
-                        br(),
-                        div(class = 'backNextContainer', 
-                            style= "width:60%;display:inline-block;horizontal-align:center;",
-                        actionButton(inputId = 'common_support_continue', 
-                                     label = 'Continue to results')
-                        )
-
-                        ),
-        type = NULL,
-        btn_labels = NA,
-        btn_colors = "#3085d6",
-        html = TRUE,
-        closeOnClickOutside = FALSE,
-        showCloseButton = FALSE,
-        width = '75%'
-      )
+    # display popup if any observations would be removed
+    if((common_support_check$proportion_removed_sd > 0 | common_support_check$proportion_removed_chi > 0) & input$analysis_model_radio_support == 'none'){
+      show_popup_common_support_warning(session = session, common_support_check = common_support_check)
     }
     
-    
+    # nav buttons within the popup
+    # TODO: the 'see common support diagnostics doesn't go anywhere
     observeEvent(input$common_support_new_rule, {
       updateNavbarPage(session, inputId = "nav", selected = "Model")
-      shinyWidgets::closeSweetAlert()
+      close_popup(session = session)
     })
-    
     observeEvent(input$common_support_continue, {
       updateNavbarPage(session, inputId = "nav", selected = "Results")
-      shinyWidgets::closeSweetAlert()
+      close_popup(session = session)
     })
     
-    
-    
-    
     # move to next page based on model fit
-    if((prop_sd == 0 | prop_chi == 0) & input$analysis_model_radio_support == 'none'){
+    if((common_support_check$proportion_removed_sd == 0 | common_support_check$proportion_removed_chi == 0) & input$analysis_model_radio_support == 'none'){
       updateNavbarPage(session, inputId = "nav", selected = "Results")
     } 
     
@@ -1677,16 +1626,17 @@ shinyServer(function(input, output, session) {
   )
   
 
-  # Moderators  -------------------------------------------------------------
+  # moderators  -------------------------------------------------------------
   
   observeEvent(input$go_to_subgroup_results, {
     updateNavbarPage(session, inputId = "nav", selected = "Subgroup Results")
   })
-  ## ICATE plots
+
+    ## ICATE plots
   
 
   # histogram of icates
-  output$histigram_icate <- renderPlot({
+  output$histogram_icate <- renderPlot({
     
     # stop here if model isn't fit yet
     validate_model_fit(store)
@@ -1701,8 +1651,7 @@ shinyServer(function(input, output, session) {
   })
   
   
-  
-  # Single decision tree on icates
+  # single decision tree on icates
   output$analysis_moderator_single_tree <- renderPlot({
     
     # stop here if model isn't fit yet
@@ -1713,7 +1662,6 @@ shinyServer(function(input, output, session) {
     
     # TODO: this is not in plotBart
     p <- plot_single_tree(store$model_results, confounders = conf, depth = input$set_tree_depth)
-    
     
     return(p)
   })

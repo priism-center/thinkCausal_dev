@@ -1,10 +1,10 @@
-#' Single Regression Tree for exploratory heterogenious effects
+#' Single Regression Tree for exploratory heterogeneous effects
 #'
 #' Fit single regression tree on bartc() icates to produce variable importance plot & table.
 #'
 #' @param .model a model produced by bartCause::bartc(). Typically store$model_results
 #' @author George Perrett
-#' @return a plot of ordered indivudal effects
+#' @return a plot of ordered individual effects
 #' @export 
 
 plot_individual_effects <- function(.model, type = 'ordered'){
@@ -30,13 +30,13 @@ plot_individual_effects <- function(.model, type = 'ordered'){
          subtitle = 'with 95% ci')
   }
   
-  if(type == 'histagram'){
+  if(type == 'histogram'){
     p <- icate %>% 
       ggplot(aes(icate.m)) + 
       geom_histogram()+ 
       labs(x = 'Individual Treatment Effect', 
            y = 'frequency', 
-           title = 'Histigram of Individual Treatment Effects')
+           title = 'Histogram of Individual Treatment Effects')
   }
   return(p)
     

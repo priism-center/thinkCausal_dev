@@ -18,6 +18,8 @@
 #' @param .facet 
 #' @param .facet_second 
 #' @param .include_regression one of c("Include", "None")
+#' 
+#' @author Joe Marlo
 #'
 #' @return
 #' @export

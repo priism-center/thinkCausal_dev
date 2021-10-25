@@ -9,7 +9,7 @@ moderator_page <- tabPanel(
 
         awesomeRadio(inputId = "icate_type",
                      label = 'Plot:',
-                     choices = list("Ordered ICATE" = 'ordered', "Histagram of ICATE" = 'histagram')),
+                     choices = list("Ordered ICATE" = 'ordered', "Histogram of ICATE" = 'histogram')),
         br(),
         br(),
         div(class = 'backNextContainer',
@@ -21,7 +21,7 @@ moderator_page <- tabPanel(
         mainPanel(
           br(),
   
-          plotOutput(outputId = "histigram_icate",
+          plotOutput(outputId = "histogram_icate",
                      height = 500)
         )
     )),

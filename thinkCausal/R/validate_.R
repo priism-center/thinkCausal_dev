@@ -23,8 +23,12 @@ validate_columns_assigned <- function(store){
                 "Columns must first be assigned. Please see 'Load data' tab."))
 }
 
-validate_model_fit <- function(store){
+validate_model_fit_ <- function(.model){
   # stop here if model isn't fit yet
-  validate(need(is(store$model_results, "bartcFit"), 
+  validate(need(inherits(.model, "bartcFit"), 
                 "Model must first be fitted on the 'Model' tab"))
+}
+
+validate_model_fit <- function(store){
+  validate_model_fit_(store$model_results)
 }
