@@ -6,7 +6,7 @@ validate_data_uploaded <- function(store){
 }
 
 validate_data_grouped <- function(store){
-  # stop here if data hasn't been groupped
+  # stop here if data hasn't been grouped
   validate(need(nrow(store$categorical_df) > 0,
                 "Data must be first grouped. Please see 'Group' tab."))
 }

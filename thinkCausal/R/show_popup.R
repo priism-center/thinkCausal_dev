@@ -27,3 +27,13 @@ show_popup_waiting <- function(session){
 close_popup <- function(session){
   shiny::removeModal(session = session)
 }
+
+show_message <- function(content){
+  # style and position controlled in CSS with class .shiny-notification
+  shiny::showNotification(
+    ui = content,
+    duration = 15,
+    closeButton = TRUE,
+    id = NULL,
+    type = 'default')
+}
