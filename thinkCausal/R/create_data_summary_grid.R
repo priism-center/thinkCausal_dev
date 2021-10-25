@@ -1,3 +1,21 @@
+#' Create a UI displaying the role ,variable name, variable type, and percent NA for each column in a dataframe
+#'
+#' @param .data a dataframe
+#' @param default_data_types a vector of default data types. Usually from convert_data_type_to_simple()
+#' @param ns_prefix a string denoting a prefix to use when creating inputIds
+#'
+#' @return HTML code
+#' @export
+#'
+#' @examples
+#' # shiny server
+#' # renderUI({
+#' #   create_data_summary_grid(
+#' #     .data = .data,
+#' #     default_data_types = default_data_types,
+#' #     ns_prefix = 'analysis_data_'
+#' #   )
+#' # })
 create_data_summary_grid <- function(.data, default_data_types, ns_prefix){
   
   # set indices to map over

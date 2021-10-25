@@ -308,62 +308,12 @@ shinyServer(function(input, output, session) {
     # stop here if data hasn't been uploaded
     validate_data_uploaded(store)
     
-    # infer which columns are Z, Y, and X columns (i.e. smart defaults)
-    auto_columns <- clean_detect_ZYX_columns(store$uploaded_df)
-
-    # render the UI
-    drag_drop_html <- tagList(
-      bucket_list(
-        header = "Drag the variables to their respective roles",
-        group_name = "analysis_data_dragdrop",
-        orientation = "horizontal",
-        add_rank_list(
-          input_id = "analysis_data_dragdrop_covariates",
-          text = strong("Covariates"),
-          labels = auto_columns$X,
-          options = sortable_options(multiDrag = TRUE)
-        ),
-        add_rank_list(
-          input_id = "analysis_data_dragdrop_treatment",
-          text = strong("Treatment"),
-          labels = auto_columns$Z,
-          options = sortable_options(multiDrag = TRUE)
-        ),
-        add_rank_list(
-          input_id = "analysis_data_dragdrop_response",
-          text = strong("Response"),
-          labels = auto_columns$Y,
-          options = sortable_options(multiDrag = TRUE)
-        ),
-        add_rank_list(
-          input_id = "analysis_data_dragdrop_delete",
-          text = strong("Exclude these variables"),
-          labels = auto_columns$ID,
-          options = sortable_options(multiDrag = TRUE),
-          css_id = 'sortable-wide-upload'
-        )
-      )
-    )
+    # render the drag-drop UI
+    drag_drop_html <- create_drag_drop_roles(.data = store$uploaded_df, 
+                                             ns_prefix = 'analysis_data')
     
     return(drag_drop_html)
   })
-  
-  # plot the DAG
-  # output$analysis_data_plot_DAG <- renderPlot({
-  #   
-  #   # stop here if data hasn't been uploaded
-  #   validate_data_uploaded(store)
-  #   
-  #   # get user inputs
-  #   cols_z <- input$analysis_data_select_select_zcol
-  #   cols_y <- input$analysis_data_select_select_ycol
-  #   cols_x <- input$analysis_data_select_select_xcol
-  #   
-  #   # plot it
-  #   p <- plot_DAG(cols_z, cols_y, cols_x)
-  #   
-  #   return(p)
-  # })
   
   # create new dataframe when user saves column assignments
   observeEvent(input$analysis_data_button_columnAssignSave, {
@@ -423,70 +373,24 @@ shinyServer(function(input, output, session) {
   # initiate counter of number of groups to un-dummy
   store$n_dummy_groups <- 1
   
+  # create UI for the groupings
   output$analysis_data_UI_dragdrop_grouping <- renderUI({
     
     # stop here if data hasn't been uploaded and columns assigned
     validate_columns_assigned(store)
     
-    # infer variables that are of logical other than the treatment 
-    df <- store$col_assignment_df[, -c(1:2)]
-    # cat_var_names <- colnames(df)[unlist(lapply(sapply(df, unique), function(x) length(x) == 2))]
-    cat_var_names <- colnames(df)[sapply(df, clean_detect_logical)]
+    # create groupings
+    drag_drop_groupings <- create_drag_drop_groups(
+      .data = store$col_assignment_df, 
+      ns_prefix = 'analysis_data', 
+      n_dummy_groups = store$n_dummy_groups
+    )
     
-    # infer which columns are grouped (i.e. smart defaults)
-    auto_groups <- clean_detect_dummy_cols_unique(df)
-    store$n_dummy_groups <- max(store$n_dummy_groups, length(auto_groups))
-    ungrouped_vars <- setdiff(cat_var_names, unlist(auto_groups))
+    # update global var keeping track of the number of groups
+    store$n_dummy_groups <- drag_drop_groupings$n_dummy_groups
     
-    # show message to user indicating if we did or did not detect any variables
-    # TODO: show_message('We detected some variables that may be related....')
-
-    ## TODO: if detect the two values in a dummy are not of T/F or 0/1, then ask user to specify which is T and which is F
-    ## TODO: 'add group' will overwrite the names
-    
-    # if there are more than one logical variables, show the grouping interface
-    if(length(cat_var_names) > 1){
-    
-      drag_drop_html_grouping <- 
-        tagList(
-          bucket_list(
-            header = "Drag the variables to their respective groups",
-            group_name = "analysis_data_dragdrop_grouping",
-            orientation = "horizontal",
-            
-            add_rank_list(
-              input_id = "analysis_data_dragdrop_grouping_variables",
-              text = strong("Ungrouped variables"),
-              labels = ungrouped_vars,
-              options = sortable_options(multiDrag = TRUE),
-              css_id = 'sortable-wide-group'
-            )
-          ),
-          # allow user to add groups
-          lapply(c(1:store$n_dummy_groups), function(i){
-              bucket_list(
-                header = " ",
-                group_name = "analysis_data_dragdrop_grouping",
-                orientation = "horizontal",
-                
-                add_rank_list(
-                  input_id = paste0('analysis_data_categorical_group_', i),
-                  text = textInput(inputId = paste0("rename_group_", i), 
-                                   label = NULL, 
-                                   value = paste0("Group ", i)), # group names are editable
-                  labels = tryCatch(auto_groups[[i]], error = function(e) NULL), #NULL,
-                  options = sortable_options(multiDrag = TRUE)
-                )
-              )
-          })
-        )
-      
-    } else{ # if there is zero or one logical variable, show the prompt to go to the next page
-      drag_drop_html_grouping <- tagList(
-        p("Your dataset has <= 1 logical variable. No need to group variables. Click 'Save groupings' to the next page." )
-      )
-    }
-    return(drag_drop_html_grouping)
+    # return the HTML code for the UI
+    return(drag_drop_groupings$html)
   })
   
   
@@ -564,7 +468,8 @@ shinyServer(function(input, output, session) {
     UI_table <- create_data_summary_grid(
       .data = store$categorical_df, #! input data changed to the result of pivot data
       default_data_types = default_data_types,
-      ns_prefix = 'analysis_data_')
+      ns_prefix = 'analysis_data_'
+    )
     
     # # add observers to launch modal if user changes data type to binary
     # lapply(indices, function(i){
@@ -620,12 +525,12 @@ shinyServer(function(input, output, session) {
     lapply(X = indices, function(i) {
 
       # update the levels
-      col_levels <- unique(store$categorical_df[[i]]) #! input data changed to the result of pivot data
-      updateTextInput(
-        session = session,
-        inputId = paste0("analysis_data_", i, "_levels"),
-        value = col_levels
-      )
+      # col_levels <- unique(store$categorical_df[[i]]) #! input data changed to the result of pivot data
+      # updateTextInput(
+      #   session = session,
+      #   inputId = paste0("analysis_data_", i, "_levels"),
+      #   value = col_levels
+      # )
 
       # update the percent NA
       percent_NA <- mean(is.na(store$user_modified_df[[i]]))
