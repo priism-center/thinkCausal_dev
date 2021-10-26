@@ -7,28 +7,12 @@ shinyServer(function(input, output, session) {
   # back next buttons -------------------------------------------------------
   
   # data page
-  # observeEvent(input$analysis_data_load_button_next, {
-  #   updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
-  # })
   observeEvent(input$analysis_data_select_button_back, {
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Pivot Data")
   })
-  # observeEvent(input$analysis_data_select_button_next, {
-  # 
-  #   # ensure data has been selected first
-  #   data_has_been_selected <- isTRUE(nrow(store$selected_df) > 0)
-  #   if (isFALSE(data_has_been_selected)){
-  #     shinyWidgets::show_alert(
-  #       title = 'Please select and save columns assignments',
-  #       text = "Must be saved prior to proceeding",
-  #       type = 'error'
-  #     )
-  #   }
-  #   validate(need(data_has_been_selected, "No dataframe uploaded"))
-  #   
-  #   updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
-  #   updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
-  # })
+  observeEvent(input$analysis_data_pivot_button_back, {
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
+  })
   
   # plotting page
   observeEvent(input[['analysis_plots_descriptive_button_back']], {
@@ -47,7 +31,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_plots_balance_button_back, {
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Common Support Plots")
   })
-  
   observeEvent(input$analysis_plots_balance_button_next, {
     updateNavbarPage(session, inputId = "nav", selected = "Model")
   })
@@ -315,7 +298,7 @@ shinyServer(function(input, output, session) {
     return(drag_drop_html)
   })
   
-  # create new dataframe when user saves column assignments
+  # create new dataframe when user saves column assignments and move to next page
   observeEvent(input$analysis_data_button_columnAssignSave, {
     
     # get user inputs
@@ -357,12 +340,6 @@ shinyServer(function(input, output, session) {
                         '\tcovariates: ', paste0(cols_x, collapse = '; '))
     store$log <- append(store$log, log_event)
 
-    # launch success message
-    # shinyWidgets::show_alert(
-    #   title = 'Column assignments saved',
-    #   type = 'success'
-    # )
-    
     # move to next page
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Pivot Data")
   })
@@ -437,15 +414,10 @@ shinyServer(function(input, output, session) {
       input_id <- paste0("analysis_data_categorical_group_", i)
       log_event <- paste0(log_event, '\tgroup', i, ': ', paste0(input[[input_id]], collapse = '; '), '\n')
     }
-    print(log_event)
     store$log <- append(store$log, log_event)
     
     # move to next page
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
-  })
-  
-  observeEvent(input$analysis_data_pivot_button_back, {
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
   })
   
   
@@ -468,7 +440,7 @@ shinyServer(function(input, output, session) {
     UI_table <- create_data_summary_grid(
       .data = store$categorical_df, #! input data changed to the result of pivot data
       default_data_types = default_data_types,
-      ns_prefix = 'analysis_data_'
+      ns_prefix = 'analysis_data'
     )
     
     # # add observers to launch modal if user changes data type to binary
@@ -549,6 +521,9 @@ shinyServer(function(input, output, session) {
     # stop here if columns haven't been assigned and grouped
     validate_columns_assigned(store)
     validate_data_grouped(store)
+    
+    # stop here if analysis_data_modify_UI hasn't yet rendered
+    req(input$analysis_data_1_rename)
     
     # create JS datatable
     tab <- create_datatable(
@@ -846,10 +821,7 @@ shinyServer(function(input, output, session) {
     
     return(p)
   })
-  
-  output$analysis_eda_plot <- renderPlot({
-    descriptive_plot()
-  })
+  output$analysis_eda_plot <- renderPlot(descriptive_plot())
   
   output$download_descriptive_plot <- downloadHandler(
     filename = 'descriptive_plot.png',
@@ -882,10 +854,9 @@ shinyServer(function(input, output, session) {
     # show only if there isn't faceting
     if (input$analysis_eda_variable_facet == "None" & input$analysis_eda_select_plot_type == 'Scatter') {
       
-      create_datatable(
-        brushedPoints(store$selected_df, input$analysis_eda_plot_brush),
-        selection = "none"
-      )
+      create_datatable(brushedPoints(store$selected_df, 
+                                     input$analysis_eda_plot_brush),
+                       selection = "none")
     }
   })
   
@@ -948,10 +919,7 @@ shinyServer(function(input, output, session) {
     
     return(p)
   })
-  
-  output$analysis_plot_overlap_plot <- renderPlot({
-    overlap_plot()
-  })
+  output$analysis_plot_overlap_plot <- renderPlot(overlap_plot())
   
   output$download_overlap_plot <- downloadHandler(
     filename = 'overlap_plot.png',
@@ -965,6 +933,7 @@ shinyServer(function(input, output, session) {
   
   # create the balance plot
   balance_plot <- reactive({
+    
     # stop here if data hasn't been uploaded and selected
     validate_data_selected(store)
     
@@ -980,21 +949,16 @@ shinyServer(function(input, output, session) {
     col_names <- colnames(X)
     treatment_col <- grep("^Z_", col_names, value = TRUE)
     confounder_cols <- input$analysis_plot_balance_select_var
-    p <- plotBart::plot_balance(
-      .data = X, 
-      treatment = treatment_col, 
-      confounders = confounder_cols
-    )
+    p <- plotBart::plot_balance(.data = X,
+                                treatment = treatment_col,
+                                confounders = confounder_cols)
     
     # add theme
     p <- p + theme_custom()
     
     return(p)
   })
-  
-  output$analysis_plot_balance_plot <- renderPlot({
-    balance_plot()
-  })
+  output$analysis_plot_balance_plot <- renderPlot(balance_plot())
   
   output$download_balance_plot <- downloadHandler(
     filename = 'balance_plot.png',
@@ -1066,9 +1030,10 @@ shinyServer(function(input, output, session) {
     
     # plot it 
     p <- plotBart::plot_diagnostic_common_support(
-      .model = store$model_results, 
+      .model = store$model_results,
       rule = 'none',
-      plot_theme = theme_custom)
+      plot_theme = theme_custom
+    )
     
     return(p)
   })
@@ -1221,12 +1186,11 @@ shinyServer(function(input, output, session) {
       })
     }
     
+    # stop here if data hasn't been uploaded and selected
+    validate_data_selected(store)
+    
     # stop here if inputs aren't found
     validate(
-      need(
-        is.data.frame(store$selected_df),
-        "Data must be first uploaded and selected. Please see 'Data' tab."
-      ),
       need(
         isFALSE(input$analysis_model_radio_design == 'quasi'),
         'Natural experiment design is not currently supported'
@@ -1284,8 +1248,6 @@ shinyServer(function(input, output, session) {
                       choices = input$analysis_model_moderator_vars,
                       selected = input$analysis_model_moderator_vars[1])
 
-    
-    
     # add to log
     log_event <- paste0(
       'Ran BART model with following specification: \n',
@@ -1330,7 +1292,6 @@ shinyServer(function(input, output, session) {
       updateNavbarPage(session, inputId = "nav", selected = "Results")
     } 
     
-    
   })
   
   
@@ -1367,18 +1328,18 @@ shinyServer(function(input, output, session) {
       # plot it
       # TODO: this is not in plotBart
       p <- plot_PATE(
-          .model = store$model_results,
-          type = input$plot_result_style,
-          ci_80 = sum(input$show_interval == .8) > 0,
-          ci_95 = sum(input$show_interval == .95) > 0,
-          .mean = sum(input$central_tendency == 'Mean') > 0,
-          .median = sum(input$central_tendency == 'Median') > 0,
-          reference = NULL
-        )
+        .model = store$model_results,
+        type = input$plot_result_style,
+        ci_80 = sum(input$show_interval == .8) > 0,
+        ci_95 = sum(input$show_interval == .95) > 0,
+        .mean = sum(input$central_tendency == 'Mean') > 0,
+        .median = sum(input$central_tendency == 'Median') > 0,
+        reference = NULL
+      )
       
       # add theme
-      p <- p + 
-        theme_custom() + 
+      p <- p +
+        theme_custom() +
         theme(legend.position = c(0.1, 0.9),
               legend.title = element_blank())
     }
@@ -1510,7 +1471,9 @@ shinyServer(function(input, output, session) {
     colnames(conf) <- str_sub(colnames(conf, 3))
     
     # TODO: this is not in plotBart
-    p <- plot_single_tree(store$model_results, confounders = conf, depth = input$set_tree_depth)
+    p <- plot_single_tree(store$model_results,
+                          confounders = conf,
+                          depth = input$set_tree_depth)
     
     return(p)
   })
@@ -1562,6 +1525,7 @@ shinyServer(function(input, output, session) {
   randomizationServer(id = 'concepts_randomization', plot_theme = theme_custom)
   PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
   #poServer(id = 'potential_outcomes_test')
+  
   
   # welcome page ------------------------------------------------------------
   
@@ -1624,7 +1588,7 @@ shinyServer(function(input, output, session) {
   
   # download the log
   output$settings_log_download <- downloadHandler(
-    filename <-  function() {
+    filename <- function() {
       time <- gsub("-|:| ", "", Sys.time())
       paste0(time, '_thinkCausal_log.txt')
     },
@@ -1636,12 +1600,12 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  # example for interactive table output
-  output$testytest <- renderText(get_table_values(input, 'mytable', ns = NS('yyp')))
-  
-  # example of new popup
-  observeEvent(input$test_popup, {
-    show_popup_waiting(session = session)
-  })
+  # # example for interactive table output
+  # output$testytest <- renderText(get_table_values(input, 'mytable', ns = NS('yyp')))
+  # 
+  # # example of new popup
+  # observeEvent(input$test_popup, {
+  #   show_popup_waiting(session = session)
+  # })
   
 })

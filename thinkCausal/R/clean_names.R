@@ -18,7 +18,7 @@
 #'
 #' @importFrom stringr str_replace_all
 #' @examples
-#' .names <- c("yes", "TRUE", "nope%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye')
+#' .names <- c("yes", "TRUE", "nope%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye', '')
 #' clean_names(.names)
 clean_names <- function(.names){
   
@@ -46,6 +46,10 @@ clean_names <- function(.names){
     if (isTRUE(is_first_num)) string <- paste0('n', string)
     return(string)
   }))
+  
+  # replace blanks with 'BLANK_i'
+  blanks <- .names == ''
+  .names[blanks] <- paste0('BLANK_', 1:sum(blanks))
   
   return(.names)
 }

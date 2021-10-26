@@ -1,5 +1,7 @@
 create_drag_drop_roles <- function(.data, ns_prefix){
   
+  if (!inherits(.data, 'data.frame')) stop('.data must be a dataframe')
+  
   # infer which columns are Z, Y, and X columns (i.e. smart defaults)
   auto_columns <- clean_detect_ZYX_columns(.data)
   
@@ -43,7 +45,9 @@ create_drag_drop_roles <- function(.data, ns_prefix){
 
 create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups){
   
-  # infer variables that are of logical other than the treatment 
+  if (!inherits(.data, 'data.frame')) stop('.data must be a dataframe')
+  
+  # infer variables that are of logical other than the treatment and response
   df <- .data[, -c(1:2)]
   cat_var_names <- colnames(df)[sapply(df, clean_detect_logical)]
   
@@ -66,7 +70,7 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups){
   ## TODO: 'add group' will overwrite the names
   
   # create the grouping UI
-  drag_drop_html <-  tagList(
+  drag_drop_html <- tagList(
     bucket_list(
       header = "Drag the variables to their respective groups",
       group_name = paste0(ns_prefix, "_dragdrop_grouping"),
