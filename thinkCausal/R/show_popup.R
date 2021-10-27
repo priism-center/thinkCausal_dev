@@ -82,6 +82,38 @@ show_popup_missing_10p_warning <- function(session, missing_10p_check){
   show_popup(session = session, content)
 }
 
+show_popup_group_name_warning <- function(session, group_name_check){
+  content <- tags$div(
+    style = 'margin: auto; text-align: center',
+    h3("Group names cannot be empty. Please rename the following group(s):"),
+    h5(toString(group_name_check)),
+    div(
+      class = 'backNextContainer',
+      style = "width:60%;display:inline-block;horizontal-align:center;",
+      actionButton(inputId = 'group_name_continue',
+                   label = 'Ok')
+    )
+  )
+  show_popup(session = session, content)
+}
+
+show_popup_missing_10p_group_name_warning <- function(session, missing_10p_check, group_name_check){
+  content <- tags$div(
+    style = 'margin: auto; text-align: center',
+    h3("Group names cannot be empty. Please rename the following group(s):"),
+    h5(toString(group_name_check)),
+    h3("The following variable(s) have missing values more than 10%:"),
+    h5(toString(missing_10p_check)),
+    div(
+      class = 'backNextContainer',
+      style = "width:60%;display:inline-block;horizontal-align:center;",
+      actionButton(inputId = 'missing_10p_group_name_continue',
+                   label = 'Ok')
+    )
+  )
+  show_popup(session = session, content)
+}
+
 close_popup <- function(session){
   shiny::removeModal(session = session)
 }

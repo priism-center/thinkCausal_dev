@@ -388,6 +388,8 @@ shinyServer(function(input, output, session) {
     
     store$categorical_df <- store$col_assignment_df
     
+    problematic_group_names <- c()
+    
     for (i in 1:store$n_dummy_groups) {
       
       # find the column indexes of dummy variables in the same group 
@@ -410,17 +412,26 @@ shinyServer(function(input, output, session) {
         
         # clean the user input name
         name <- clean_names(input[[paste0("rename_group_", i)]])
+        # check if user input variable names are empty
+        if(name == "" | grepl("blank", name, ignore.case = TRUE)) {
+          problematic_group_names <- c(problematic_group_names, paste0('Group', i))}
         colnames(store$categorical_df)[ncol(store$categorical_df)] <- name
       }
       
     }
-    
-    # check if and which variable(s) have missing values more than 10%
+
+    # check which variable(s) have missing values more than 10%
     missing_10p <- colnames(store$categorical_df)[apply(store$categorical_df, 2, function(x) mean(is.na(x))) > 0.1]
     
-    # launch warning message
-    if (length(missing_10p) != 0){
+    # launch warning message: if missing more than 10%, click ok to go to next page, 
+    # if there are empty variable names, click ok will stay at the page
+    # if both missing more than 10% and has empty variable names, show both warnings in the same pop-up box
+    if (length(missing_10p) != 0 & length(problematic_group_names) == 0){
       show_popup_missing_10p_warning(session, missing_10p)
+    }else if(length(missing_10p) == 0 & length(problematic_group_names) != 0){
+      show_popup_group_name_warning(session, problematic_group_names)
+    }else if(length(missing_10p) != 0 & length(problematic_group_names) != 0){
+      show_popup_missing_10p_group_name_warning(session, missing_10p, problematic_group_names)
     }
     
     # add to log
@@ -432,10 +443,14 @@ shinyServer(function(input, output, session) {
     store$log <- append(store$log, log_event)
     
     # if no variable missing more than 10%, by clicking Save Grouping, move to next page
-    if(length(missing_10p) == 0){
+    if(length(missing_10p) == 0 & length(problematic_group_names) == 0){
       updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
     }
     
+  })
+  
+  observeEvent(input$group_name_continue, {
+    close_popup(session = session)
   })
   
   observeEvent(input$missing_10p_continue, {
@@ -443,6 +458,11 @@ shinyServer(function(input, output, session) {
     # if there variables missing more than 10%, click ok to move to the next page
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
   })
+  
+  observeEvent(input$missing_10p_group_name_continue, {
+    close_popup(session = session)
+  })
+  
   
   
   # verify data -------------------------------------------------------------
