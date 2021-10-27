@@ -1,7 +1,7 @@
 moderator_page <- tabPanel(
-  title = "Subgroup Results",
+  title = "Subgroup results",
   tabsetPanel(
-    id = "moderator_tabs",
+    id = "analysis_moderator_tabs",
     tabPanel(
       title = 'ICATE',
       sidebarLayout(
@@ -13,9 +13,9 @@ moderator_page <- tabPanel(
         br(),
         br(),
         div(class = 'backNextContainer',
-            actionButton(inputId = 'back_results', 
+            actionButton(inputId = 'analysis_moderator_icate_button_back', 
                          label = 'Back'),
-            actionButton(inputId = 'next_icate_tree',
+            actionButton(inputId = 'analysis_moderator_icate_button_next',
                          label = 'Next'))
       ),
         mainPanel(
@@ -40,9 +40,9 @@ moderator_page <- tabPanel(
                  br(),
                  br(),
                  div(class = 'backNextContainer',
-                     actionButton(inputId = 'back_icate', 
+                     actionButton(inputId = 'analysis_moderator_tree_button_back', 
                                   label = 'Back'),
-                     actionButton(inputId = 'next_subgroup',
+                     actionButton(inputId = 'analysis_moderator_tree_button_next',
                                   label = 'Next'))
                ),
                mainPanel(
@@ -85,20 +85,15 @@ moderator_page <- tabPanel(
                                        multiple = FALSE,
                                        choices = NULL,
                                        selected = NULL)), 
-          br(),
-          br(),
-          div(class = 'backNextContainer',
-              actionButton(inputId = 'back_icate_tree', 
-                           label = 'Back')),
-          br(),
-          div(class = 'backNextContainer',
-              actionButton(inputId = 'to_results',
-                           label = 'Back to Results')), 
-          br(),
-          div(class = 'backNextContainer',
-              actionButton(inputId = 'to_download',
-                           label = 'Log Analyses'))
-
+          br(), br(), br(),
+          actionButton(inputId = 'analysis_moderator_analyses_button_back', 
+                       label = 'Back to tree'),
+          br(), br(), br(),
+          actionButton(inputId = 'analysis_moderator_analyses_button_results',
+                       label = 'Back to model results'), 
+          br(), br(), br(),
+          actionButton(inputId = 'to_download',
+                       label = 'Log Analyses'),
         ),
         mainPanel(
           br(),

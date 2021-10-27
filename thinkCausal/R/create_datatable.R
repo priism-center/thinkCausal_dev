@@ -24,18 +24,19 @@
 #' 
 #' # server
 #' #output$tableId <- DT::renderDataTable(create_datatable(X))
-create_datatable <- function(.data, digits = 3, ...){
+create_datatable <- function(.data, ..., digits = 3, selection = c("multiple", "single", "none")){
   
   .data %>%
     mutate(across(where(is.double), ~round(.x, digits = digits))) %>%
     DT::datatable(
-      ...,
+      selection = selection,
       rownames = FALSE,
       options = list(
         pageLength = 20, # sets n observations shown
         lengthChange = FALSE, #  removes option to change n observations shown
         sDom  = '<"top">lrt<"bottom">ip', # removes the search bar
-        scrollX = TRUE # enable side scroll so table doesn't overflow
+        scrollX = TRUE, # enable side scroll so table doesn't overflow
+        ...
       )
     )
 }

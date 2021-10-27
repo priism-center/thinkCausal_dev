@@ -58,6 +58,30 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_results_button_back, {
     updateNavbarPage(session, inputId = "nav", selected = "Model diagnostics")
   })
+  observeEvent(input$analysis_results_button_subgroup, {
+    updateNavbarPage(session, inputId = "nav", selected = "Subgroup results")
+  })
+  
+  # subgroup/moderators page
+  observeEvent(input$analysis_moderator_icate_button_back, {
+    updateNavbarPage(session, inputId = "nav", selected = "Results")
+  })
+  observeEvent(input$analysis_moderator_icate_button_next, {
+    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE Regression Tree")
+  })
+  observeEvent(input$analysis_moderator_tree_button_back, {
+    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE")
+  })
+  observeEvent(input$analysis_moderator_tree_button_next, {
+    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "Subgroup Analyses")
+  })
+  observeEvent(input$analysis_moderator_analyses_button_back, {
+    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE Regression Tree")
+  })
+  observeEvent(input$analysis_moderator_analyses_button_results, {
+    updateNavbarPage(session, inputId = "nav", selected = "Results")
+  })
+  
   
   
   # upload data -------------------------------------------------------------
@@ -1331,7 +1355,7 @@ shinyServer(function(input, output, session) {
     tab <- summary(store$model_results)$estimates %>% 
       t() %>%
       as.data.frame() %>% 
-      create_datatable(., selection = "none")
+      create_datatable(paging = FALSE, info = FALSE, selection = "none")
     
     return(tab)
   })
@@ -1462,13 +1486,7 @@ shinyServer(function(input, output, session) {
 
   # moderators  -------------------------------------------------------------
   
-  observeEvent(input$go_to_subgroup_results, {
-    updateNavbarPage(session, inputId = "nav", selected = "Subgroup Results")
-  })
-
-    ## ICATE plots
-  
-
+  ## ICATE plots
   # histogram of icates
   output$histogram_icate <- renderPlot({
     
