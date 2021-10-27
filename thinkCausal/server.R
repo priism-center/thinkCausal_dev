@@ -340,13 +340,36 @@ shinyServer(function(input, output, session) {
     x_more_than_zero <- length(cols_x) > 0
     
     # is treatment binary?
-    is_binary <- tryCatch(
-      clean_detect_logical(store$uploaded_df[[cols_z[1]]]),
-      error = function(e) FALSE
+    is_treatment_binary <- tryCatch({
+      treatment <- store$uploaded_df[[cols_z[1]]]
+      is_binary <- isTRUE(clean_detect_logical(treatment))
+      is_binary
+    },
+    error = function(e) FALSE,
+    warning = function(w) FALSE
+    )
+
+    # is response continuous or binary?
+    is_response_cont_binary <- tryCatch({
+      response <- store$uploaded_df[[cols_y[[1]]]]
+      is_cont_binary <- clean_detect_continuous_or_logical(response)
+      is_cont_binary
+    },
+    error = function(e) FALSE,
+    warning = function(w) FALSE
     )
     
     # did it pass all checks?
-    all_good <- isTRUE(all(c(all_unique, z_is_only_one, y_is_only_one, x_more_than_zero, is_binary)))
+    all_good <- isTRUE(all(
+      c(
+        all_unique,
+        z_is_only_one,
+        y_is_only_one,
+        x_more_than_zero,
+        is_treatment_binary,
+        is_response_cont_binary
+      )
+    ))
     
     # launch error message
     if (!all_good) show_popup_variable_assignment_warning(session)
