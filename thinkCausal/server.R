@@ -8,16 +8,16 @@ shinyServer(function(input, output, session) {
   
   # data page
   observeEvent(input$analysis_data_select_button_back, {
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Pivot Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
   })
   observeEvent(input$analysis_data_pivot_button_back, {
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
   })
   
   # plotting page
   observeEvent(input[['analysis_plots_descriptive_button_back']], {
     updateNavbarPage(session, inputId = "nav", selected = "Data")
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
   })
   observeEvent(input[['analysis_plots_descriptive_button_next']], {
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Common Support Plots")
@@ -155,7 +155,7 @@ shinyServer(function(input, output, session) {
     validate_columns_assigned(store)
     
     # use assigned dataframe as the template
-    user_modified_df <- store$categorical_df  #! input data changed to the result of pivot data
+    user_modified_df <- store$categorical_df  #! input data changed to the result of group data
   
     if (isTRUE(nrow(store$user_modified_df) > 0)){
       
@@ -232,12 +232,12 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_data_button_reset, {
     
     # reset dataframe
-    store$user_modified_df <- store$categorical_df #! input data changed to the result of pivot data
+    store$user_modified_df <- store$categorical_df #! input data changed to the result of group data
     
     ## reset UI
     # set indices to map over
-    all_col_names <- colnames(store$categorical_df)  #! input data changed to the result of pivot data
-    default_data_types <- convert_data_type_to_simple(store$categorical_df)  #! input data changed to the result of pivot data
+    all_col_names <- colnames(store$categorical_df)  #! input data changed to the result of group data
+    default_data_types <- convert_data_type_to_simple(store$categorical_df)  #! input data changed to the result of group data
     indices <- seq_along(all_col_names)
     
     # update the inputs
@@ -341,11 +341,11 @@ shinyServer(function(input, output, session) {
     store$log <- append(store$log, log_event)
 
     # move to next page
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Pivot Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
   })
   
   
-  # pivot data -------------------------------------------------------------
+  # group data -------------------------------------------------------------
   
   # initiate counter of number of groups to un-dummy
   store$n_dummy_groups <- 1
@@ -417,11 +417,11 @@ shinyServer(function(input, output, session) {
     store$log <- append(store$log, log_event)
     
     # move to next page
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
   })
   
   
-  # select data -------------------------------------------------------------
+  # verify data -------------------------------------------------------------
   
   # render UI for modifying the data
   output$analysis_data_modify_UI <- renderUI({
@@ -431,14 +431,14 @@ shinyServer(function(input, output, session) {
     validate_data_grouped(store)
     
     # get default data types
-    default_data_types <- convert_data_type_to_simple(store$categorical_df) #! input data changed to the result of pivot data  
+    default_data_types <- convert_data_type_to_simple(store$categorical_df) #! input data changed to the result of group data  
     
     # add default column types to store
     store$current_simple_column_types <- default_data_types
     
     # create UI table
     UI_table <- create_data_summary_grid(
-      .data = store$categorical_df, #! input data changed to the result of pivot data
+      .data = store$categorical_df, #! input data changed to the result of group data
       default_data_types = default_data_types,
       ns_prefix = 'analysis_data'
     )
@@ -492,12 +492,12 @@ shinyServer(function(input, output, session) {
     validate_data_grouped(store)
 
     # original data column indices
-    indices <- seq_along(colnames(store$categorical_df)) #! input data changed to the result of pivot data
+    indices <- seq_along(colnames(store$categorical_df)) #! input data changed to the result of group data
 
     lapply(X = indices, function(i) {
 
       # update the levels
-      # col_levels <- unique(store$categorical_df[[i]]) #! input data changed to the result of pivot data
+      # col_levels <- unique(store$categorical_df[[i]]) #! input data changed to the result of group data
       # updateTextInput(
       #   session = session,
       #   inputId = paste0("analysis_data_", i, "_levels"),
@@ -1535,7 +1535,7 @@ shinyServer(function(input, output, session) {
   })
   observeEvent(input$welcome_link_Analysis, {
     updateNavbarPage(session, inputId = "nav", selected = "Data")
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
   })
   
 
