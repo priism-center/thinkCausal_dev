@@ -253,31 +253,31 @@ shinyServer(function(input, output, session) {
   })
   
   # reset dataframe back to original when user clicks button
-  observeEvent(input$analysis_data_button_reset, {
-    
-    # reset dataframe
-    store$user_modified_df <- store$categorical_df #! input data changed to the result of group data
-    
-    ## reset UI
-    # set indices to map over
-    all_col_names <- colnames(store$categorical_df)  #! input data changed to the result of group data
-    default_data_types <- convert_data_type_to_simple(store$categorical_df)  #! input data changed to the result of group data
-    indices <- seq_along(all_col_names)
-    
-    # update the inputs
-    lapply(indices, function(i){
-      updateTextInput(
-        session = session,
-        inputId = paste0("analysis_data_", i, "_rename"),
-        value = all_col_names[i]
-      )
-      updateSelectInput(
-        session = session,
-        inputId = paste0("analysis_data_", i, "_changeDataType"),
-        selected = default_data_types[i]
-      )
-    })
-  })
+  # observeEvent(input$analysis_data_button_reset, {
+  #   
+  #   # reset dataframe
+  #   store$user_modified_df <- store$categorical_df #! input data changed to the result of group data
+  #   
+  #   ## reset UI
+  #   # set indices to map over
+  #   all_col_names <- colnames(store$categorical_df)  #! input data changed to the result of group data
+  #   default_data_types <- convert_data_type_to_simple(store$categorical_df)  #! input data changed to the result of group data
+  #   indices <- seq_along(all_col_names)
+  #   
+  #   # update the inputs
+  #   lapply(indices, function(i){
+  #     updateTextInput(
+  #       session = session,
+  #       inputId = paste0("analysis_data_", i, "_rename"),
+  #       value = all_col_names[i]
+  #     )
+  #     updateSelectInput(
+  #       session = session,
+  #       inputId = paste0("analysis_data_", i, "_changeDataType"),
+  #       selected = default_data_types[i]
+  #     )
+  #   })
+  # })
   
   # vector of selector ids
   # analysis_data_select_selector_ids <-
@@ -325,6 +325,8 @@ shinyServer(function(input, output, session) {
   # create new dataframe when user saves column assignments and move to next page
   observeEvent(input$analysis_data_button_columnAssignSave, {
     
+    req(store$uploaded_df)
+    
     # get user inputs
     cols_z <- input$analysis_data_dragdrop_treatment
     cols_y <- input$analysis_data_dragdrop_response 
@@ -336,24 +338,20 @@ shinyServer(function(input, output, session) {
     z_is_only_one <- length(cols_z) == 1
     y_is_only_one <- length(cols_y) == 1
     x_more_than_zero <- length(cols_x) > 0
-    all_good <- isTRUE(all(c(all_unique, z_is_only_one, y_is_only_one, x_more_than_zero)))
+    
+    # is treatment binary?
+    is_binary <- tryCatch(
+      clean_detect_logical(store$uploaded_df[[cols_z[1]]]),
+      error = function(e) FALSE
+    )
+    
+    # did it pass all checks?
+    all_good <- isTRUE(all(c(all_unique, z_is_only_one, y_is_only_one, x_more_than_zero, is_binary)))
     
     # launch error message
-    if (!all_good){
-      # shinyWidgets::show_alert(
-      #   title = "Whoops, there's an issue with variable assignment",
-      #   text = "Did you miss an variable assignment? Or either treatment or response have more than one column or somehow there's duplicate columns. Please correct before saving.",
-      #   type = 'error'
-      # )
-      show_popup_variable_assignment_warning(session)
-    }
+    if (!all_good) show_popup_variable_assignment_warning(session)
     
-    observeEvent(input$variable_assignmnet_continue, {
-      # updateNavbarPage(session, inputId = "analysis_data_tabs", selected = "Upload")
-      close_popup(session = session)
-    })
-    
-    validate(need(all_good, "There are duplicate column selections"))
+    validate(need(all_good, "There is an issue with column assignment"))
     
     # store the new dataframe using the uploaded df as the template
     store$col_assignment_df <- store$uploaded_df[, all_cols]
@@ -409,6 +407,8 @@ shinyServer(function(input, output, session) {
   
   # create new dataframe when user saves variable grouping
   observeEvent(input$analysis_data_save_groupings, {
+    
+    req(store$col_assignment_df)
     
     store$categorical_df <- store$col_assignment_df
     
@@ -488,7 +488,6 @@ shinyServer(function(input, output, session) {
   })
   
   
-  
   # verify data -------------------------------------------------------------
   
   # render UI for modifying the data
@@ -554,7 +553,7 @@ shinyServer(function(input, output, session) {
     # on rename or data type then it updates
   observe_multiple <- reactive(list(store$user_modified_df, input$analysis_data_button_columnAssignSave))
   observeEvent(observe_multiple(), {
-
+    
     # stop here if columns haven't been assigned and grouped
     validate_columns_assigned(store)
     validate_data_grouped(store)
@@ -658,6 +657,8 @@ shinyServer(function(input, output, session) {
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
   observeEvent(input$analysis_data_save, {
+    
+    req(store$user_modified_df)
     
     # new column names
     old_col_names <- colnames(store$user_modified_df)
@@ -1279,6 +1280,7 @@ shinyServer(function(input, output, session) {
     
     # insert popup to notify user of model fit process
     # TODO estimate the time remaining empirically?
+    # TODO: show console redirect
     shinyWidgets::show_alert(
       title = 'Fitting BART model...',
       text = tags$div(

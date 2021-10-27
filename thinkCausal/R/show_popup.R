@@ -1,9 +1,9 @@
 
-show_popup <- function(session, ..., size = 's'){
+show_popup <- function(session, ..., size = 's', close_button = NULL){
   popup <- shiny::modalDialog(
     ...,
     title = NULL,
-    footer = NULL,
+    footer = close_button,
     size = size,
     easyClose = FALSE,
     fade = TRUE
@@ -56,15 +56,9 @@ show_popup_variable_assignment_warning <- function(session){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
     h3("Whoops, there's an issue with variable assignment"),
-    h5("Did you miss an variable assignment? Or either treatment or response have more than one column or somehow there's duplicate columns. Please correct before saving."),
-    div(
-      class = 'backNextContainer',
-      style = "width:60%;display:inline-block;horizontal-align:center;",
-      actionButton(inputId = 'variable_assignmnet_continue',
-                   label = 'Ok')
-    )
+    h5("Make sure you assign one column to treatment and one to response. Treatment must also be binary.")
   )
-  show_popup(session = session, content)
+  show_popup(session = session, content, close_button = shiny::modalButton("Close"))
 }
 
 show_popup_missing_10p_warning <- function(session, missing_10p_check){
