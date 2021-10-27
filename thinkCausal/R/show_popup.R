@@ -52,6 +52,36 @@ show_popup_common_support_warning <- function(session, common_support_check){
 # create additional popup templates using this format
 # show_popup_*
 
+show_popup_variable_assignment_warning <- function(session){
+  content <- tags$div(
+    style = 'margin: auto; text-align: center',
+    h3("Whoops, there's an issue with variable assignment"),
+    h5("Did you miss an variable assignment? Or either treatment or response have more than one column or somehow there's duplicate columns. Please correct before saving."),
+    div(
+      class = 'backNextContainer',
+      style = "width:60%;display:inline-block;horizontal-align:center;",
+      actionButton(inputId = 'variable_assignmnet_continue',
+                   label = 'Ok')
+    )
+  )
+  show_popup(session = session, content)
+}
+
+show_popup_missing_10p_warning <- function(session, missing_10p_check){
+  content <- tags$div(
+    style = 'margin: auto; text-align: center',
+    h3("The following variable(s) have missing values more than 10%:"),
+    h5(toString(missing_10p_check)),
+    div(
+      class = 'backNextContainer',
+      style = "width:60%;display:inline-block;horizontal-align:center;",
+      actionButton(inputId = 'missing_10p_continue',
+                   label = 'Ok')
+    )
+  )
+  show_popup(session = session, content)
+}
+
 close_popup <- function(session){
   shiny::removeModal(session = session)
 }

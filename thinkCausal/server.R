@@ -316,12 +316,19 @@ shinyServer(function(input, output, session) {
     
     # launch error message
     if (!all_good){
-      shinyWidgets::show_alert(
-        title = "Whoops, there's an issue with variable assignment",
-        text = "Did you miss an variable assignment? Or either treatment or response have more than one column or somehow there's duplicate columns. Please correct before saving.",
-        type = 'error'
-      )
+      # shinyWidgets::show_alert(
+      #   title = "Whoops, there's an issue with variable assignment",
+      #   text = "Did you miss an variable assignment? Or either treatment or response have more than one column or somehow there's duplicate columns. Please correct before saving.",
+      #   type = 'error'
+      # )
+      show_popup_variable_assignment_warning(session)
     }
+    
+    observeEvent(input$variable_assignmnet_continue, {
+      # updateNavbarPage(session, inputId = "analysis_data_tabs", selected = "Upload")
+      close_popup(session = session)
+    })
+    
     validate(need(all_good, "There are duplicate column selections"))
     
     # store the new dataframe using the uploaded df as the template
@@ -408,6 +415,14 @@ shinyServer(function(input, output, session) {
       
     }
     
+    # check if and which variable(s) have missing values more than 10%
+    missing_10p <- colnames(store$categorical_df)[apply(store$categorical_df, 2, function(x) mean(is.na(x))) > 0.1]
+    
+    # launch warning message
+    if (length(missing_10p) != 0){
+      show_popup_missing_10p_warning(session, missing_10p)
+    }
+    
     # add to log
     log_event <- 'Assigned dummy coded variables to groups: \n'
     for (i in 1:store$n_dummy_groups){
@@ -416,7 +431,16 @@ shinyServer(function(input, output, session) {
     }
     store$log <- append(store$log, log_event)
     
-    # move to next page
+    # if no variable missing more than 10%, by clicking Save Grouping, move to next page
+    if(length(missing_10p) == 0){
+      updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
+    }
+    
+  })
+  
+  observeEvent(input$missing_10p_continue, {
+    close_popup(session = session)
+    # if there variables missing more than 10%, click ok to move to the next page
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
   })
   
