@@ -614,6 +614,7 @@ shinyServer(function(input, output, session) {
 
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
+  # create updated options for plotting and modeling pages
   observeEvent(input$analysis_data_save, {
     
     # new column names
@@ -714,18 +715,6 @@ shinyServer(function(input, output, session) {
     X_cols <- grep("^X_", new_col_names, value = TRUE)
     X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
     
-    # create moderator options 
-    X_mods <- combn(X_cols, m = 2) %>% t() %>% as.data.frame()
-    remove <- X_mods[X_mods$V1 %in% X_cols_continuous & X_mods$V2 %in% X_cols_continuous,]
-    X_mods <- anti_join(X_mods, remove)
-    X_mods <- mutate(X_mods, 
-                     V1 = str_sub(V1, start = 3), 
-                     V2 = str_sub(V2, start = 3))
-    X_mods <- X_mods %>% 
-      mutate(mod = paste(V1, V2, sep = ' x ')) %>% 
-      pull(mod)
-    X_mods <- c(str_sub(X_cols, start = 3), X_mods)
-    
     
     # update options for balance 
     updateSelectInput(session = session,
@@ -739,18 +728,17 @@ shinyServer(function(input, output, session) {
                       selected = X_cols_continuous
     )
     
-    #update moderator select on model page and moderator test page
-    updateSelectInput(session = session,
-                      inputId = 'analysis_model_moderator_vars',
-                      choices = X_mods)
-
-    updateSelectInput(session = session,
-                      inputId = 'analysis_moderators_explore_select',
-                      choices = X_mods)
     
-    updateSelectInput(session = session,
-                      inputId = 'analysis_moderators_explore_only',
-                      choices = X_mods)
+    #update moderator select on model page and moderator test page
+
+    # 
+    # updateSelectInput(session = session,
+    #                   inputId = 'analysis_moderators_explore_select',
+    #                   choices = X_mods)
+    # 
+    # updateSelectInput(session = session,
+    #                   inputId = 'analysis_moderators_explore_only',
+    #                   choices = X_mods)
     
 
     # move to next page
@@ -1010,6 +998,60 @@ shinyServer(function(input, output, session) {
   # run the eda module server. the UI is rendered server side within an observeEvent function
   # edaServer(id = 'analysis_plots_descriptive', input_data = store$selected_df) #user_data) #
   
+  
+
+  # model -------------------------------------------------------------------
+  # output$results_example <- renderText({
+  #   txt <- paste("The", input$treatment_name, "led to an increase\decrease of X", input$treatment_units)
+  # })
+  
+
+  observeEvent(input$analysis_data_save, {
+    cols_categorical <- store$column_types$categorical
+    X_cols_categorical <- grep("^X_", cols_categorical, value = TRUE)
+    cols_categorical_cleaned <- gsub("X_", '', X_cols_categorical)
+
+    # update options for blocked design
+    updateSelectInput(
+      session = session,
+      inputId = "analysis_blocking_variable",
+      choices = cols_categorical_cleaned,
+      selected = NULL
+    )
+
+    # update options for random intercept
+    updateSelectInput(
+      session = session,
+      inputId = "analysis_random_intercept",
+      choices = c("None", cols_categorical_cleaned),
+      selected = "None"
+    )
+
+    # create pre-specified moderator options 
+    
+    # create moderator options
+    cols_continuous <- store$column_types$continuous
+    X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
+    X_cols <- grep("^X_", colnames(store$selected_df), value = TRUE)
+    X_mods <- combn(X_cols, m = 2) %>% t() %>% as.data.frame()
+    remove <- X_mods[X_mods$V1 %in% X_cols_continuous & X_mods$V2 %in% X_cols_continuous,]
+    X_mods <- anti_join(X_mods, remove)
+    X_mods <- mutate(X_mods,
+                     V1 = gsub("X_", '', V1),
+                     V2 = gsub("X_", '', V2))
+    X_mods <- X_mods %>%
+      mutate(mod = paste(V1, V2, sep = ' x ')) %>%
+      pull(mod)
+    X_mods <- c(gsub("X_", '', X_cols), X_mods)
+    
+    updateSelectInput(session = session,
+                      inputId = 'analysis_model_moderator_vars',
+                      choices = X_mods, 
+                      selected = NULL)
+ 
+  })
+  
+
   
   # diagnostics -------------------------------------------------------------
   
