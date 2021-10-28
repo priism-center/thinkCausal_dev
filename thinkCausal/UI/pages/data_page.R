@@ -2,7 +2,7 @@ data_page <- tabPanel(
   title = 'Data', 
          tabsetPanel(
            id = "analysis_data_tabs",
-           tabPanel(title = "Load Data",
+           tabPanel(title = "Upload",
                     fluid = TRUE,
                     sidebarLayout(
                       sidebarPanel(
@@ -55,7 +55,7 @@ data_page <- tabPanel(
                       )
                     )
            ),
-           tabPanel(title = "Pivot Data",
+           tabPanel(title = "Group",
                     fluid = TRUE,
                     sidebarLayout(
                       sidebarPanel(
@@ -85,7 +85,7 @@ data_page <- tabPanel(
                       )
                     )
            ),
-           tabPanel(title = "Select Data",
+           tabPanel(title = "Verify",
                     fluid = TRUE,
                     sidebarLayout(
                       sidebarPanel(

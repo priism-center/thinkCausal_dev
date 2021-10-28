@@ -1,4 +1,4 @@
-#' Create a UI displaying the role ,variable name, variable type, and percent NA for each column in a dataframe
+#' Create a UI displaying the role, variable name, variable type, and percent NA for each column in a dataframe
 #'
 #' @param .data a dataframe
 #' @param default_data_types a vector of default data types. Usually from convert_data_type_to_simple()
@@ -39,20 +39,20 @@ create_data_summary_grid <- function(.data, default_data_types, ns_prefix){
       column(width = 2,
              shinyjs::disabled(
                textInput(
-                 inputId = paste0(ns_prefix, i, '_type'),
+                 inputId = paste0(ns_prefix, "_", i, '_type'),
                  label = NULL,
                  value = column_types[i])
              )
       ),
       column(width = 4, 
              textInput(
-               inputId = paste0(ns_prefix, i, "_rename"),
+               inputId = paste0(ns_prefix, "_", i, "_rename"),
                label = NULL,
                value = all_col_names[i])
       ),
       column(width = 4, 
              selectInput(
-               inputId = paste0(ns_prefix, i, "_changeDataType"),
+               inputId = paste0(ns_prefix, "_", i, "_changeDataType"),
                label = NULL, 
                choices = c('Continuous', 'Categorical', 'Binary'),
                selected = default_data_types[i])
@@ -60,7 +60,7 @@ create_data_summary_grid <- function(.data, default_data_types, ns_prefix){
       column(width = 2, 
              shinyjs::disabled(
                textInput(
-                 inputId = paste0(ns_prefix, i, "_percentNA"),
+                 inputId = paste0(ns_prefix, "_", i, "_percentNA"),
                  label = NULL, 
                  placeholder = 'TBD')
              )

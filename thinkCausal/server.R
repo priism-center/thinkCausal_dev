@@ -7,33 +7,17 @@ shinyServer(function(input, output, session) {
   # back next buttons -------------------------------------------------------
   
   # data page
-  # observeEvent(input$analysis_data_load_button_next, {
-  #   updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
-  # })
   observeEvent(input$analysis_data_select_button_back, {
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Pivot Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
   })
-  # observeEvent(input$analysis_data_select_button_next, {
-  # 
-  #   # ensure data has been selected first
-  #   data_has_been_selected <- isTRUE(nrow(store$selected_df) > 0)
-  #   if (isFALSE(data_has_been_selected)){
-  #     shinyWidgets::show_alert(
-  #       title = 'Please select and save columns assignments',
-  #       text = "Must be saved prior to proceeding",
-  #       type = 'error'
-  #     )
-  #   }
-  #   validate(need(data_has_been_selected, "No dataframe uploaded"))
-  #   
-  #   updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
-  #   updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
-  # })
+  observeEvent(input$analysis_data_pivot_button_back, {
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
+  })
   
   # plotting page
   observeEvent(input[['analysis_plots_descriptive_button_back']], {
     updateNavbarPage(session, inputId = "nav", selected = "Data")
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
   })
   observeEvent(input[['analysis_plots_descriptive_button_next']], {
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Common Support Plots")
@@ -47,7 +31,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_plots_balance_button_back, {
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Common Support Plots")
   })
-  
   observeEvent(input$analysis_plots_balance_button_next, {
     updateNavbarPage(session, inputId = "nav", selected = "Model")
   })
@@ -75,6 +58,30 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_results_button_back, {
     updateNavbarPage(session, inputId = "nav", selected = "Model diagnostics")
   })
+  observeEvent(input$analysis_results_button_subgroup, {
+    updateNavbarPage(session, inputId = "nav", selected = "Subgroup results")
+  })
+  
+  # subgroup/moderators page
+  observeEvent(input$analysis_moderator_icate_button_back, {
+    updateNavbarPage(session, inputId = "nav", selected = "Results")
+  })
+  observeEvent(input$analysis_moderator_icate_button_next, {
+    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE Regression Tree")
+  })
+  observeEvent(input$analysis_moderator_tree_button_back, {
+    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE")
+  })
+  observeEvent(input$analysis_moderator_tree_button_next, {
+    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "Subgroup Analyses")
+  })
+  observeEvent(input$analysis_moderator_analyses_button_back, {
+    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE Regression Tree")
+  })
+  observeEvent(input$analysis_moderator_analyses_button_results, {
+    updateNavbarPage(session, inputId = "nav", selected = "Results")
+  })
+  
   
   
   # upload data -------------------------------------------------------------
@@ -172,7 +179,7 @@ shinyServer(function(input, output, session) {
     validate_columns_assigned(store)
     
     # use assigned dataframe as the template
-    user_modified_df <- store$categorical_df  #! input data changed to the result of pivot data
+    user_modified_df <- store$categorical_df  #! input data changed to the result of group data
   
     if (isTRUE(nrow(store$user_modified_df) > 0)){
       
@@ -246,31 +253,31 @@ shinyServer(function(input, output, session) {
   })
   
   # reset dataframe back to original when user clicks button
-  observeEvent(input$analysis_data_button_reset, {
-    
-    # reset dataframe
-    store$user_modified_df <- store$categorical_df #! input data changed to the result of pivot data
-    
-    ## reset UI
-    # set indices to map over
-    all_col_names <- colnames(store$categorical_df)  #! input data changed to the result of pivot data
-    default_data_types <- convert_data_type_to_simple(store$categorical_df)  #! input data changed to the result of pivot data
-    indices <- seq_along(all_col_names)
-    
-    # update the inputs
-    lapply(indices, function(i){
-      updateTextInput(
-        session = session,
-        inputId = paste0("analysis_data_", i, "_rename"),
-        value = all_col_names[i]
-      )
-      updateSelectInput(
-        session = session,
-        inputId = paste0("analysis_data_", i, "_changeDataType"),
-        selected = default_data_types[i]
-      )
-    })
-  })
+  # observeEvent(input$analysis_data_button_reset, {
+  #   
+  #   # reset dataframe
+  #   store$user_modified_df <- store$categorical_df #! input data changed to the result of group data
+  #   
+  #   ## reset UI
+  #   # set indices to map over
+  #   all_col_names <- colnames(store$categorical_df)  #! input data changed to the result of group data
+  #   default_data_types <- convert_data_type_to_simple(store$categorical_df)  #! input data changed to the result of group data
+  #   indices <- seq_along(all_col_names)
+  #   
+  #   # update the inputs
+  #   lapply(indices, function(i){
+  #     updateTextInput(
+  #       session = session,
+  #       inputId = paste0("analysis_data_", i, "_rename"),
+  #       value = all_col_names[i]
+  #     )
+  #     updateSelectInput(
+  #       session = session,
+  #       inputId = paste0("analysis_data_", i, "_changeDataType"),
+  #       selected = default_data_types[i]
+  #     )
+  #   })
+  # })
   
   # vector of selector ids
   # analysis_data_select_selector_ids <-
@@ -315,8 +322,10 @@ shinyServer(function(input, output, session) {
     return(drag_drop_html)
   })
   
-  # create new dataframe when user saves column assignments
+  # create new dataframe when user saves column assignments and move to next page
   observeEvent(input$analysis_data_button_columnAssignSave, {
+    
+    req(store$uploaded_df)
     
     # get user inputs
     cols_z <- input$analysis_data_dragdrop_treatment
@@ -329,17 +338,43 @@ shinyServer(function(input, output, session) {
     z_is_only_one <- length(cols_z) == 1
     y_is_only_one <- length(cols_y) == 1
     x_more_than_zero <- length(cols_x) > 0
-    all_good <- isTRUE(all(c(all_unique, z_is_only_one, y_is_only_one, x_more_than_zero)))
+    
+    # is treatment binary?
+    is_treatment_binary <- tryCatch({
+      treatment <- store$uploaded_df[[cols_z[1]]]
+      is_binary <- isTRUE(clean_detect_logical(treatment))
+      is_binary
+    },
+    error = function(e) FALSE,
+    warning = function(w) FALSE
+    )
+
+    # is response continuous or binary?
+    is_response_cont_binary <- tryCatch({
+      response <- store$uploaded_df[[cols_y[[1]]]]
+      is_cont_binary <- clean_detect_continuous_or_logical(response)
+      is_cont_binary
+    },
+    error = function(e) FALSE,
+    warning = function(w) FALSE
+    )
+    
+    # did it pass all checks?
+    all_good <- isTRUE(all(
+      c(
+        all_unique,
+        z_is_only_one,
+        y_is_only_one,
+        x_more_than_zero,
+        is_treatment_binary,
+        is_response_cont_binary
+      )
+    ))
     
     # launch error message
-    if (!all_good){
-      shinyWidgets::show_alert(
-        title = "Whoops, there's an issue with variable assignment",
-        text = "Did you miss an variable assignment? Or either treatment or response have more than one column or somehow there's duplicate columns. Please correct before saving.",
-        type = 'error'
-      )
-    }
-    validate(need(all_good, "There are duplicate column selections"))
+    if (!all_good) show_popup_variable_assignment_warning(session)
+    
+    validate(need(all_good, "There is an issue with column assignment"))
     
     # store the new dataframe using the uploaded df as the template
     store$col_assignment_df <- store$uploaded_df[, all_cols]
@@ -357,18 +392,12 @@ shinyServer(function(input, output, session) {
                         '\tcovariates: ', paste0(cols_x, collapse = '; '))
     store$log <- append(store$log, log_event)
 
-    # launch success message
-    # shinyWidgets::show_alert(
-    #   title = 'Column assignments saved',
-    #   type = 'success'
-    # )
-    
     # move to next page
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Pivot Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
   })
   
   
-  # pivot data -------------------------------------------------------------
+  # group data -------------------------------------------------------------
   
   # initiate counter of number of groups to un-dummy
   store$n_dummy_groups <- 1
@@ -402,7 +431,11 @@ shinyServer(function(input, output, session) {
   # create new dataframe when user saves variable grouping
   observeEvent(input$analysis_data_save_groupings, {
     
+    req(store$col_assignment_df)
+    
     store$categorical_df <- store$col_assignment_df
+    
+    problematic_group_names <- c()
     
     for (i in 1:store$n_dummy_groups) {
       
@@ -426,9 +459,26 @@ shinyServer(function(input, output, session) {
         
         # clean the user input name
         name <- clean_names(input[[paste0("rename_group_", i)]])
+        # check if user input variable names are empty
+        if(name == "" | grepl("blank", name, ignore.case = TRUE)) {
+          problematic_group_names <- c(problematic_group_names, paste0('Group', i))}
         colnames(store$categorical_df)[ncol(store$categorical_df)] <- name
       }
       
+    }
+
+    # check which variable(s) have missing values more than 10%
+    missing_10p <- colnames(store$categorical_df)[apply(store$categorical_df, 2, function(x) mean(is.na(x))) > 0.1]
+    
+    # launch warning message: if missing more than 10%, click ok to go to next page, 
+    # if there are empty variable names, click ok will stay at the page
+    # if both missing more than 10% and has empty variable names, show both warnings in the same pop-up box
+    if (length(missing_10p) != 0 & length(problematic_group_names) == 0){
+      show_popup_missing_10p_warning(session, missing_10p)
+    }else if(length(missing_10p) == 0 & length(problematic_group_names) != 0){
+      show_popup_group_name_warning(session, problematic_group_names)
+    }else if(length(missing_10p) != 0 & length(problematic_group_names) != 0){
+      show_popup_missing_10p_group_name_warning(session, missing_10p, problematic_group_names)
     }
     
     # add to log
@@ -437,19 +487,31 @@ shinyServer(function(input, output, session) {
       input_id <- paste0("analysis_data_categorical_group_", i)
       log_event <- paste0(log_event, '\tgroup', i, ': ', paste0(input[[input_id]], collapse = '; '), '\n')
     }
-    print(log_event)
     store$log <- append(store$log, log_event)
     
-    # move to next page
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Select Data")
+    # if no variable missing more than 10%, by clicking Save Grouping, move to next page
+    if(length(missing_10p) == 0 & length(problematic_group_names) == 0){
+      updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
+    }
+    
   })
   
-  observeEvent(input$analysis_data_pivot_button_back, {
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
+  observeEvent(input$group_name_continue, {
+    close_popup(session = session)
+  })
+  
+  observeEvent(input$missing_10p_continue, {
+    close_popup(session = session)
+    # if there variables missing more than 10%, click ok to move to the next page
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
+  })
+  
+  observeEvent(input$missing_10p_group_name_continue, {
+    close_popup(session = session)
   })
   
   
-  # select data -------------------------------------------------------------
+  # verify data -------------------------------------------------------------
   
   # render UI for modifying the data
   output$analysis_data_modify_UI <- renderUI({
@@ -459,16 +521,16 @@ shinyServer(function(input, output, session) {
     validate_data_grouped(store)
     
     # get default data types
-    default_data_types <- convert_data_type_to_simple(store$categorical_df) #! input data changed to the result of pivot data  
+    default_data_types <- convert_data_type_to_simple(store$categorical_df) #! input data changed to the result of group data  
     
     # add default column types to store
     store$current_simple_column_types <- default_data_types
     
     # create UI table
     UI_table <- create_data_summary_grid(
-      .data = store$categorical_df, #! input data changed to the result of pivot data
+      .data = store$categorical_df, #! input data changed to the result of group data
       default_data_types = default_data_types,
-      ns_prefix = 'analysis_data_'
+      ns_prefix = 'analysis_data'
     )
     
     # # add observers to launch modal if user changes data type to binary
@@ -514,18 +576,18 @@ shinyServer(function(input, output, session) {
     # on rename or data type then it updates
   observe_multiple <- reactive(list(store$user_modified_df, input$analysis_data_button_columnAssignSave))
   observeEvent(observe_multiple(), {
-
+    
     # stop here if columns haven't been assigned and grouped
     validate_columns_assigned(store)
     validate_data_grouped(store)
 
     # original data column indices
-    indices <- seq_along(colnames(store$categorical_df)) #! input data changed to the result of pivot data
+    indices <- seq_along(colnames(store$categorical_df)) #! input data changed to the result of group data
 
     lapply(X = indices, function(i) {
 
       # update the levels
-      # col_levels <- unique(store$categorical_df[[i]]) #! input data changed to the result of pivot data
+      # col_levels <- unique(store$categorical_df[[i]]) #! input data changed to the result of group data
       # updateTextInput(
       #   session = session,
       #   inputId = paste0("analysis_data_", i, "_levels"),
@@ -549,6 +611,15 @@ shinyServer(function(input, output, session) {
     # stop here if columns haven't been assigned and grouped
     validate_columns_assigned(store)
     validate_data_grouped(store)
+    
+    # stop here if analysis_data_modify_UI hasn't yet rendered
+    # this works because colnames of user_modified_df is overwritten by the UI
+    # which defaults to an empty string before it renders
+    col_names <- colnames(store$user_modified_df)
+    validate(need(
+      length(col_names) == length(unique(col_names)),
+      'Rendering...'
+    ))
     
     # create JS datatable
     tab <- create_datatable(
@@ -616,6 +687,8 @@ shinyServer(function(input, output, session) {
   # with the new columns
   # create updated options for plotting and modeling pages
   observeEvent(input$analysis_data_save, {
+    
+    req(store$user_modified_df)
     
     # new column names
     old_col_names <- colnames(store$user_modified_df)
@@ -834,10 +907,7 @@ shinyServer(function(input, output, session) {
     
     return(p)
   })
-  
-  output$analysis_eda_plot <- renderPlot({
-    descriptive_plot()
-  })
+  output$analysis_eda_plot <- renderPlot(descriptive_plot())
   
   output$download_descriptive_plot <- downloadHandler(
     filename = 'descriptive_plot.png',
@@ -870,10 +940,9 @@ shinyServer(function(input, output, session) {
     # show only if there isn't faceting
     if (input$analysis_eda_variable_facet == "None" & input$analysis_eda_select_plot_type == 'Scatter') {
       
-      create_datatable(
-        brushedPoints(store$selected_df, input$analysis_eda_plot_brush),
-        selection = "none"
-      )
+      create_datatable(brushedPoints(store$selected_df, 
+                                     input$analysis_eda_plot_brush),
+                       selection = "none")
     }
   })
   
@@ -936,10 +1005,7 @@ shinyServer(function(input, output, session) {
     
     return(p)
   })
-  
-  output$analysis_plot_overlap_plot <- renderPlot({
-    overlap_plot()
-  })
+  output$analysis_plot_overlap_plot <- renderPlot(overlap_plot())
   
   output$download_overlap_plot <- downloadHandler(
     filename = 'overlap_plot.png',
@@ -953,6 +1019,7 @@ shinyServer(function(input, output, session) {
   
   # create the balance plot
   balance_plot <- reactive({
+    
     # stop here if data hasn't been uploaded and selected
     validate_data_selected(store)
     
@@ -968,21 +1035,16 @@ shinyServer(function(input, output, session) {
     col_names <- colnames(X)
     treatment_col <- grep("^Z_", col_names, value = TRUE)
     confounder_cols <- input$analysis_plot_balance_select_var
-    p <- plotBart::plot_balance(
-      .data = X, 
-      treatment = treatment_col, 
-      confounders = confounder_cols
-    )
+    p <- plotBart::plot_balance(.data = X,
+                                treatment = treatment_col,
+                                confounders = confounder_cols)
     
     # add theme
     p <- p + theme_custom()
     
     return(p)
   })
-  
-  output$analysis_plot_balance_plot <- renderPlot({
-    balance_plot()
-  })
+  output$analysis_plot_balance_plot <- renderPlot(balance_plot())
   
   output$download_balance_plot <- downloadHandler(
     filename = 'balance_plot.png',
@@ -1058,7 +1120,7 @@ shinyServer(function(input, output, session) {
   # render either both the back and next buttons or just the back if its a bad
   # model fit
   output$analysis_diagnosis_buttons_ui <- renderUI({
-    if (isTRUE(store$good_model_fit)){
+    if (isTRUE(store$model_fit_good)){
       tagList(
         div(
           class = 'backNextContainer',
@@ -1108,9 +1170,10 @@ shinyServer(function(input, output, session) {
     
     # plot it 
     p <- plotBart::plot_diagnostic_common_support(
-      .model = store$model_results, 
+      .model = store$model_results,
       rule = 'none',
-      plot_theme = theme_custom)
+      plot_theme = theme_custom
+    )
     
     return(p)
   })
@@ -1263,12 +1326,11 @@ shinyServer(function(input, output, session) {
       })
     }
     
+    # stop here if data hasn't been uploaded and selected
+    validate_data_selected(store)
+    
     # stop here if inputs aren't found
     validate(
-      need(
-        is.data.frame(store$selected_df),
-        "Data must be first uploaded and selected. Please see 'Data' tab."
-      ),
       need(
         isFALSE(input$analysis_model_radio_design == 'quasi'),
         'Natural experiment design is not currently supported'
@@ -1287,8 +1349,13 @@ shinyServer(function(input, output, session) {
       )
     )
     
+    # remove current model if it exists
+    store$model_results <- NULL
+    store$model_fit_good <- FALSE
+    
     # insert popup to notify user of model fit process
-    # TODO estimate the time remaining empirically?
+    # TODO: estimate the time remaining empirically?
+    # TODO: show console redirect
     shinyWidgets::show_alert(
       title = 'Fitting BART model...',
       text = tags$div(
@@ -1308,17 +1375,37 @@ shinyServer(function(input, output, session) {
     colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
     
     # run model    
-    store$model_results <- bartCause::bartc(
-      response = response_v,
-      treatment = treatment_v,
-      confounders = confounders_mat,
-      estimand = base::tolower(input$analysis_model_radio_estimand),
-      commonSup.rule = input$analysis_model_radio_support
+    store$model_results <- tryCatch({
+      bartCause::bartc(
+        response = response_v,
+        treatment = treatment_v,
+        confounders = confounders_mat,
+        estimand = base::tolower(input$analysis_model_radio_estimand),
+        commonSup.rule = input$analysis_model_radio_support
+      )
+    },
+    warning = function(w) NULL,
+    error = function(e) NULL
     )
+    
+    # close the alert
+    shinyWidgets::closeSweetAlert()
+    
+    # error handling
+    # TODO: refine the popup; probably should pass the bart error to the popup somehow
+    # TODO: is there a better way to detect if the model fit?
+    did_model_fit <- !isTRUE(is.null(store$model_results))
+    if (!did_model_fit){
+      store$model_fit_good <- FALSE
+      show_popup(session = session,
+                 'Model did not fit',
+                 close_button = shiny::modalButton("Close"))
+    }
+    req(did_model_fit)
     
     # store the results
     # TODO: need way to test if actually have a good fit
-    #store$good_model_fit <- TRUE
+    store$model_fit_good <- TRUE
     
     # # update select on moderators page
     updateSelectInput(session = session,
@@ -1326,8 +1413,6 @@ shinyServer(function(input, output, session) {
                       choices = input$analysis_model_moderator_vars,
                       selected = input$analysis_model_moderator_vars[1])
 
-    
-    
     # add to log
     log_event <- paste0(
       'Ran BART model with following specification: \n',
@@ -1337,12 +1422,9 @@ shinyServer(function(input, output, session) {
       '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
       '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
       '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
-      '\t', 'Good model fit: ', store$good_model_fit
+      '\t', 'Good model fit: ', store$model_fit_good
     )
     store$log <- append(store$log, log_event)
-    
-    # close the alert
-    shinyWidgets::closeSweetAlert()
     
     # common support warning
     common_support_check <- check_common_support(store$model_results)
@@ -1372,7 +1454,6 @@ shinyServer(function(input, output, session) {
       updateNavbarPage(session, inputId = "nav", selected = "Results")
     } 
     
-    
   })
   
   
@@ -1388,7 +1469,7 @@ shinyServer(function(input, output, session) {
     tab <- summary(store$model_results)$estimates %>% 
       t() %>%
       as.data.frame() %>% 
-      create_datatable(., selection = "none")
+      create_datatable(paging = FALSE, info = FALSE, selection = "none")
     
     return(tab)
   })
@@ -1409,18 +1490,18 @@ shinyServer(function(input, output, session) {
       # plot it
       # TODO: this is not in plotBart
       p <- plot_PATE(
-          .model = store$model_results,
-          type = input$plot_result_style,
-          ci_80 = sum(input$show_interval == .8) > 0,
-          ci_95 = sum(input$show_interval == .95) > 0,
-          .mean = sum(input$central_tendency == 'Mean') > 0,
-          .median = sum(input$central_tendency == 'Median') > 0,
-          reference = NULL
-        )
+        .model = store$model_results,
+        type = input$plot_result_style,
+        ci_80 = sum(input$show_interval == .8) > 0,
+        ci_95 = sum(input$show_interval == .95) > 0,
+        .mean = sum(input$central_tendency == 'Mean') > 0,
+        .median = sum(input$central_tendency == 'Median') > 0,
+        reference = NULL
+      )
       
       # add theme
-      p <- p + 
-        theme_custom() + 
+      p <- p +
+        theme_custom() +
         theme(legend.position = c(0.1, 0.9),
               legend.title = element_blank())
     }
@@ -1519,13 +1600,7 @@ shinyServer(function(input, output, session) {
 
   # moderators  -------------------------------------------------------------
   
-  observeEvent(input$go_to_subgroup_results, {
-    updateNavbarPage(session, inputId = "nav", selected = "Subgroup Results")
-  })
-
-    ## ICATE plots
-  
-
+  ## ICATE plots
   # histogram of icates
   output$histogram_icate <- renderPlot({
     
@@ -1552,7 +1627,9 @@ shinyServer(function(input, output, session) {
     colnames(conf) <- str_sub(colnames(conf, 3))
     
     # TODO: this is not in plotBart
-    p <- plot_single_tree(store$model_results, confounders = conf, depth = input$set_tree_depth)
+    p <- plot_single_tree(store$model_results,
+                          confounders = conf,
+                          depth = input$set_tree_depth)
     
     return(p)
   })
@@ -1605,6 +1682,7 @@ shinyServer(function(input, output, session) {
   PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
   #poServer(id = 'potential_outcomes_test')
   
+  
   # welcome page ------------------------------------------------------------
   
   # add listeners that link the front page images to their respective pages
@@ -1613,7 +1691,7 @@ shinyServer(function(input, output, session) {
   })
   observeEvent(input$welcome_link_Analysis, {
     updateNavbarPage(session, inputId = "nav", selected = "Data")
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
   })
   
 
@@ -1666,7 +1744,7 @@ shinyServer(function(input, output, session) {
   
   # download the log
   output$settings_log_download <- downloadHandler(
-    filename <-  function() {
+    filename <- function() {
       time <- gsub("-|:| ", "", Sys.time())
       paste0(time, '_thinkCausal_log.txt')
     },
@@ -1678,12 +1756,12 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  # example for interactive table output
-  output$testytest <- renderText(get_table_values(input, 'mytable', ns = NS('yyp')))
-  
-  # example of new popup
-  observeEvent(input$test_popup, {
-    show_popup_waiting(session = session)
-  })
+  # # example for interactive table output
+  # output$testytest <- renderText(get_table_values(input, 'mytable', ns = NS('yyp')))
+  # 
+  # # example of new popup
+  # observeEvent(input$test_popup, {
+  #   show_popup_waiting(session = session)
+  # })
   
 })
