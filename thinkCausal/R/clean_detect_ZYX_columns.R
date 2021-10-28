@@ -21,8 +21,8 @@
 clean_detect_ZYX_columns <- function(.data) {
   
   # set list of potential column names to match
-  Z_potentials <- c("^Z_| ", "trt", "treat", "treatment")
-  Y_potentials <- c("^Y_| ", "response", "rsp")
+  Z_potentials <- c("^Z_| ", '^Z$', "trt", "treat", "treatment")
+  Y_potentials <- c("^Y_| ", '^Y$', "response", "rsp")
   ID_potentials <- c("^id")
   all_col_names <- colnames(.data)
   

@@ -1345,6 +1345,7 @@ shinyServer(function(input, output, session) {
     
     # error handling
     # TODO: refine the popup; probably should pass the bart error to the popup somehow
+    # TODO: is there a better way to detect if the model fit?
     did_model_fit <- !isTRUE(is.null(store$model_results))
     if (!did_model_fit){
       store$model_fit_good <- FALSE
