@@ -613,7 +613,13 @@ shinyServer(function(input, output, session) {
     validate_data_grouped(store)
     
     # stop here if analysis_data_modify_UI hasn't yet rendered
-    req(input$analysis_data_1_rename)
+    # this works because colnames of user_modified_df is overwritten by the UI
+    # which defaults to an empty string before it renders
+    col_names <- colnames(store$user_modified_df)
+    validate(need(
+      length(col_names) == length(unique(col_names)),
+      'Rendering...'
+    ))
     
     # create JS datatable
     tab <- create_datatable(
