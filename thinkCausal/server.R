@@ -1072,7 +1072,7 @@ shinyServer(function(input, output, session) {
   # render either both the back and next buttons or just the back if its a bad
   # model fit
   output$analysis_diagnosis_buttons_ui <- renderUI({
-    if (isTRUE(store$good_model_fit)){
+    if (isTRUE(store$model_fit_good)){
       tagList(
         div(
           class = 'backNextContainer',
@@ -1301,8 +1301,12 @@ shinyServer(function(input, output, session) {
       )
     )
     
+    # remove current model if it exists
+    store$model_results <- NULL
+    store$model_fit_good <- FALSE
+    
     # insert popup to notify user of model fit process
-    # TODO estimate the time remaining empirically?
+    # TODO: estimate the time remaining empirically?
     # TODO: show console redirect
     shinyWidgets::show_alert(
       title = 'Fitting BART model...',
@@ -1323,17 +1327,36 @@ shinyServer(function(input, output, session) {
     colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
     
     # run model    
-    store$model_results <- bartCause::bartc(
-      response = response_v,
-      treatment = treatment_v,
-      confounders = confounders_mat,
-      estimand = base::tolower(input$analysis_model_radio_estimand),
-      commonSup.rule = input$analysis_model_radio_support
+    store$model_results <- tryCatch({
+      bartCause::bartc(
+        response = response_v,
+        treatment = treatment_v,
+        confounders = confounders_mat,
+        estimand = base::tolower(input$analysis_model_radio_estimand),
+        commonSup.rule = input$analysis_model_radio_support
+      )
+    },
+    warning = function(w) NULL,
+    error = function(e) NULL
     )
+    
+    # close the alert
+    shinyWidgets::closeSweetAlert()
+    
+    # error handling
+    # TODO: refine the popup; probably should pass the bart error to the popup somehow
+    did_model_fit <- !isTRUE(is.null(store$model_results))
+    if (!did_model_fit){
+      store$model_fit_good <- FALSE
+      show_popup(session = session,
+                 'Model did not fit',
+                 close_button = shiny::modalButton("Close"))
+    }
+    req(did_model_fit)
     
     # store the results
     # TODO: need way to test if actually have a good fit
-    #store$good_model_fit <- TRUE
+    store$model_fit_good <- TRUE
     
     # # update select on moderators page
     updateSelectInput(session = session,
@@ -1350,12 +1373,9 @@ shinyServer(function(input, output, session) {
       '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
       '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
       '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
-      '\t', 'Good model fit: ', store$good_model_fit
+      '\t', 'Good model fit: ', store$model_fit_good
     )
     store$log <- append(store$log, log_event)
-    
-    # close the alert
-    shinyWidgets::closeSweetAlert()
     
     # common support warning
     common_support_check <- check_common_support(store$model_results)
