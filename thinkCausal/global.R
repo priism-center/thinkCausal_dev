@@ -4,13 +4,8 @@ library(shiny)
 library(foreign)
 library(readstata13)
 library(openxlsx)
-# library(xlsx)
 library(Hmisc) # for spss
 library(readr)
-
-# directly called libraries that aren't currently loaded
-# library(xlsx)
-# library(Hmisc)
 
 # for javascript and Shiny tools
 library(shinyjs) # for running javascript on the server-side

@@ -8,9 +8,10 @@ data_page <- tabPanel(
                       sidebarPanel(
                         h4("Upload your data"),
                         HTML("<p>Data should be rectangular and in <a href='https://en.wikipedia.org/wiki/Wide_and_narrow_data' target='_blank' rel='noopener noreferrer'>wide format</a> where each column represents one variable.</p>"),
-                        div(id = "upload_file_div",
+                        div(
+                          id = "upload_file_div",
                           fileInput(inputId = "analysis_data_upload", 
-                                    label = "Choose File",
+                                    label = "Choose file:",
                                     buttonLabel = 'Browse',
                                     multiple = FALSE,
                                     accept = c('.csv', '.txt', '.xlsx', '.dta', '.spss'),
@@ -20,8 +21,8 @@ data_page <- tabPanel(
                           condition = "output.show_delim == true",
                           radioButtons(
                             inputId = 'analysis_data_delim_value',
-                            label = "Column delimiter",
-                            selected = '',
+                            label = "Column delimiter:",
+                            selected = ' ',
                             choices = list('[space]' = ' ', '[tab]' = '\t', ',', '|', '-', ':'),
                             inline = FALSE
                           )
@@ -35,7 +36,7 @@ data_page <- tabPanel(
                         br(),br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',
-                                    onclick = "openConceptsPage('Dataloading')",
+                                    onclick = "openHelpPage('Dataloading')",
                                     'Help me'),
                         br(), br(),
                       ),
@@ -65,7 +66,7 @@ data_page <- tabPanel(
                         br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',
-                                    onclick = "openConceptsPage('Concept3')", # not sure where this is linked to
+                                    onclick = "openHelpPage('Concept3')", # not sure where this is linked to
                                     'Help me'),
                         br(),br()
                       ),
@@ -95,7 +96,7 @@ data_page <- tabPanel(
                         br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',
-                                    onclick = "openConceptsPage('Concept3')",
+                                    onclick = "openHelpPage('Concept3')",
                                     'Help me'),
                         br(),br(),
                         create_progress_bar(1/7*100)

@@ -221,7 +221,7 @@ eda_page <- tabPanel(
           br(),
           tags$button(type = 'button',
                       class = 'btn btn-default help',
-                      onclick = "openConceptsPage('Concept3')",
+                      onclick = "openHelpPage('Concept3')",
                       'What is this plot telling me?'),
           br(),br(),
           div(
@@ -262,7 +262,7 @@ tabPanel(title = "Balance Plots",
              br(),
              tags$button(type = 'button',
                          class = 'btn btn-default help',
-                         onclick = "openConceptsPage('Concept3')",
+                         onclick = "openHelpPage('Concept3')",
                          'What is this plot telling me?'),
              br(),br(),
              div(

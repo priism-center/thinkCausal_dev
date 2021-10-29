@@ -45,7 +45,7 @@ results_page <- tabPanel(
               br(),
               tags$button(type = 'button',
                           class = 'btn btn-default help',
-                          onclick = "openConceptsPage('Concept2')",
+                          onclick = "openHelpPage('Concept2')",
                           'What are these plots telling me?'),
               br(), br(),
               actionButton(inputId = "analysis_results_button_back",

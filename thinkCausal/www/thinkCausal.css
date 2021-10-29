@@ -214,6 +214,10 @@ within the selectize dropdowns */
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(92, 89, 128, 0.6);
 }
 
+#analysis_data_upload_progress {
+  border-radius: 0;
+}
+
 .floating_message {
   background-color: #5c5980;
   opacity: 0.9;
@@ -345,7 +349,7 @@ border 0 fixes the buttons moving around when you hover / click */
 /* help slideover */
 /*https://www.w3schools.com/howto/howto_js_sidenav.asp*/
 /* or replace this with bootstrap https://getbootstrap.com/docs/5.0/components/offcanvas/ */
-.conceptsSideBar {
+.helpSideBar {
   height: 100%;
   width: 0;
   position: fixed;
@@ -361,7 +365,7 @@ border 0 fixes the buttons moving around when you hover / click */
   box-shadow: 400px 0px 300px rgba(74, 74, 74, 0.5);
 }
 
-.conceptsSideBar a {
+.helpSideBar a {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   font-size: 25px;
@@ -370,19 +374,19 @@ border 0 fixes the buttons moving around when you hover / click */
   transition: 0.3s;
 }
 
-.conceptsSideBar a:hover {
+.helpSideBar a:hover {
   color: #f1f1f1;
 }
 
-.conceptsSideBarContainer {
+.helpSideBarContainer {
   float: right;
 }
 
-.conceptsSideBarContainer p, .conceptsSideBarContainer h1, .conceptsSideBarContainer h2, .conceptsSideBarContainer h3, .conceptsSideBarContainer h4, .conceptsSideBarContainer h5 {
+.helpSideBarContainer p, .helpSideBarContainer h1, .helpSideBarContainer h2, .helpSideBarContainer h3, .helpSideBarContainer h4, .helpSideBarContainer h5 {
   color: #b0b0b0;
 }
 
-.conceptsHeader {
+.helpHeader {
   position: -webkit-sticky;
   position: sticky;
   top: 0rem;
@@ -396,14 +400,14 @@ border 0 fixes the buttons moving around when you hover / click */
   margin: 0;
 }
 
-.conceptsHeader .closebtn {
+.helpHeader .closebtn {
   position: absolute;
   top: 0.5rem;
   right: 1rem;
   font-size: 3em;
 }
 
-.markdownContainer > p, .markdownContainer > h4, .conceptsSubHeader > h3 {
+.markdownContainer > p, .markdownContainer > h4, .helpSubHeader > h3 {
   padding: 0.2rem 3rem 0.3rem 3rem;
   margin: 0rem;
 }
@@ -412,11 +416,11 @@ border 0 fixes the buttons moving around when you hover / click */
   padding: 1rem 3rem 1rem 3rem;
 }
 
- .markdownContainer > h4 {
+.markdownContainer > h4 {
   padding: 1rem 3rem 0.3rem 3rem;
- }
+}
 
-.conceptsSubHeader {
+.helpSubHeader {
   position: -webkit-sticky;
   position: sticky;
   top: 7.45rem;

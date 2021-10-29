@@ -15,19 +15,19 @@ shinyUI(
         # floating button to activate slide over
         tags$div(id = 'sideBarBtn',
                  class = 'sideBarBtn',
-                 onclick = "openConcepts()",
+                 onclick = "openHelp()",
                  'Help'),
         
         # div for help slide over
         tags$div(id = 'mySideBar',
-                 class = 'conceptsSideBar',
+                 class = 'helpSideBar',
                  tags$div(
                      id = 'mySideBarContainer',
-                     class = 'conceptsSideBarContainer',
+                     class = 'helpSideBarContainer',
                      tags$div(
-                         class = 'conceptsHeader',
+                         class = 'helpHeader',
                          h1("Help"),
-                         HTML('<a style="cursor:pointer" class="closebtn" onclick="closeConcepts()">&times;</a>')
+                         HTML('<a style="cursor:pointer" class="closebtn" onclick="closeHelp()">&times;</a>')
                      ),
                      tags$div(
                          class = 'markdownContainer',

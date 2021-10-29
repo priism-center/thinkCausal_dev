@@ -158,7 +158,7 @@ model_page <- tabPanel(title = 'Model',
 #                                     tags$button(
 #                                       type = 'button',
 #                                       class = 'btn btn-default help',
-#                                       onclick = "openConceptsPage('Concept3')",
+#                                       onclick = "openHelpPage('Concept3')",
 #                                       'Help me'
 #                                     ),
 #                                     br(),br(),

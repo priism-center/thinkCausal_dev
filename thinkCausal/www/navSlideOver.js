@@ -1,5 +1,5 @@
-// open/closes the concepts sidebar
-function openConcepts() {
+// open/closes the help sidebar
+function openHelp() {
   let sideDiv = document.getElementById("mySideBar")
   if (sideDiv.style.width === 'min(100%, 700px)'){
     sideDiv.style.width = '0';
@@ -9,23 +9,21 @@ function openConcepts() {
 }
 
 // maybe replace with this https://css-tricks.com/sticky-smooth-active-nav/
-function openConceptsPage(divID) {
+function openHelpPage(divID) {
   document.getElementById("mySideBar").style.width = "min(100%, 700px)";
   let elmnt = document.getElementById(divID);
   setTimeout(function(){elmnt.scrollIntoView(true);}, 600);
-  //let topPos = document.getElementById('Concept2').offsetTop
-  //setTimeout(function(){document.getElementById("conceptsSideBarContainer").scrollTop = topPos;}, 500);
 }
 
-function closeConcepts() {
+function closeHelp() {
   document.getElementById("mySideBar").style.width = "0";
 }
 
-// wrap every h3 header in the concepts markdown in a div
-$(".markdownContainer h3").wrap("<div class='conceptsSubHeader'></div>");
+// wrap every h3 header in the help markdown in a div
+$(".markdownContainer h3").wrap("<div class='helpSubHeader'></div>");
 
 // add id to every h3 based on its title
-$('.conceptsSubHeader').each(function(){
+$('.helpSubHeader').each(function(){
   id = $(this).text()
   id = id.replace(/\s/g, '')
   $(this).attr('id', id)

@@ -89,6 +89,7 @@ shinyServer(function(input, output, session) {
   # read in the uploaded file
   uploaded_df <- reactive({
     # TODO: test all the file types (e.g. stata is only stata 15 or older)
+    # TODO: what about tsv files?
     # TODO: add parsing failures to log
     
     req(input$analysis_data_upload)
@@ -418,7 +419,7 @@ shinyServer(function(input, output, session) {
     
     # show message
     message_id <- 'analysis_group_message'
-    show_message('Updating...', message_id)
+    show_message('Updating...', id = message_id, closeButton = FALSE)
     
     # create groupings
     drag_drop_groupings <- create_drag_drop_groups(
@@ -428,7 +429,8 @@ shinyServer(function(input, output, session) {
     )
     
     # close message
-    close_message(message_id)
+    Sys.sleep(0.7)
+    close_message(id = message_id)
     
     # update global var keeping track of the number of groups
     store$n_dummy_groups <- drag_drop_groupings$n_dummy_groups
