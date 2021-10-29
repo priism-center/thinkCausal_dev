@@ -416,12 +416,19 @@ shinyServer(function(input, output, session) {
     # stop here if data hasn't been uploaded and columns assigned
     validate_columns_assigned(store)
     
+    # show message
+    message_id <- 'analysis_group_message'
+    show_message('Updating...', message_id)
+    
     # create groupings
     drag_drop_groupings <- create_drag_drop_groups(
       .data = store$col_assignment_df, 
       ns_prefix = 'analysis_data', 
       n_dummy_groups = store$n_dummy_groups
     )
+    
+    # close message
+    close_message(message_id)
     
     # update global var keeping track of the number of groups
     store$n_dummy_groups <- drag_drop_groupings$n_dummy_groups

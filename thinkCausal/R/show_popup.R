@@ -112,13 +112,17 @@ close_popup <- function(session){
   shiny::removeModal(session = session)
 }
 
-show_message <- function(content){
+show_message <- function(content, id = NULL){
   # this is a smaller message that doesn't take over the whole screen
   # style and position controlled in CSS with class .shiny-notification
   shiny::showNotification(
     ui = content,
     duration = 15,
     closeButton = TRUE,
-    id = NULL,
+    id = id,
     type = 'default')
+}
+
+close_message <- function(id){
+  shiny::removeNotification(id = id)
 }

@@ -534,7 +534,7 @@ html {
 .shiny-notification {
   position: fixed;
   top: 130px;
-  left: calc(50% + 1280px/2 - 150px - 40px);
+  right: 10%;
   width: min(100%, 150px);
   color: #f2f2f2;
   background-color: #938497;

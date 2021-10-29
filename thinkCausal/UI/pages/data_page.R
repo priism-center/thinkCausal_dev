@@ -22,8 +22,8 @@ data_page <- tabPanel(
                             inputId = 'analysis_data_delim_value',
                             label = "Column delimiter",
                             selected = '',
-                            choices = list('[space]' = ' ', ',', '|', '-', ':'),
-                            inline = TRUE
+                            choices = list('[space]' = ' ', '[tab]' = '\t', ',', '|', '-', ':'),
+                            inline = FALSE
                           )
                         ),
                         checkboxInput(inputId = "analysis_data_header", 
