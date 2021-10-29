@@ -93,7 +93,7 @@ moderator_page <- tabPanel(
                        label = 'Back to model results'), 
           br(), br(),
           actionButton(inputId = 'to_download',
-                       label = 'Log Analyses'),
+                       label = 'Log analyses'),
         ),
         mainPanel(
           br(),

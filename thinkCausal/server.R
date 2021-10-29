@@ -89,7 +89,6 @@ shinyServer(function(input, output, session) {
   # read in the uploaded file
   uploaded_df <- reactive({
     # TODO: test all the file types (e.g. stata is only stata 15 or older)
-    # TODO: this behavior is really unintuitive; need to rethink it
     # TODO: add parsing failures to log
     
     req(input$analysis_data_upload)
@@ -98,34 +97,42 @@ shinyServer(function(input, output, session) {
     filepath <- input$analysis_data_upload$datapath
     filetype <- tools::file_ext(filepath)
     
+    # stop if not one of the accepted file types
+    # this should be caught by fileInput() on the UI side
+    accepted_filetypes <- c('csv', 'txt', 'xlsx', 'dta', 'spss')
+    validate(need(
+      filetype %in% accepted_filetypes,
+      paste(
+        'Filetype not accepted. Only accept ',
+        paste0(accepted_filetypes, collapse = ', ')
+      )
+    ))
+    
     tryCatch({
       
       # if it's a txt file then ask the user what the delimiter is  
       if (filetype == 'txt'){
-        output$analysis_data_delim <- renderUI({ 
-          textInput(inputId = 'analysis_data_delim_value',
-                    label = "Column delimiter",
-                    # value = ',',
-                    placeholder = ", | - :")
-        })
+        output$show_delim <- reactive(TRUE)
+        outputOptions(output, "show_delim", suspendWhenHidden = FALSE)
         req(input$analysis_data_delim_value)
+      } else {
+        output$show_delim <- reactive(FALSE)
       }
       
       # upload the file based on its filetype
       if (filetype == "csv"){
         uploaded_file <- readr::read_csv(
           file = filepath,
-          col_names = input$analysis_data_header) 
+          col_names = input$analysis_data_header
+        )
       } else if (filetype == 'dta'){
         uploaded_file <- readstata13::read.dta13(file = filepath)
       } else if (filetype == 'xlsx'){
-        uploaded_file <- xlsx::read.xlsx(file = filepath) #TODO: use xlsx or openxlsx?
+        uploaded_file <- openxlsx::read.xlsx(xlsxFile = filepath)
       } else if (filetype == 'txt'){
-        delim <- input$analysis_data_delim_value
-        if (delim == "") delim <- ","
         uploaded_file <- readr::read_delim(
           file = filepath,
-          delim = delim,
+          delim = input$analysis_data_delim_value,
           col_names = input$analysis_data_header
         )
       } else if (filetype == 'spss'){
@@ -142,19 +149,20 @@ shinyServer(function(input, output, session) {
 
     return(uploaded_file)
   })
-  
-  
-  # # Practice df
-  # uploaded_df <-  reactive({
-  #   req(input$create_practice)
-  #   sim <- make_dat_demo()
-  #   return(sim)
-  # })
-  
+
   # add dataframe to store object
   # TODO: does this need to be eager or can it be lazy via reactive()? 
   observeEvent(uploaded_df(), {
     
+    # remove any previous dataframe from the store
+    store$uploaded_df <- NULL
+    
+    # stop here if uploaded data seems invalid
+    validate(need(
+      ncol(uploaded_df()) > 1,
+      'Uploaded dataframe only has one column. Is the delimiter correct?'
+    ))
+
     # add to log
     log_event <- paste0('Uploaded ', input$analysis_data_upload$name)
     store$log <- append(store$log, log_event)

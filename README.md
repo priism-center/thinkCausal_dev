@@ -10,7 +10,7 @@ thinkCausal is federally funded project devoted to building scaffolded causal in
 <!--
 ### Run the latest development build via R
 ``` r
-# packages <- c('shiny', 'foreign', 'readstata13', 'openxlsx', 'shinyjs', 'shinyWidgets', 'DT', 'sortable', 'tidyverse', 'patchwork', 'viridis', 'bartCause', 'rpart.plot')
+# packages <- c('shiny', 'foreign', 'readstata13', 'openxlsx', 'Hmisc', 'readr', 'shinyjs', 'shinyWidgets', 'DT', 'sortable', 'tidyverse', 'dplyr', 'ggplot2', 'stringr', 'purrr', 'viridis', 'rpart.plot', 'bartCause')
 # install.packages(packages)
 # devtools::install_github('joemarlo/plotBart')
 shiny::runGitHub("thinkCausal_dev", "gperrett", subdir = 'thinkCausal', ref = 'v0.1.0',  launch.browser = TRUE)

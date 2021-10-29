@@ -3,7 +3,9 @@ library(shiny)
 # for reading data
 library(foreign)
 library(readstata13)
-library(openxlsx) 
+library(openxlsx)
+# library(xlsx)
+library(Hmisc) # for spss
 library(readr)
 
 # directly called libraries that aren't currently loaded
@@ -23,7 +25,7 @@ library(ggplot2)
 library(stringr) # TODO: can this be replaced with gsub* functions?
 library(purrr)
 library(viridis) # for color blind sensitive colors
-library(rpart.plot) # for plotting single regression tree; tODO: move to plotBart?
+library(rpart.plot) # for plotting single regression tree; TODO: move to plotBart?
 
 # for bart
 library(plotBart) # devtools::install_github("joemarlo/plotBart")
