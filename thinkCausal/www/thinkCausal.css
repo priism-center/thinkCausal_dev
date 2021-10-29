@@ -530,8 +530,8 @@ border 0 fixes the buttons moving around when you hover / click */
 
 /* make scrollbar always visible so site doesn't shift when it is visible */
 html {
-    overflow: -moz-scrollbars-vertical; 
-    overflow-y: scroll;
+  overflow: -moz-scrollbars-vertical; 
+  overflow-y: scroll;
 }
 
 /* controls the look and placement of notifications created from shiny::showNotification */
@@ -559,7 +559,7 @@ html {
   z-index: 10;
   display: block;
   position: absolute;
-  height: 100%;
+  height: max(100%, 200px);
   top: 0;
   left: 0;
   right: 0;

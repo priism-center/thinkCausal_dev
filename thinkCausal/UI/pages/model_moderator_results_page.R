@@ -6,27 +6,26 @@ moderator_page <- tabPanel(
       title = 'ICATE',
       sidebarLayout(
         sidebarPanel(
-
-        awesomeRadio(inputId = "icate_type",
-                     label = 'Plot:',
-                     choices = list("Ordered ICATE" = 'ordered', "Histogram of ICATE" = 'histogram')),
-        br(),
-        br(),
-        br(),
-        tags$button(type = 'button',
-                    class = 'btn btn-default help',
-                    onclick = "openHelpPage('Concept3')",
-                    'What is this plot telling me?'),
-        br(),br(),
-        div(class = 'backNextContainer',
-            actionButton(inputId = 'analysis_moderator_icate_button_back', 
-                         label = 'Back'),
-            actionButton(inputId = 'analysis_moderator_icate_button_next',
-                         label = 'Next'))
-      ),
+          h5("Individual conditional average treatment effects"),
+          p("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+          br(),
+          awesomeRadio(inputId = "icate_type",
+                       label = 'Plot type:',
+                       choices = list("Ordered ICATE" = 'ordered', "Histogram of ICATE" = 'histogram')),
+          br(), br(), 
+          tags$button(type = 'button',
+                      class = 'btn btn-default help',
+                      onclick = "openHelpPage('Concept3')",
+                      'What is this plot telling me?'),
+          br(),br(),
+          div(class = 'backNextContainer',
+              actionButton(inputId = 'analysis_moderator_icate_button_back', 
+                           label = 'Back'),
+              actionButton(inputId = 'analysis_moderator_icate_button_next',
+                           label = 'Next'))
+          ),
         mainPanel(
           br(),
-  
           plotOutput(outputId = "histogram_icate",
                      height = 500)
         )
@@ -39,12 +38,11 @@ moderator_page <- tabPanel(
                  br(),
 
                  awesomeRadio(inputId = 'set_tree_depth',
-                              label = 'Tree Depth',
+                              label = 'Tree depth:',
                               choices = list('1' = 1, '2' = 2, '3' = 3),
-                              inline = T,
+                              inline = TRUE,
                               selected = '2'), 
-                 br(),
-                 br(),
+                 br(), br(),
                  tags$button(type = 'button',
                              class = 'btn btn-default help',
                              onclick = "openHelpPage('Concept3')",
@@ -67,6 +65,9 @@ moderator_page <- tabPanel(
       title = 'Subgroup Analyses',
       sidebarLayout(
         sidebarPanel(
+          h5("Subgroup analyes"),
+          p("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+          br(),
           conditionalPanel(condition = "input.analysis_model_moderator_yes_no == 'Yes'",
                            awesomeRadio(inputId = 'moderation_type_class',
                                         label = 'Type of Subgroup Analysis:',

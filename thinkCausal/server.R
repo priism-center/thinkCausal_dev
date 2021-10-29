@@ -987,9 +987,6 @@ shinyServer(function(input, output, session) {
     validate(need(length(input$analysis_plot_overlap_select_var) > 0,
                   "No continuous columns available or currently selected"))
     
-    # show message if there are many variables
-    if (length(input$analysis_plot_overlap_select_var) > 8) show_message('Building the plot. May take a while.')
-    
     # get variables for input into plotting functions
     X <- store$selected_df
     col_names <- colnames(X)
@@ -1058,9 +1055,6 @@ shinyServer(function(input, output, session) {
     validate(need(length(input$analysis_plot_balance_select_var) > 0,
                   "No continuous columns available or currently selected"))
     
-    # show message if there are many variables
-    # if (length(input$analysis_plot_balance_select_var) > 8) show_message('Building the plot. May take a while.')
-    
     # plot it
     X <- store$selected_df
     col_names <- colnames(X)
@@ -1078,13 +1072,13 @@ shinyServer(function(input, output, session) {
   output$analysis_plot_balance_plot <- renderPlot({
   
     # add overlay
-    show_message_updating('analysis_plot_balance_plot')
+    # show_message_updating('analysis_plot_balance_plot')
 
     # build plot
     p <- balance_plot()
     
     # remove overlay
-    close_message_updating('analysis_plot_balance_plot')
+    # close_message_updating('analysis_plot_balance_plot')
 
     return(p)
   })
@@ -1529,6 +1523,9 @@ shinyServer(function(input, output, session) {
     # stop here if model isn't fit yet
     validate_model_fit(store)
     
+    # add overlay
+    show_message_updating('analysis_results_plot_PATE')
+    
     if(input$show_reference == 'No'){
       # plot it
       # TODO: this is not in plotBart
@@ -1567,6 +1564,9 @@ shinyServer(function(input, output, session) {
         theme(legend.position = c(0.1, 0.9),
               legend.title = element_blank())
     }
+    
+    # remove overlay
+    close_message_updating('analysis_results_plot_PATE')
     
     return(p)
   })
@@ -1683,18 +1683,21 @@ shinyServer(function(input, output, session) {
     # stop here if model isn't fit yet
     validate_model_fit(store)
     
-    # TODO: this does not close once plot is finished
-    shinyWidgets::show_alert(
-      title = 'Rendering Plot...',
-      text = tags$div(
-        img(src = file.path('img', 'tree.gif'),
-            width = "20%"),
-        h5("...sometimes this takes a while..."),
-      ),
-      html = TRUE,
-      btn_labels = NA,
-      closeOnClickOutside = T
-    )
+    # add overlay
+    show_message_updating('analysis_moderators_explore_plot')
+    
+    # # TODO: this does not close once plot is finished
+    # shinyWidgets::show_alert(
+    #   title = 'Rendering Plot...',
+    #   text = tags$div(
+    #     img(src = file.path('img', 'tree.gif'),
+    #         width = "20%"),
+    #     h5("...sometimes this takes a while..."),
+    #   ),
+    #   html = TRUE,
+    #   btn_labels = NA,
+    #   closeOnClickOutside = T
+    # )
 
     # plot it
     # TODO: this is not in plotBart
@@ -1703,6 +1706,9 @@ shinyServer(function(input, output, session) {
     
     # add theme
     p <- p + theme_custom()
+    
+    # remove overlay
+    close_message_updating('analysis_moderators_explore_plot')
     
     return(p)
   })

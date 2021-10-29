@@ -1,6 +1,6 @@
-#' Add an blurry overlay and message to user to div
+#' Add an blurry overlay and message to user
 #'
-#' Blur out an element and add a loading message
+#' Blur out an element and add a loading message. This makes it obvious to the user that an element is updating.
 #'
 #' @param div div ID of the parent
 #'
@@ -27,9 +27,8 @@
 show_message_updating <- function(div){
   # this adds a gray, blurry overlay and a message to the user notifying it is updating
   
-  # add overlay
+  # add overlay and show message
   js_disable_div(div)
-  # show message
   show_message('Updating...', id = paste0(div, '-message'), closeButton = FALSE)
 }
 
@@ -45,7 +44,7 @@ show_message <- function(content, id = NULL, closeButton = TRUE){
   # style and position controlled in CSS with class .shiny-notification
   shiny::showNotification(
     ui = content,
-    duration = 15,
+    duration = NULL,
     closeButton = closeButton,
     id = id,
     type = 'default')
