@@ -111,18 +111,3 @@ show_popup_missing_10p_group_name_warning <- function(session, missing_10p_check
 close_popup <- function(session){
   shiny::removeModal(session = session)
 }
-
-show_message <- function(content, id = NULL, closeButton = TRUE){
-  # this is a smaller message that doesn't take over the whole screen
-  # style and position controlled in CSS with class .shiny-notification
-  shiny::showNotification(
-    ui = content,
-    duration = 15,
-    closeButton = closeButton,
-    id = id,
-    type = 'default')
-}
-
-close_message <- function(id){
-  shiny::removeNotification(id = id)
-}

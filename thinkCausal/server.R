@@ -155,8 +155,12 @@ shinyServer(function(input, output, session) {
   # TODO: does this need to be eager or can it be lazy via reactive()? 
   observeEvent(uploaded_df(), {
     
-    # remove any previous dataframe from the store
+    # remove any previous dataframes from the store
     store$uploaded_df <- NULL
+    store$categorical_df <- NULL
+    store$user_modified_df <- NULL
+    store$col_assignment_df <- NULL
+    store$selected_df <- NULL
     
     # stop here if uploaded data seems invalid
     validate(need(
@@ -417,9 +421,8 @@ shinyServer(function(input, output, session) {
     # stop here if data hasn't been uploaded and columns assigned
     validate_columns_assigned(store)
     
-    # show message
-    message_id <- 'analysis_group_message'
-    show_message('Updating...', id = message_id, closeButton = FALSE)
+    # add overlay
+    show_message_updating('analysis_data_UI_dragdrop_grouping')
     
     # create groupings
     drag_drop_groupings <- create_drag_drop_groups(
@@ -428,9 +431,8 @@ shinyServer(function(input, output, session) {
       n_dummy_groups = store$n_dummy_groups
     )
     
-    # close message
-    Sys.sleep(0.7)
-    close_message(id = message_id)
+    # remove overlay
+    close_message_updating('analysis_data_UI_dragdrop_grouping')
     
     # update global var keeping track of the number of groups
     store$n_dummy_groups <- drag_drop_groupings$n_dummy_groups
@@ -1022,7 +1024,19 @@ shinyServer(function(input, output, session) {
     
     return(p)
   })
-  output$analysis_plot_overlap_plot <- renderPlot(overlap_plot())
+  output$analysis_plot_overlap_plot <- renderPlot({
+    
+    # add overlay
+    show_message_updating('analysis_plot_overlap_plot')
+    
+    # build plot
+    p <- overlap_plot()
+    
+    # remove overlay
+    close_message_updating('analysis_plot_overlap_plot')
+    
+    return(p)
+  })
   
   output$download_overlap_plot <- downloadHandler(
     filename = 'overlap_plot.png',
@@ -1045,7 +1059,7 @@ shinyServer(function(input, output, session) {
                   "No continuous columns available or currently selected"))
     
     # show message if there are many variables
-    if (length(input$analysis_plot_balance_select_var) > 8) show_message('Building the plot. May take a while.')
+    # if (length(input$analysis_plot_balance_select_var) > 8) show_message('Building the plot. May take a while.')
     
     # plot it
     X <- store$selected_df
@@ -1061,7 +1075,19 @@ shinyServer(function(input, output, session) {
     
     return(p)
   })
-  output$analysis_plot_balance_plot <- renderPlot(balance_plot())
+  output$analysis_plot_balance_plot <- renderPlot({
+  
+    # add overlay
+    show_message_updating('analysis_plot_balance_plot')
+
+    # build plot
+    p <- balance_plot()
+    
+    # remove overlay
+    close_message_updating('analysis_plot_balance_plot')
+
+    return(p)
+  })
   
   output$download_balance_plot <- downloadHandler(
     filename = 'balance_plot.png',
