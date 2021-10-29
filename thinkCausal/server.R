@@ -1384,7 +1384,7 @@ shinyServer(function(input, output, session) {
         commonSup.rule = input$analysis_model_radio_support
       )
     },
-    warning = function(w) NULL,
+    # warning = function(w) NULL,
     error = function(e) NULL
     )
     
