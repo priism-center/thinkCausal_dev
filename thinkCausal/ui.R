@@ -6,8 +6,9 @@ shinyUI(
         # use shinyjs
         shinyjs::useShinyjs(),
         
-        # load custom CSS file
+        # load custom CSS files
         includeCSS("www/thinkCausal.css"),
+        includeCSS("www/helpSlideOver.css"),
         includeCSS("www/slider.css"),
 
         # floating button to activate slide over

@@ -181,149 +181,12 @@ shinyServer(function(input, output, session) {
     # auto convert all of the logical columns
     auto_cleaned_df <- clean_auto_convert_logicals(uploaded_df) 
     
+    # auto convert columns that are integers and few levels to factors
+    auto_cleaned_df <- clean_auto_convert_integers(auto_cleaned_df)
+    
     # add to store
     store$uploaded_df <- auto_cleaned_df
   })
-  
-  
-  # maintain a user modified dataframe that is continuously updated
-  # TODO: does this need to be eager or can it be lazy via reactive()? 
-    # a few things would need to be modified, primarily the resetting of the df
-  observe({
-    
-    # stop here if columns haven't been assigned
-    validate_columns_assigned(store)
-    
-    # use assigned dataframe as the template
-    user_modified_df <- store$categorical_df  #! input data changed to the result of group data
-  
-    if (isTRUE(nrow(store$user_modified_df) > 0)){
-      
-      # get input indices and current input values
-      indices <- seq_along(user_modified_df)
-      current_values <- reactiveValuesToList(input)
-      
-      ## change column names
-      user_entered_names <- as.character(current_values[paste0("analysis_data_", indices, '_rename')])
-      user_entered_names <- clean_names(user_entered_names)
-      names(user_modified_df) <- user_entered_names
-      
-      # TODO: theres some issues here; may need to use promises: https://rstudio.github.io/promises/articles/motivation.html
-      # change data type
-      # current_dataTypes <- convert_data_type_to_simple(store$user_modified_df)
-      # user_entered_dataTypes <- as.character(current_values[paste0("analysis_data_", indices, '_changeDataType')])
-      # 
-      # if (all(user_entered_dataTypes != 'NULL')) {
-      #   pmap(list(colnames(store$user_modified_df), current_dataTypes, user_entered_dataTypes), 
-      #        function(column_name, current_dataType, new_dataType){
-      #          
-      #          if (current_dataType != new_dataType){
-      #            # c("Continuous", "Categorical", "Binary")
-      #            
-      #            # convert column to character
-      #            current_col_as_char <- as.character(store$user_modified_df[[column_name]])
-      #            
-      #            if (new_dataType == "Binary"){
-      #              auto_binary <- readr::parse_logical(as.character(current_col_as_char))
-      #              if (any(is.na(auto_binary))){
-      #                print("Issue auto converting column!!!")
-      # 
-      #                # launch popup so user can choose which values map to true/false
-      #                shinyWidgets::show_alert(
-      #                  title = "Please choose which value corresponds to true and false",
-      #                  text = tags$div(
-      #                    selectInput(
-      #                      inputId = "analysis_data_select_TRUE",
-      #                      label = "Value representing 'true'",
-      #                      choices = unique(current_col_as_char)
-      #                    ),
-      #                    selectInput(
-      #                      inputId = "analysis_data_select_FALSE",
-      #                      label = "Value representing 'false'",
-      #                      choices = unique(current_col_as_char)
-      #                    )
-      #                   ),
-      #                  type = 'info',
-      #                  btn_labels = c("Confirm"),
-      #                  closeOnClickOutside = FALSE,
-      #                  showCloseButton = FALSE
-      #                )
-      #              }
-      #             }
-      #            
-      #            print(paste0("Changing ", column_name, " from ", current_dataType, " to ", new_dataType))
-      #         }
-      #   })
-      # }
-
-      
-      # new_data_types <- 
-      # user_modified_df <- convert_data_type_to_complex(user_modified_df, user_entered_dataTypes)
-      
-      # TODO?
-      # change categorical levels
-    }
-
-    # save the data to the store
-    store$user_modified_df <- user_modified_df 
-  })
-  
-  # reset dataframe back to original when user clicks button
-  # observeEvent(input$analysis_data_button_reset, {
-  #   
-  #   # reset dataframe
-  #   store$user_modified_df <- store$categorical_df #! input data changed to the result of group data
-  #   
-  #   ## reset UI
-  #   # set indices to map over
-  #   all_col_names <- colnames(store$categorical_df)  #! input data changed to the result of group data
-  #   default_data_types <- convert_data_type_to_simple(store$categorical_df)  #! input data changed to the result of group data
-  #   indices <- seq_along(all_col_names)
-  #   
-  #   # update the inputs
-  #   lapply(indices, function(i){
-  #     updateTextInput(
-  #       session = session,
-  #       inputId = paste0("analysis_data_", i, "_rename"),
-  #       value = all_col_names[i]
-  #     )
-  #     updateSelectInput(
-  #       session = session,
-  #       inputId = paste0("analysis_data_", i, "_changeDataType"),
-  #       selected = default_data_types[i]
-  #     )
-  #   })
-  # })
-  
-  # vector of selector ids
-  # analysis_data_select_selector_ids <-
-  #   c(
-  #     "analysis_data_select_select_zcol",
-  #     "analysis_data_select_select_ycol",
-  #     "analysis_data_select_select_xcol"
-  #   )
-  
-  # update select inputs when the input data changes
-  # TODO: does this need to be eager or can it lazy via reactive()?
-  # observeEvent(store$uploaded_df, {
-  #   
-  #   # stop here if data hasn't been uploaded
-  #   validate_data_uploaded(store)
-  #   
-  #   # infer which columns are Z, Y, and X columns for smart defaults
-  #   auto_columns <- clean_detect_ZYX_columns(store$uploaded_df)
-  #   
-  #   all_colnames <- colnames(store$uploaded_df)
-  #   
-  #   # fill the dropdown options with the colnames
-  #   for (i in 1:3){
-  #     updateSelectInput(session = session,
-  #                       inputId = analysis_data_select_selector_ids[i],
-  #                       choices = all_colnames,
-  #                       selected = auto_columns[[i]]
-  #     )
-  #   }
-  # })
   
   # render the drag and drop UI
   output$analysis_data_UI_dragdrop <- renderUI({
@@ -516,6 +379,9 @@ shinyServer(function(input, output, session) {
       updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
     }
     
+    # create a copy of the dataframe that the user can modify on the verify page
+    store$user_modifed_df <- store$categorical_df
+    
   })
   
   observeEvent(input$group_name_continue, {
@@ -534,6 +400,148 @@ shinyServer(function(input, output, session) {
   
   
   # verify data -------------------------------------------------------------
+  
+  # maintain a user modified dataframe that is continuously updated
+  # TODO: does this need to be eager or can it be lazy via reactive()? 
+  # a few things would need to be modified, primarily the resetting of the df
+  observe({
+    
+    # stop here if columns haven't been assigned
+    validate_data_grouped(store)
+    
+    # use assigned dataframe as the template
+    user_modified_df <- store$categorical_df
+
+    # get input indices and current input values
+    indices <- seq_along(user_modified_df)
+    current_values <- reactiveValuesToList(input)
+      
+    ## change column names
+    user_entered_names <- as.character(current_values[paste0("analysis_data_", indices, '_rename')])
+    user_entered_names <- clean_names(user_entered_names)
+    names(user_modified_df) <- user_entered_names
+    
+    # change data types
+    new_data_types <- as.character(current_values[paste0('analysis_data_', indices, '__changeDataType')])
+    # TODO
+    # user_modified_df <- clean_convert_data_types(.data = user_modified_df, new_data_types = new_data_types)
+    
+      
+      # TODO: theres some issues here; may need to use promises: https://rstudio.github.io/promises/articles/motivation.html
+      # change data type
+      # current_dataTypes <- convert_data_type_to_simple(store$user_modified_df)
+      # user_entered_dataTypes <- as.character(current_values[paste0("analysis_data_", indices, '_changeDataType')])
+      # 
+      # if (all(user_entered_dataTypes != 'NULL')) {
+      #   pmap(list(colnames(store$user_modified_df), current_dataTypes, user_entered_dataTypes), 
+      #        function(column_name, current_dataType, new_dataType){
+      #          
+      #          if (current_dataType != new_dataType){
+      #            # c("Continuous", "Categorical", "Binary")
+      #            
+      #            # convert column to character
+      #            current_col_as_char <- as.character(store$user_modified_df[[column_name]])
+      #            
+      #            if (new_dataType == "Binary"){
+      #              auto_binary <- readr::parse_logical(as.character(current_col_as_char))
+      #              if (any(is.na(auto_binary))){
+      #                print("Issue auto converting column!!!")
+      # 
+      #                # launch popup so user can choose which values map to true/false
+      #                shinyWidgets::show_alert(
+      #                  title = "Please choose which value corresponds to true and false",
+      #                  text = tags$div(
+      #                    selectInput(
+      #                      inputId = "analysis_data_select_TRUE",
+      #                      label = "Value representing 'true'",
+      #                      choices = unique(current_col_as_char)
+      #                    ),
+      #                    selectInput(
+      #                      inputId = "analysis_data_select_FALSE",
+      #                      label = "Value representing 'false'",
+      #                      choices = unique(current_col_as_char)
+      #                    )
+      #                   ),
+      #                  type = 'info',
+      #                  btn_labels = c("Confirm"),
+      #                  closeOnClickOutside = FALSE,
+      #                  showCloseButton = FALSE
+      #                )
+      #              }
+      #             }
+      #            
+      #            print(paste0("Changing ", column_name, " from ", current_dataType, " to ", new_dataType))
+      #         }
+      #   })
+      # }
+      
+      
+    # new_data_types <- 
+    # user_modified_df <- convert_data_type_to_complex(user_modified_df, user_entered_dataTypes)
+      
+    # TODO?
+    # change categorical levels
+    
+    # save the data to the store
+    store$user_modified_df <- user_modified_df 
+  })
+  
+  # reset dataframe back to original when user clicks button
+  observeEvent(input$analysis_data_button_reset, {
+
+    # reset dataframe
+    store$user_modified_df <- store$categorical_df 
+
+    ## reset UI
+    # set indices to map over
+    all_col_names <- colnames(store$categorical_df)  #! input data changed to the result of group data
+    default_data_types <- convert_data_type_to_simple(store$categorical_df)  #! input data changed to the result of group data
+    indices <- seq_along(all_col_names)
+
+    # update the inputs
+    lapply(indices, function(i){
+      updateTextInput(
+        session = session,
+        inputId = paste0("analysis_data_", i, "_rename"),
+        value = all_col_names[i]
+      )
+      updateSelectInput(
+        session = session,
+        inputId = paste0("analysis_data_", i, "_changeDataType"),
+        selected = default_data_types[i]
+      )
+    })
+  })
+  
+  # vector of selector ids
+  # analysis_data_select_selector_ids <-
+  #   c(
+  #     "analysis_data_select_select_zcol",
+  #     "analysis_data_select_select_ycol",
+  #     "analysis_data_select_select_xcol"
+  #   )
+  
+  # update select inputs when the input data changes
+  # TODO: does this need to be eager or can it lazy via reactive()?
+  # observeEvent(store$uploaded_df, {
+  #   
+  #   # stop here if data hasn't been uploaded
+  #   validate_data_uploaded(store)
+  #   
+  #   # infer which columns are Z, Y, and X columns for smart defaults
+  #   auto_columns <- clean_detect_ZYX_columns(store$uploaded_df)
+  #   
+  #   all_colnames <- colnames(store$uploaded_df)
+  #   
+  #   # fill the dropdown options with the colnames
+  #   for (i in 1:3){
+  #     updateSelectInput(session = session,
+  #                       inputId = analysis_data_select_selector_ids[i],
+  #                       choices = all_colnames,
+  #                       selected = auto_columns[[i]]
+  #     )
+  #   }
+  # })
   
   # render UI for modifying the data
   output$analysis_data_modify_UI <- renderUI({
@@ -593,30 +601,20 @@ shinyServer(function(input, output, session) {
     return(UI_table)
   })
   
-  # update levels and percentNAs fields with actual data
+  # update percentNAs fields with actual data
   # TODO: this fails to update if user goes back and reassigns the dataset; if the user then clicks on 
     # on rename or data type then it updates
-  observe_multiple <- reactive(list(store$user_modified_df, input$analysis_data_button_columnAssignSave))
-  observeEvent(observe_multiple(), {
+  observeEvent(store$user_modified_df, {
     
     # stop here if columns haven't been assigned and grouped
     validate_columns_assigned(store)
     validate_data_grouped(store)
 
     # original data column indices
-    indices <- seq_along(colnames(store$categorical_df)) #! input data changed to the result of group data
+    indices <- seq_along(colnames(store$user_modified_df))
 
+    # update the percent NA
     lapply(X = indices, function(i) {
-
-      # update the levels
-      # col_levels <- unique(store$categorical_df[[i]]) #! input data changed to the result of group data
-      # updateTextInput(
-      #   session = session,
-      #   inputId = paste0("analysis_data_", i, "_levels"),
-      #   value = col_levels
-      # )
-
-      # update the percent NA
       percent_NA <- mean(is.na(store$user_modified_df[[i]]))
       percent_NA <- paste0(round(percent_NA, 3) * 100, "%")
       updateTextInput(
