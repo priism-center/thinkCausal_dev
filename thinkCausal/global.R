@@ -19,7 +19,7 @@ library(dplyr)
 library(ggplot2)
 library(stringr) # TODO: can this be replaced with gsub* functions?
 library(purrr)
-library(viridis) # for color blind sensitive colors
+# library(viridis) # for color blind sensitive colors
 library(rpart.plot) # for plotting single regression tree; TODO: move to plotBart?
 
 # for bart

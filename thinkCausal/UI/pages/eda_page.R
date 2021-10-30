@@ -197,7 +197,7 @@ eda_page <- tabPanel(
           h4("Check common support"),
           selectInput(
             inputId = "analysis_plot_overlap_select_var",
-            label = "Select Variables for Overlap Check:",
+            label = "Select variables for overlap check:",
             multiple = TRUE,
             choices = NULL,
             selected = NULL
@@ -213,7 +213,7 @@ eda_page <- tabPanel(
           br(),
           awesomeRadio(
             inputId = "analysis_plot_overlap_method",
-            label = "Plot Type:", 
+            label = "Plot type:", 
             inline = TRUE, 
             choices = c('Histogram', 'Density'), 
             selected = 'Histogram'
@@ -254,7 +254,7 @@ tabPanel(title = "Balance Plots",
              h4("Visualize balance between treatment and control"),
              selectInput(
                inputId = "analysis_plot_balance_select_var",
-               label = "Select Variables for Balance Check:",
+               label = "Select variables for balance check:",
                multiple = TRUE,
                choices = NULL,
                selected = NULL

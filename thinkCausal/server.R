@@ -1,8 +1,9 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
   
-  # initialize list to store variables  
-  store <- reactiveValues(uploaded_df = data.frame(), log = list())
+  # initialize list to store variables
+  store <- reactiveValues(uploaded_df = data.frame(), log = list(as.character(Sys.time())))
+  
   
   # back next buttons -------------------------------------------------------
   
@@ -81,7 +82,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_moderator_analyses_button_results, {
     updateNavbarPage(session, inputId = "nav", selected = "Results")
   })
-  
+  observeEvent(input$analysis_moderator_analyses_button_reproduce, {
+    updateNavbarPage(session, inputId = "nav", selected = "Reproduce")
+  })
   
   
   # upload data -------------------------------------------------------------
@@ -998,21 +1001,27 @@ shinyServer(function(input, output, session) {
     
     # plot either the variables or the 1 dimension propensity scores
     if(input$analysis_plot_overlap_type == 1){
-      p <- plotBart::plot_overlap_vars(
-        .data = X,
-        treatment = treatment_col,
-        confounders = input$analysis_plot_overlap_select_var, 
-        plot_type = plt_type
+      p <- tryCatch(
+        plotBart::plot_overlap_vars(
+          .data = X,
+          treatment = treatment_col,
+          confounders = input$analysis_plot_overlap_select_var,
+          plot_type = plt_type
+        ),
+        error = function(e) NULL
       )
     }
     
     else if(input$analysis_plot_overlap_type == 2){
-      p <- plotBart::plot_overlap_pScores(
-        .data = X,
-        treatment = treatment_col,
-        response = response_col,
-        confounders = confounder_cols, 
-        plot_type = plt_type
+      p <- tryCatch(
+        plotBart::plot_overlap_pScores(
+          .data = X,
+          treatment = treatment_col,
+          response = response_col,
+          confounders = confounder_cols,
+          plot_type = plt_type
+        ),
+        error = function(e) NULL
       )
     }
     
@@ -1023,6 +1032,9 @@ shinyServer(function(input, output, session) {
   })
   output$analysis_plot_overlap_plot <- renderPlot({
     
+    # stop here if data hasn't been uploaded and selected
+    validate_data_selected(store)
+    
     # add overlay
     show_message_updating('analysis_plot_overlap_plot')
     
@@ -1031,6 +1043,12 @@ shinyServer(function(input, output, session) {
     
     # remove overlay
     close_message_updating('analysis_plot_overlap_plot')
+    
+    # stop if p is not a plot
+    validate(need(
+      inherits(p, 'ggplot'),
+      'Error in building plot. Error likely occured in propensity score calculation.'
+    ))
     
     return(p)
   })
@@ -1071,6 +1089,9 @@ shinyServer(function(input, output, session) {
   })
   output$analysis_plot_balance_plot <- renderPlot({
   
+    # stop here if data hasn't been uploaded and selected
+    validate_data_selected(store)
+    
     # add overlay
     # show_message_updating('analysis_plot_balance_plot')
 
@@ -1748,15 +1769,23 @@ shinyServer(function(input, output, session) {
 
   # change plot theme, font size, and point size
   theme_custom <- reactive({
+    
+    # change theme
     theme_custom <- switch(
-      input$settings_options_ggplot_theme,
+      input$settings_options_ggplotTheme,
       "Minimal" = ggplot2::theme_minimal, 
       "Simple" = ggplot2::theme_bw, 
       "Classic" = ggplot2::theme_classic, 
       "Gray" = ggplot2::theme_gray
     )
+    
+    # change point and font size
     update_geom_defaults("point", list(size = input$settings_options_ggplotPointSize)) # is this a memory hog?
     theme_custom <- theme_custom(base_size = input$settings_options_ggplotTextSize)
+    
+    # change colors
+    # theme_custom <- theme_custom %+replace% ggplot2::scale_color_brewer
+    
     return(theme_custom)
   })
   

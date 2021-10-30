@@ -1,0 +1,37 @@
+.irs-handle {
+  background-color: #5c5980 !important;
+  border-color: #fafafa !important;
+  border-width: 2px !important;
+  border-radius: 4px !important;
+  width: 15px !important;
+}
+
+.irs-from, .irs-to, .irs-single {
+  background-color: #5c5980 !important;
+  border-color: white !important;
+}
+
+.irs-line {
+  border-radius: 2px !important;
+  border: 1px solid #f2f2f2 !important;
+}
+
+.irs--shiny .irs-line {
+  height: 8px;
+  background: #ededed !important;
+  border: 1px solid #f2f2f2 !important;
+}
+
+.irs-bar {
+  background-color: #8e8ca1 !important;
+  border-color: #dbdbdb !important;
+  border-radius: 2px !important;
+}
+
+.irs-grid-pol {
+  background: #bfbfbf !important;
+}
+
+.irs-grid-text {
+  color: #919191 !important;
+}

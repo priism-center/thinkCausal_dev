@@ -65,7 +65,7 @@ moderator_page <- tabPanel(
       title = 'Subgroup Analyses',
       sidebarLayout(
         sidebarPanel(
-          h5("Subgroup analyes"),
+          h5("Subgroup analyses"),
           p("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
           br(),
           conditionalPanel(condition = "input.analysis_model_moderator_yes_no == 'Yes'",
@@ -110,7 +110,7 @@ moderator_page <- tabPanel(
                            label = 'Back to model results')
           ),
           br(),
-          actionButton(inputId = 'to_download',
+          actionButton(inputId = 'analysis_moderator_analyses_button_reproduce',
                        label = 'Log analyses'),
         ),
         mainPanel(

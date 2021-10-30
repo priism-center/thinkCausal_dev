@@ -5,7 +5,7 @@ options_page <- tabPanel(
     column(width = 6,
            h3("Plot settings"),
            radioButtons(
-             inputId = "settings_options_ggplot_theme",
+             inputId = "settings_options_ggplotTheme",
              label = "Plot aesthetic",
              choices = c("Minimal", "Simple", "Classic", "Gray")
            ),
@@ -26,7 +26,13 @@ options_page <- tabPanel(
              max = 10,
              value = 3,
              step = 1
-           ),
+           )
+           # br(),
+           # radioButtons(
+           #   inputId = "settings_options_ggplot_color",
+           #   label = "Plot colors",
+           #   choices = c("Color blind friendly", "Standard", "Grayscale")
+           # ),
           ),
     column(width = 6,
            br(),

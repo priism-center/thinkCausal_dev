@@ -3,14 +3,12 @@ shinyUI(
         # download roboto font
         HTML('<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">'),
         
-        # set default slider skin
-        chooseSliderSkin(skin = "Flat", color = "#221146"),
-        
         # use shinyjs
         shinyjs::useShinyjs(),
         
         # load custom CSS file
         includeCSS("www/thinkCausal.css"),
+        includeCSS("www/slider.css"),
 
         # floating button to activate slide over
         tags$div(id = 'sideBarBtn',
@@ -51,9 +49,9 @@ shinyUI(
                 title = 'thinkCausal',
                 welcome_header,
                 concepts_header,
-                analysis_header, 
-                settings_header,
-                reproducibility_header
+                analysis_header,
+                reproducibility_header,
+                settings_header
                 )
         ),
 
