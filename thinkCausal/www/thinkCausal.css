@@ -457,6 +457,16 @@ border 0 fixes the buttons moving around when you hover / click */
   transition-duration: 400ms;
 }
 
+.sideBarExit {
+  content: " ";
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 99996;
+  top: 0;
+  left: 0;
+}
+
 .conceptsGrid img {
   width: 95%;
   height: 180px;

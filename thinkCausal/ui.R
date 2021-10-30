@@ -18,6 +18,13 @@ shinyUI(
                  onclick = "openHelp()",
                  'Help'),
         
+        # exit div for help slide over
+        tags$div(
+            id = 'mySideBarExit',
+            class = 'sideBarExit',
+            onclick = 'closeHelp()'
+        ),
+        
         # div for help slide over
         tags$div(id = 'mySideBar',
                  class = 'helpSideBar',

@@ -44,7 +44,7 @@ show_message <- function(content, id = NULL, closeButton = TRUE){
   # style and position controlled in CSS with class .shiny-notification
   shiny::showNotification(
     ui = content,
-    duration = NULL,
+    duration = 60*5,
     closeButton = closeButton,
     id = id,
     type = 'default')

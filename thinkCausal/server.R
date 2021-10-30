@@ -637,7 +637,7 @@ shinyServer(function(input, output, session) {
     col_names <- colnames(store$user_modified_df)
     validate(need(
       length(col_names) == length(unique(col_names)),
-      'Rendering...'
+      'Loading...'
     ))
     
     # create JS datatable
