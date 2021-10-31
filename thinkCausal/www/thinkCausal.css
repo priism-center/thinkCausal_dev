@@ -374,10 +374,6 @@ border 0 fixes the buttons moving around when you hover / click */
   margin-right: 1rem;
 }
 
-.progress {
-  height: 1rem;
-}
-
 /*drag-and-drop items*/
 .rank-list-item {
   border: 0.2rem solid white !important;;
@@ -445,4 +441,15 @@ html {
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar.striped {
+  font-weight: 700;
+  background: repeating-linear-gradient(45deg, #64637d, #64637d 10px, #938497 10px, #938497 20px);
+  opacity: 70%;
+}
+
+.progress {
+  height: 20px;
+  background-color: #f2f2f2;
 }

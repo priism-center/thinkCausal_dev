@@ -34,7 +34,7 @@ $('.helpSubHeader').each(function(){
   $(this).attr('id', id)
 })
 
-// set width markdowon container on page load and when window is resized
+// set width markdown container on page load and when window is resized
 // this prevents the text from changing width when opening the help slideover 
 // and allows the help buttons to open to the right spot
 function resize_container(){

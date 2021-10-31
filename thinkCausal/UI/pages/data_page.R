@@ -68,7 +68,8 @@ data_page <- tabPanel(
                                     class = 'btn btn-default help',
                                     onclick = "openHelpPage('Concept3')", # not sure where this is linked to
                                     'Help me'),
-                        br(),br()
+                        br(),br(),
+                        create_progress_bar(1/9*100)
                       ),
                       mainPanel(
                         br(),

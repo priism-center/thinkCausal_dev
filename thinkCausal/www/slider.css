@@ -32,6 +32,10 @@
   background: #bfbfbf !important;
 }
 
+.irs-grid-pol.small {
+  height: 0px;
+}
+
 .irs-grid-text {
   color: #919191 !important;
 }

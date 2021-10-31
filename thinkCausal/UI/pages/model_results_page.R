@@ -46,7 +46,7 @@ results_page <- tabPanel(
               tags$button(type = 'button',
                           class = 'btn btn-default help',
                           onclick = "openHelpPage('Concept2')",
-                          'What are these plots telling me?'),
+                          'What is this plot telling me?'),
               br(), br(),
               actionButton(inputId = "analysis_results_button_back",
                            label = "See diagnostics"),
@@ -54,15 +54,12 @@ results_page <- tabPanel(
               actionButton(inputId = "analysis_results_button_subgroup",
                            label = "See results by subgroups"),
               br(),br(),
-               create_progress_bar(7/7*100)
+              create_progress_bar(7/7*100)
              ),
              mainPanel(
-
                  plotOutput(outputId = 'analysis_results_plot_PATE',
                             height = 400),
-
-                  h4('Model results'),
-                  # htmlOutput('analysis_results_table_summary')
+                 h4('Model results'),
                  DT::dataTableOutput('analysis_results_table_summary')
                    
              #   )

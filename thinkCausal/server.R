@@ -38,7 +38,7 @@ shinyServer(function(input, output, session) {
   
   # model page
   observeEvent(input$analysis_model_button_back, {
-    updateNavbarPage(session, inputId = "nav", selected = "Exploratory Plots")
+    updateNavbarPage(session, inputId = "nav", selected = "Exploratory plots")
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
   })
   observeEvent(input$analysis_model_button_popup, {
@@ -288,7 +288,8 @@ shinyServer(function(input, output, session) {
     validate_columns_assigned(store)
     
     # add overlay
-    show_message_updating('analysis_data_UI_dragdrop_grouping')
+    div_id <- 'analysis_data_UI_dragdrop_grouping'
+    show_message_updating(div_id)
     
     # create groupings
     drag_drop_groupings <- create_drag_drop_groups(
@@ -298,7 +299,7 @@ shinyServer(function(input, output, session) {
     )
     
     # remove overlay
-    close_message_updating('analysis_data_UI_dragdrop_grouping')
+    close_message_updating(div_id)
     
     # update global var keeping track of the number of groups
     store$n_dummy_groups <- drag_drop_groupings$n_dummy_groups
@@ -419,6 +420,9 @@ shinyServer(function(input, output, session) {
     ## change column names
     user_entered_names <- as.character(current_values[paste0("analysis_data_", indices, '_rename')])
     user_entered_names <- clean_names(user_entered_names)
+    validate(need(length(user_entered_names) == length(unique(user_entered_names)),
+                  'Cannot have duplicate column names'))
+    
     names(user_modified_df) <- user_entered_names
     
     # change data types
@@ -494,8 +498,8 @@ shinyServer(function(input, output, session) {
 
     ## reset UI
     # set indices to map over
-    all_col_names <- colnames(store$categorical_df)  #! input data changed to the result of group data
-    default_data_types <- convert_data_type_to_simple(store$categorical_df)  #! input data changed to the result of group data
+    all_col_names <- colnames(store$categorical_df)
+    default_data_types <- convert_data_type_to_simple(store$categorical_df)
     indices <- seq_along(all_col_names)
 
     # update the inputs
@@ -635,9 +639,8 @@ shinyServer(function(input, output, session) {
     # stop here if analysis_data_modify_UI hasn't yet rendered
     # this works because colnames of user_modified_df is overwritten by the UI
     # which defaults to an empty string before it renders
-    col_names <- colnames(store$user_modified_df)
     validate(need(
-      length(col_names) == length(unique(col_names)),
+      unique(colnames(store$user_modified_df)) != '',
       'Loading...'
     ))
     
@@ -932,11 +935,12 @@ shinyServer(function(input, output, session) {
   output$download_descriptive_plot <- downloadHandler(
     filename = 'descriptive_plot.png',
     content = function(file) {
-      device <- function(..., width, height) {
-        grDevices::png(..., width = width, height = height,
-                       res = 300, units = "in")
-      }
-      ggsave(file, plot = descriptive_plot(), device = device)
+      ggsave(file, 
+             plot = descriptive_plot(), 
+             height = input$settings_options_ggplotHeight,
+             width = input$settings_options_ggplotWidth,
+             units = 'in',
+             device = 'png')
     })
   
   # text above the brush table
@@ -1034,13 +1038,14 @@ shinyServer(function(input, output, session) {
     validate_data_selected(store)
     
     # add overlay
-    show_message_updating('analysis_plot_overlap_plot')
+    div_id <- 'analysis_plot_overlap_plot'
+    show_message_updating(div_id)
     
     # build plot
     p <- overlap_plot()
     
     # remove overlay
-    close_message_updating('analysis_plot_overlap_plot')
+    close_message_updating(div_id)
     
     # stop if p is not a plot
     validate(need(
@@ -1054,11 +1059,12 @@ shinyServer(function(input, output, session) {
   output$download_overlap_plot <- downloadHandler(
     filename = 'overlap_plot.png',
     content = function(file) {
-      device <- function(..., width, height) {
-        grDevices::png(..., width = width, height = height,
-                       res = 300, units = "in")
-      }
-      ggsave(file, plot = overlap_plot(), device = device)
+        ggsave(file, 
+               plot = descriptive_plot(), 
+               height = input$settings_options_ggplotHeight,
+               width = input$settings_options_ggplotWidth,
+               units = 'in',
+               device = 'png')
     })
   
   # create the balance plot
@@ -1091,13 +1097,14 @@ shinyServer(function(input, output, session) {
     validate_data_selected(store)
     
     # add overlay
-    # show_message_updating('analysis_plot_balance_plot')
+    # div_id <- 'analysis_plot_balance_plot
+    # show_message_updating(div_id)
 
     # build plot
     p <- balance_plot()
     
     # remove overlay
-    # close_message_updating('analysis_plot_balance_plot')
+    # close_message_updating(div_id)
 
     return(p)
   })
@@ -1105,11 +1112,12 @@ shinyServer(function(input, output, session) {
   output$download_balance_plot <- downloadHandler(
     filename = 'balance_plot.png',
     content = function(file) {
-      device <- function(..., width, height) {
-        grDevices::png(..., width = width, height = height,
-                       res = 300, units = "in")
-      }
-      ggsave(file, plot = balance_plot(), device = device)
+      ggsave(file, 
+             plot = descriptive_plot(), 
+             height = input$settings_options_ggplotHeight,
+             width = input$settings_options_ggplotWidth,
+             units = 'in',
+             device = 'png')
     })
   
   
@@ -1543,7 +1551,8 @@ shinyServer(function(input, output, session) {
     validate_model_fit(store)
     
     # add overlay
-    show_message_updating('analysis_results_plot_PATE')
+    div_id <- analysis_results_plot_PATE
+    show_message_updating(div_id)
     
     if(input$show_reference == 'No'){
       # plot it
@@ -1585,7 +1594,7 @@ shinyServer(function(input, output, session) {
     }
     
     # remove overlay
-    close_message_updating('analysis_results_plot_PATE')
+    close_message_updating(div_id)
     
     return(p)
   })
@@ -1703,7 +1712,8 @@ shinyServer(function(input, output, session) {
     validate_model_fit(store)
     
     # add overlay
-    show_message_updating('analysis_moderators_explore_plot')
+    div_id <- 'analysis_moderators_explore_plot'
+    show_message_updating(div_id)
     
     # # TODO: this does not close once plot is finished
     # shinyWidgets::show_alert(
@@ -1727,7 +1737,7 @@ shinyServer(function(input, output, session) {
     p <- p + theme_custom()
     
     # remove overlay
-    close_message_updating('analysis_moderators_explore_plot')
+    close_message_updating(div_id)
     
     return(p)
   })

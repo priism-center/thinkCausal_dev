@@ -18,12 +18,13 @@ create_progress_bar <- function(progress) {
   tags$div(
     class = 'progress',
     tags$div(
-      class = "progress-bar progress-bar-striped progress-bar-animated bg-info",
+      class = "progress-bar striped",
       role = "progressbar",
-      style = paste0("width: ", progress, "%"),
+      style = paste0("width: ", progress, "%;"),
       'aria-valuenow' = as.character(progress),
       'aria-valuemin' = "0",
-      'aria-valuemax' = "100"
+      'aria-valuemax' = "100",
+      paste0(round(progress, 0), '%')
     )
   )
 }

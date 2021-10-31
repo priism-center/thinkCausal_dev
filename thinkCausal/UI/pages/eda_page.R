@@ -4,10 +4,6 @@ eda_page <- tabPanel(
     id = "analysis_plot_tabs", 
     tabPanel(
       title = "Descriptive Plots",
-      # absolutePanel(id = "analysis_plots_descriptive_loading_message",
-      #               br(),
-      #               HTML("Data must be first uploaded and columns selected."),
-      #               style = "z-index: -2;"),
       sidebarLayout(
         sidebarPanel(
           width = 4,
@@ -129,10 +125,6 @@ eda_page <- tabPanel(
               choices = c("None", NULL),
               selected = "None"
             ),
-            # bsPopover(id = 'analysis_eda_variable_facet',
-            #           title = "Facet variable",
-            #           content = 'Faceting splits the data by one or more variables and then plots these subsets.',
-            #           placement = 'top'),
             conditionalPanel(
               condition = "input.analysis_eda_variable_facet != 'None'",
               selectInput(
@@ -170,9 +162,11 @@ eda_page <- tabPanel(
                          label = "Back"),
             actionButton(inputId = "analysis_plots_descriptive_button_next",
                          label = "Next")
-          ), br(),
-          p("Download the currently displayed plot:"),
-          downloadButton('download_descriptive_plot', label = "Download plot")
+          ), 
+          br(),
+          downloadButton('download_descriptive_plot', label = "Download plot"),
+          br(), br(),
+          create_progress_bar(3/8*100)
         ),
         
         mainPanel(
@@ -232,10 +226,9 @@ eda_page <- tabPanel(
                          label = "Next")
           ),
           br(),
-          create_progress_bar(3/7*100),
-          br(),
-          p("Download the currently displayed plot:"),
-          downloadButton('download_overlap_plot', label = "Download plot")
+          downloadButton('download_overlap_plot', label = "Download plot"),
+          br(), br(),
+          create_progress_bar(3/7*100)
         ),
         mainPanel(
           width = 8,
@@ -273,11 +266,11 @@ tabPanel(title = "Balance Plots",
                             label = "Next")
              ),
              br(),
+             downloadButton('download_balance_plot', label = "Download plot"),
+             # TODO: add advanced option to remove scale
+             br(), br(),
              create_progress_bar(4/7*100),
-             br(),
-             p("Download the currently displayed plot:"),
-             downloadButton('download_balance_plot', label = "Download plot")
-             # add advanced option to remove scale
+
            ),
            mainPanel(
              width = 8,

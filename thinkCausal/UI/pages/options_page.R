@@ -26,6 +26,23 @@ options_page <- tabPanel(
              max = 10,
              value = 3,
              step = 1
+           ),
+           br(),
+           numericInput(
+             inputId = 'settings_options_ggplotHeight',
+             label = 'Plot download height',
+             min = 1,
+             max = 15,
+             value = 8,
+             step = 1
+           ),
+           numericInput(
+             inputId = 'settings_options_ggplotWidth',
+             label = 'Plot download width',
+             min = 1,
+             max = 15,
+             value = 8,
+             step = 1
            )
            # br(),
            # radioButtons(
@@ -39,25 +56,25 @@ options_page <- tabPanel(
            plotOutput(outputId = 'settings_options_ggplot_preview',
                       height = '400px')
     )
-  ),
-  br(),br(),
-  hr(style = "height: 2px; border-width: 0; background-color: #e3e3e3; max-width: 400px; margin-left: 0;"),
-  h3("More"),
-  checkboxGroupInput(
-    inputId = "temp",
-    label = "Another example...",
-    choices = LETTERS[1:5],
-    selected = LETTERS[3]
-  ),
-  br(),br(),
-  hr(style = "height: 2px; border-width: 0; background-color: #e3e3e3; max-width: 400px; margin-left: 0;"),
-  h3("Other"),
-  sliderInput(
-    inputId = "temp2",
-    label = "Another example...",
-    min = 1,
-    max = 10,
-    value = 5,
-    step = 1
   )
+  # br(),br(),
+  # hr(style = "height: 2px; border-width: 0; background-color: #e3e3e3; max-width: 400px; margin-left: 0;"),
+  # h3("More"),
+  # checkboxGroupInput(
+  #   inputId = "temp",
+  #   label = "Another example...",
+  #   choices = LETTERS[1:5],
+  #   selected = LETTERS[3]
+  # ),
+  # br(),br(),
+  # hr(style = "height: 2px; border-width: 0; background-color: #e3e3e3; max-width: 400px; margin-left: 0;"),
+  # h3("Other"),
+  # sliderInput(
+  #   inputId = "temp2",
+  #   label = "Another example...",
+  #   min = 1,
+  #   max = 10,
+  #   value = 5,
+  #   step = 1
+  # )
 )
