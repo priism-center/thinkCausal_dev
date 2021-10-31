@@ -27,7 +27,7 @@ model_page <- tabPanel(
                                           label = 'Include sensitivity analysis', 
                                           choices = c('Yes', 'No'))
              ),
-             conditionalPanel(condition = "input.anaylsis_design == 'Block Randomized Treatment'", 
+             conditionalPanel(condition = "input.anaylsis_design == 'Block randomized treatment'", 
                               selectInput('analysis_blocking_variable',
                                           label = 'Select blocking variable',
                                           choices = NULL)
@@ -41,7 +41,11 @@ model_page <- tabPanel(
            wellPanel(
              selectInput('analysis_model_estimand', 
                          label = 'Select causal estimand', 
-                         choices = c("",'Unsure', 'ATC', 'ATE', 'ATT')), 
+                         choices = c("",
+                                     'Unsure', 
+                                     'ATE - Average treatment effect' = 'ATE', 
+                                     'ATC - Average treatment effect on the control' = 'ATC', 
+                                     'ATT - Average treatment effect on the treated' = 'ATT')), 
              selectInput('analysis_random_intercept',
                          label = 'Random intercept',
                          choices = NULL),
@@ -51,7 +55,7 @@ model_page <- tabPanel(
              HTML('<details><summary>Advanced modeling options</summary>'),
              selectInput("analysis_over_ride_common_support",
                          label = 'Common support rule:', 
-                         choices = c('standard deviation', 'chi squared'))
+                         choices = c('chi squared', 'standard deviation'))
            )
     ), 
     column(6, 

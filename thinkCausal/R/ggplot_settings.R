@@ -3,16 +3,7 @@
 # set default continuous colors
 options(
   ggplot2.continuous.colour = "viridis",
-  ggplot2.continuous.fill = "viridis"
+  ggplot2.continuous.fill = "viridis",
+  ggplot2.discrete.colour = function() ggplot2::scale_colour_viridis_d(),
+  ggplot2.discrete.fill = function() ggplot2::scale_fill_viridis_d()
 )
-
-# set default discrete colors
-scale_colour_discrete <- function(...) {
-  viridis::scale_color_viridis(..., discrete = TRUE)
-}
-scale_color_discrete <- function(...) {
-  viridis::scale_color_viridis(..., discrete = TRUE)
-}
-scale_fill_discrete <- function(...) {
-  viridis::scale_fill_viridis(..., discrete = TRUE)
-}

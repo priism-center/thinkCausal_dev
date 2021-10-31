@@ -12,8 +12,7 @@
 #' @examples
 #' create_progress_bar(80)
 create_progress_bar <- function(progress) {
-  # returns the html to create a bootsrap progress bar filled to the progress amount
-  # TODO: change fill color
+  # returns the html to create a bootstrap progress bar filled to the progress amount
   #https://getbootstrap.com/docs/4.4/components/progress/
   tags$div(
     class = 'progress',

@@ -17,7 +17,7 @@ library(sortable) # for drag and drop divs
 # library(tidyverse) # TODO: split this up to the individual packages
 library(dplyr)
 library(ggplot2)
-library(stringr) # TODO: can this be replaced with gsub* functions?
+library(stringr)
 library(purrr)
 library(rpart.plot) # for plotting single regression tree; TODO: move to plotBart?
 
