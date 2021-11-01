@@ -55,7 +55,7 @@ model_page <- tabPanel(
              HTML('<details><summary>Advanced modeling options</summary>'),
              selectInput("analysis_over_ride_common_support",
                          label = 'Common support rule:', 
-                         choices = c('chi squared', 'standard deviation'))
+                         choices = c('Standard deviation', 'Chi squared'))
            )
     ), 
     column(6, 
@@ -68,7 +68,7 @@ model_page <- tabPanel(
                               selectInput('analysis_model_moderator_vars', 
                                           label = 'Select moderator(s)', 
                                           choices = NULL, 
-                                          multiple = T)),
+                                          multiple = TRUE)),
            )
     ),
   ),

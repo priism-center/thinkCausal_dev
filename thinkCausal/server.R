@@ -1037,6 +1037,10 @@ shinyServer(function(input, output, session) {
     # stop here if data hasn't been uploaded and selected
     validate_data_selected(store)
     
+    # stop here if there are no numeric columns selected
+    validate(need(length(input$analysis_plot_overlap_select_var) > 0,
+                  "No continuous columns available or currently selected"))
+    
     # add overlay
     div_id <- 'analysis_plot_overlap_plot'
     show_message_updating(div_id)
