@@ -11,6 +11,7 @@ create_drag_drop_roles <- function(.data, ns_prefix){
       header = "Drag the variables to their respective roles",
       group_name = paste0(ns_prefix, "_dragdrop"),
       orientation = "horizontal",
+      class = 'default-sortable sortable-wide',
       add_rank_list(
         input_id = paste0(ns_prefix, "_dragdrop_covariates"),
         text = strong("Covariates"),
@@ -33,8 +34,7 @@ create_drag_drop_roles <- function(.data, ns_prefix){
         input_id = paste0(ns_prefix, "_dragdrop_delete"),
         text = strong("Exclude these variables"),
         labels = auto_columns$ID,
-        options = sortable_options(multiDrag = TRUE),
-        css_id = 'sortable-wide-upload'
+        options = sortable_options(multiDrag = TRUE)
       )
     )
   )
@@ -75,13 +75,13 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups){
       header = "Drag the variables to their respective groups",
       group_name = paste0(ns_prefix, "_dragdrop_grouping"),
       orientation = "horizontal",
+      class = 'default-sortable sortable-wide',
         
       add_rank_list(
         input_id = paste0(ns_prefix, "_dragdrop_grouping_variables"),
         text = strong("Ungrouped variables"),
         labels = ungrouped_vars,
-        options = sortable_options(multiDrag = TRUE),
-        css_id = 'sortable-wide-group'
+        options = sortable_options(multiDrag = TRUE)
       )
     ),
     # allow user to add groups
@@ -90,6 +90,7 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups){
         header = " ",
         group_name = "analysis_data_dragdrop_grouping",
         orientation = "horizontal",
+        class = 'default-sortable sortable-wide',
         
         add_rank_list(
           input_id = paste0(ns_prefix, '_categorical_group_', i),
