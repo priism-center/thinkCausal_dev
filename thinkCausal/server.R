@@ -982,6 +982,35 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  # calculate propensity scores
+  pscores <- reactive({
+    
+    # stop here if data hasn't been uploaded and selected
+    validate_data_selected(store)
+    
+    # stop here if there are no numeric columns selected
+    validate(need(length(input$analysis_plot_overlap_select_var) > 0,
+                  "No continuous columns available or currently selected"))
+    
+    # get variables 
+    X <- store$selected_df
+    col_names <- colnames(X)
+    treatment_col <- grep("^Z_", col_names, value = TRUE)
+    response_col <- grep("^Y_", col_names, value = TRUE) 
+    cols_continuous <- store$column_types$continuous
+    confounder_cols <- grep("^X_", cols_continuous, value = TRUE) 
+
+    # calculate pscores
+    pscores <- plotBart::propensity_scores(
+      .data = X,
+      treatment = treatment_col,
+      response = response_col,
+      confounders = confounder_cols
+    )
+    
+    return(pscores)
+  })
+  
   # create the overlap plot
   overlap_plot <- reactive({
     
@@ -1014,15 +1043,18 @@ shinyServer(function(input, output, session) {
       )
     }
     
+    # TODO: should pscores include all vars or what is just included in the select input?
     else if(input$analysis_plot_overlap_type == 2){
-      p <- tryCatch(
+      p <- tryCatch({
         plotBart::plot_overlap_pScores(
           .data = X,
           treatment = treatment_col,
           response = response_col,
           confounders = confounder_cols,
-          plot_type = plt_type
-        ),
+          plot_type = plt_type,
+          pscores = pscores()
+          )
+        },
         error = function(e) NULL
       )
     }
@@ -1237,7 +1269,7 @@ shinyServer(function(input, output, session) {
     validate_model_fit(store)
     
     # plot it 
-    p <- plotBart::plot_diagnostic_common_support(
+    p <- plotBart::plot_common_support(
       .model = store$model_results,
       rule = 'none',
       plot_theme = theme_custom

@@ -1,4 +1,7 @@
 # this defines the randomization page under Concepts
+require(tidyr)
+require(tibble)
+require(ggplot2)
 
 randomizationUI <- function(id) {
   ns <- NS(id)

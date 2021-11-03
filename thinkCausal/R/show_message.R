@@ -71,7 +71,7 @@ js_enable_div <- function(div){
   pointer <- paste0('document.getElementById("', div, '").style.pointerEvents = "auto";')
   
   # remove transparent gray overlay div
-  transparency <- paste0("$('#", div, "').parent().replaceWith($('#", div, "'));")
+  transparency <- paste0("$('#", div, "').unwrap()")
   
   # run js code
   js_code <- paste0(pointer, transparency, collapse = '')
