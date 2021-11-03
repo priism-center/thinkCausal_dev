@@ -1271,9 +1271,11 @@ shinyServer(function(input, output, session) {
     # plot it 
     p <- plotBart::plot_common_support(
       .model = store$model_results,
-      rule = 'none',
-      plot_theme = theme_custom
+      rule = 'both'
     )
+    
+    # add theme
+    p <- p + theme_custom
     
     return(p)
   })
