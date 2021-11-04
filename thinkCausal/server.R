@@ -352,19 +352,11 @@ shinyServer(function(input, output, session) {
       }
       
     }
-
-    # check which variable(s) have missing values more than 10%
-    missing_10p <- colnames(store$categorical_df)[apply(store$categorical_df, 2, function(x) mean(is.na(x))) > 0.1]
     
-    # launch warning message: if missing more than 10%, click ok to go to next page, 
+    # launch warning message:  
     # if there are empty variable names, click ok will stay at the page
-    # if both missing more than 10% and has empty variable names, show both warnings in the same pop-up box
-    if (length(missing_10p) != 0 & length(problematic_group_names) == 0){
-      show_popup_missing_10p_warning(session, missing_10p)
-    }else if(length(missing_10p) == 0 & length(problematic_group_names) != 0){
+    if(length(problematic_group_names) != 0){
       show_popup_group_name_warning(session, problematic_group_names)
-    }else if(length(missing_10p) != 0 & length(problematic_group_names) != 0){
-      show_popup_missing_10p_group_name_warning(session, missing_10p, problematic_group_names)
     }
     
     # add to log
@@ -375,8 +367,8 @@ shinyServer(function(input, output, session) {
     }
     store$log <- append(store$log, log_event)
     
-    # if no variable missing more than 10%, by clicking Save Grouping, move to next page
-    if(length(missing_10p) == 0 & length(problematic_group_names) == 0){
+    # if no variable names are empty, by clicking Save Grouping, move to next page
+    if(length(problematic_group_names) == 0){
       updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
     }
     
@@ -386,16 +378,6 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$group_name_continue, {
-    close_popup(session = session)
-  })
-  
-  observeEvent(input$missing_10p_continue, {
-    close_popup(session = session)
-    # if there variables missing more than 10%, click ok to move to the next page
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
-  })
-  
-  observeEvent(input$missing_10p_group_name_continue, {
     close_popup(session = session)
   })
   
@@ -619,13 +601,18 @@ shinyServer(function(input, output, session) {
 
     # update the percent NA
     lapply(X = indices, function(i) {
-      percent_NA <- mean(is.na(store$user_modified_df[[i]]))
-      percent_NA <- paste0(round(percent_NA, 3) * 100, "%")
+      percent_NA_num <- mean(is.na(store$user_modified_df[[i]]))
+      percent_NA <- paste0(round(percent_NA_num, 3) * 100, "%")
       updateTextInput(
         session = session,
         inputId = paste0("analysis_data_", i, "_percentNA"),
         value = percent_NA
       )
+      if(percent_NA_num > 0.1){
+        runjs( paste0('document.getElementById("',
+                      paste0("analysis_data_", i, "_percentNA"),
+                      '").style.color = "#c92626"'))
+      }
     })
   })
   
