@@ -41,11 +41,11 @@ shinyServer(function(input, output, session) {
     updateNavbarPage(session, inputId = "nav", selected = "Exploratory plots")
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
   })
-  observeEvent(input$analysis_model_button_popup, {
-    updateNavbarPage(session, inputId = "nav", selected = "Data")
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load")
-    shinyWidgets::closeSweetAlert()
-  })
+  # observeEvent(input$analysis_model_button_popup, {
+  #   updateNavbarPage(session, inputId = "nav", selected = "Data")
+  #   updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load")
+  #   shinyWidgets::closeSweetAlert()
+  # })
   
   # diagnostics page
   observeEvent(input$analysis_diagnostics_button_back, {
@@ -1277,18 +1277,20 @@ shinyServer(function(input, output, session) {
     req(input$analysis_model_radio_estimand)
     
     if(input$analysis_model_radio_estimand == 'unsure'){
-      shinyWidgets::sendSweetAlert(
-        session,
-        title = "I would like to learn more about causal estimands:",
-        text = NULL,
-        type = NULL,
-        btn_labels = c("Yes", "No"),
-        btn_colors = "#3085d6",
-        html = TRUE,
-        closeOnClickOutside = FALSE,
-        showCloseButton = FALSE,
-        width = NULL
-      )
+      # shinyWidgets::sendSweetAlert(
+      #   session,
+      #   title = "I would like to learn more about causal estimands:",
+      #   text = NULL,
+      #   type = NULL,
+      #   btn_labels = c("Yes", "No"),
+      #   btn_colors = "#3085d6",
+      #   html = TRUE,
+      #   closeOnClickOutside = FALSE,
+      #   showCloseButton = FALSE,
+      #   width = NULL
+      # )
+      
+      show_popup_learn_estimand(session)
     }
   })
   
@@ -1297,22 +1299,40 @@ shinyServer(function(input, output, session) {
     req(input$analysis_model_radio_support)
       
     if (input$analysis_model_radio_support == 'unsure'){
-      shinyWidgets::sendSweetAlert(
-        session,
-        title = "I would like to learn more about common support:",
-        text = NULL,
-        type = NULL,
-        btn_labels = c("Yes", "No"),
-        btn_colors = "#3085d6",
-        html = TRUE,
-        closeOnClickOutside = FALSE,
-        showCloseButton = FALSE,
-        width = NULL
-      )
+      # shinyWidgets::sendSweetAlert(
+      #   session,
+      #   title = "I would like to learn more about common support:",
+      #   text = NULL,
+      #   type = NULL,
+      #   btn_labels = c("Yes", "No"),
+      #   btn_colors = "#3085d6",
+      #   html = TRUE,
+      #   closeOnClickOutside = FALSE,
+      #   showCloseButton = FALSE,
+      #   width = NULL
+      # )
+      show_popup_learn_common_support(session)
     }
   })
   
- 
+  observeEvent(input$learn_estimand_no, {
+    close_popup(session = session)
+  })
+  
+  observeEvent(input$learn_common_support_no, {
+    close_popup(session = session)
+  })
+  
+  observeEvent(input$learn_estimand_yes, {
+    close_popup(session = session)
+    # add updateTabsetPanel to the page of estimand explanation
+  })
+  
+  observeEvent(input$learn_common_support_yes, {
+    close_popup(session = session)
+    # add updateTabsetPanel to the page of common support explanation
+  })
+  
                            
   # render text output to summarize the users inputs
   output$analysis_model_summary <- renderText({
@@ -1377,17 +1397,23 @@ shinyServer(function(input, output, session) {
     
     # launch popup if data is not yet selected
     if (!is.data.frame(store$selected_df)) {
-      shinyWidgets::show_alert(
-        title = 'Data must be first uploaded and columns selected',
-        text = tags$div(
-          actionButton(
-            inputId = 'analysis_model_button_popup',
-            label = 'Take me to the Data tab')
-        ),
-        type = 'error',
-        btn_labels = NA
-      ) 
+      # shinyWidgets::show_alert(
+      #   title = 'Data must be first uploaded and columns selected',
+      #   text = tags$div(
+      #     actionButton(
+      #       inputId = 'analysis_model_button_popup',
+      #       label = 'Take me to the Data tab')
+      #   ),
+      #   type = 'error',
+      #   btn_labels = NA
+      # ) 
+      show_popup_model_no_data_warning(session)
     }
+    
+    observeEvent(input$analysis_model_button_popup, {
+      close_popup(session = session)
+      updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
+    })
     
     # spawn red text if selection isn't made
     if (isTRUE(is.null(input$analysis_model_radio_design))) {
@@ -1445,17 +1471,19 @@ shinyServer(function(input, output, session) {
     # insert popup to notify user of model fit process
     # TODO: estimate the time remaining empirically?
     # TODO: show console redirect
-    shinyWidgets::show_alert(
-      title = 'Fitting BART model...',
-      text = tags$div(
-        img(src = file.path('img', 'tree.gif'),
-            width = "50%"),
-        h5("...sometimes this takes a while..."),
-      ),
-      html = TRUE,
-      btn_labels = NA,
-      closeOnClickOutside = FALSE
-    )
+    # shinyWidgets::show_alert(
+    #   title = 'Fitting BART model...',
+    #   text = tags$div(
+    #     img(src = file.path('img', 'tree.gif'),
+    #         width = "50%"),
+    #     h5("...sometimes this takes a while..."),
+    #   ),
+    #   html = TRUE,
+    #   btn_labels = NA,
+    #   closeOnClickOutside = FALSE
+    # )
+    show_popup_fitting_BART_waiting(session)
+    
     
     # pull the response, treatment, and confounders variables out of the df
     treatment_v <- store$selected_df[, 1]
@@ -1478,7 +1506,8 @@ shinyServer(function(input, output, session) {
     )
     
     # close the alert
-    shinyWidgets::closeSweetAlert()
+    # shinyWidgets::closeSweetAlert()
+    close_popup(session = session)
     
     # error handling
     # TODO: refine the popup; probably should pass the bart error to the popup somehow
