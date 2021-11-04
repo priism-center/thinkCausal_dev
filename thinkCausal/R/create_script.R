@@ -14,7 +14,7 @@
 #'  estimand = 'att',
 #'  common_support = 'none'
 #' )
-create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, estimand, common_support){
+create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, change_data_type, estimand, common_support){
 
   # choose which file readr was used
   file_readr <- switch(
@@ -30,7 +30,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   selected_columns <- paste0("c('", paste0(selected_columns, collapse = "', '"), "')")
   column_names <- paste0("c('", paste0(column_names, collapse = "', '"), "')")
 
-  # add data type changes
+  
   
   # construct strings for each section
   script_head <- paste0(
@@ -49,6 +49,23 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "X <- clean_auto_convert_logicals(X)",
   "\n\n"
   )
+  
+  # add data type changes
+  script <- c()
+  for (i in 1:length(change_data_type)) {
+    tmp <- paste0(
+      "# find the indexes of dummy variables of the same group", "\n",
+      change_data_type[[i]][1], ' <- c(', paste0(change_data_type[[i]][-1], collapse = ', '), ')','\n',
+      "idx <- which(colnames(X) %in% ", change_data_type[[i]][1], ')', '\n',
+      "tmp <- X[,idx]", "\n",
+      "categorical <- apply(tmp, 1, function(x) ifelse(sum(x, na.rm = T) == 0, 'REFERENCE', colnames(tmp)[which(x == TRUE)]))", "\n",
+      "# remove the multiple dummies from the dataset", "\n",
+      "X <- X[,-idx]", "\n",
+      "# add the new categorical variable into the dataset", "\n",
+      "X <- cbind(X, categorical)", "\n")
+    script <- c(script, tmp)
+  }
+  script_data_type <- paste0(script, collapse = "\n")
   
   script_model <- paste0(
   "# run model", "\n",

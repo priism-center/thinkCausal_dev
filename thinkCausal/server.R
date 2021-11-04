@@ -318,39 +318,17 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_data_save_groupings, {
     
     req(store$col_assignment_df)
-    
     store$categorical_df <- store$col_assignment_df
-    
     problematic_group_names <- c()
     
     for (i in 1:store$n_dummy_groups) {
-      
       # find the column indexes of dummy variables in the same group 
       input_id <- paste0("analysis_data_categorical_group_", i)
-      idx <- which(colnames(store$categorical_df) %in% input[[input_id]])
-     
-      # if there are more than one dummies in a group, convert the dummies to a categorical variable
-      if(length(idx) > 1){
-        tmp <- store$categorical_df[,idx]
-        
-        # if the sum of all the categories in a row is zero, then the reference group is missing for the categorical variable, filling with 'REFERENCE'
-        # otherwise, filling with the column name of the binary variable whose values is TRUE 
-        categorical <- apply(tmp, 1, function(x) ifelse(sum(x, na.rm = T) == 0, 'REFERENCE', colnames(tmp)[which(x == TRUE)]))
-        
-        # remove the multiple dummies
-        store$categorical_df <- store$categorical_df[,-idx]
-        
-        # add the new categorical variable into the dataset
-        store$categorical_df <- cbind(store$categorical_df, categorical)
-        
-        # clean the user input name
-        name <- clean_names(input[[paste0("rename_group_", i)]])
-        # check if user input variable names are empty
-        if(name == "" | grepl("blank", name, ignore.case = TRUE)) {
-          problematic_group_names <- c(problematic_group_names, paste0('Group', i))}
-        colnames(store$categorical_df)[ncol(store$categorical_df)] <- name
-      }
-      
+      cleaned_tmp <- clean_dummies_to_categorical(i, store$categorical_df, input[[input_id]], input[[paste0("rename_group_", i)]], problematic_group_names)
+      store$categorical_df <- cleaned_tmp[[2]]
+      problematic_group_names <- cleaned_tmp[[1]]
+      # save for reproducible script
+      group_list <- cleaned_tmp[[3]]
     }
     
     # launch warning message:  
@@ -380,6 +358,28 @@ shinyServer(function(input, output, session) {
   observeEvent(input$group_name_continue, {
     close_popup(session = session)
   })
+  
+  # only if there is no group name empty, clicking on the tab of verify will go to the verify page.
+  observe({
+    if(input$analysis_data_tabs == 'Verify'){
+      problematic_group_names <- c()
+      for (i in 1:store$n_dummy_groups) {
+        # clean the user input name
+        name <- clean_names(input[[paste0("rename_group_", i)]])
+        # check if user input variable names are empty
+        if(name == "" | grepl("blank", name, ignore.case = TRUE)) {
+          problematic_group_names <- c(problematic_group_names, paste0('Group', i))}
+      }
+      # if there is no group name empty, go to the verify page
+      if(length(problematic_group_names) == 0){
+        updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
+      }else{ # if there is group name empty, launch a warning and stay at the group page
+        show_popup_group_name_warning(session, problematic_group_names)
+        updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
+      }
+    }
+  })
+ 
   
   
   # verify data -------------------------------------------------------------
@@ -1642,7 +1642,7 @@ shinyServer(function(input, output, session) {
     column_names <- colnames(store$user_modified_df)
     
     # TODO: add data type changes
-    
+    change_data_type <- group_list
     # model
     estimand <- base::tolower(input$analysis_model_radio_estimand)
     common_support <- input$analysis_model_radio_support
