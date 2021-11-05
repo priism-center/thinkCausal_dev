@@ -61,21 +61,6 @@ show_popup_variable_assignment_warning <- function(session){
   show_popup(session = session, content, close_button = shiny::modalButton("Close"))
 }
 
-show_popup_missing_10p_warning <- function(session, missing_10p_check){
-  content <- tags$div(
-    style = 'margin: auto; text-align: center',
-    h3("The following variable(s) have missing values more than 10%:"),
-    h5(toString(missing_10p_check)),
-    div(
-      class = 'backNextContainer',
-      style = "width:60%;display:inline-block;horizontal-align:center;",
-      actionButton(inputId = 'missing_10p_continue',
-                   label = 'Ok')
-    )
-  )
-  show_popup(session = session, content)
-}
-
 show_popup_group_name_warning <- function(session, group_name_check){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
@@ -91,22 +76,69 @@ show_popup_group_name_warning <- function(session, group_name_check){
   show_popup(session = session, content)
 }
 
-show_popup_missing_10p_group_name_warning <- function(session, missing_10p_check, group_name_check){
+
+show_popup_learn_estimand <- function(session){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
-    h3("Group names cannot be empty. Please rename the following group(s):"),
-    h5(toString(group_name_check)),
-    h3("The following variable(s) have missing values more than 10%:"),
-    h5(toString(missing_10p_check)),
+    h3('I would like to learn more about causal estimands:'),
+    br(),
     div(
       class = 'backNextContainer',
       style = "width:60%;display:inline-block;horizontal-align:center;",
-      actionButton(inputId = 'missing_10p_group_name_continue',
-                   label = 'Ok')
+      actionButton(inputId = 'learn_estimand_yes',
+                   label = 'Yes'),
+      br(), br(),
+      actionButton(inputId = 'learn_estimand_no',
+                   label = 'No')
     )
   )
   show_popup(session = session, content)
 }
+
+show_popup_learn_common_support <- function(session){
+  content <- tags$div(
+    style = 'margin: auto; text-align: center',
+    h3('I would like to learn more about common support:'),
+    br(),
+    div(
+      class = 'backNextContainer',
+      style = "width:60%;display:inline-block;horizontal-align:center;",
+      actionButton(inputId = 'learn_common_support_yes',
+                   label = 'Yes'),
+      br(), br(),
+      actionButton(inputId = 'learn_common_support_no',
+                   label = 'No')
+    )
+  )
+  show_popup(session = session, content)
+}
+
+show_popup_model_no_data_warning <- function(session){
+  content <- tags$div(
+    style = 'margin: auto; text-align: center',
+    h3('Data must be first uploaded and columns selected'),
+    br(),
+    div(
+      class = 'backNextContainer',
+      style = "width:60%;display:inline-block;horizontal-align:center;",
+      actionButton(inputId = 'analysis_model_button_popup',
+                   label = 'Take me to the Data tab')
+    )
+  )
+  show_popup(session = session, content)
+}
+
+show_popup_fitting_BART_waiting <- function(session){
+  content <- tags$div(
+    style = 'margin: auto; text-align: center',
+    img(src = file.path('img', 'tree.gif'),
+        width = "50%"),
+    h3('Fitting BART model...'),
+    h5("...sometimes this takes a while...")
+  )
+  show_popup(session = session, content)
+}
+
 
 close_popup <- function(session){
   shiny::removeModal(session = session)

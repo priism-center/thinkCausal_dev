@@ -41,11 +41,11 @@ shinyServer(function(input, output, session) {
     updateNavbarPage(session, inputId = "nav", selected = "Exploratory plots")
     updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
   })
-  observeEvent(input$analysis_model_button_popup, {
-    updateNavbarPage(session, inputId = "nav", selected = "Data")
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load")
-    shinyWidgets::closeSweetAlert()
-  })
+  # observeEvent(input$analysis_model_button_popup, {
+  #   updateNavbarPage(session, inputId = "nav", selected = "Data")
+  #   updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load")
+  #   shinyWidgets::closeSweetAlert()
+  # })
   
   # diagnostics page
   observeEvent(input$analysis_diagnostics_button_back, {
@@ -328,53 +328,23 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_data_save_groupings, {
     
     req(store$col_assignment_df)
-    
     store$categorical_df <- store$col_assignment_df
-    
     problematic_group_names <- c()
     
     for (i in 1:store$n_dummy_groups) {
-      
       # find the column indexes of dummy variables in the same group 
       input_id <- paste0("analysis_data_categorical_group_", i)
-      idx <- which(colnames(store$categorical_df) %in% input[[input_id]])
-     
-      # if there are more than one dummies in a group, convert the dummies to a categorical variable
-      if(length(idx) > 1){
-        tmp <- store$categorical_df[,idx]
-        
-        # if the sum of all the categories in a row is zero, then the reference group is missing for the categorical variable, filling with 'REFERENCE'
-        # otherwise, filling with the column name of the binary variable whose values is TRUE 
-        categorical <- apply(tmp, 1, function(x) ifelse(sum(x, na.rm = T) == 0, 'REFERENCE', colnames(tmp)[which(x == TRUE)]))
-        
-        # remove the multiple dummies
-        store$categorical_df <- store$categorical_df[,-idx]
-        
-        # add the new categorical variable into the dataset
-        store$categorical_df <- cbind(store$categorical_df, categorical)
-        
-        # clean the user input name
-        name <- clean_names(input[[paste0("rename_group_", i)]])
-        # check if user input variable names are empty
-        if(name == "" | grepl("blank", name, ignore.case = TRUE)) {
-          problematic_group_names <- c(problematic_group_names, paste0('Group', i))}
-        colnames(store$categorical_df)[ncol(store$categorical_df)] <- name
-      }
-      
+      cleaned_tmp <- clean_dummies_to_categorical(i, store$categorical_df, input[[input_id]], input[[paste0("rename_group_", i)]], problematic_group_names)
+      store$categorical_df <- cleaned_tmp[[2]]
+      problematic_group_names <- cleaned_tmp[[1]]
+      # save for reproducible script
+      group_list <- cleaned_tmp[[3]]
     }
-
-    # check which variable(s) have missing values more than 10%
-    missing_10p <- colnames(store$categorical_df)[apply(store$categorical_df, 2, function(x) mean(is.na(x))) > 0.1]
     
-    # launch warning message: if missing more than 10%, click ok to go to next page, 
+    # launch warning message:  
     # if there are empty variable names, click ok will stay at the page
-    # if both missing more than 10% and has empty variable names, show both warnings in the same pop-up box
-    if (length(missing_10p) != 0 & length(problematic_group_names) == 0){
-      show_popup_missing_10p_warning(session, missing_10p)
-    }else if(length(missing_10p) == 0 & length(problematic_group_names) != 0){
+    if(length(problematic_group_names) != 0){
       show_popup_group_name_warning(session, problematic_group_names)
-    }else if(length(missing_10p) != 0 & length(problematic_group_names) != 0){
-      show_popup_missing_10p_group_name_warning(session, missing_10p, problematic_group_names)
     }
     
     # add to log
@@ -385,8 +355,8 @@ shinyServer(function(input, output, session) {
     }
     store$log <- append(store$log, log_event)
     
-    # if no variable missing more than 10%, by clicking Save Grouping, move to next page
-    if(length(missing_10p) == 0 & length(problematic_group_names) == 0){
+    # if no variable names are empty, by clicking Save Grouping, move to next page
+    if(length(problematic_group_names) == 0){
       updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
     }
     
@@ -399,15 +369,27 @@ shinyServer(function(input, output, session) {
     close_popup(session = session)
   })
   
-  observeEvent(input$missing_10p_continue, {
-    close_popup(session = session)
-    # if there variables missing more than 10%, click ok to move to the next page
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
+  # only if there is no group name empty, clicking on the tab of verify will go to the verify page.
+  observe({
+    if(input$analysis_data_tabs == 'Verify'){
+      problematic_group_names <- c()
+      for (i in 1:store$n_dummy_groups) {
+        # clean the user input name
+        name <- clean_names(input[[paste0("rename_group_", i)]])
+        # check if user input variable names are empty
+        if(name == "" | grepl("blank", name, ignore.case = TRUE)) {
+          problematic_group_names <- c(problematic_group_names, paste0('Group', i))}
+      }
+      # if there is no group name empty, go to the verify page
+      if(length(problematic_group_names) == 0){
+        updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
+      }else{ # if there is group name empty, launch a warning and stay at the group page
+        show_popup_group_name_warning(session, problematic_group_names)
+        updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
+      }
+    }
   })
-  
-  observeEvent(input$missing_10p_group_name_continue, {
-    close_popup(session = session)
-  })
+ 
   
   
   # verify data -------------------------------------------------------------
@@ -632,13 +614,18 @@ shinyServer(function(input, output, session) {
 
     # update the percent NA
     lapply(X = indices, function(i) {
-      percent_NA <- mean(is.na(store$user_modified_df[[i]]))
-      percent_NA <- paste0(round(percent_NA, 3) * 100, "%")
+      percent_NA_num <- mean(is.na(store$user_modified_df[[i]]))
+      percent_NA <- paste0(round(percent_NA_num, 3) * 100, "%")
       updateTextInput(
         session = session,
         inputId = paste0("analysis_data_", i, "_percentNA"),
         value = percent_NA
       )
+      if(percent_NA_num > 0.1){
+        runjs( paste0('document.getElementById("',
+                      paste0("analysis_data_", i, "_percentNA"),
+                      '").style.color = "#c92626"'))
+      }
     })
   })
   
@@ -738,7 +725,7 @@ shinyServer(function(input, output, session) {
     text_out <- paste0(n_rows_removed_text, ' rows (', n_rows_percent, ') will be removed due to NAs in at least one column.')
     
     # make red
-    if ((n_rows_removed / n_rows_original) > 0.3) text_out <- paste0('<p style="color: red">', text_out, "</p>")
+    if ((n_rows_removed / n_rows_original) > 0.1) text_out <- paste0('<p style="color: red">', text_out, "</p>")
     html_out <- HTML(text_out)
     
     return(html_out)
@@ -1324,48 +1311,43 @@ shinyServer(function(input, output, session) {
   
   # specify model -----------------------------------------------------------
                            
-  # # pop ups for estimand and common support help 
-  # observeEvent(input$analysis_model_radio_estimand, {
-  #   
-  #   req(input$analysis_model_radio_estimand)
-  #   
-  #   if(input$analysis_model_radio_estimand == 'unsure'){
-  #     shinyWidgets::sendSweetAlert(
-  #       session,
-  #       title = "I would like to learn more about causal estimands:",
-  #       text = NULL,
-  #       type = NULL,
-  #       btn_labels = c("Yes", "No"),
-  #       btn_colors = "#3085d6",
-  #       html = TRUE,
-  #       closeOnClickOutside = FALSE,
-  #       showCloseButton = FALSE,
-  #       width = NULL
-  #     )
-  #   }
-  # })
-  # 
-  # observeEvent(input$analysis_model_radio_support, {
-  #   
-  #   req(input$analysis_model_radio_support)
-  #     
-  #   if (input$analysis_model_radio_support == 'unsure'){
-  #     shinyWidgets::sendSweetAlert(
-  #       session,
-  #       title = "I would like to learn more about common support:",
-  #       text = NULL,
-  #       type = NULL,
-  #       btn_labels = c("Yes", "No"),
-  #       btn_colors = "#3085d6",
-  #       html = TRUE,
-  #       closeOnClickOutside = FALSE,
-  #       showCloseButton = FALSE,
-  #       width = NULL
-  #     )
-  #   }
-  # })
+  # pop ups for estimand and common support help 
+  observeEvent(input$analysis_model_radio_estimand, {
+    
+    req(input$analysis_model_radio_estimand)
+    
+    if(input$analysis_model_estimand == 'Unsure'){
+      show_popup_learn_estimand(session)
+    }
+  })
   
- 
+  observeEvent(input$analysis_model_support, {
+    
+    req(input$analysis_model_radio_support)
+      
+    if (input$analysis_model_radio_support == 'Unsure'){
+      show_popup_learn_common_support(session)
+    }
+  })
+
+  observeEvent(input$learn_estimand_no, {
+    close_popup(session = session)
+  })
+  
+  observeEvent(input$learn_common_support_no, {
+    close_popup(session = session)
+  })
+  
+  observeEvent(input$learn_estimand_yes, {
+    close_popup(session = session)
+    # add updateTabsetPanel to the page of estimand explanation
+  })
+  
+  observeEvent(input$learn_common_support_yes, {
+    close_popup(session = session)
+    # add updateTabsetPanel to the page of common support explanation
+  })
+  
                            
   # # render text output to summarize the users inputs
   # output$analysis_model_summary <- renderText({
@@ -1430,18 +1412,50 @@ shinyServer(function(input, output, session) {
     
     # launch popup if data is not yet selected
     if (!is.data.frame(store$selected_df)) {
-      shinyWidgets::show_alert(
-        title = 'Data must be first uploaded and columns selected',
-        text = tags$div(
-          actionButton(
-            inputId = 'analysis_model_button_popup',
-            label = 'Take me to the Data tab')
-        ),
-        type = 'error',
-        btn_labels = NA
-      ) 
+      # shinyWidgets::show_alert(
+      #   title = 'Data must be first uploaded and columns selected',
+      #   text = tags$div(
+      #     actionButton(
+      #       inputId = 'analysis_model_button_popup',
+      #       label = 'Take me to the Data tab')
+      #   ),
+      #   type = 'error',
+      #   btn_labels = NA
+      # ) 
+      show_popup_model_no_data_warning(session)
     }
-
+    
+    observeEvent(input$analysis_model_button_popup, {
+      close_popup(session = session)
+      updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
+    })
+    
+    # spawn red text if selection isn't made
+    if (isTRUE(is.null(input$analysis_model_radio_design))) {
+      output$analysis_model_text_design_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    if (isTRUE(is.null(input$analysis_model_radio_estimand))) {
+      output$analysis_model_text_estimand_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    if (isTRUE(is.null(input$analysis_model_radio_support))) {
+      output$analysis_model_text_support_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    
     # stop here if data hasn't been uploaded and selected
     validate_data_selected(store)
     
@@ -1460,17 +1474,19 @@ shinyServer(function(input, output, session) {
     # insert popup to notify user of model fit process
     # TODO: estimate the time remaining empirically?
     # TODO: show console redirect
-    shinyWidgets::show_alert(
-      title = 'Fitting BART model...',
-      text = tags$div(
-        img(src = file.path('img', 'tree.gif'),
-            width = "50%"),
-        h5("...sometimes this takes a while..."),
-      ),
-      html = TRUE,
-      btn_labels = NA,
-      closeOnClickOutside = FALSE
-    )
+    # shinyWidgets::show_alert(
+    #   title = 'Fitting BART model...',
+    #   text = tags$div(
+    #     img(src = file.path('img', 'tree.gif'),
+    #         width = "50%"),
+    #     h5("...sometimes this takes a while..."),
+    #   ),
+    #   html = TRUE,
+    #   btn_labels = NA,
+    #   closeOnClickOutside = FALSE
+    # )
+    show_popup_fitting_BART_waiting(session)
+    
     
     # pull the response, treatment, and confounders variables out of the df
     treatment_v <- store$selected_df[, 1]
@@ -1495,7 +1511,8 @@ shinyServer(function(input, output, session) {
     )
     
     # close the alert
-    shinyWidgets::closeSweetAlert()
+    # shinyWidgets::closeSweetAlert()
+    close_popup(session = session)
     
     # error handling
     # TODO: refine the popup; probably should pass the bart error to the popup somehow
@@ -1661,7 +1678,7 @@ shinyServer(function(input, output, session) {
     column_names <- colnames(store$user_modified_df)
     
     # TODO: add data type changes
-    
+    change_data_type <- group_list
     # model
     estimand <- base::tolower(input$analysis_model_radio_estimand)
     common_support <- input$analysis_model_radio_support
