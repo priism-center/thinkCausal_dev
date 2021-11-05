@@ -55,7 +55,7 @@ model_page <- tabPanel(
              HTML('<details><summary>Advanced modeling options</summary>'),
              selectInput("analysis_over_ride_common_support",
                          label = 'Common support rule:', 
-                         choices = c('Standard deviation', 'Chi squared'))
+                         choices = c('Standard deviation' = 'sd', 'Chi squared' = 'chisq'))
            )
     ), 
     column(6, 

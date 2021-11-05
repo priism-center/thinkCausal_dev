@@ -10,8 +10,8 @@
 plot_individual_effects <- function(.model, type = 'ordered'){
   if (!is(.model, "bartcFit")) stop(".model must be of class bartcFit")
 
-  icate.m <- apply(extract(.model, 'icate'), 2, mean)
-  icate.sd <- apply(extract(.model, 'icate'), 2, sd)
+  icate.m <- apply(bartCause::extract(.model, 'icate'), 2, mean)
+  icate.sd <- apply(bartCause::extract(.model, 'icate'), 2, sd)
   icate.ub <- icate.m + 2*icate.sd
   icate.lb <- icate.m - 2*icate.sd
   icate <- tibble(icate.m, icate.ub, icate.lb)

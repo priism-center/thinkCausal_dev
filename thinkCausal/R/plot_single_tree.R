@@ -12,11 +12,11 @@ plot_single_tree <- function(.model, confounders, depth = 2){
   
   validate_model_fit_(.model)
   if (!is.matrix(confounders)) stop("confounders must be of class matrix")
-  icate.m <- apply(extract(.model, 'icate'), 2, mean)
+  icate.m <- apply(bartCause::extract(.model, 'icate'), 2, mean)
   
   # fit regression tree
   cart <- rpart::rpart(icate.m ~ ., data = as.data.frame(confounders), maxdepth = depth)
-  
   p <- rpart.plot(cart)
+  
   return(p)
 }

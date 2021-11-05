@@ -355,7 +355,7 @@ border 0 fixes the buttons moving around when you hover / click */
   margin-left: auto;
   margin-right: auto;
   object-fit: cover;
-} %>% 
+}
 
 /* make consistent height of grid bricks on concepts page */
 #conceptsGrid1 > .row > .col-sm-3 > .well {
@@ -375,6 +375,12 @@ border 0 fixes the buttons moving around when you hover / click */
 }
 
 /*drag-and-drop items*/
+.rank-list {
+  max-height: 450px; 
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
 .rank-list-item {
   border: 0.2rem solid white !important;;
   border-radius: 0px !important;
@@ -396,7 +402,7 @@ border 0 fixes the buttons moving around when you hover / click */
 
 /* this makes the sortable bucket into a grid*/
 .sortable-wide .rank-list-item {
-  width: min(100%, 248px); 
+  width: min(100%, 245px); 
   float: left
 }
 

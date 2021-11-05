@@ -83,6 +83,7 @@ data_page <- tabPanel(
                       sidebarPanel(
                         h4("Rename and verify your data"),
                         p("Ensure your data is named and the data types are correct."),
+                        htmlOutput(outputId = 'analysis_data_text_na'),
                         br(),
                         actionButton(inputId = 'analysis_data_button_reset',
                                      label = 'Reset variable changes'),

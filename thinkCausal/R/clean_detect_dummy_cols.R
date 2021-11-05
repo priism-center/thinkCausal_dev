@@ -1,5 +1,4 @@
 
-
 #' Detect if a dataframe has dummy columns
 #'
 #' @param .data a dataframe
@@ -96,6 +95,9 @@ clean_detect_dummy_cols_unique <- function(.data){
     smaller_groups <- setdiff(duplicate, biggest_group)
     return(smaller_groups)
   })
+  
+  # if there are no groups to drop then return the original dummy cols
+  if (length(groups_to_drop) == 0) return(dummy_cols)
   filtered_groups <- dummy_cols[-unlist(groups_to_drop)]
   
   # if the above algo fails, just return the first group
@@ -111,4 +113,3 @@ clean_detect_dummy_cols_unique <- function(.data){
 # .data <- fastDummies::dummy_cols(.data)
 # .data <- bind_cols(.data, .data)
 # clean_detect_dummy_cols_unique(.data)
-      

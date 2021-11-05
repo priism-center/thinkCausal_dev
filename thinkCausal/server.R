@@ -287,14 +287,24 @@ shinyServer(function(input, output, session) {
     # stop here if data hasn't been uploaded and columns assigned
     validate_columns_assigned(store)
     
+    # stop here if no variables to group
+    df <- store$col_assignment_df[, -c(1:2)]
+    cat_var_names <- colnames(df)[sapply(df, clean_detect_logical)]
+    validate(
+      need(
+        length(cat_var_names) > 1,
+        "Your dataset has <= 1 logical variable. No need to group variables. Click 'Save groupings' to the next page."
+      )
+    )
+    
     # add overlay
     div_id <- 'analysis_data_UI_dragdrop_grouping'
     show_message_updating(div_id)
     
     # create groupings
     drag_drop_groupings <- create_drag_drop_groups(
-      .data = store$col_assignment_df, 
-      ns_prefix = 'analysis_data', 
+      .data = store$col_assignment_df,
+      ns_prefix = 'analysis_data',
       n_dummy_groups = store$n_dummy_groups
     )
     
@@ -485,6 +495,9 @@ shinyServer(function(input, output, session) {
       
     # TODO?
     # change categorical levels
+    
+    # remove NAs
+    user_modified_df <- na.omit(user_modified_df)
     
     # save the data to the store
     store$user_modified_df <- user_modified_df 
@@ -705,6 +718,31 @@ shinyServer(function(input, output, session) {
   #     })
   #   })
   # })
+  
+  # render the text indicating how many rows are being removed due to NAs
+  output$analysis_data_text_na <- renderUI({
+    
+    # stop if previous steps aren't completed
+    req(store$user_modified_df)
+    
+    # calculate stats
+    n_rows_original <- nrow(store$categorical_df)
+    n_rows_removed <- n_rows_original - nrow(store$user_modified_df)
+    n_rows_percent <- scales::percent_format(0.1)(n_rows_removed / n_rows_original)
+    n_rows_removed_text <- scales::comma_format()(n_rows_removed)
+    
+    # if no rows to be removed then don't show anything
+    if (n_rows_removed == 0) return(NULL)
+    
+    # define text to be rendered
+    text_out <- paste0(n_rows_removed_text, ' rows (', n_rows_percent, ') will be removed due to NAs in at least one column.')
+    
+    # make red
+    if ((n_rows_removed / n_rows_original) > 0.3) text_out <- paste0('<p style="color: red">', text_out, "</p>")
+    html_out <- HTML(text_out)
+    
+    return(html_out)
+  })
 
   # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
   # with the new columns
@@ -1275,115 +1313,117 @@ shinyServer(function(input, output, session) {
     )
     
     # add theme
-    p <- p + theme_custom
+    p <- p + 
+      theme_custom() +
+      theme(legend.position = 'bottom',
+            strip.text = element_text(hjust = 0))
     
     return(p)
   })
   
   
   # specify model -----------------------------------------------------------
-  
                            
-  # pop ups for estimand and common support help 
-  observeEvent(input$analysis_model_radio_estimand, {
-    
-    req(input$analysis_model_radio_estimand)
-    
-    if(input$analysis_model_radio_estimand == 'unsure'){
-      shinyWidgets::sendSweetAlert(
-        session,
-        title = "I would like to learn more about causal estimands:",
-        text = NULL,
-        type = NULL,
-        btn_labels = c("Yes", "No"),
-        btn_colors = "#3085d6",
-        html = TRUE,
-        closeOnClickOutside = FALSE,
-        showCloseButton = FALSE,
-        width = NULL
-      )
-    }
-  })
-  
-  observeEvent(input$analysis_model_radio_support, {
-    
-    req(input$analysis_model_radio_support)
-      
-    if (input$analysis_model_radio_support == 'unsure'){
-      shinyWidgets::sendSweetAlert(
-        session,
-        title = "I would like to learn more about common support:",
-        text = NULL,
-        type = NULL,
-        btn_labels = c("Yes", "No"),
-        btn_colors = "#3085d6",
-        html = TRUE,
-        closeOnClickOutside = FALSE,
-        showCloseButton = FALSE,
-        width = NULL
-      )
-    }
-  })
+  # # pop ups for estimand and common support help 
+  # observeEvent(input$analysis_model_radio_estimand, {
+  #   
+  #   req(input$analysis_model_radio_estimand)
+  #   
+  #   if(input$analysis_model_radio_estimand == 'unsure'){
+  #     shinyWidgets::sendSweetAlert(
+  #       session,
+  #       title = "I would like to learn more about causal estimands:",
+  #       text = NULL,
+  #       type = NULL,
+  #       btn_labels = c("Yes", "No"),
+  #       btn_colors = "#3085d6",
+  #       html = TRUE,
+  #       closeOnClickOutside = FALSE,
+  #       showCloseButton = FALSE,
+  #       width = NULL
+  #     )
+  #   }
+  # })
+  # 
+  # observeEvent(input$analysis_model_radio_support, {
+  #   
+  #   req(input$analysis_model_radio_support)
+  #     
+  #   if (input$analysis_model_radio_support == 'unsure'){
+  #     shinyWidgets::sendSweetAlert(
+  #       session,
+  #       title = "I would like to learn more about common support:",
+  #       text = NULL,
+  #       type = NULL,
+  #       btn_labels = c("Yes", "No"),
+  #       btn_colors = "#3085d6",
+  #       html = TRUE,
+  #       closeOnClickOutside = FALSE,
+  #       showCloseButton = FALSE,
+  #       width = NULL
+  #     )
+  #   }
+  # })
   
  
                            
-  # render text output to summarize the users inputs
-  output$analysis_model_summary <- renderText({
-    
-    # extract inputs
-    design <- input$analysis_model_radio_design
-    estimand <- input$analysis_model_radio_estimand
-    support <- input$analysis_model_radio_support
-    if (is.null(design)) design <- "None"
-    if (is.null(estimand)) estimand <- "None"
-    if (is.null(support)) support <- "None"
-    
-    # grab text from object
-    design_text <- analysis_model_text$design[[design]]
-    estimand_text <- analysis_model_text$estimand[[estimand]]
-    support_text <- analysis_model_text$support[[support]]
-    
-    # paste together all the text
-    custom_text <- paste0(
-      "<h3>Design</h3>",
-      design_text,
-      "<br><br>",
-      "<h3>Estimand</h3>",
-      estimand_text,
-      "<br><br>",
-      "<h3>Common Support</h3>",
-      support_text
-    )
-    
-    return(custom_text)
-  })
-  
-  # render text below the radio buttons
-  output$analysis_model_text_design <- renderUI({
-    
-    if (isTRUE(input$analysis_model_radio_design == 'quasi')){
-      html_out <- tags$span(
-        style = 'color: red;', 
-        "Natural experiment design is not currently supported",
-        br(), br()
-      )
-      return(html_out)
-    }
-    
-    html_out <- ''
-    return(html_out)
-  })
-  
-  # remove no text UI spawns if user makes a selection
-  observeEvent(input$analysis_model_radio_design, {
-    removeUI('#analysis_model_text_design_noinput')
-  })
-  observeEvent(input$analysis_model_radio_estimand, {
-    removeUI('#analysis_model_text_estimand_noinput')
-  })
-  observeEvent(input$analysis_model_radio_support, {
-    removeUI('#analysis_model_text_support_noinput')
-  })
+  # # render text output to summarize the users inputs
+  # output$analysis_model_summary <- renderText({
+  #   
+  #   # extract inputs
+  #   design <- input$analysis_model_radio_design
+  #   estimand <- input$analysis_model_radio_estimand
+  #   support <- input$analysis_model_radio_support
+  #   if (is.null(design)) design <- "None"
+  #   if (is.null(estimand)) estimand <- "None"
+  #   if (is.null(support)) support <- "None"
+  #   
+  #   # grab text from object
+  #   design_text <- analysis_model_text$design[[design]]
+  #   estimand_text <- analysis_model_text$estimand[[estimand]]
+  #   support_text <- analysis_model_text$support[[support]]
+  #   
+  #   # paste together all the text
+  #   custom_text <- paste0(
+  #     "<h3>Design</h3>",
+  #     design_text,
+  #     "<br><br>",
+  #     "<h3>Estimand</h3>",
+  #     estimand_text,
+  #     "<br><br>",
+  #     "<h3>Common Support</h3>",
+  #     support_text
+  #   )
+  #   
+  #   return(custom_text)
+  # })
+  # 
+  # # render text below the radio buttons
+  # output$analysis_model_text_design <- renderUI({
+  #   
+  #   if (isTRUE(input$analysis_model_radio_design == 'quasi')){
+  #     html_out <- tags$span(
+  #       style = 'color: red;', 
+  #       "Natural experiment design is not currently supported",
+  #       br(), br()
+  #     )
+  #     return(html_out)
+  #   }
+  #   
+  #   html_out <- ''
+  #   return(html_out)
+  # })
+  # 
+  # # remove no text UI spawns if user makes a selection
+  # observeEvent(input$analysis_model_radio_design, {
+  #   removeUI('#analysis_model_text_design_noinput')
+  # })
+  # observeEvent(input$analysis_model_radio_estimand, {
+  #   removeUI('#analysis_model_text_estimand_noinput')
+  # })
+  # observeEvent(input$analysis_model_radio_support, {
+  #   removeUI('#analysis_model_text_support_noinput')
+  # })
   
   # when user runs the model, take a number of actions
   observeEvent(input$analysis_model_button_next, {
@@ -1401,55 +1441,17 @@ shinyServer(function(input, output, session) {
         btn_labels = NA
       ) 
     }
-    
-    # spawn red text if selection isn't made
-    if (isTRUE(is.null(input$analysis_model_radio_design))) {
-      output$analysis_model_text_design_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    if (isTRUE(is.null(input$analysis_model_radio_estimand))) {
-      output$analysis_model_text_estimand_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    if (isTRUE(is.null(input$analysis_model_radio_support))) {
-      output$analysis_model_text_support_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    
+
     # stop here if data hasn't been uploaded and selected
     validate_data_selected(store)
     
     # stop here if inputs aren't found
-    validate(
-      need(
-        isFALSE(input$analysis_model_radio_design == 'quasi'),
-        'Natural experiment design is not currently supported'
-      ),
-      need(
-        isFALSE(is.null(input$analysis_model_radio_design)),
-        'Please select an assignment mechanism'
-      ),
-      need(
-        isFALSE(is.null(input$analysis_model_radio_estimand)),
-        'Please select an estimand and common support rule'
-      ),
-      need(
-        isFALSE(is.null(input$analysis_model_radio_support)),
-        'Please select a common support rule'
-      )
-    )
+    # TODO
+    # req(input$)
+    print('Dataframe going into bartC: \n')
+    print(store$selected_df)
+    print('Column types of dataframe going into bartC: \n')
+    print(store$selected_df  %>% summarize_all(class))
     
     # remove current model if it exists
     store$model_results <- NULL
@@ -1475,6 +1477,8 @@ shinyServer(function(input, output, session) {
     response_v <- store$selected_df[, 2]
     confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
     colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
+    common_support_rule <- input$analysis_over_ride_common_support
+    if (input$analysis_model_support == 'No') common_support_rule <- 'none'
     
     # run model    
     store$model_results <- tryCatch({
@@ -1482,8 +1486,8 @@ shinyServer(function(input, output, session) {
         response = response_v,
         treatment = treatment_v,
         confounders = confounders_mat,
-        estimand = base::tolower(input$analysis_model_radio_estimand),
-        commonSup.rule = input$analysis_model_radio_support
+        estimand = base::tolower(input$analysis_model_estimand),
+        commonSup.rule = common_support_rule
       )
     },
     # warning = function(w) NULL,
@@ -1532,7 +1536,8 @@ shinyServer(function(input, output, session) {
     common_support_check <- check_common_support(store$model_results)
     
     # display popup if any observations would be removed
-    if((common_support_check$proportion_removed_sd > 0 | common_support_check$proportion_removed_chi > 0) & input$analysis_model_radio_support == 'none'){
+    any_points_removed <- common_support_check$proportion_removed_sd > 0 | common_support_check$proportion_removed_chi > 0
+    if(any_points_removed & input$analysis_model_support == 'No'){
       show_popup_common_support_warning(session = session, common_support_check = common_support_check)
     }
     
@@ -1548,11 +1553,12 @@ shinyServer(function(input, output, session) {
     })
     
     # move to next page based on model fit
-    if((common_support_check$proportion_removed_sd == 0 | common_support_check$proportion_removed_chi == 0) & input$analysis_model_radio_support == 'none'){
+    no_points_removed <- common_support_check$proportion_removed_sd == 0 | common_support_check$proportion_removed_chi == 0
+    if(no_points_removed & input$analysis_model_support == 'No'){
       updateNavbarPage(session, inputId = "nav", selected = "Results")
     } 
     
-    if( input$analysis_model_radio_support != 'none'){
+    if( input$analysis_model_support != 'No'){
       updateNavbarPage(session, inputId = "nav", selected = "Results")
     } 
     
@@ -1589,7 +1595,7 @@ shinyServer(function(input, output, session) {
     validate_model_fit(store)
     
     # add overlay
-    div_id <- analysis_results_plot_PATE
+    div_id <- 'analysis_results_plot_PATE'
     show_message_updating(div_id)
     
     if(input$show_reference == 'No'){
@@ -1749,6 +1755,9 @@ shinyServer(function(input, output, session) {
     # stop here if model isn't fit yet
     validate_model_fit(store)
     
+    # stop here if no variables selected in dropdown
+    validate(need(input$analysis_moderator_vars, "Please select a variable to group by"))
+    
     # add overlay
     div_id <- 'analysis_moderators_explore_plot'
     show_message_updating(div_id)
@@ -1768,8 +1777,10 @@ shinyServer(function(input, output, session) {
 
     # plot it
     # TODO: this is not in plotBart
+    # TODO: dynamically select the select input OR change select options with observeEvent
+    moderator_vars <- input$analysis_moderator_vars
     p <- plot_continuous_sub(.model = store$model_results, 
-                             grouped_on = input$analysis_moderators_explore_select)
+                             grouped_on = moderator_vars)
     
     # add theme
     p <- p + theme_custom()

@@ -3,6 +3,12 @@
 #' Returns a ggplot ITE plot
 #'
 #' @param .model a model produced by bartCause::bartc()
+#' @param type histogram or density
+#' @param ci_80 TRUE/FALSE. Show the 80% credible interval?
+#' @param ci_95 TRUE/FALSE. Show the 95% credible interval?
+#' @param reference numeric. Show a vertical reference line at this value
+#' @param .mean TRUE/FALSE. Show the mean reference line
+#' @param .median TRUE/FALSE. Show the median reference line
 #' @author George Perrett, Joe Marlo
 #'
 #' @return ggplot object
@@ -20,7 +26,9 @@
 #'  commonSup.rule = 'none'
 #' )
 #' plot_ITE(model_results)
-plot_PATE <- function(.model, type = 'Histigram', ci_80 = F, ci_95 = F,  reference = NULL,  .mean = F, .median = F){
+plot_PATE <- function(.model, type = 'Histogram', ci_80 = FALSE, ci_95 = FALSE,  reference = NULL, .mean = FALSE, .median = FALSE){
+  
+  # TODO: Joe to rewrite
   
   if (!is(.model, "bartcFit")) stop("Model must be of class bartcFit")
   
@@ -35,7 +43,7 @@ plot_PATE <- function(.model, type = 'Histigram', ci_80 = F, ci_95 = F,  referen
   dd <-  with(dd, data.frame(x, y))
 
   # plot hist
-  if(type == 'Histigram'){
+  if(type == 'Histogram'){
     
     if(ci_80 == F & ci_95 == F & .mean == F & .median == F){
       p <- pate %>%

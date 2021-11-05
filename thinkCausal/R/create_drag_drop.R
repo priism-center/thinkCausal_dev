@@ -51,22 +51,11 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups){
   df <- .data[, -c(1:2)]
   cat_var_names <- colnames(df)[sapply(df, clean_detect_logical)]
   
-  # stop here if no variables to group
-  validate(
-    need(
-      length(cat_var_names) > 1,
-      "Your dataset has <= 1 logical variable. No need to group variables. Click 'Save groupings' to the next page.")
-  )
-  
   # infer which columns are grouped (i.e. smart defaults)
   auto_groups <- clean_detect_dummy_cols_unique(df)
   n_dummy_groups <- max(n_dummy_groups, length(auto_groups))
   ungrouped_vars <- setdiff(cat_var_names, unlist(auto_groups))
-  
-  # show message to user indicating if we did or did not detect any variables
-  # TODO: show_message('We detected some variables that may be related....')
-  
-  ## TODO: if detect the two values in a dummy are not of T/F or 0/1, then ask user to specify which is T and which is F
+
   ## TODO: 'add group' will overwrite the names
   
   # create the grouping UI
