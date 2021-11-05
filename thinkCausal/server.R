@@ -478,9 +478,6 @@ shinyServer(function(input, output, session) {
     # TODO?
     # change categorical levels
     
-    # remove NAs
-    user_modified_df <- na.omit(user_modified_df)
-    
     # save the data to the store
     store$user_modified_df <- user_modified_df 
   })
@@ -645,10 +642,9 @@ shinyServer(function(input, output, session) {
     ))
     
     # create JS datatable
-    tab <- create_datatable(
-      store$user_modified_df,
-      selection = "none"
-    )
+    tab <- store$user_modified_df %>% 
+      na.omit() %>% 
+      create_datatable(selection = "none")
     
     return(tab)
   })
@@ -714,7 +710,7 @@ shinyServer(function(input, output, session) {
     
     # calculate stats
     n_rows_original <- nrow(store$categorical_df)
-    n_rows_removed <- n_rows_original - nrow(store$user_modified_df)
+    n_rows_removed <- n_rows_original - nrow(na.omit(store$categorical_df))
     n_rows_percent <- scales::percent_format(0.1)(n_rows_removed / n_rows_original)
     n_rows_removed_text <- scales::comma_format()(n_rows_removed)
     
@@ -748,11 +744,14 @@ shinyServer(function(input, output, session) {
 
     # save original column names
     store$selected_df_original_names <- old_col_names
-        
+    
     # create new dataframe of just the selected vars and rename them
     store$selected_df <- store$user_modified_df
     colnames(store$selected_df) <- new_col_names
 
+    # remove rows with NAs
+    store$selected_df <- na.omit(store$selected_df)
+    
     # save the column names by their respective class
     store$column_types <- clean_detect_column_types(store$selected_df)
     
