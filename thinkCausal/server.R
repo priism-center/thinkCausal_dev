@@ -325,7 +325,9 @@ shinyServer(function(input, output, session) {
     close_message_updating(div_id)
     
     # update global var keeping track of the number of groups
-    store$n_dummy_groups <- drag_drop_groupings$n_dummy_groups
+    if(store$n_dummy_groups < 1){
+      store$n_dummy_groups <- drag_drop_groupings$n_dummy_groups
+    }
     
     # return the HTML code for the UI
     return(drag_drop_groupings$html)
@@ -348,6 +350,25 @@ shinyServer(function(input, output, session) {
     }
     group_list$data <- groups
     store$n_dummy_groups <- store$n_dummy_groups + 1
+  })
+  
+  observeEvent(input$analysis_data_remove_group, {
+    # save the current results when observe 'remove group' clicked
+    df <- store$col_assignment_df
+    groups <- list()
+    
+    for (i in 1:store$n_dummy_groups) {
+      # find the column indexes of dummy variables in the same group 
+      input_id <- paste0("analysis_data_categorical_group_", i)
+      idx <- which(colnames(df) %in% input[[input_id]])
+      # save the user input group name and dummies' names of the group into a list for each group
+      groups <- c(groups, list(c(input[[paste0("rename_group_", i)]], colnames(df)[idx])))
+    }
+    group_list$data <- groups
+    
+    # remove the last group from the results list and the number of group decreases one
+    group_list$data <- group_list$data[-store$n_dummy_groups]
+    store$n_dummy_groups <- store$n_dummy_groups - 1
   })
   
   # create new dataframe when user saves variable grouping

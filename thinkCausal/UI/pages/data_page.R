@@ -56,6 +56,9 @@ data_page <- tabPanel(
                         actionButton(inputId = 'analysis_data_add_group',
                                      label = 'Add group'),
                         br(), br(),
+                        actionButton(inputId = 'analysis_data_remove_group',
+                                     label = 'Remove group'),
+                        br(), br(),
                         div(
                           class = 'backNextContainer',
                           actionButton(inputId = "analysis_data_pivot_button_back",
