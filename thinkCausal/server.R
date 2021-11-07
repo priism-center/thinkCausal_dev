@@ -281,6 +281,9 @@ shinyServer(function(input, output, session) {
   # initiate counter of number of groups to un-dummy
   store$n_dummy_groups <- 1
   
+  # to save user's grouping results
+  group_list <- reactiveValues(data = list())
+  
   # create UI for the groupings
   output$analysis_data_UI_dragdrop_grouping <- renderUI({
     
@@ -301,13 +304,23 @@ shinyServer(function(input, output, session) {
     div_id <- 'analysis_data_UI_dragdrop_grouping'
     show_message_updating(div_id)
     
-    # create groupings
-    drag_drop_groupings <- create_drag_drop_groups(
-      .data = store$col_assignment_df,
-      ns_prefix = 'analysis_data',
-      n_dummy_groups = store$n_dummy_groups
-    )
-    
+    # create groupings: if 'add group' has not been clicked, show smart default grouping
+    # if 'add group' is clicked, show last grouping results before clicking the button
+    if(length(group_list$data) == 0){
+      drag_drop_groupings <- create_drag_drop_groups(
+        .data = store$col_assignment_df,
+        ns_prefix = 'analysis_data',
+        n_dummy_groups = store$n_dummy_groups
+      )
+    }else{
+      drag_drop_groupings <- create_drag_drop_groups(
+        .data = store$col_assignment_df,
+        ns_prefix = 'analysis_data',
+        n_dummy_groups = store$n_dummy_groups,
+        grouped_varibles = group_list$data
+      )
+    }
+   
     # remove overlay
     close_message_updating(div_id)
     
@@ -319,8 +332,21 @@ shinyServer(function(input, output, session) {
   })
   
   
-  # the number of group increases one when observe 'add a group' clicked
+  
+  # save the current grouping results and the number of group increases one when observe 'add a group' clicked
   observeEvent(input$analysis_data_add_group, {
+    
+    df <- store$col_assignment_df
+    groups <- list()
+    
+    for (i in 1:store$n_dummy_groups) {
+      # find the column indexes of dummy variables in the same group 
+      input_id <- paste0("analysis_data_categorical_group_", i)
+      idx <- which(colnames(df) %in% input[[input_id]])
+      # save the user input group name and dummies' names of the group into a list for each group
+      groups <- c(groups, list(c(input[[paste0("rename_group_", i)]], colnames(df)[idx])))
+    }
+    group_list$data <- groups
     store$n_dummy_groups <- store$n_dummy_groups + 1
   })
   

@@ -43,7 +43,7 @@ create_drag_drop_roles <- function(.data, ns_prefix){
 }
 
 
-create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups){
+create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups, grouped_varibles = NULL){
   
   if (!inherits(.data, 'data.frame')) stop('.data must be a dataframe')
   
@@ -51,10 +51,18 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups){
   df <- .data[, -c(1:2)]
   cat_var_names <- colnames(df)[sapply(df, clean_detect_logical)]
   
-  # infer which columns are grouped (i.e. smart defaults)
-  auto_groups <- clean_detect_dummy_cols_unique(df)
-  n_dummy_groups <- max(n_dummy_groups, length(auto_groups))
-  ungrouped_vars <- setdiff(cat_var_names, unlist(auto_groups))
+  if(is.null(grouped_varibles)){
+    # infer which columns are grouped (i.e. smart defaults)
+    auto_groups <- clean_detect_dummy_cols_unique(df)
+    n_dummy_groups <- max(n_dummy_groups, length(auto_groups))
+    ungrouped_vars <- setdiff(cat_var_names, unlist(auto_groups))
+  }else{
+    auto_groups <- lapply(grouped_varibles, function(x) x[-1])
+    user_group_name <- lapply(grouped_varibles, function(x) x[1])
+    n_dummy_groups <- max(n_dummy_groups, length(auto_groups))
+    ungrouped_vars <- setdiff(cat_var_names, as.character(unlist(auto_groups)))
+  }
+  
 
   ## TODO: 'add group' will overwrite the names
   
@@ -85,7 +93,7 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups){
           input_id = paste0(ns_prefix, '_categorical_group_', i),
           text = textInput(inputId = paste0("rename_group_", i), 
                            label = NULL, 
-                           value = paste0("Group ", i)),
+                           value = ifelse(i <= length(grouped_varibles), user_group_name[i], paste0("Group ", i))),
           labels = tryCatch(auto_groups[[i]], error = function(e) NULL),
           options = sortable_options(multiDrag = TRUE)
         )
