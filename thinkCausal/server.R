@@ -1652,56 +1652,34 @@ shinyServer(function(input, output, session) {
   
   # PATE plot 
   output$analysis_results_plot_PATE <- renderPlot({
-    
-    # hold <- sum(input$show_interval == .8) > 0
-    # print(hold == T)
-    #print(input$show_interval == .8) 
-    
+
     # stop here if model isn't fit yet
     validate_model_fit(store)
+    
+    # get value for reference bar
+    reference_bar <- NULL
+    if (input$show_reference == 'Yes') reference_bar <- req(input$reference_bar)
     
     # add overlay
     div_id <- 'analysis_results_plot_PATE'
     show_message_updating(div_id)
     
-    if(input$show_reference == 'No'){
-      # plot it
-      # TODO: this is not in plotBart
-      p <- plot_PATE(
-        .model = store$model_results,
-        type = input$plot_result_style,
-        ci_80 = sum(input$show_interval == .8) > 0,
-        ci_95 = sum(input$show_interval == .95) > 0,
-        .mean = sum(input$central_tendency == 'Mean') > 0,
-        .median = sum(input$central_tendency == 'Median') > 0,
-        reference = NULL
-      )
-      
-      # add theme
-      p <- p +
-        theme_custom() +
-        theme(legend.position = c(0.1, 0.9),
-              legend.title = element_blank())
-    }
-   
-    if(input$show_reference != 'No'){
-      # plot it
-      p <- plot_PATE(
-          .model = store$model_results,
-          type = input$plot_result_style,
-          ci_80 = sum(input$show_interval == .8) > 0,
-          ci_95 = sum(input$show_interval == .95) > 0,
-          .mean = sum(input$central_tendency == 'Mean') > 0,
-          .median = sum(input$central_tendency == 'Median') > 0,
-          reference = input$reference_bar
-        )
-      
-      # add theme
-      p <- p + 
-        theme_custom() + 
-        theme(legend.position = c(0.1, 0.9),
-              legend.title = element_blank())
-    }
+    # create plot
+    p <- plot_PATE(
+      .model = store$model_results,
+      type = input$plot_result_style,
+      ci_80 = sum(input$show_interval == .8) > 0,
+      ci_95 = sum(input$show_interval == .95) > 0,
+      .mean = sum(input$central_tendency == 'Mean') > 0,
+      .median = sum(input$central_tendency == 'Median') > 0,
+      reference = reference_bar
+    )
+    
+    # add theme
+    p <- p +
+      theme_custom() +
+      theme(legend.position = c(0.1, 0.9),
+            legend.title = element_blank())
     
     # remove overlay
     close_message_updating(div_id)
