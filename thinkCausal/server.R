@@ -1640,6 +1640,9 @@ shinyServer(function(input, output, session) {
     tab <- summary(store$model_results)$estimates %>% 
       t() %>%
       as.data.frame() %>% 
+      mutate(rownames = rownames(.)) %>% 
+      select(' ' = rownames, 1) %>%
+      rename_all(toupper) %>% 
       create_datatable(paging = FALSE, info = FALSE, selection = "none")
     
     return(tab)
