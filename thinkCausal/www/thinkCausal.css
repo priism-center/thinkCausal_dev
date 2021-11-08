@@ -374,38 +374,6 @@ border 0 fixes the buttons moving around when you hover / click */
   margin-right: 1rem;
 }
 
-/*drag-and-drop items*/
-.rank-list {
-  max-height: 450px; 
-  overflow-x: auto;
-  overflow-y: auto;
-}
-
-.rank-list-item {
-  border: 0.2rem solid white !important;;
-  border-radius: 0px !important;
-  background-color: #F5F5F5 !important;
-}
-
-.rank-list.rank-list-empty {
-  border-radius: 0px !important;
-}
-
-.rank-list-item:hover {
-  background-color: #e6dfe8 !important;
-}
-
-.rank-list-item.sortable-selected, .rank-list-item.sortable-chosen {
-  background-color: #5c5980 !important;
-  color: white !important;
-}
-
-/* this makes the sortable bucket into a grid*/
-.sortable-wide .rank-list-item {
-  width: min(100%, 245px); 
-  float: left
-}
-
 #analysis_data_upload_progress {
   height: 2rem;
 }

@@ -3,15 +3,16 @@ ns <- NS("concepts_potentialoutcomes")
 
 PotentialOutcomesUI <- function(id){ 
   fluidPage(
-    tags$head(
-      tags$style(
-        "tr:nth-child(1) {font-weight: bold;}
-         tr:nth-child(even) {background-color: #f2f2f2;}
-         tr:nth-child(odd) {background: #fafafa;}
-         th {border:1px solid #e0e0e0; cursor:pointer;}
-         td {border:1px solid #e0e0e0;height: 35px;}"
-      )
-    ),
+    # this style should be moved to CSS and applied via a div ID or class
+    # tags$head(
+    #   tags$style(
+    #     "tr:nth-child(1) {font-weight: bold;}
+    #      tr:nth-child(even) {background-color: #f2f2f2;}
+    #      tr:nth-child(odd) {background: #fafafa;}
+    #      th {border:1px solid #e0e0e0; cursor:pointer;}
+    #      td {border:1px solid #e0e0e0;height: 35px;}"
+    #   )
+    # ),
     tabsetPanel(id = ns('tabs'),
       tabPanel('Learn', 
                 fluidRow(
@@ -21,7 +22,7 @@ PotentialOutcomesUI <- function(id){
                          
                          h4('Choose an example: '),
                          wellPanel(
-                           awesomeRadio(inputId = 'example', label = 'Options', 
+                           radioButtons(inputId = 'example', label = 'Options', 
                                         choices = c('health', 'education', 'economics', 'exercise science'), 
                                         selected = 'health')), 
                          
@@ -82,7 +83,7 @@ PotentialOutcomesUI <- function(id){
                                           'Researcher View' of the world."),
                          tagList(
                            wellPanel(
-                             awesomeRadio(inputId = NS(id, 'world1'), 
+                             radioButtons(inputId = NS(id, 'world1'), 
                                           label = "View:", 
                                           choices = c('All Knowing', 
                                                       'Researcher'), 
@@ -116,7 +117,7 @@ PotentialOutcomesUI <- function(id){
       the causal effect of fish oil supplements on blood pressure:"),
                          
                          wellPanel(
-                           awesomeRadio(inputId = NS(id, 'world2'), 
+                           radioButtons(inputId = NS(id, 'world2'), 
                                         label = "View:", 
                                         choices = c('All Knowing', 
                                                     'Researcher'), 
@@ -126,14 +127,15 @@ PotentialOutcomesUI <- function(id){
                 ), # end of fluid row
                 
                 conditionalPanel(condition = 'input.world2 == "All Knowing"',ns = ns,
-                                 tags$head(
-                                   tags$style(
-                                     "tr:nth-child(1) {font-weight: bold;}
-         tr:nth-child(even) {background-color: #f2f2f2;}
-         tr:nth-child(odd) {background: #fafafa;}
-         th {border:1px solid #e0e0e0; cursor:pointer;}
-         td {border:1px solid #e0e0e0;height: 35px;}"
-                                   )),
+                                 # this style should be moved to CSS and applied via a div ID or class
+         #                         tags$head(
+         #                           tags$style(
+         #                             "tr:nth-child(1) {font-weight: bold;}
+         # tr:nth-child(even) {background-color: #f2f2f2;}
+         # tr:nth-child(odd) {background: #fafafa;}
+         # th {border:1px solid #e0e0e0; cursor:pointer;}
+         # td {border:1px solid #e0e0e0;height: 35px;}"
+         #                           )),
                                  fluidRow(column(1), column(10, 
                                                             align = 'center', 
                                                             h4('All Knowing View'),
@@ -144,14 +146,15 @@ PotentialOutcomesUI <- function(id){
                                  ),
                 
                 conditionalPanel(condition = 'input.world2 == "Researcher"', ns = ns,
-                                 tags$head(
-                                   tags$style(
-                                     "tr:nth-child(1) {font-weight: bold;}
-         tr:nth-child(even) {background-color: #f2f2f2;}
-         tr:nth-child(odd) {background: #fafafa;}
-         th {border:1px solid #e0e0e0; cursor:pointer;}
-         td {border:1px solid #e0e0e0;height: 35px;}"
-                                   )),
+                                 # this style should be moved to CSS and applied via a div ID or class
+         #                         tags$head(
+         #                           tags$style(
+         #                             "tr:nth-child(1) {font-weight: bold;}
+         # tr:nth-child(even) {background-color: #f2f2f2;}
+         # tr:nth-child(odd) {background: #fafafa;}
+         # th {border:1px solid #e0e0e0; cursor:pointer;}
+         # td {border:1px solid #e0e0e0;height: 35px;}"
+         #                           )),
                                  fluidRow(column(1), column(10,
                                                             align="center",
                                                             h4('Researcher View'),

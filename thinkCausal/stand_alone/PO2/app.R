@@ -11,7 +11,7 @@ ui <- fluidPage(
        
         h4('Choose an example: '),
         wellPanel(
-        awesomeRadio(inputId = 'example', label = 'Options', 
+        radioButtons(inputId = 'example', label = 'Options', 
                      choices = c('health', 'education', 'economics', 'exercise science'), 
                      selected = 'health')), 
         
@@ -73,7 +73,7 @@ ui <- fluidPage(
       and differs from the view researchers have in practice."),
     
     wellPanel(
-    awesomeRadio(inputId = 'world.1', 
+    radioButtons(inputId = 'world.1', 
                  label = "View:", 
                  choices = c('All Knowing', 
                              'Researcher'), 
@@ -103,7 +103,7 @@ ui <- fluidPage(
       the causal effect of fish oil supplements on blood pressure:"),
     
     wellPanel(
-        awesomeRadio(inputId = 'world2', 
+        radioButtons(inputId = 'world2', 
                      label = "View:", 
                      choices = c('All Knowing', 
                                  'Researcher'), 

@@ -114,7 +114,7 @@ data_page <- tabPanel(
                         hr(style = "height: 1px; background-color: #bfbfbf"),
                         h4("Your data", style = "padding: 0; margin: 0"),
                         wellPanel(
-                          style = "overflow-y:scroll; max-height: 400px; background-color: transparent; overflow-y: scroll",
+                          style = "background-color: transparent;",
                           DT::dataTableOutput('analysis_data_table')
                         )
                       )

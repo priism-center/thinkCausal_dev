@@ -1,14 +1,14 @@
 
 
-.data <- tibble(Student = c('Blake', 'Kennedy', 'Jordan', 'Jordan', 'John'), 
-                Z = c(1, 1, 0, 0, 0),
-                Y0 = c('?', '?', 130, 128, 130),
-                Y1 = c(115, 130, '?', '?', 120),
-                Y = c(115, 130, 130, 128, 130),
-                ITE = c(-6, -5, -2, -8, "?"))
-correct_answers <- c("121", "135", "128", "120", "-10")
-extra_header <- c('', 'Treatment', 'Potential Outcomes', 'Observed Outcomes', 'Treatment Effect')
-extra_header_widths <- c(1, 1, 2, 1, 1)
+# .data <- tibble(Student = c('Blake', 'Kennedy', 'Jordan', 'Jordan', 'John'), 
+#                 Z = c(1, 1, 0, 0, 0),
+#                 Y0 = c('?', '?', 130, 128, 130),
+#                 Y1 = c(115, 130, '?', '?', 120),
+#                 Y = c(115, 130, 130, 128, 130),
+#                 ITE = c(-6, -5, -2, -8, "?"))
+# correct_answers <- c("121", "135", "128", "120", "-10")
+# extra_header <- c('', 'Treatment', 'Potential Outcomes', 'Observed Outcomes', 'Treatment Effect')
+# extra_header_widths <- c(1, 1, 2, 1, 1)
 
 #' Create a JavaScript table that has editable cells and checks for the correct input
 #'

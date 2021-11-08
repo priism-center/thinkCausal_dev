@@ -69,7 +69,7 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups, grouped_va
   # create the grouping UI
   drag_drop_html <- tagList(
     bucket_list(
-      header = "Drag the variables to their respective groups",
+      header = "Drag the variables to their respective groups (if any)",
       group_name = paste0(ns_prefix, "_dragdrop_grouping"),
       orientation = "horizontal",
       class = 'default-sortable sortable-wide',

@@ -11,7 +11,7 @@ ui <- fluidPage(
        
         h4('Choose an example: '),
         wellPanel(
-        awesomeRadio(inputId = 'example', label = 'Options', 
+        radioButtons(inputId = 'example', label = 'Options', 
                      choices = c('health', 'education', 'economics', 'exercise science'), 
                      selected = 'health')), 
         
@@ -149,7 +149,7 @@ ui <- fluidPage(
       In future exercises we will distinguish between the 'All Knowing View' or 'Researcher View' of the world."),
     
     wellPanel(
-    awesomeRadio(inputId = 'world.1', 
+    radioButtons(inputId = 'world.1', 
                  label = "View:", 
                  choices = c('All Knowing', 
                              'Researcher'), 
@@ -207,7 +207,7 @@ ui <- fluidPage(
                      p("To learn more about how Z, Y(1), Y(0), Y and ITEs are related you can use the buttons below flip between the All Knowing and Researcher view for the 10 participants in a study on the causal effect of aerobic exercise program on VO2 max:")),
     
     wellPanel(
-        awesomeRadio(inputId = 'world2', 
+        radioButtons(inputId = 'world2', 
                      label = "View:", 
                      choices = c('All Knowing', 
                                  'Researcher'), 

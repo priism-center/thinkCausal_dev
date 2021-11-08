@@ -196,7 +196,7 @@ eda_page <- tabPanel(
             choices = NULL,
             selected = NULL
           ),
-          awesomeRadio(
+          radioButtons(
             inputId = "analysis_plot_overlap_type",
             label = "View:", 
             inline = TRUE, 
@@ -205,7 +205,7 @@ eda_page <- tabPanel(
             selected = 1
           ),
           br(),
-          awesomeRadio(
+          radioButtons(
             inputId = "analysis_plot_overlap_method",
             label = "Plot type:", 
             inline = TRUE, 

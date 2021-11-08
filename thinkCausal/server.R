@@ -306,13 +306,13 @@ shinyServer(function(input, output, session) {
     
     # create groupings: if 'add group' has not been clicked, show smart default grouping
     # if 'add group' is clicked, show last grouping results before clicking the button
-    if(length(group_list$data) == 0){
+    if (length(group_list$data) == 0) {
       drag_drop_groupings <- create_drag_drop_groups(
         .data = store$col_assignment_df,
         ns_prefix = 'analysis_data',
         n_dummy_groups = store$n_dummy_groups
       )
-    }else{
+    } else{
       drag_drop_groupings <- create_drag_drop_groups(
         .data = store$col_assignment_df,
         ns_prefix = 'analysis_data',
@@ -417,6 +417,7 @@ shinyServer(function(input, output, session) {
   })
   
   # only if there is no group name empty, clicking on the tab of verify will go to the verify page.
+  # TODO: rewrite without observe() b/c computationally taxing
   observe({
     if(input$analysis_data_tabs == 'Verify'){
       problematic_group_names <- c()
@@ -437,7 +438,6 @@ shinyServer(function(input, output, session) {
     }
   })
  
-  
   
   # verify data -------------------------------------------------------------
   
@@ -691,7 +691,7 @@ shinyServer(function(input, output, session) {
     # create JS datatable
     tab <- store$user_modified_df %>% 
       na.omit() %>% 
-      create_datatable(selection = "none")
+      create_datatable(selection = "none", pageLength = 10)
     
     return(tab)
   })
@@ -1508,10 +1508,10 @@ shinyServer(function(input, output, session) {
     # stop here if inputs aren't found
     # TODO
     # req(input$)
-    print('Dataframe going into bartC: \n')
-    print(store$selected_df)
-    print('Column types of dataframe going into bartC: \n')
-    print(store$selected_df  %>% summarize_all(class))
+    # print('Dataframe going into bartC: \n')
+    # print(store$selected_df)
+    # print('Column types of dataframe going into bartC: \n')
+    # print(store$selected_df  %>% summarize_all(class))
     
     # remove current model if it exists
     store$model_results <- NULL

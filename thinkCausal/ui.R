@@ -11,6 +11,7 @@ shinyUI(
         includeCSS("www/thinkCausal.css"),
         includeCSS("www/helpSlideOver.css"),
         includeCSS("www/slider.css"),
+        includeCSS("www/sortable.css"),
         
         # add help slideover
         help_slideover,

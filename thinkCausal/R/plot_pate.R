@@ -12,7 +12,7 @@
 #' @return ggplot object
 #' @export
 #'
-#' @import ggplot2 bartCause methods
+#' @import ggplot2 bartCause
 #' @examples
 #' data(lalonde, package = 'arm')
 #' confounders <- c('age', 'educ', 'black', 'hisp', 'married', 'nodegr')
@@ -24,24 +24,24 @@
 #'  commonSup.rule = 'none'
 #' )
 #' plot_PATE(model_results)
-plot_PATE <- function(.model, type = 'histogram', ci_80 = FALSE, ci_95 = FALSE, reference = NULL, .mean = FALSE, .median = FALSE){
+plot_PATE <- function(.model, type = c('histogram', 'density'), ci_80 = FALSE, ci_95 = FALSE, reference = NULL, .mean = FALSE, .median = FALSE){
   
   if (!is(.model, "bartcFit")) stop("Model must be of class bartcFit")
-  type <- tolower(type)
+  type <- tolower(type[1])
   if (type %notin% c('histogram', 'density')) stop("type must be 'histogram' or 'density'")
   
   # calculate stats
   pate <- bartCause::extract(.model)
-  pate <- as_tibble(pate)
-  ub <- quantile(pate$value, .9)
-  lb <- quantile(pate$value, .1)
-  ub.95 <- quantile(pate$value, .975)
-  lb.95 <- quantile(pate$value, .025)
-  dd <- density(pate$value)
-  dd <-  with(dd, data.frame(x, y))
+  pate <- as.data.frame(pate)
+  ub <- quantile(pate$pate, .9)
+  lb <- quantile(pate$pate, .1)
+  ub.95 <- quantile(pate$pate, .975)
+  lb.95 <- quantile(pate$pate, .025)
+  dd <- density(pate$pate)
+  dd <- with(dd, data.frame(x, y))
   
   # build base plot
-  p <- ggplot(pate, aes(value)) + 
+  p <- ggplot(pate, aes(pate)) + 
     scale_linetype_manual(values = c(2, 3)) + 
     theme(legend.title = element_blank()) + 
     labs(title = 'Posterior of Average Treatment Effect',
@@ -54,8 +54,8 @@ plot_PATE <- function(.model, type = 'histogram', ci_80 = FALSE, ci_95 = FALSE, 
       labs(y = 'Frequency')
     
     # add credible intervals
-    if (isTRUE(ci_95)) p <- p + geom_segment(x = lb, xend = ub, y = 0, yend = 0, size = 2, color = 'grey10')
-    if (isTRUE(ci_80)) p <- p + geom_segment(x = lb.95, xend = ub.95, y = 0, yend = 0, size = 1, color = 'grey30')
+    if (isTRUE(ci_95)) p <- p + geom_segment(x = lb, xend = ub, y = 0, yend = 0, size = 3, color = 'grey10')
+    if (isTRUE(ci_80)) p <- p + geom_segment(x = lb.95, xend = ub.95, y = 0, yend = 0, size = 1.5, color = 'grey25')
   }
   
   # density
@@ -80,8 +80,8 @@ plot_PATE <- function(.model, type = 'histogram', ci_80 = FALSE, ci_95 = FALSE, 
   }
   
   # add reference lines
-  if (isTRUE(.mean)) p <- p + geom_vline(data = pate, aes(xintercept = mean(value), linetype = 'mean'))
-  if (isTRUE(.median)) p <- p + geom_vline(data = pate, aes(xintercept = median(value), linetype = 'median'))
+  if (isTRUE(.mean)) p <- p + geom_vline(data = pate, aes(xintercept = mean(pate), linetype = 'mean'))
+  if (isTRUE(.median)) p <- p + geom_vline(data = pate, aes(xintercept = median(pate), linetype = 'median'))
   if (!is.null(reference)) p <- p + geom_vline(xintercept = reference)
   
   return(p)

@@ -3,7 +3,7 @@
 #' Fit single regression tree on bartc() icates to produce variable importance plot & conditional effects plots.
 #'
 #' @param .model a model produced by bartCause::bartc()
-#' @param confounders a character list of column names which should be considered the confounders. Must match the column names used to original fit .model.
+#' @param grouped_on a character list of column names which should be considered the confounders. Must match the column names used to original fit .model.
 #' @author George Perrett, Joe Marlo
 #' @return a list containing variable importance plot & plots for each conditional effect
 #' @export

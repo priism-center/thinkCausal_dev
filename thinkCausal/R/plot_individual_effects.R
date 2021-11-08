@@ -7,8 +7,9 @@
 #' @return a plot of ordered individual effects
 #' @export 
 
-plot_individual_effects <- function(.model, type = 'ordered'){
+plot_individual_effects <- function(.model, type = c('ordered', 'histogram')){
   if (!is(.model, "bartcFit")) stop(".model must be of class bartcFit")
+  type <- tolower(type[1])
 
   icate.m <- apply(bartCause::extract(.model, 'icate'), 2, mean)
   icate.sd <- apply(bartCause::extract(.model, 'icate'), 2, sd)

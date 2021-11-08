@@ -10,7 +10,7 @@ ui <- fluidPage(
     h2('All Confounders Measured'),
     h4('Choose an example: '),
     wellPanel(
-        awesomeRadio(
+        radioButtons(
             inputId = 'example',
             label = 'Options',
             choices = c('health', 'education', 'economics', 'exercise science'),
@@ -35,7 +35,7 @@ ui <- fluidPage(
       differs between the two designs"),
     
     wellPanel(
-        awesomeRadio(inputId = 'world.1', 
+        radioButtons(inputId = 'world.1', 
                      label = 'Study Design:', 
                      choices = c('Randomized', 'Observational')),
         
