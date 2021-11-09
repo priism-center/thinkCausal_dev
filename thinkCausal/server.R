@@ -333,8 +333,6 @@ shinyServer(function(input, output, session) {
     return(drag_drop_groupings$html)
   })
   
-  
-  
   # save the current grouping results and the number of group increases one when observe 'add a group' clicked
   observeEvent(input$analysis_data_add_group, {
     

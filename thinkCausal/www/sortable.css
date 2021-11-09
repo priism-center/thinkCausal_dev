@@ -1,8 +1,9 @@
-/*drag-and-drop items*/
-  .rank-list {
-    max-height: calc(45px * 7.5); 
-    overflow-x: auto;
-  }
+/*this controls the look of the drag-and-drop items created by sortable*/
+
+.rank-list {
+  max-height: calc(45px * 7.5); 
+  overflow-x: auto;
+}
 
 .rank-list-item {
   border: 0.2rem solid white !important;;
@@ -20,7 +21,7 @@
 
 .rank-list-item.sortable-selected, .rank-list-item.sortable-chosen {
   background-color: #5c5980 !important;
-    color: white !important;
+  color: white !important;
 }
 
 /* this makes the sortable bucket into a grid*/
