@@ -3,6 +3,27 @@ require(tidyr)
 require(tibble)
 require(ggplot2)
 
+
+# objects -----------------------------------------------------------------
+
+# read in randomization df
+randomization_df <- read_csv(
+  'data/randomization_df.csv',
+  col_types = cols(
+    Cholesterol_LDL = col_double(),
+    Cholesterol_HDL = col_double(),
+    Age = col_double(),
+    Genetic_disposition = col_double(),
+    Packs_per_day = col_double(),
+    Exercise_per_week = col_double(),
+    treat = col_double()
+  )
+) %>% as.data.frame()
+rownames(randomization_df) <- 1:nrow(randomization_df)
+
+
+# UI ----------------------------------------------------------------------
+
 randomizationUI <- function(id) {
   ns <- NS(id)
   tagList(
@@ -56,9 +77,10 @@ randomizationUI <- function(id) {
              )
 }
 
+# server ------------------------------------------------------------------
+
 randomizationServer <- function(id, plot_theme = ggplot2::theme_get) {
   ns <- NS(id)
-  
   moduleServer(
     id,
     function(input, output, session) {

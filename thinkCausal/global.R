@@ -13,7 +13,6 @@ library(DT) # for javascript datatables
 library(sortable) # for drag and drop divs
 
 # for data munging and plotting
-# library(tidyverse) # TODO: split this up to the individual packages
 library(dplyr)
 library(ggplot2)
 library(stringr)
@@ -33,25 +32,6 @@ options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size li
 
 # violet color
 violet_col <- "#5c5980"
-
-
-# # data and objects for the concepts modules -----------------------------
-
-# randomization module
-## read in randomization df
-randomization_df <- read_csv(
-  'data/randomization_df.csv',
-  col_types = cols(
-    Cholesterol_LDL = col_double(),
-    Cholesterol_HDL = col_double(),
-    Age = col_double(),
-    Genetic_disposition = col_double(),
-    Packs_per_day = col_double(),
-    Exercise_per_week = col_double(),
-    treat = col_double()
-  )
-) %>% as.data.frame()
-rownames(randomization_df) <- 1:nrow(randomization_df)
 
 
 # UI files (this should always be last) -----------------------------------

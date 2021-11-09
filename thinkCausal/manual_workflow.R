@@ -16,13 +16,18 @@ treatment_v <- X[, 1]
 response_v <- X[, 2]
 confounders_mat <- as.matrix(X[, 3:ncol(X)])
 
+# X <- read_csv('data/randomization_df.csv')
+# treatment_v <- X[, 'treat']
+# response_v <- X[, 'Cholesterol_LDL']
+# confounders_mat <- as.matrix(X[, setdiff(colnames(X), c('treat', 'Cholesterol_LDL'))])
+
 # run model    
 model_results <- bartCause::bartc(
   response = response_v,
   treatment = treatment_v,
   confounders = confounders_mat,
   estimand = 'ate',
-  commonSup.rule = 'none'
+  commonSup.rule = 'sd'
 )
 
 

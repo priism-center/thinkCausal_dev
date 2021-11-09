@@ -412,26 +412,28 @@ shinyServer(function(input, output, session) {
     
   })
   
-  observeEvent(input$group_name_continue, {
-    close_popup(session = session)
-  })
-  
   # only if there is no group name empty, clicking on the tab of verify will go to the verify page.
   # TODO: rewrite without observe() b/c computationally taxing
+  # TODO: this crashes when there is no dataset or when uploading a dataset with no potential groups
   observe({
     if(input$analysis_data_tabs == 'Verify'){
+      
       problematic_group_names <- c()
       for (i in 1:store$n_dummy_groups) {
         # clean the user input name
         name <- clean_names(input[[paste0("rename_group_", i)]])
+        
         # check if user input variable names are empty
-        if(name == "" | grepl("blank", name, ignore.case = TRUE)) {
-          problematic_group_names <- c(problematic_group_names, paste0('Group', i))}
+        if (name == "" | grepl("blank", name, ignore.case = TRUE)) {
+          problematic_group_names <- c(problematic_group_names, paste0('Group', i))
+        }
       }
+      
       # if there is no group name empty, go to the verify page
-      if(length(problematic_group_names) == 0){
+      if (length(problematic_group_names) == 0) {
         updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
-      }else{ # if there is group name empty, launch a warning and stay at the group page
+      } else{
+        # if there is group name empty, launch a warning and stay at the group page
         show_popup_group_name_warning(session, problematic_group_names)
         updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
       }
@@ -1665,11 +1667,12 @@ shinyServer(function(input, output, session) {
     show_message_updating(div_id)
     
     # create plot
+    # TODO: this is not in plotBart
     p <- plot_PATE(
       .model = store$model_results,
       type = input$plot_result_style,
-      ci_80 = sum(input$show_interval == .8) > 0,
-      ci_95 = sum(input$show_interval == .95) > 0,
+      ci_80 = sum(input$show_interval == 0.80) > 0,
+      ci_95 = sum(input$show_interval == 0.95) > 0,
       .mean = sum(input$central_tendency == 'Mean') > 0,
       .median = sum(input$central_tendency == 'Median') > 0,
       reference = reference_bar
@@ -1881,7 +1884,7 @@ shinyServer(function(input, output, session) {
     )
     
     # change point and font size
-    update_geom_defaults("point", list(size = input$settings_options_ggplotPointSize)) # is this a memory hog?
+    update_geom_defaults("point", list(size = input$settings_options_ggplotPointSize))
     theme_custom <- theme_custom(base_size = input$settings_options_ggplotTextSize)
     
     # change colors

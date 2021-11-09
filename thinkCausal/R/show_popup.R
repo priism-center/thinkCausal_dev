@@ -65,15 +65,9 @@ show_popup_group_name_warning <- function(session, group_name_check){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
     h3("Group names cannot be empty. Please rename the following group(s):"),
-    h5(toString(group_name_check)),
-    div(
-      class = 'backNextContainer',
-      style = "width:60%;display:inline-block;horizontal-align:center;",
-      actionButton(inputId = 'group_name_continue',
-                   label = 'Ok')
-    )
+    h5(toString(group_name_check))
   )
-  show_popup(session = session, content)
+  show_popup(session = session, content, close_button = shiny::modalButton("Close"))
 }
 
 

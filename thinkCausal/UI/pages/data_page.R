@@ -31,14 +31,14 @@ data_page <- tabPanel(
                                       label = "Data contains a header row", 
                                       value = TRUE),
                         br(),
-                        actionButton(inputId = 'analysis_data_button_columnAssignSave',
-                                     label = 'Save role assignments'),
-                        br(),br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',
                                     onclick = "openHelpPage('Dataloading')",
                                     'Help me'),
                         br(), br(),
+                        actionButton(inputId = 'analysis_data_button_columnAssignSave',
+                                     label = 'Save role assignments'),
+                        br(), 
                       ),
                       mainPanel(
                         br(),
@@ -59,6 +59,11 @@ data_page <- tabPanel(
                         actionButton(inputId = 'analysis_data_remove_group',
                                      label = 'Remove group'),
                         br(), br(),
+                        tags$button(type = 'button',
+                                    class = 'btn btn-default help',
+                                    onclick = "openHelpPage('Concept3')", # not sure where this is linked to
+                                    'Help me'),
+                        br(), br(),
                         div(
                           class = 'backNextContainer',
                           actionButton(inputId = "analysis_data_pivot_button_back",
@@ -67,11 +72,6 @@ data_page <- tabPanel(
                                        label = 'Save groupings')
                         ),
                         br(),
-                        tags$button(type = 'button',
-                                    class = 'btn btn-default help',
-                                    onclick = "openHelpPage('Concept3')", # not sure where this is linked to
-                                    'Help me'),
-                        br(),br(),
                         create_progress_bar(1/9*100)
                       ),
                       mainPanel(
@@ -91,19 +91,19 @@ data_page <- tabPanel(
                         actionButton(inputId = 'analysis_data_button_reset',
                                      label = 'Reset variable changes'),
                         br(), br(),
+                        tags$button(type = 'button',
+                                    class = 'btn btn-default help',
+                                    onclick = "openHelpPage('Concept3')",
+                                    'Help me'),
+                        br(), br(),
                         div(
                           class = 'backNextContainer',
                           actionButton(inputId = "analysis_data_select_button_back",
                                        label = "Back"),
                           actionButton(inputId = 'analysis_data_save',
                                        label = 'Save changes')
-                          ),
+                        ),
                         br(),
-                        tags$button(type = 'button',
-                                    class = 'btn btn-default help',
-                                    onclick = "openHelpPage('Concept3')",
-                                    'Help me'),
-                        br(),br(),
                         create_progress_bar(1/7*100)
                       ),
                       mainPanel(

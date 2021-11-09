@@ -93,10 +93,6 @@ eda_page <- tabPanel(
                 choices = c('None', 'Include'),
                 selected = 'None'
               ),
-              # bsPopover(id = 'analysis_eda_variable_regression',
-              #           title = "Linear regression",
-              #           content = 'Apply a linear regression (y ~ x) to each subgroup of your plot. If you facet on a variable, then the regressions will be calculated per each facet group.',
-              #           placement = 'top'),
             ), 
             conditionalPanel(
               condition = "input.analysis_eda_select_plot_type == 'Histogram'",
@@ -151,11 +147,10 @@ eda_page <- tabPanel(
           checkboxInput(inputId = "analysis_eda_check_jitter",
                         label = "Jitter the points?",
                         value = FALSE),
-          # actionButton(inputId = "analysis_eda_button_download",
-          #              label = "Download the plot"),
-          # br(),
           HTML('</details><br>'),
           br(),br(),
+          downloadButton('download_descriptive_plot', label = "Download plot"),
+          br(), br(),
           div(
             class = 'backNextContainer',
             actionButton(inputId = "analysis_plots_descriptive_button_back",
@@ -164,8 +159,6 @@ eda_page <- tabPanel(
                          label = "Next")
           ), 
           br(),
-          downloadButton('download_descriptive_plot', label = "Download plot"),
-          br(), br(),
           create_progress_bar(3/8*100)
         ),
         
@@ -218,6 +211,8 @@ eda_page <- tabPanel(
                       onclick = "openHelpPage('Concept3')",
                       'What is this plot telling me?'),
           br(),br(),
+          downloadButton('download_overlap_plot', label = "Download plot"),
+          br(), br(),
           div(
             class = 'backNextContainer',
             actionButton(inputId = "analysis_plots_support_button_back",
@@ -226,8 +221,6 @@ eda_page <- tabPanel(
                          label = "Next")
           ),
           br(),
-          downloadButton('download_overlap_plot', label = "Download plot"),
-          br(), br(),
           create_progress_bar(3/7*100)
         ),
         mainPanel(
@@ -258,6 +251,8 @@ tabPanel(title = "Balance Plots",
                          onclick = "openHelpPage('Concept3')",
                          'What is this plot telling me?'),
              br(),br(),
+             downloadButton('download_balance_plot', label = "Download plot"),
+             br(), br(),
              div(
                class = 'backNextContainer',
                actionButton(inputId = "analysis_plots_balance_button_back",
@@ -266,9 +261,6 @@ tabPanel(title = "Balance Plots",
                             label = "Next")
              ),
              br(),
-             downloadButton('download_balance_plot', label = "Download plot"),
-             # TODO: add advanced option to remove scale
-             br(), br(),
              create_progress_bar(4/7*100),
 
            ),
