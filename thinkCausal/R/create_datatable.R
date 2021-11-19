@@ -4,7 +4,7 @@
 #'
 #' @param .data a dataframe
 #' @param digits number of digits to round continuous columns to
-#' @param ... arguments to be passed to DT::datatable. Typically a dataframe
+#' @param ... arguments to be passed to DT::datatable options
 #' @author Joe Marlo
 #'
 #' @return HTML datatable

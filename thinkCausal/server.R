@@ -413,30 +413,30 @@ shinyServer(function(input, output, session) {
   # only if there is no group name empty, clicking on the tab of verify will go to the verify page.
   # TODO: rewrite without observe() b/c computationally taxing
   # TODO: this crashes when there is no dataset or when uploading a dataset with no potential groups
-  observe({
-    if(input$analysis_data_tabs == 'Verify'){
-      
-      problematic_group_names <- c()
-      for (i in 1:store$n_dummy_groups) {
-        # clean the user input name
-        name <- clean_names(input[[paste0("rename_group_", i)]])
-        
-        # check if user input variable names are empty
-        if (name == "" | grepl("blank", name, ignore.case = TRUE)) {
-          problematic_group_names <- c(problematic_group_names, paste0('Group', i))
-        }
-      }
-      
-      # if there is no group name empty, go to the verify page
-      if (length(problematic_group_names) == 0) {
-        updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
-      } else{
-        # if there is group name empty, launch a warning and stay at the group page
-        show_popup_group_name_warning(session, problematic_group_names)
-        updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
-      }
-    }
-  })
+  # observe({
+  #   if(input$analysis_data_tabs == 'Verify'){
+  #     
+  #     problematic_group_names <- c()
+  #     for (i in 1:store$n_dummy_groups) {
+  #       # clean the user input name
+  #       name <- clean_names(input[[paste0("rename_group_", i)]])
+  #       
+  #       # check if user input variable names are empty
+  #       if (name == "" | grepl("blank", name, ignore.case = TRUE)) {
+  #         problematic_group_names <- c(problematic_group_names, paste0('Group', i))
+  #       }
+  #     }
+  #     
+  #     # if there is no group name empty, go to the verify page
+  #     if (length(problematic_group_names) == 0) {
+  #       updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
+  #     } else{
+  #       # if there is group name empty, launch a warning and stay at the group page
+  #       show_popup_group_name_warning(session, problematic_group_names)
+  #       updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
+  #     }
+  #   }
+  # })
  
   
   # verify data -------------------------------------------------------------

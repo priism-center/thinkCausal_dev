@@ -30,6 +30,35 @@ model_results <- bartCause::bartc(
   commonSup.rule = 'sd'
 )
 
+# bartc_tidy <- function(.data, formula, ...){
+# 
+#   variables <- all.vars(form)
+#   .data <- .data[, variables]
+#   y <- deparse(form[[2]])
+#   z <- all.vars(form[[3]])[1]
+#   x <- all.vars(form[[3]])[-1]
+# 
+#   # create response, treatment, covariates from formula
+#   response_v <- .data[[y]]
+#   treatment_v <- .data[[z]]
+#   confounders_mat <- as.matrix(.data[, x])
+# 
+#   # fit model
+#   model_results <- bartCause::bartc(
+#     response = response_v,
+#     treatment = treatment_v,
+#     confounders = confounders_mat,
+#     ...
+#   )
+# 
+#   return(model_results)
+# }
+# 
+# X %>%
+#   bartc_tidy(re78 ~ treat + age + educ,
+#              estimand = 'ate',
+#              commonSup.rule = 'sd')
+
 
 # functions to test -------------------------------------------------------
 
