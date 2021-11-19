@@ -101,7 +101,7 @@ plot_exploration <- function(.data,
                               fill = if(is.null(.fill)) NULL else sym(.fill),
                               color = if(is.null(.color)) NULL else sym(.color),
                               size = if(is.null(.size)) NULL else sym(.size),
-                              shape = if(is.null(.shape)) NULL else sym(.shape),
+                              shape = if(is.null(.shape)) NULL else sym(.shape)
         ), alpha = .alpha)
     }
     
@@ -155,6 +155,6 @@ plot_exploration <- function(.data,
                           labeller = label_both)
     }
   }
-  
+
   return(p)
 }

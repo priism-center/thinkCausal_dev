@@ -375,16 +375,18 @@ shinyServer(function(input, output, session) {
     req(store$col_assignment_df)
     store$categorical_df <- store$col_assignment_df
     problematic_group_names <- c()
+    groups <- list()
     
     for (i in 1:store$n_dummy_groups) {
       # find the column indexes of dummy variables in the same group 
       input_id <- paste0("analysis_data_categorical_group_", i)
-      cleaned_tmp <- clean_dummies_to_categorical(i, store$categorical_df, input[[input_id]], input[[paste0("rename_group_", i)]], problematic_group_names)
+      cleaned_tmp <- clean_dummies_to_categorical_internal(i, store$categorical_df, input[[input_id]], input[[paste0("rename_group_", i)]], problematic_group_names)
       store$categorical_df <- cleaned_tmp[[2]]
       problematic_group_names <- cleaned_tmp[[1]]
       # save for reproducible script
-      group_list <- cleaned_tmp[[3]]
+      groups <- c(groups, cleaned_tmp[[3]])
     }
+    group_list$data <- groups
     
     # launch warning message:  
     # if there are empty variable names, click ok will stay at the page
@@ -410,6 +412,14 @@ shinyServer(function(input, output, session) {
     
   })
   
+  # once new data is uploaded, grouped result is cleared, and the number of groups changes to either the number of smart defaul groups or 1
+  observeEvent(uploaded_df(), {
+    group_list$data <- c()
+    auto_groups <- clean_detect_dummy_cols_unique(store$col_assignment_df)
+    store$n_dummy_groups <- max(length(auto_groups), 1)
+  })
+  
+
   # only if there is no group name empty, clicking on the tab of verify will go to the verify page.
   # TODO: rewrite without observe() b/c computationally taxing
   # TODO: this crashes when there is no dataset or when uploading a dataset with no potential groups
@@ -1706,7 +1716,8 @@ shinyServer(function(input, output, session) {
     column_names <- colnames(store$user_modified_df)
     
     # TODO: add data type changes
-    change_data_type <- group_list
+    change_data_type <- group_list$data
+    
     # model
     estimand <- base::tolower(input$analysis_model_radio_estimand)
     common_support <- input$analysis_model_radio_support
@@ -1719,6 +1730,7 @@ shinyServer(function(input, output, session) {
       uploaded_file_delim = uploaded_file_delim,
       selected_columns = selected_columns,
       column_names = column_names,
+      change_data_type = change_data_type,
       estimand = estimand,
       common_support = common_support
     )
@@ -1745,6 +1757,13 @@ shinyServer(function(input, output, session) {
                  functionFile)
       close(functionFile)
       files <- "clean_auto_convert_logicals.R"
+      
+      # create file containing the clean_dummies_to_categorical function
+      functionFile <- file("clean_dummies_to_categorical.R")
+      writeLines(attributes(attributes(clean_dummies_to_categorical)$srcref)$srcfile$lines,
+                 functionFile)
+      close(functionFile)
+      files <- c("clean_dummies_to_categorical.R", files)
       
       # create the script file
       fileConn <- file("thinkCausal_script.R")
