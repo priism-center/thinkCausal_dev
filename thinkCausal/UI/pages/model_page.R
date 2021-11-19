@@ -2,42 +2,7 @@ model_page <- tabPanel(
   title = 'Model',
   fluidRow(
     column(6,
-           h4('1. Specify variables'),
-           wellPanel(
-             textInput('treatment_name', 
-                       label = 'What is the name of the treatment or intervention?', 
-                       placeholder = 'treatment'),
-             textInput('treatment_name', 
-                       label = 'What are the units of your outcome variable?',
-                       placeholder = 'units'))
-    ),
-    column(6,
-           h4('2. Specify design'), 
-           wellPanel(
-             selectInput('anaylsis_design', 
-                         label = 'Indicate the study design', 
-                         choices = c("", 
-                                     "Unsure", 
-                                     'Observational', 
-                                     'Randomized treatment', 
-                                     'Block randomized treatment', 
-                                     'Natural experiment')), 
-             conditionalPanel(condition = "input.anaylsis_design == 'Observational'", 
-                              selectInput('analysis_include_sens', 
-                                          label = 'Include sensitivity analysis', 
-                                          choices = c('Yes', 'No'))
-             ),
-             conditionalPanel(condition = "input.anaylsis_design == 'Block randomized treatment'", 
-                              selectInput('analysis_blocking_variable',
-                                          label = 'Select blocking variable',
-                                          choices = NULL)
-             )
-           )
-    ),
-  ),
-  fluidRow(
-    column(6,
-           h4('3. Specify model'),
+           h4('1. Specify model'),
            wellPanel(
              selectInput('analysis_model_estimand', 
                          label = 'Select causal estimand', 
@@ -59,7 +24,7 @@ model_page <- tabPanel(
            )
     ), 
     column(6, 
-           h4('4. Specify subgroup analyses'),
+           h4('2. Specify secoundary analyses'),
            wellPanel(
              selectInput('analysis_model_moderator_yes_no', 
                          label = 'Would you like to pre-specify subgroup analyses?', 
@@ -74,7 +39,7 @@ model_page <- tabPanel(
   ),
   fluidRow(
     column(6, 
-           h4('5. Fit model'),
+           h4('3. Fit model'),
            wellPanel(
              actionButton(inputId = "analysis_model_button_next",
                           label = "Fit model"),

@@ -6,6 +6,14 @@ shinyServer(function(input, output, session) {
   
   
   # back next buttons -------------------------------------------------------
+  # design page 
+  observeEvent(input$analysis_data_select_button_back, {
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
+  })
+  observeEvent(input$analysis_design_button_next, {
+    updateNavbarPage(session, inputId = "nav", selected = "Data")
+    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
+  })
   
   # data page
   observeEvent(input$analysis_data_select_button_back, {
