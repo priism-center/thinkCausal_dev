@@ -52,10 +52,11 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   
   # add data type changes
   script <- c()
+  options(useFancyQuotes = FALSE)
   for (i in 1:length(change_data_type)) {
     tmp <- paste0(
       "# find the indexes of dummy variables of the same group", "\n",
-       gsub(" ",'', change_data_type[[i]][1]), ' <- c(', gsub("\\b", '"', paste0(change_data_type[[i]][-1], collapse = ', '), perl=T), ')','\n',
+       gsub(" ",'', change_data_type[[i]][1]), ' <- c(', sapply(strsplit(paste0(change_data_type[[i]][-1], collapse = ', '), '[, ]+'), function(x) toString(dQuote(x))),  ')','\n',
        "X <- clean_dummies_to_categorical(X, ", gsub(" ",'', change_data_type[[i]][1]), ")", "\n")
     script <- c(script, tmp)
   }
