@@ -46,7 +46,6 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "# select columns and rename", "\n",
   "X <- ", file_readr, "\n",
   "X <- X[, ", selected_columns, "]", "\n",
-  "colnames(X) <- ", column_names, "\n",
   "X <- clean_auto_convert_logicals(X)",
   "\n\n"
   )
@@ -61,6 +60,8 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
     script <- c(script, tmp)
   }
   script_data_type <- paste0(script, collapse = "\n")
+  
+  script_rename <- paste0("colnames(X) <- ", column_names, "\n\n")
   
   script_model <- paste0(
   "# run model", "\n",
@@ -86,7 +87,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   )
   
   # combine into one string
-  script <- paste0(script_head, script_data_munge, script_data_type, script_model, script_plots)
+  script <- paste0(script_head, script_data_munge, script_data_type, script_rename, script_model, script_plots)
   
   return(script)
 }
