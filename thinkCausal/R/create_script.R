@@ -37,7 +37,8 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "library(tidyverse)", "\n",
   "library(bartCause)", "\n",
   "library(plotBart) #devtools::install_github('joemarlo/plotBart')", "\n",
-  "source('clean_auto_convert_logicals.R')",
+  "source('clean_auto_convert_logicals.R')", "\n",
+  "source('clean_dummies_to_categorical.R')",
   "\n\n"
   )
   
@@ -55,14 +56,8 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   for (i in 1:length(change_data_type)) {
     tmp <- paste0(
       "# find the indexes of dummy variables of the same group", "\n",
-      change_data_type[[i]][1], ' <- c(', paste0(change_data_type[[i]][-1], collapse = ', '), ')','\n',
-      "idx <- which(colnames(X) %in% ", change_data_type[[i]][1], ')', '\n',
-      "tmp <- X[,idx]", "\n",
-      "categorical <- apply(tmp, 1, function(x) ifelse(sum(x, na.rm = T) == 0, 'REFERENCE', colnames(tmp)[which(x == TRUE)]))", "\n",
-      "# remove the multiple dummies from the dataset", "\n",
-      "X <- X[,-idx]", "\n",
-      "# add the new categorical variable into the dataset", "\n",
-      "X <- cbind(X, categorical)", "\n")
+       gsub(" ",'', change_data_type[[i]][1]), ' <- c(', gsub("\\b", '"', paste0(change_data_type[[i]][-1], collapse = ', '), perl=T), ')','\n',
+       "X <- clean_dummies_to_categorical(X, ", gsub(" ",'', change_data_type[[i]][1]), ")", "\n")
     script <- c(script, tmp)
   }
   script_data_type <- paste0(script, collapse = "\n")
@@ -91,7 +86,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   )
   
   # combine into one string
-  script <- paste0(script_head, script_data_munge, script_model, script_plots)
+  script <- paste0(script_head, script_data_munge, script_data_type, script_model, script_plots)
   
   return(script)
 }
