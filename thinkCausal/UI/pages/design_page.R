@@ -7,9 +7,18 @@ design_page <- tabPanel(
            textInput('treatment_name', 
                      label = 'What is the name of the treatment or intervention?', 
                      placeholder = 'treatment'),
-           textInput('treatment_name', 
+           textInput('treatment_units', 
                      label = 'What are the units of your outcome variable?',
-                     placeholder = 'units'))
+                     placeholder = 'units'), 
+           textInput('treatment_participants', 
+                     label = 'Describe the population or participants of this study',
+                     placeholder = 'participants'), 
+           h5('Example:'), 
+           textOutput("analysis_design_text.1"), 
+            br(), 
+            textOutput("analysis_design_text.2") 
+           
+           )
   ),
   column(6,
          h4('2. Specify design'), 

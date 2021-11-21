@@ -94,6 +94,66 @@ shinyServer(function(input, output, session) {
     updateNavbarPage(session, inputId = "nav", selected = "Reproduce")
   })
   
+
+  # design text  ------------------------------------------------------------
+
+  output$analysis_design_text.1 <- renderText({
+    if(input$treatment_name == ""){
+      block1 <- 'The treatment led to an increase of X'
+    }
+    else{
+      block1 <- paste('The', input$treatment_name, 'led to an increase of X')
+    }
+    
+    if(input$treatment_units == ""){
+      block2 <- 'units for'
+    }
+    
+    else{
+      block2 <- paste(input$treatment_units, "for")
+    }
+    
+    if(input$treatment_participants == ""){
+      block3 <- 'participants in this study.'
+    }
+    
+    else{
+      block3 <- paste(input$treatment_participants, 'in this study.')
+    }
+    
+    paste(block1, block2, block3)
+  }) 
+  
+  
+  output$analysis_design_text.2 <- renderText({
+    if(input$treatment_name == ""){
+      block1 <- 'The treatment led to a decrease of X'
+    }
+    else{
+      block1 <- paste('The', input$treatment_name, 'led to an decrease of X')
+    }
+    
+    if(input$treatment_units == ""){
+      block2 <- 'units for'
+    }
+    
+    else{
+      block2 <- paste(input$treatment_units, "for")
+    }
+    
+    if(input$treatment_participants == ""){
+      block3 <- 'participants in this study.'
+    }
+    
+    else{
+      block3 <- paste(input$treatment_participants, 'in this study.')
+    }
+    
+    paste(block1, block2, block3)
+  }) 
+  
+  
+ 
   
   # upload data -------------------------------------------------------------
   
