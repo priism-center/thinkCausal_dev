@@ -11,7 +11,7 @@ design_page <- tabPanel(
                      label = 'What are the units of your outcome variable?',
                      placeholder = 'units'), 
            textInput('treatment_participants', 
-                     label = 'Describe the population or participants of this study',
+                     label = 'Describe the participants in this study',
                      placeholder = 'participants'), 
            h5('Example:'), 
            textOutput("analysis_design_text.1"), 
@@ -23,7 +23,7 @@ design_page <- tabPanel(
   column(6,
          h4('2. Specify design'), 
          wellPanel(
-           selectInput('anaylsis_design', 
+           selectInput(inputId = 'anaylsis_design', 
                        label = 'Indicate the study design', 
                        choices = c("", 
                                    "Unsure", 

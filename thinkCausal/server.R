@@ -16,6 +16,9 @@ shinyServer(function(input, output, session) {
   })
   
   # data page
+  observeEvent(input$analysis_data_button_back, {
+    updateNavbarPage(session, inputId = "nav", selected = "Design")
+  })
   observeEvent(input$analysis_data_select_button_back, {
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
   })
@@ -164,7 +167,7 @@ shinyServer(function(input, output, session) {
     # TODO: add parsing failures to log
     
     req(input$analysis_data_upload)
-    
+
     # extract the filepath and the filetype
     filepath <- input$analysis_data_upload$datapath
     filetype <- tools::file_ext(filepath)
@@ -261,10 +264,12 @@ shinyServer(function(input, output, session) {
     
     # stop here if data hasn't been uploaded
     validate_data_uploaded(store)
+
     
     # render the drag-drop UI
     drag_drop_html <- create_drag_drop_roles(.data = store$uploaded_df, 
-                                             ns_prefix = 'analysis_data')
+                                             ns_prefix = 'analysis_data',
+                                             design = input$anaylsis_design)
     
     return(drag_drop_html)
   })

@@ -36,8 +36,13 @@ data_page <- tabPanel(
                                     onclick = "openHelpPage('Dataloading')",
                                     'Help me'),
                         br(), br(),
-                        actionButton(inputId = 'analysis_data_button_columnAssignSave',
-                                     label = 'Save role assignments'),
+                        div(
+                          class = 'backNextContainer',
+                          actionButton(inputId = "analysis_data_button_back",
+                                       label = "Back"),
+                          actionButton(inputId = 'analysis_data_button_columnAssignSave',
+                                       label = 'Save role assignments')
+                        ), 
                         br(), 
                       ),
                       mainPanel(

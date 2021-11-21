@@ -1,43 +1,86 @@
-create_drag_drop_roles <- function(.data, ns_prefix){
-  
+create_drag_drop_roles <- function(.data, ns_prefix, design){
   if (!inherits(.data, 'data.frame')) stop('.data must be a dataframe')
   
   # infer which columns are Z, Y, and X columns (i.e. smart defaults)
   auto_columns <- clean_detect_ZYX_columns(.data)
   
-  # render the UI
-  drag_drop_html <- tagList(
-    bucket_list(
-      header = "Drag the variables to their respective roles",
-      group_name = paste0(ns_prefix, "_dragdrop"),
-      orientation = "horizontal",
-      class = 'default-sortable sortable-wide',
-      add_rank_list(
-        input_id = paste0(ns_prefix, "_dragdrop_covariates"),
-        text = strong("Covariates"),
-        labels = auto_columns$X,
-        options = sortable_options(multiDrag = TRUE)
-      ),
-      add_rank_list(
-        input_id = paste0(ns_prefix, "_dragdrop_treatment"),
-        text = strong("Treatment"),
-        labels = auto_columns$Z,
-        options = sortable_options(multiDrag = TRUE)
-      ),
-      add_rank_list(
-        input_id = paste0(ns_prefix, "_dragdrop_response"),
-        text = strong("Response"),
-        labels = auto_columns$Y,
-        options = sortable_options(multiDrag = TRUE)
-      ),
-      add_rank_list(
-        input_id = paste0(ns_prefix, "_dragdrop_delete"),
-        text = strong("Exclude these variables"),
-        labels = auto_columns$ID,
-        options = sortable_options(multiDrag = TRUE)
+  # render the UI for non-blcoked designs
+  if(design != 'Block randomized treatment'){
+    drag_drop_html <- tagList(
+      bucket_list(
+        header = "Drag the variables to their respective roles",
+        group_name = paste0(ns_prefix, "_dragdrop"),
+        orientation = "horizontal",
+        class = 'default-sortable sortable-wide',
+        add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_covariates"),
+          text = strong("Covariates"),
+          labels = auto_columns$X,
+          options = sortable_options(multiDrag = TRUE)
+        ),
+        add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_treatment"),
+          text = strong("Treatment"),
+          labels = auto_columns$Z,
+          options = sortable_options(multiDrag = TRUE)
+        ),
+        add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_response"),
+          text = strong("Response"),
+          labels = auto_columns$Y,
+          options = sortable_options(multiDrag = TRUE)
+        ),
+        add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_delete"),
+          text = strong("Exclude these variables"),
+          labels = auto_columns$ID,
+          options = sortable_options(multiDrag = TRUE)
+        )
       )
     )
-  )
+  }
+  
+  else{
+    drag_drop_html <- tagList(
+      bucket_list(
+        header = "Drag the variables to their respective roles",
+        group_name = paste0(ns_prefix, "_dragdrop"),
+        orientation = "horizontal",
+        class = 'default-sortable sortable-wide',
+        add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_covariates"),
+          text = strong("Covariates"),
+          labels = auto_columns$X,
+          options = sortable_options(multiDrag = TRUE)
+        ),
+        add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_covariates"),
+          text = strong("Blocking Variable(s)"),
+          labels = NULL,
+          options = sortable_options(multiDrag = TRUE)
+        ),
+        add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_treatment"),
+          text = strong("Treatment"),
+          labels = auto_columns$Z,
+          options = sortable_options(multiDrag = TRUE)
+        ),
+        add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_response"),
+          text = strong("Response"),
+          labels = auto_columns$Y,
+          options = sortable_options(multiDrag = TRUE)
+        ),
+        add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_delete"),
+          text = strong("Exclude these variables"),
+          labels = auto_columns$ID,
+          options = sortable_options(multiDrag = TRUE)
+        )
+      )
+    )
+  }
+ 
   
   return(drag_drop_html)
 }
