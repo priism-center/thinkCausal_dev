@@ -282,7 +282,13 @@ shinyServer(function(input, output, session) {
     # get user inputs
     cols_z <- input$analysis_data_dragdrop_treatment
     cols_y <- input$analysis_data_dragdrop_response 
-    cols_x <- input$analysis_data_dragdrop_covariates
+    if(input$anaylsis_design == 'Block randomized treatment'){
+      cols_x <- c(input$analysis_data_dragdrop_block, input$analysis_data_dragdrop_covariates)
+    }
+    else{
+      cols_x <- input$analysis_data_dragdrop_covariates
+    }
+    
     all_cols <- unlist(c(cols_z, cols_y, cols_x))
 
     # are there duplicate selections?
@@ -1638,13 +1644,11 @@ shinyServer(function(input, output, session) {
     
     # run model    
     store$model_results <- tryCatch({
-      bartCause::bartc(
-        response = response_v,
-        treatment = treatment_v,
-        confounders = confounders_mat,
-        estimand = base::tolower(input$analysis_model_estimand),
-        commonSup.rule = common_support_rule
-      )
+      fit_bart(.data = store$selected_df, 
+               support = common_support_rule, 
+               ran.eff = input$analysis_random_intercept, 
+               .estimand = base::tolower(input$analysis_model_estimand))
+      
     },
     # warning = function(w) NULL,
     error = function(e) NULL
