@@ -280,8 +280,8 @@ shinyServer(function(input, output, session) {
     req(store$uploaded_df)
     
     # get user inputs
-    cols_z <- input$analysis_data_dragdrop_treatment
     cols_y <- input$analysis_data_dragdrop_response 
+    cols_z <- input$analysis_data_dragdrop_treatment
     if(input$anaylsis_design == 'Block randomized treatment'){
       cols_x <- c(input$analysis_data_dragdrop_block, input$analysis_data_dragdrop_covariates)
     }
@@ -1868,37 +1868,33 @@ shinyServer(function(input, output, session) {
   
   ## ICATE plots
   # histogram of icates
-  output$histogram_icate <- renderPlot({
+  output$icate <- renderPlot({
     
     # stop here if model isn't fit yet
     validate_model_fit(store)
+    if(input$icate_type == 'histogram'){
+      p <- plot_ICATE(store$model_results)
+      
+      # add theme
+      p <- p + theme_custom()
+    }
     
-    # TODO: this is not in plotBart
-    p <- plot_individual_effects(store$model_results, type = input$icate_type)
+    if(input$icate_type == 'ordered'){
+      p <- plot_waterfall(store$model_results)
+      
+      # add theme
+      p <- p + theme_custom()
+    }
     
-    # add theme
-    p <- p + theme_custom()
-    
+    if(input$icate_type == 'tree'){
+      p <- plot_moderator_search(store$model_results)
+      
+      # add theme
+      p <- p + theme_custom()
+    }
     return(p)
   })
   
-  
-  # single decision tree on icates
-  output$analysis_moderator_single_tree <- renderPlot({
-    
-    # stop here if model isn't fit yet
-    validate_model_fit(store)
-    
-    conf <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
-    colnames(conf) <- str_sub(colnames(conf, 3))
-    
-    # TODO: this is not in plotBart
-    p <- plot_single_tree(store$model_results,
-                          confounders = conf,
-                          depth = input$set_tree_depth)
-    
-    return(p)
-  })
   
   # plot the moderators
   output$analysis_moderators_explore_plot <- renderPlot({

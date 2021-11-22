@@ -11,7 +11,10 @@ moderator_page <- tabPanel(
           br(),
           radioButtons(inputId = "icate_type",
                        label = 'Plot type:',
-                       choices = list("Ordered ICATE" = 'ordered', "Histogram of ICATE" = 'histogram')),
+                       choices = list(
+                         "Ordered ICATEs" = 'ordered', 
+                         "Histogram of ICATEs" = 'histogram', 
+                         "Regression Tree on ICATEs" = "tree")),
           br(), br(), 
           tags$button(type = 'button',
                       class = 'btn btn-default help',
@@ -26,41 +29,10 @@ moderator_page <- tabPanel(
           ),
         mainPanel(
           br(),
-          plotOutput(outputId = "histogram_icate",
+          plotOutput(outputId = "icate",
                      height = 500)
         )
     )),
-    tabPanel(title = 'ICATE Regression Tree',
-             sidebarLayout(
-               sidebarPanel(
-                 h5("Variable importance interpretation"),
-                 p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-                 br(),
-
-                 radioButtons(inputId = 'set_tree_depth',
-                              label = 'Tree depth:',
-                              choices = list('1' = 1, '2' = 2, '3' = 3),
-                              inline = TRUE,
-                              selected = '2'), 
-                 br(), br(),
-                 tags$button(type = 'button',
-                             class = 'btn btn-default help',
-                             onclick = "openHelpPage('Concept3')",
-                             'What is this plot telling me?'),
-                 br(),br(),
-                 div(class = 'backNextContainer',
-                     actionButton(inputId = 'analysis_moderator_tree_button_back', 
-                                  label = 'Back'),
-                     actionButton(inputId = 'analysis_moderator_tree_button_next',
-                                  label = 'Next'))
-               ),
-               mainPanel(
-                 br(),
-                 plotOutput(outputId = "analysis_moderator_single_tree",
-                            height = 500)
-
-               )
-             )),
     tabPanel(
       title = 'Subgroup Analyses',
       sidebarLayout(
