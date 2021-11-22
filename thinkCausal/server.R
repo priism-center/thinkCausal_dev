@@ -1635,10 +1635,10 @@ shinyServer(function(input, output, session) {
     
     
     # pull the response, treatment, and confounders variables out of the df
-    treatment_v <- store$selected_df[, 1]
-    response_v <- store$selected_df[, 2]
-    confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
-    colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
+    # treatment_v <- store$selected_df[, 1]
+    # response_v <- store$selected_df[, 2]
+    # confounders_mat <- as.matrix(store$selected_df[, 3:ncol(store$selected_df)])
+    # colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
     common_support_rule <- input$analysis_over_ride_common_support
     if (input$analysis_model_support == 'No') common_support_rule <- 'none'
     

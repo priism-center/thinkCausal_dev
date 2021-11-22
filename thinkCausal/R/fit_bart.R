@@ -12,8 +12,8 @@ fit_bart <- function(.data, support, ran.eff, .estimand){
   
   else{
     bartCause::bartc(
-      response = .data[, 2], 
-      treatment = .data[, 1], 
+      response = .data[[2]], 
+      treatment = .data[[1]], 
       confounders = clean_confounders_for_bart(.data[, 3:length(.data)]), 
       estimand = .estimand, 
       group.by = ran.eff, 
