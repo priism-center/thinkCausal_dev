@@ -1736,10 +1736,9 @@ shinyServer(function(input, output, session) {
     
     # extract estimates and format
     tab <- summary(store$model_results)$estimates %>% 
-      t() %>%
       as.data.frame() %>% 
       mutate(rownames = rownames(.)) %>% 
-      select(' ' = rownames, 1) %>%
+      select(' ' = rownames, 1:4) %>%
       rename_all(toupper) %>% 
       create_datatable(paging = FALSE, info = FALSE, selection = "none")
     
