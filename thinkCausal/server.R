@@ -463,32 +463,28 @@ shinyServer(function(input, output, session) {
     # only if there are grouped variables, proceed to convert dummies to categorical; otherwise, not update the dataframe
     if(length(group_list$data) > 0){
       
-    for (i in 1:store$n_dummy_groups) {
-      # find the column indexes of dummy variables in the same group 
-      input_id <- paste0("analysis_data_categorical_group_", i)
-      cleaned_tmp <- clean_dummies_to_categorical_internal(i, store$categorical_df, input[[input_id]], input[[paste0("rename_group_", i)]], problematic_group_names)
-      store$categorical_df <- cleaned_tmp[[2]]
-      problematic_group_names <- cleaned_tmp[[1]]
-    }
-    
-    
-    if(length(group_list$data) > 0){
-      group_list$data <- groups
-    }
-    
-    # launch warning message:  
-    # if there are empty variable names, click ok will stay at the page
-    if(length(problematic_group_names) != 0){
-      show_popup_group_name_warning(session, problematic_group_names)
-    }
-    
-    # add to log
-    log_event <- 'Assigned dummy coded variables to groups: \n'
-    for (i in 1:store$n_dummy_groups){
-      input_id <- paste0("analysis_data_categorical_group_", i)
-      log_event <- paste0(log_event, '\tgroup', i, ': ', paste0(input[[input_id]], collapse = '; '), '\n')
-    }
-    store$log <- append(store$log, log_event)
+      for (i in 1:store$n_dummy_groups) {
+        # find the column indexes of dummy variables in the same group 
+        input_id <- paste0("analysis_data_categorical_group_", i)
+        cleaned_tmp <- clean_dummies_to_categorical_internal(i, store$categorical_df, input[[input_id]], input[[paste0("rename_group_", i)]], problematic_group_names)
+        store$categorical_df <- cleaned_tmp[[2]]
+        problematic_group_names <- cleaned_tmp[[1]]
+      }
+      
+      # launch warning message:  
+      # if there are empty variable names, click ok will stay at the page
+      if(length(problematic_group_names) != 0){
+        show_popup_group_name_warning(session, problematic_group_names)
+      }
+      
+      # add to log
+      log_event <- 'Assigned dummy coded variables to groups: \n'
+      for (i in 1:store$n_dummy_groups){
+        input_id <- paste0("analysis_data_categorical_group_", i)
+        log_event <- paste0(log_event, '\tgroup', i, ': ', paste0(input[[input_id]], collapse = '; '), '\n')
+      }
+      store$log <- append(store$log, log_event)
+      
     }
     # if no variable names are empty, by clicking Save Grouping, move to next page
     if(length(problematic_group_names) == 0){
