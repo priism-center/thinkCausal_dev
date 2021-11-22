@@ -2,7 +2,7 @@ clean_confounders_for_bart <- function(df){
   character_vars <- names(which(sapply(df, is.character)))
   factor_vars <- names(which(sapply(df, is.factor)))
   
-  if(length(factor_vars) >0 | length(factor_vars) ){
+  if(length(factor_vars) >0 | length(character_vars) > 0 ){
   x <- dplyr::select(df, c(all_of(factor_vars), all_of(character_vars)))
   y <- dplyr::select(df, -c(all_of(factor_vars), all_of(character_vars)))
   dummy_vec <- function(x){
