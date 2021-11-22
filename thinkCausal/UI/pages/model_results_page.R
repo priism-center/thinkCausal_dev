@@ -3,7 +3,7 @@ results_page <- tabPanel(
   tabPanel("Model Results", 
            sidebarLayout(
              sidebarPanel(
-               
+               h4("Results"),
                h5("Results interpretation:"),
                radioButtons(inputId = 'interpretation', 
                            label = NULL,

@@ -1,0 +1,23 @@
+/* controls the information icon tooltips */
+.infoToolTip .infoToolTipText {
+  visibility: hidden;
+  min-width: 120px;
+  background-color: #302f42;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 8px;
+  font-size: 0.9em;
+  font-weight: 300;
+  
+  /* postion */
+  position: absolute;
+  z-index: 999;
+  margin-top: 20px;
+  margin-left: -60px;
+}
+
+.infoToolTip:hover .infoToolTipText {
+  visibility: visible;
+  opacity: 0.9;
+}

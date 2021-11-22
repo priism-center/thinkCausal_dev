@@ -1739,7 +1739,7 @@ shinyServer(function(input, output, session) {
       as.data.frame() %>% 
       mutate(rownames = rownames(.)) %>% 
       select(' ' = rownames, 1:4) %>%
-      rename_all(toupper) %>% 
+      rename_all(tools::toTitleCase) %>% 
       create_datatable(paging = FALSE, info = FALSE, selection = "none")
     
     return(tab)

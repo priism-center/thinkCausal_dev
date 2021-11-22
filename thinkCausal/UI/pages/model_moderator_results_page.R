@@ -6,7 +6,7 @@ moderator_page <- tabPanel(
       title = 'ICATE',
       sidebarLayout(
         sidebarPanel(
-          h5("Individual conditional average treatment effects"),
+          h4("Individual conditional average treatment effects"),
           p("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
           br(),
           radioButtons(inputId = "icate_type",
@@ -37,7 +37,7 @@ moderator_page <- tabPanel(
       title = 'Subgroup Analyses',
       sidebarLayout(
         sidebarPanel(
-          h5("Subgroup analyses"),
+          h4("Subgroup analyses"),
           p("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
           br(),
           conditionalPanel(condition = "input.analysis_model_moderator_yes_no == 'Yes'",

@@ -426,3 +426,12 @@ html {
   height: 20px;
   background-color: #f2f2f2;
 }
+
+/*controls the cards on the design and model pages*/
+.card {
+  min-height: 450px;
+  -webkit-box-shadow: 3px 3px 12px rgba(74, 74, 74, 0.3);
+  -moz-box-shadow: 3px 3px 12px rgba(74, 74, 74, 0.3);
+  box-shadow: 3px 3px 12px rgba(74, 74, 74, 0.3);
+  border-radius: 3px;
+}

@@ -1,9 +1,11 @@
 design_page <- tabPanel(
   title = 'Design',
   fluidRow(
-  column(6,
-         h4('1. Specify variables'),
+  column(4,
          wellPanel(
+           class = 'card',
+           h4('1. Specify variables'),
+           br(),
            textInput('treatment_name', 
                      label = 'What is the name of the treatment or intervention?', 
                      placeholder = 'treatment'),
@@ -20,9 +22,11 @@ design_page <- tabPanel(
            
            )
   ),
-  column(6,
-         h4('2. Specify design'), 
+  column(4,
          wellPanel(
+           class = 'card',
+           h4('2. Specify design'),
+           br(),
            selectInput(inputId = 'anaylsis_design', 
                        label = 'Indicate the study design', 
                        choices = c("", 
@@ -31,22 +35,22 @@ design_page <- tabPanel(
                                    'Randomized treatment', 
                                    'Block randomized treatment'))
          )
-      )
-  ), 
-  fluidRow(
-    column(6, 
-           wellPanel(
+      ),
+  column(4, 
+         wellPanel(
+           class = 'card',
+           h4('3. Upload data'),
+           br(),
            actionButton(inputId = "analysis_design_button_next",
-                        label = "Next"), 
+                        label = "Go to data"), 
            br(), br(),
            tags$button(
              type = 'button',
              class = 'btn btn-default help',
              onclick = "openHelpPage('Concept2')",
              'Help'
+             )
            )
-           )
-           )
-    
+         )
   )
 )

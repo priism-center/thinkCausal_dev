@@ -43,5 +43,5 @@ clean_confounders_for_bart <- function(df){
   
   return(confounders_mat)
 }
-clean_confounders_for_bart(df)
+# clean_confounders_for_bart(df)
 

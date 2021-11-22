@@ -12,6 +12,7 @@ shinyUI(
         includeCSS("www/helpSlideOver.css"),
         includeCSS("www/slider.css"),
         includeCSS("www/sortable.css"),
+        includeCSS("www/information_icon.css"),
         
         # add help slideover
         help_slideover,
