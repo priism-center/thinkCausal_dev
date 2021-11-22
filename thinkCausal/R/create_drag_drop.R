@@ -54,7 +54,7 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_covariates"),
+          input_id = paste0(ns_prefix, "_dragdrop_block"),
           text = strong("Blocking Variable(s)"),
           labels = NULL,
           options = sortable_options(multiDrag = TRUE)
@@ -84,6 +84,7 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
   
   return(drag_drop_html)
 }
+
 
 
 create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups, grouped_varibles = NULL){
