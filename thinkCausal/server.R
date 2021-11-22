@@ -280,8 +280,8 @@ shinyServer(function(input, output, session) {
     req(store$uploaded_df)
     
     # get user inputs
-    cols_y <- input$analysis_data_dragdrop_response 
     cols_z <- input$analysis_data_dragdrop_treatment
+    cols_y <- input$analysis_data_dragdrop_response 
     if(input$anaylsis_design == 'Block randomized treatment'){
       cols_x <- c(input$analysis_data_dragdrop_block, input$analysis_data_dragdrop_covariates)
     }
