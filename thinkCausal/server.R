@@ -450,16 +450,31 @@ shinyServer(function(input, output, session) {
     problematic_group_names <- c()
     groups <- list()
     
+    # save grouping results before clicking save changes button
+    for (i in 1:store$n_dummy_groups) {
+      # find the column indexes of dummy variables in the same group 
+      input_id <- paste0("analysis_data_categorical_group_", i)
+      idx <- which(colnames(store$categorical_df) %in% input[[input_id]])
+      # save the user input group name and dummies' names of the group into a list for each group
+      groups <- c(groups, list(c(input[[paste0("rename_group_", i)]], colnames(store$categorical_df)[idx])))
+    }
+    group_list$data <- groups
+    
+    # only if there are grouped variables, proceed to convert dummies to categorical; otherwise, not update the dataframe
+    if(length(group_list$data) > 0){
+      
     for (i in 1:store$n_dummy_groups) {
       # find the column indexes of dummy variables in the same group 
       input_id <- paste0("analysis_data_categorical_group_", i)
       cleaned_tmp <- clean_dummies_to_categorical_internal(i, store$categorical_df, input[[input_id]], input[[paste0("rename_group_", i)]], problematic_group_names)
       store$categorical_df <- cleaned_tmp[[2]]
       problematic_group_names <- cleaned_tmp[[1]]
-      # save for reproducible script
-      groups <- c(groups, cleaned_tmp[[3]])
     }
-    group_list$data <- groups
+    
+    
+    if(length(group_list$data) > 0){
+      group_list$data <- groups
+    }
     
     # launch warning message:  
     # if there are empty variable names, click ok will stay at the page
@@ -474,7 +489,7 @@ shinyServer(function(input, output, session) {
       log_event <- paste0(log_event, '\tgroup', i, ': ', paste0(input[[input_id]], collapse = '; '), '\n')
     }
     store$log <- append(store$log, log_event)
-    
+    }
     # if no variable names are empty, by clicking Save Grouping, move to next page
     if(length(problematic_group_names) == 0){
       updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")

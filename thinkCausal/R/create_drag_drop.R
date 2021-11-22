@@ -97,11 +97,11 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups, grouped_va
   if(is.null(grouped_varibles)){
     # infer which columns are grouped (i.e. smart defaults)
     auto_groups <- clean_detect_dummy_cols_unique(df)
-    n_dummy_groups <- max(n_dummy_groups, length(auto_groups))
+    n_dummy_groups <- max(n_dummy_groups, length(auto_groups), 1) # show at least one (empty) group on the Group page
     ungrouped_vars <- setdiff(cat_var_names, unlist(auto_groups))
   }else{
-    auto_groups <- lapply(grouped_varibles, function(x) x[-1])
-    user_group_name <- lapply(grouped_varibles, function(x) x[1])
+    auto_groups <- lapply(grouped_varibles, function(x) x[-1]) # elements after the first element are dummies in the same group
+    user_group_name <- lapply(grouped_varibles, function(x) x[1]) # the first element is group name 
     n_dummy_groups <- max(n_dummy_groups, length(auto_groups))
     ungrouped_vars <- setdiff(cat_var_names, as.character(unlist(auto_groups)))
   }
