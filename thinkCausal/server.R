@@ -1866,28 +1866,33 @@ shinyServer(function(input, output, session) {
 
   # moderators  -------------------------------------------------------------
   
-  ## ICATE plots
-  # histogram of icates
+  # ICATE plots
   output$icate <- renderPlot({
     
     # stop here if model isn't fit yet
     validate_model_fit(store)
     if(input$icate_type == 'histogram'){
-      p <- plot_ICATE(store$model_results)
+      group <- NULL
+      p <- plot_ICATE(store$model_results, group.by = group, nbins = plotBart_ICATE_n_bins)
       
       # add theme
       p <- p + theme_custom()
     }
     
     if(input$icate_type == 'ordered'){
-      p <- plot_waterfall(store$model_results)
+      order <- NULL
+      color <- NULL
+      p <- plot_waterfall(store$model_results, 
+                          .order = order, 
+                          .color = color, 
+                          descending = input$plotBart_waterfall_desc)
       
       # add theme
       p <- p + theme_custom()
     }
     
     if(input$icate_type == 'tree'){
-      p <- plot_moderator_search(store$model_results)
+      p <- plot_moderator_search(store$model_results, depth = input$plotBart_tree_depth)
       
       # add theme
       p <- p + theme_custom()
