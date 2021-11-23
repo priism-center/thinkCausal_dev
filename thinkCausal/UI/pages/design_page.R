@@ -16,10 +16,7 @@ design_page <- tabPanel(
                      label = 'Describe the participants in this study',
                      placeholder = 'participants'), 
            h5('Example:'), 
-           textOutput("analysis_design_text.1"), 
-            br(), 
-            textOutput("analysis_design_text.2") 
-           
+           htmlOutput("analysis_design_text")
            )
   ),
   column(4,
