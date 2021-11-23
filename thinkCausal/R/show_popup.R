@@ -128,7 +128,8 @@ show_popup_fitting_BART_waiting <- function(session){
     img(src = file.path('img', 'tree.gif'),
         width = "50%"),
     h3('Fitting BART model...'),
-    h5("...sometimes this takes a while...")
+    h5("...sometimes this takes a while..."),
+    # verbatimTextOutput('console_output')
   )
   show_popup(session = session, content)
 }
