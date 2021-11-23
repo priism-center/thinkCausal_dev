@@ -8,12 +8,8 @@ shinyUI(
         shinyjs::useShinyjs(),
         
         # load custom CSS files
-        includeCSS("www/thinkCausal.css"),
-        includeCSS("www/helpSlideOver.css"),
-        includeCSS("www/slider.css"),
-        includeCSS("www/sortable.css"),
-        includeCSS("www/information_icon.css"),
-        
+        map(list.files('www/css'), function(file) includeCSS(file.path('www', 'css', file))),
+
         # add help slideover
         help_slideover,
 
@@ -32,6 +28,6 @@ shinyUI(
         ),
 
         # load custom JavaScript
-        tags$script(src = "helpSlideOver.js")
+        tags$script(src = "js/helpSlideOver.js")
     )
 )

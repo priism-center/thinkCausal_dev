@@ -1,6 +1,6 @@
 #' Create hover-able information icon
 #'
-#' Returns HTML code to create a little (i) icon that shows text when you hover.
+#' Returns HTML code to create a little (i) icon that shows text when you hover. 
 #'
 #' @param label any text to display next to the icon
 #' @param text text to display when hovering over the icon
@@ -17,7 +17,8 @@ create_info_icon <- function(label, text){
   html <- paste0(
     '<div class="infoToolTip">',
     label, 
-    ' <a style="cursor:pointer">&#9432;</a><span class="infoToolTipText">',
+    ' <a>&#9432;</a>',
+    '<span class="infoToolTipText">',
     text,
     '</span></div>'
   )
