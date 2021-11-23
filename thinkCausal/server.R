@@ -509,35 +509,6 @@ shinyServer(function(input, output, session) {
     store$n_dummy_groups <- max(length(auto_groups), 1)
   })
   
-
-  # only if there is no group name empty, clicking on the tab of verify will go to the verify page.
-  # TODO: rewrite without observe() b/c computationally taxing
-  # TODO: this crashes when there is no dataset or when uploading a dataset with no potential groups
-  # observe({
-  #   if(input$analysis_data_tabs == 'Verify'){
-  #     
-  #     problematic_group_names <- c()
-  #     for (i in 1:store$n_dummy_groups) {
-  #       # clean the user input name
-  #       name <- clean_names(input[[paste0("rename_group_", i)]])
-  #       
-  #       # check if user input variable names are empty
-  #       if (name == "" | grepl("blank", name, ignore.case = TRUE)) {
-  #         problematic_group_names <- c(problematic_group_names, paste0('Group', i))
-  #       }
-  #     }
-  #     
-  #     # if there is no group name empty, go to the verify page
-  #     if (length(problematic_group_names) == 0) {
-  #       updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Verify")
-  #     } else{
-  #       # if there is group name empty, launch a warning and stay at the group page
-  #       show_popup_group_name_warning(session, problematic_group_names)
-  #       updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Group")
-  #     }
-  #   }
-  # })
- 
   
   # verify data -------------------------------------------------------------
   
@@ -548,6 +519,9 @@ shinyServer(function(input, output, session) {
     
     # stop here if columns haven't been assigned
     validate_data_grouped(store)
+    
+    # stop here if analysis_data_modify_UI hasn't been rendered yet
+    req(input$analysis_data_1_changeDataType)
     
     # use assigned dataframe as the template
     user_modified_df <- store$categorical_df
@@ -565,65 +539,8 @@ shinyServer(function(input, output, session) {
     names(user_modified_df) <- user_entered_names
     
     # change data types
-    new_data_types <- as.character(current_values[paste0('analysis_data_', indices, '__changeDataType')])
-    # TODO
-    # user_modified_df <- clean_convert_data_types(.data = user_modified_df, new_data_types = new_data_types)
-    
-      
-      # TODO: theres some issues here; may need to use promises: https://rstudio.github.io/promises/articles/motivation.html
-      # change data type
-      # current_dataTypes <- convert_data_type_to_simple(store$user_modified_df)
-      # user_entered_dataTypes <- as.character(current_values[paste0("analysis_data_", indices, '_changeDataType')])
-      # 
-      # if (all(user_entered_dataTypes != 'NULL')) {
-      #   pmap(list(colnames(store$user_modified_df), current_dataTypes, user_entered_dataTypes), 
-      #        function(column_name, current_dataType, new_dataType){
-      #          
-      #          if (current_dataType != new_dataType){
-      #            # c("Continuous", "Categorical", "Binary")
-      #            
-      #            # convert column to character
-      #            current_col_as_char <- as.character(store$user_modified_df[[column_name]])
-      #            
-      #            if (new_dataType == "Binary"){
-      #              auto_binary <- readr::parse_logical(as.character(current_col_as_char))
-      #              if (any(is.na(auto_binary))){
-      #                print("Issue auto converting column!!!")
-      # 
-      #                # launch popup so user can choose which values map to true/false
-      #                shinyWidgets::show_alert(
-      #                  title = "Please choose which value corresponds to true and false",
-      #                  text = tags$div(
-      #                    selectInput(
-      #                      inputId = "analysis_data_select_TRUE",
-      #                      label = "Value representing 'true'",
-      #                      choices = unique(current_col_as_char)
-      #                    ),
-      #                    selectInput(
-      #                      inputId = "analysis_data_select_FALSE",
-      #                      label = "Value representing 'false'",
-      #                      choices = unique(current_col_as_char)
-      #                    )
-      #                   ),
-      #                  type = 'info',
-      #                  btn_labels = c("Confirm"),
-      #                  closeOnClickOutside = FALSE,
-      #                  showCloseButton = FALSE
-      #                )
-      #              }
-      #             }
-      #            
-      #            print(paste0("Changing ", column_name, " from ", current_dataType, " to ", new_dataType))
-      #         }
-      #   })
-      # }
-      
-      
-    # new_data_types <- 
-    # user_modified_df <- convert_data_type_to_complex(user_modified_df, user_entered_dataTypes)
-      
-    # TODO?
-    # change categorical levels
+    new_data_types <- as.character(current_values[paste0('analysis_data_', indices, '_changeDataType')])
+    user_modified_df <- convert_data_types(.data = user_modified_df, new_data_types = new_data_types)
     
     # save the data to the store
     store$user_modified_df <- user_modified_df 
@@ -656,36 +573,6 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  # vector of selector ids
-  # analysis_data_select_selector_ids <-
-  #   c(
-  #     "analysis_data_select_select_zcol",
-  #     "analysis_data_select_select_ycol",
-  #     "analysis_data_select_select_xcol"
-  #   )
-  
-  # update select inputs when the input data changes
-  # TODO: does this need to be eager or can it lazy via reactive()?
-  # observeEvent(store$uploaded_df, {
-  #   
-  #   # stop here if data hasn't been uploaded
-  #   validate_data_uploaded(store)
-  #   
-  #   # infer which columns are Z, Y, and X columns for smart defaults
-  #   auto_columns <- clean_detect_ZYX_columns(store$uploaded_df)
-  #   
-  #   all_colnames <- colnames(store$uploaded_df)
-  #   
-  #   # fill the dropdown options with the colnames
-  #   for (i in 1:3){
-  #     updateSelectInput(session = session,
-  #                       inputId = analysis_data_select_selector_ids[i],
-  #                       choices = all_colnames,
-  #                       selected = auto_columns[[i]]
-  #     )
-  #   }
-  # })
-  
   # render UI for modifying the data
   output$analysis_data_modify_UI <- renderUI({
 
@@ -701,45 +588,10 @@ shinyServer(function(input, output, session) {
     
     # create UI table
     UI_table <- create_data_summary_grid(
-      .data = store$categorical_df, #! input data changed to the result of group data
+      .data = store$categorical_df, 
       default_data_types = default_data_types,
       ns_prefix = 'analysis_data'
     )
-    
-    # # add observers to launch modal if user changes data type to binary
-    # lapply(indices, function(i){
-    #   input_id <- paste0("analysis_data_", i, "_changeDataType")
-    #   observeEvent(input[[input_id]], {
-    # 
-    #     previous_value <- store$current_simple_column_types[i]
-    #     new_value <- input[[input_id]]
-    # 
-    #     # update column types in store
-    #     store$current_simple_column_types[i] <- new_value
-    # 
-    #     if (new_value == 'Binary'){
-    #       shinyWidgets::show_alert(
-    #         title = 'Please specify the levels',
-    #         text = tags$div(
-    #           
-    #           actionButton(
-    #             inputId = paste0('analysis_data_', i, '_button_confirmLevel'),
-    #             label = 'Confirm')
-    #           ),
-    #         type = 'info',
-    #         btn_labels = NA,
-    #         closeOnClickOutside = FALSE
-    #       )
-    #     }
-    # 
-    #     print(store$current_simple_column_types)
-    #   })
-    # })
-    # 
-    # # add observers to record the input within the launched modals
-    # lapply(indices, function(i){
-    #   
-    # })
 
     return(UI_table)
   })
@@ -765,10 +617,21 @@ shinyServer(function(input, output, session) {
         inputId = paste0("analysis_data_", i, "_percentNA"),
         value = percent_NA
       )
+      # change font color to red if more tha 10% NAs
       if(percent_NA_num > 0.1){
-        runjs( paste0('document.getElementById("',
-                      paste0("analysis_data_", i, "_percentNA"),
-                      '").style.color = "#c92626"'))
+        shinyjs::runjs(
+          paste0(
+          'document.getElementById("',
+          paste0("analysis_data_", i, "_percentNA"),
+          '").style.color = "#c92626"'
+        ))
+      } else {
+        shinyjs::runjs(
+          paste0(
+            'document.getElementById("',
+            paste0("analysis_data_", i, "_percentNA"),
+            '").style.color = null'
+          ))
       }
     })
   })
@@ -796,59 +659,6 @@ shinyServer(function(input, output, session) {
     return(tab)
   })
   
-  # # add listeners to each data type dropdown that notify when the value changes
-  # observeEvent(nrow(store$col_assignment_df), {
-  # 
-  #   req(nrow(store$col_assignment_df) > 0)
-  # 
-  #   # set indices to map over
-  #   indices <- seq_along(store$col_assignment_df)
-  # 
-  #   # require data types to render first
-  #   data_type_values <- reactiveValuesToList(input)[paste0("analysis_data_", indices, "_changeDataType")]
-  #   req(all(data_type_values %in% c('Continuous', 'Categorical', 'Binary')))
-  # 
-  #   # add the listeners
-  #   lapply(indices, function(i){
-  # 
-  #     # get id of this dropdown
-  #     data_type_input <- paste0("analysis_data_", i, "_changeDataType")
-  # 
-  #     # add the listener
-  #     observeEvent(input[[data_type_input]], {
-  # 
-  #       # TODO: resume here; this initially launches a bunch of unnecessary alerts
-  # 
-  #       # get the current values
-  #       input_value <- input[[data_type_input]]
-  #       column_values <- store$col_assignment_df[, i]
-  # 
-  #       # did the data type change to a binary value and is it coercible to binary?
-  #       is_binary <- input_value == 'Binary'
-  #       if (isTRUE(is_binary)){
-  # 
-  #         # coerce to binary
-  #         coerced_values <- readr::parse_logical(as.character(column_values))
-  #         is_not_coercible <- any(is.na(coerced_values))
-  # 
-  #         # launch alert if it is binary and not coercible
-  #         if (isTRUE(is_not_coercible)){
-  #           shinyWidgets::show_alert(
-  #             title = 'Please specify the levels of the input?',
-  #             text = tags$div(
-  #               # actionButton(
-  #               #   inputId = 'analysis_model_button_popup',
-  #               #   label = 'Take me to the Data tab')
-  #             ),
-  #             type = 'error',
-  #             btn_labels = NA
-  #           )
-  #         }
-  #       }
-  #     })
-  #   })
-  # })
-  
   # render the text indicating how many rows are being removed due to NAs
   output$analysis_data_text_na <- renderUI({
     
@@ -856,8 +666,8 @@ shinyServer(function(input, output, session) {
     req(store$user_modified_df)
     
     # calculate stats
-    n_rows_original <- nrow(store$categorical_df)
-    n_rows_removed <- n_rows_original - nrow(na.omit(store$categorical_df))
+    n_rows_original <- nrow(store$user_modified_df)
+    n_rows_removed <- n_rows_original - nrow(na.omit(store$user_modified_df))
     n_rows_percent <- scales::percent_format(0.1)(n_rows_removed / n_rows_original)
     n_rows_removed_text <- scales::comma_format()(n_rows_removed)
     
@@ -1553,6 +1363,10 @@ shinyServer(function(input, output, session) {
   #   removeUI('#analysis_model_text_support_noinput')
   # })
   
+  # render the console out (for the popup)
+  # store$console_message <- 'hello'
+  # output$console_output <- renderPrint(print(store$console_message))
+  
   # when user runs the model, take a number of actions
   observeEvent(input$analysis_model_button_next, {
     
@@ -1615,7 +1429,7 @@ shinyServer(function(input, output, session) {
     
     # remove current model if it exists
     store$model_results <- NULL
-    store$model_fit_good <- FALSE
+    store$model_fit_good <- NULL
     
     # insert popup to notify user of model fit process
     # TODO: estimate the time remaining empirically?
@@ -1642,17 +1456,20 @@ shinyServer(function(input, output, session) {
     common_support_rule <- input$analysis_over_ride_common_support
     if (input$analysis_model_support == 'No') common_support_rule <- 'none'
     
-    # run model    
-    store$model_results <- tryCatch({
-      fit_bart(.data = store$selected_df, 
-               support = common_support_rule, 
-               ran.eff = input$analysis_random_intercept, 
-               .estimand = base::tolower(input$analysis_model_estimand))
-      
-    },
-    # warning = function(w) NULL,
-    error = function(e) NULL
-    )
+    # run model
+    # store$console_message <- capture.output({
+      store$model_results <- tryCatch({
+          fit_bart(.data = store$selected_df, 
+                   support = common_support_rule, 
+                   ran.eff = input$analysis_random_intercept, 
+                   .estimand = base::tolower(input$analysis_model_estimand))
+        
+      },
+      # warning = function(w) NULL,
+      error = function(e) NULL
+      )
+    # })
+    # print(store$console_message)
     
     # close the alert
     # shinyWidgets::closeSweetAlert()

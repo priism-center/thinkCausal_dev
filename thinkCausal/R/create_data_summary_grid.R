@@ -51,11 +51,21 @@ create_data_summary_grid <- function(.data, default_data_types, ns_prefix){
                value = all_col_names[i])
       ),
       column(width = 4, 
-             selectInput(
-               inputId = paste0(ns_prefix, "_", i, "_changeDataType"),
-               label = NULL, 
-               choices = c('Continuous', 'Categorical', 'Binary'),
-               selected = default_data_types[i])
+             if (i == 1){
+               shinyjs::disabled(
+                 selectInput(
+                   inputId = paste0(ns_prefix, "_", i, "_changeDataType"),
+                   label = NULL, 
+                   choices = c('Continuous', 'Categorical', 'Binary'),
+                   selected = default_data_types[i])
+               )
+             } else {
+               selectInput(
+                 inputId = paste0(ns_prefix, "_", i, "_changeDataType"),
+                 label = NULL, 
+                 choices = c('Continuous', 'Categorical', 'Binary'),
+                 selected = default_data_types[i])
+             }
       ),
       column(width = 2, 
              shinyjs::disabled(

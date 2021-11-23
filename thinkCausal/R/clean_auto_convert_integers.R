@@ -36,7 +36,7 @@ clean_detect_integers <- function(x, n_levels_threshold = 15){
   
   if(inherits(x, 'data.frame')) stop('x cannot be a dataframe')
   
-  # is x exclusively in list of pre-determined
+  # does x match its self coerced to an integer 
   is_integer <- all.equal(x, as.integer(x))
   
   if (isTRUE(is_integer)){
