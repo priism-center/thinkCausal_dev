@@ -1144,11 +1144,6 @@ shinyServer(function(input, output, session) {
   
 
   # model -------------------------------------------------------------------
-  # output$results_example <- renderText({
-  #   txt <- paste("The", input$treatment_name, "led to an increase\decrease of X", input$treatment_units)
-  # })
-  
-
   observeEvent(input$analysis_data_save, {
     cols_categorical <- store$column_types$categorical
     X_cols_categorical <- grep("^X_", cols_categorical, value = TRUE)
@@ -1682,27 +1677,59 @@ shinyServer(function(input, output, session) {
   
 
   # moderators  -------------------------------------------------------------
-  
+  # update options 
+  observeEvent(input$analysis_data_save, {
+    cols_categorical <- store$column_types$categorical
+    cols_continuous <- store$column_types$continuous
+    X_cols_categorical <- grep("^X_", cols_categorical, value = TRUE)
+    X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
+    cols_categorical_cleaned <- gsub("X_", '', X_cols_categorical)
+    cols_continuous_cleaned <- gsub("X_", '', X_cols_continuous)
+    updateSelectInput(inputId = "plotBart_waterfall_order", 
+                      choices = c("ICATE", cols_continuous_cleaned))
+    updateSelectInput(inputId = "plotBart_waterfall_color", 
+                      choices = c("None", cols_categorical_cleaned))
+    updateSelectInput(inputId = "plotBart_ICATE_color", 
+                      choices = c("None", cols_categorical_cleaned))
+  })
+    
   # ICATE plots
   output$icate <- renderPlot({
     
     # stop here if model isn't fit yet
     validate_model_fit(store)
     if(input$icate_type == 'histogram'){
-      group <- NULL
-      p <- plot_ICATE(store$model_results, group.by = group, nbins = plotBart_ICATE_n_bins)
+      if(input$plotBart_ICATE_color != 'None'){
+      group <- store$selected_df[[paste0('X_', input$plotBart_ICATE_color)]]
+      }
+      else{
+        group <- NULL
+      }
+      p <- plot_ICATE(store$model_results, group.by = group, nbins = input$plotBart_ICATE_n_bins)
       
       # add theme
       p <- p + theme_custom()
     }
     
     if(input$icate_type == 'ordered'){
-      order <- NULL
-      color <- NULL
+      if(input$plotBart_ICATE_color != 'ICATE'){
+        order <- store$selected_df[[paste0('X_', input$plotBart_waterfall_order)]]
+      }
+      else{
+        order <- NULL
+      }
+      
+      if(input$plotBart_ICATE_color != 'ICATE'){
+        color <- store$selected_df[[paste0('X_', input$plotBart_waterfall_color)]]
+      }
+      else{
+        color <- NULL
+      }
+
       p <- plot_waterfall(store$model_results, 
                           .order = order, 
                           .color = color, 
-                          descending = input$plotBart_waterfall_desc)
+                          descending = ifelse(input$plotBart_waterfall_desc == 'Yes', T, F))
       
       # add theme
       p <- p + theme_custom()
