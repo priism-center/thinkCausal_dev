@@ -1,0 +1,18 @@
+/* controls the red ribbon in the top right corner */
+.cornerRibbon{
+  width: 200px;
+  background: #b0453e;
+  position: fixed;
+  top: 25px;
+  right: -50px;
+  text-align: center;
+  line-height: 50px;
+  letter-spacing: 2px;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #f0f0f0;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(45deg);
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  z-index: 9999;
+}

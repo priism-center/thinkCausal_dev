@@ -28,6 +28,9 @@ shinyUI(
         ),
 
         # load custom JavaScript
-        tags$script(src = "js/helpSlideOver.js")
+        tags$script(src = "js/helpSlideOver.js"),
+        
+        # add beta ribbon
+        div(class = 'cornerRibbon', 'BETA')
     )
 )
