@@ -1719,7 +1719,7 @@ shinyServer(function(input, output, session) {
         order <- NULL
       }
       
-      if(input$plotBart_ICATE_color != 'ICATE'){
+      if(input$plotBart_ICATE_color != 'None'){
         color <- store$selected_df[[paste0('X_', input$plotBart_waterfall_color)]]
       }
       else{
