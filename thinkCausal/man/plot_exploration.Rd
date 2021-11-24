@@ -88,3 +88,6 @@ plot_exploration(
 \seealso{
 \code{\link{clean_detect_plot_vars}}
 }
+\author{
+Joe Marlo
+}

@@ -2,7 +2,7 @@
 #'
 #' To be used programmatically. Not recommended for script/console use.
 #'
-#' @param .data typically store$selected_df
+#' @param .data typically store$verified_df
 #' @param .plot_type  one of c("Pairs", 'Scatter', 'Histogram', 'Density', 'Boxplot')
 #' @param .x 
 #' @param .y 

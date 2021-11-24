@@ -12,13 +12,13 @@
 #' @importFrom readr parse_logical
 #'
 #' @examples
-# x <- data.frame(
-#    zero_one = sample(0:1, 10, replace = TRUE),
-#    TF = sample(c("T", "F"), 10, replace = TRUE),
-#    truefalse = sample(c('true', 'false'), 10, replace = TRUE),
-#    char = sample(LETTERS, 10)
-#  )
-# clean_auto_convert_logicals(x)
+#' x <- data.frame(
+#'    zero_one = sample(0:1, 10, replace = TRUE),
+#'    TF = sample(c("T", "F"), 10, replace = TRUE),
+#'    truefalse = sample(c('true', 'false'), 10, replace = TRUE),
+#'    char = sample(LETTERS, 10)
+#'  )
+#' clean_auto_convert_logicals(x)
 clean_auto_convert_logicals <- function(input_data){
   # function converts columns of 0:1, T:F, True:False to logicals
   

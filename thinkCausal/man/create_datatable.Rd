@@ -4,14 +4,20 @@
 \alias{create_datatable}
 \title{Create a pretty datatable}
 \usage{
-create_datatable(.data, digits = 3, ...)
+create_datatable(
+  .data,
+  ...,
+  digits = 3,
+  selection = c("multiple", "single", "none"),
+  pageLength = 20
+)
 }
 \arguments{
 \item{.data}{a dataframe}
 
-\item{digits}{number of digits to round continuous columns to}
+\item{...}{arguments to be passed to DT::datatable options}
 
-\item{...}{arguments to be passed to DT::datatable. Typically a dataframe}
+\item{digits}{number of digits to round continuous columns to}
 }
 \value{
 HTML datatable

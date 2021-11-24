@@ -19,7 +19,8 @@ Converts columns of a dataframe containing binary c(0, 1), c("T", "F"), c("True"
 x <- data.frame(
    zero_one = sample(0:1, 10, replace = TRUE),
    TF = sample(c("T", "F"), 10, replace = TRUE),
-   truefalse = sample(c('true', 'false'), 10, replace = TRUE)
+   truefalse = sample(c('true', 'false'), 10, replace = TRUE),
+   char = sample(LETTERS, 10)
  )
 clean_auto_convert_logicals(x)
 }
