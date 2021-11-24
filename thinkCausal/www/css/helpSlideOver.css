@@ -88,19 +88,19 @@
 
 .sideBarBtn {
   position: fixed;
-  bottom: 1rem;
+  bottom: 4rem;
   right: 1rem;
   width: 5rem;
   height: 5rem;
   z-index: 99997;
   text-align: center;
-  color: #b0b0b0;
+  color: white;
   font-size: 1.5rem;
   font-weight: 400;
   padding: 1rem 0;
   border-radius: 50%;
   border: 2px solid white;
-  background-color: #3e374a;
+  background-color: #757391;
   opacity: 0.6;
   cursor: pointer;
 }

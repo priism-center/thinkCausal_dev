@@ -435,3 +435,29 @@ html {
   box-shadow: 3px 3px 12px rgba(74, 74, 74, 0.3);
   border-radius: 3px;
 }
+
+header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding: 0.5em;
+  background-color: #f8f8f8;
+  color: #a6a6a6;
+  height: 56px;
+  border-bottom-color: #e7e7e7;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 0.5em;
+  background-color: #9e9cb5;
+  color: white;
+  text-align: center;
+  z-index: 1000;
+}

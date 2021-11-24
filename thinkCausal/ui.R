@@ -34,6 +34,10 @@ shinyUI(
         tags$script(src = "js/helpSlideOver.js"),
         
         # add beta ribbon
-        tags$div(class = 'cornerRibbon', 'BETA')
+        tags$div(class = 'cornerRibbon', 'BETA'),
+        
+        # add header and footer elements
+        tags$footer('New York University'),
+        tags$header()
     )
 )
