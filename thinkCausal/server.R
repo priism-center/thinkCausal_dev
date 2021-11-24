@@ -100,62 +100,45 @@ shinyServer(function(input, output, session) {
 
   # design text  ------------------------------------------------------------
 
-  output$analysis_design_text.1 <- renderText({
-    if(input$treatment_name == ""){
-      block1 <- 'The treatment led to an increase of X'
+  # launch pop up if first time
+  store$launched_first_time_popup <- FALSE
+  observeEvent(input$nav, {
+    if (input$nav == 'Design' & isFALSE(store$launched_first_time_popup)){
+      store$launched_first_time_popup <- TRUE
+      show_popup_welcome(session = session)
     }
-    else{
-      block1 <- paste('The', input$treatment_name, 'led to an increase of X')
-    }
-    
-    if(input$treatment_units == ""){
-      block2 <- 'units for'
-    }
-    
-    else{
-      block2 <- paste(input$treatment_units, "for")
-    }
-    
-    if(input$treatment_participants == ""){
-      block3 <- 'participants in this study.'
-    }
-    
-    else{
-      block3 <- paste(input$treatment_participants, 'in this study.')
-    }
-    
-    paste(block1, block2, block3)
-  }) 
+  })
   
-  
-  output$analysis_design_text.2 <- renderText({
-    if(input$treatment_name == ""){
-      block1 <- 'The treatment led to a decrease of X'
-    }
-    else{
-      block1 <- paste('The', input$treatment_name, 'led to an decrease of X')
-    }
+  # render example language
+  output$analysis_design_text <- renderText({
     
-    if(input$treatment_units == ""){
-      block2 <- 'units for'
-    }
+    # TODO: somehow clean these inputs
+    name <- input$treatment_name
+    units <- input$treatment_units
+    participants <- input$treatment_participants
     
-    else{
-      block2 <- paste(input$treatment_units, "for")
-    }
+    # set defaults
+    if (name == '') name <- 'treatment'
+    if (units == '') units <- 'units'
+    if (participants == '') participants <- 'participants'
     
-    if(input$treatment_participants == ""){
-      block3 <- 'participants in this study.'
-    }
+    # create the text
+    text_out <- paste0(
+      'The ',
+      name,
+      ' led to an ',
+      c('<i>increase</i>', '<i>decrease</i>'),
+      ' of X ',
+      units,
+      ' for ',
+      participants,
+      ' in this study'
+    )
     
-    else{
-      block3 <- paste(input$treatment_participants, 'in this study.')
-    }
+    text_out <- HTML(paste0(text_out, collapse = '<br><br>'))
     
-    paste(block1, block2, block3)
-  }) 
-  
-  
+    return(text_out)
+  })
  
   
   # upload data -------------------------------------------------------------
@@ -597,8 +580,6 @@ shinyServer(function(input, output, session) {
   })
   
   # update percentNAs fields with actual data
-  # TODO: this fails to update if user goes back and reassigns the dataset; if the user then clicks on 
-    # on rename or data type then it updates
   observeEvent(store$user_modified_df, {
     
     # stop here if columns haven't been assigned and grouped

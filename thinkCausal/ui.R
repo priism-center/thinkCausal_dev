@@ -1,11 +1,11 @@
 shinyUI(
     fluidPage(
         
-        # download roboto font
-        HTML('<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">'),
-        
         # use shinyjs
         shinyjs::useShinyjs(),
+        
+        # download roboto font
+        tags$link(rel = "stylesheet", type = "text/css", href = "//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic"),
         
         # load custom CSS files
         map(list.files('www/css'), function(file) includeCSS(file.path('www', 'css', file))),
@@ -31,6 +31,6 @@ shinyUI(
         tags$script(src = "js/helpSlideOver.js"),
         
         # add beta ribbon
-        div(class = 'cornerRibbon', 'BETA')
+        tags$div(class = 'cornerRibbon', 'BETA')
     )
 )
