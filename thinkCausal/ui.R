@@ -27,7 +27,8 @@ shinyUI(
                 analysis_header,
                 reproducibility_header,
                 settings_header
-                )
+                ),
+            br(),br(),br()
         ),
 
         # load custom JavaScript
