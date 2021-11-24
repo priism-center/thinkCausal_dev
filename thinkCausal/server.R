@@ -1713,9 +1713,11 @@ shinyServer(function(input, output, session) {
     
     if(input$icate_type == 'ordered'){
       if(input$plotBart_ICATE_color != 'ICATE'){
+        print(input$plotBart_ICATE_color)
         order <- store$selected_df[[paste0('X_', input$plotBart_waterfall_order)]]
       }
       else{
+        print(input$plotBart_ICATE_color)
         order <- NULL
       }
       
@@ -1736,6 +1738,7 @@ shinyServer(function(input, output, session) {
     }
     
     if(input$icate_type == 'tree'){
+      print(dim(store$model_results$data.rsp@x))
       p <- plot_moderator_search(store$model_results, depth = input$plotBart_tree_depth)
       
       # add theme
