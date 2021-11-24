@@ -13,9 +13,6 @@ shinyUI(
         # load custom CSS files
         map(list.files('www/css'), function(file) includeCSS(file.path('www', 'css', file))),
 
-        # add help slideover
-        help_slideover,
-
         # set main navigation
         tags$div(
             class = "wrapper",
@@ -30,15 +27,18 @@ shinyUI(
                 ),
             br(),br(),br()
         ),
-
-        # load custom JavaScript
-        tags$script(src = "js/helpSlideOver.js"),
         
+        # add help slideover
+        help_slideover,
+
         # add beta ribbon
         tags$div(class = 'cornerRibbon', 'BETA'),
         
         # add header and footer elements
         tags$header(),
-        tags$footer(HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>'))
+        tags$footer(HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>')),
+        
+        # load custom JavaScript
+        tags$script(src = "js/helpSlideOver.js")
     )
 )
