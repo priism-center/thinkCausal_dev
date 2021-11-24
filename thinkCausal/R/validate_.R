@@ -35,7 +35,7 @@ validate_model_fit <- function(store){
 
 validate_design <- function(store){
   # stop here if design hasn't been specified
-  validate(need(store$study_design %in% c('Observational', 'Randomized treatment', 'Block randomized treatment'),
+  validate(need(store$analysis_design %in% c('Observational', 'Randomized treatment', 'Block randomized treatment'),
                 "Study design must first be specified on the 'Analyze-Design' page"))
 }
 
@@ -49,6 +49,7 @@ remove_downstream_data <- function(store, page = NULL){
     store$grouped_df <- NULL
     store$user_modified_df <- NULL
     store$col_assignment_df <- NULL
+    store$column_assignments <- NULL
   }
   
   if (page == 'group'){

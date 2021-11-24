@@ -16,14 +16,22 @@
 #' #     ns_prefix = 'analysis_data_'
 #' #   )
 #' # })
-create_data_summary_grid <- function(.data, default_data_types, ns_prefix){
+create_data_summary_grid <- function(.data, default_data_types, ns_prefix, design, blocking_variables = NULL){
   
   # set indices to map over
   all_col_names <- colnames(.data)
   indices <- seq_along(all_col_names)
   
   # create vector of column type names
-  column_types <- c('Treatment', 'Response', rep('Covariate', length(all_col_names)-2))
+  if (design == 'Block randomized treatment'){
+    n_blocks <- length(blocking_variables)
+    column_types <- c('Treatment', 
+                      'Response', 
+                      rep('Block', n_blocks), 
+                      rep('Covariate', length(all_col_names)-(2 + n_blocks)))
+  } else {
+    column_types <- c('Treatment', 'Response', rep('Covariate', length(all_col_names)-2)) 
+  }
   
   # render the header to the table
   UI_header <- fluidRow(

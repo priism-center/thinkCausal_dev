@@ -124,15 +124,15 @@ shinyServer(function(input, output, session) {
     
     # create the text
     text_out <- paste0(
-      'The ',
+      'The <b>',
       name,
-      ' led to an ',
+      '</b> led to an ',
       c('<i>increase</i>', '<i>decrease</i>'),
-      ' of X ',
+      ' of X <b>',
       units,
-      ' for ',
+      '</b> for <b>',
       participants,
-      ' in this study'
+      '</b> in this study'
     )
     
     text_out <- HTML(paste0(text_out, collapse = '<br><br>'))
@@ -144,7 +144,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_design, {
     
     # save input to store
-    store$study_design <- input$analysis_design
+    store$analysis_design <- input$analysis_design
     
     # remove saved dataframes if they exist
     store <- remove_downstream_data(store, page = 'design')
@@ -260,7 +260,7 @@ shinyServer(function(input, output, session) {
     # render the drag-drop UI
     drag_drop_html <- create_drag_drop_roles(.data = store$uploaded_df, 
                                              ns_prefix = 'analysis_data',
-                                             design = input$analysis_design)
+                                             design = store$analysis_design)
     
     return(drag_drop_html)
   })
@@ -276,7 +276,7 @@ shinyServer(function(input, output, session) {
     # get user inputs
     cols_z <- input$analysis_data_dragdrop_treatment
     cols_y <- input$analysis_data_dragdrop_response 
-    if(input$analysis_design == 'Block randomized treatment'){
+    if(store$analysis_design == 'Block randomized treatment'){
       cols_x <- c(input$analysis_data_dragdrop_block, input$analysis_data_dragdrop_covariates)
     }
     else{
@@ -311,6 +311,15 @@ shinyServer(function(input, output, session) {
     warning = function(w) FALSE
     )
     
+    # is blocking variable categorical?
+    is_block_categorical <- TRUE
+    if (store$analysis_design == 'Block randomized treatment'){
+      is_block_categorical <- purrr::map_lgl(input$analysis_data_dragdrop_block, function(var){
+        is_cat_or_logical(store$uploaded_df[[var]])
+      })
+      is_block_categorical <- all(is_block_categorical)
+    }
+    
     # did it pass all checks?
     all_good <- isTRUE(all(
       c(
@@ -319,7 +328,8 @@ shinyServer(function(input, output, session) {
         y_is_only_one,
         x_more_than_zero,
         is_treatment_binary,
-        is_response_cont_binary
+        is_response_cont_binary,
+        is_block_categorical
       )
     ))
     
@@ -336,6 +346,7 @@ shinyServer(function(input, output, session) {
     store$column_assignments$z <- cols_z
     store$column_assignments$y <- cols_y
     store$column_assignments$x <- cols_x
+    store$column_assignments$blocks <- input$analysis_data_dragdrop_block
     
     # add to log
     log_event <- paste0('Assigned columns to roles: \n', 
@@ -511,8 +522,6 @@ shinyServer(function(input, output, session) {
   # verify data -------------------------------------------------------------
   
   # maintain a user modified dataframe that is continuously updated
-  # TODO: does this need to be eager or can it be lazy via reactive()? 
-  # a few things would need to be modified, primarily the resetting of the df
   observe({
     
     # stop here if columns haven't been assigned
@@ -588,7 +597,9 @@ shinyServer(function(input, output, session) {
     UI_table <- create_data_summary_grid(
       .data = store$grouped_df, 
       default_data_types = default_data_types,
-      ns_prefix = 'analysis_data'
+      ns_prefix = 'analysis_data',
+      design = store$analysis_design,
+      blocking_variables = store$column_assignments$blocks
     )
 
     return(UI_table)
