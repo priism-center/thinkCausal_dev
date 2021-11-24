@@ -461,3 +461,7 @@ footer {
   text-align: center;
   z-index: 1000;
 }
+
+footer a, footer a:hover {
+  color: white;
+}

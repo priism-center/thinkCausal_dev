@@ -38,7 +38,7 @@ shinyUI(
         tags$div(class = 'cornerRibbon', 'BETA'),
         
         # add header and footer elements
-        tags$footer('New York University'),
-        tags$header()
+        tags$header(),
+        tags$footer(HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>'))
     )
 )
