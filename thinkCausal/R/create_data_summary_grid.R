@@ -42,7 +42,7 @@ create_data_summary_grid <- function(.data, default_data_types, ns_prefix, desig
     column_types <- c('Treatment', 'Response', rep('Covariate', length(all_col_names)-2)) 
     variable_type_choices <- c(
       list(c('Categorical', 'Binary')),
-      list(c('Categorical', 'Binary')),
+      list(c('Continuous', 'Binary')),
       lapply(1:(length(column_types)-2), function(x) c('Continuous', 'Categorical', 'Binary'))
     )
   }

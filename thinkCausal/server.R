@@ -799,7 +799,6 @@ shinyServer(function(input, output, session) {
     X_cols <- grep("^X_", new_col_names, value = TRUE)
     X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
     
-    
     # update options for balance 
     updateSelectInput(session = session,
                       inputId = 'analysis_plot_balance_select_var',
