@@ -7,7 +7,7 @@ library(openxlsx)
 library(Hmisc) # for spss
 library(readr)
 
-# for javascript and Shiny tools
+# for javascript tools
 library(shinyjs) # for running javascript on the server-side
 library(DT) # for javascript datatables
 library(sortable) # for drag and drop divs
@@ -26,12 +26,6 @@ library(bartCause)
 # global options
 options(shiny.reactlog = TRUE) # for testing; when running, hit Ctrl-F3 to see the reactivity tree
 options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size limit to 10mb
-
-
-# data and objects --------------------------------------------------------
-
-# violet color
-violet_col <- "#5c5980"
 
 
 # UI files (this should always be last) -----------------------------------
