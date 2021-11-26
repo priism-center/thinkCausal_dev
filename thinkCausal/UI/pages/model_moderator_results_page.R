@@ -43,6 +43,14 @@ moderator_page <- tabPanel(
                                max = 50,
                                value = 30,
                                step = 1
+                             ), 
+                             sliderInput(
+                               inputId = "plotBart_ICATE_alpha",
+                               label = "Transparency:",
+                               min = 0,
+                               max = 1,
+                               value = .6,
+                               step = .1
                              )
                            ), 
 

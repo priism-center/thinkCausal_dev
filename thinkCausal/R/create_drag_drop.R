@@ -32,7 +32,10 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
         ),
         add_rank_list(
           input_id = paste0(ns_prefix, "_dragdrop_delete"),
-          text = strong("Exclude these variables"),
+          text = create_info_icon(
+            label = strong("Exclude these variables"), 
+            text = "Exclude index or ID variables in addition to extraneous variables"
+          ),
           labels = auto_columns$ID,
           options = sortable_options(multiDrag = TRUE)
         )
@@ -73,7 +76,10 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
         ),
         add_rank_list(
           input_id = paste0(ns_prefix, "_dragdrop_delete"),
-          text = strong("Exclude these variables"),
+          text = create_info_icon(
+            label = strong("Exclude these variables"), 
+            text = "Exclude index or ID variables in addition to extraneous variables"
+          ),
           labels = auto_columns$ID,
           options = sortable_options(multiDrag = TRUE)
         )

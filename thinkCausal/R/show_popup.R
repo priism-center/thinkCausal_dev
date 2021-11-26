@@ -56,7 +56,7 @@ show_popup_variable_assignment_warning <- function(session){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
     h3("Whoops, there's an issue with variable assignment"),
-    h5("Make sure you assign one column to treatment and one to response. Treatment must also be binary.")
+    h5("Make sure you assign one column to treatment and one to response. Treatment must also be binary. Any blocking variables must be binary or categorical.")
   )
   show_popup(session = session, content, close_button = shiny::modalButton("Close"))
 }

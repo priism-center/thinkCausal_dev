@@ -24,7 +24,7 @@ design_page <- tabPanel(
            class = 'card',
            h4('2. Specify design'),
            br(),
-           selectInput(inputId = 'anaylsis_design', 
+           selectInput(inputId = 'analysis_design', 
                        label = 'Indicate the study design', 
                        choices = c("", 
                                    "Unsure", 

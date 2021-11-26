@@ -1,4 +1,4 @@
-# Dev repo for thinkCausal
+# thinkCausal: A causal inference tool
 
 <!-- badges: start -->
 [![GitHub license](https://img.shields.io/github/license/gperrett/thinkCausal_dev?style=flat-square)](https://github.com/gperrett/thinkCausal_dev/blob/master/LICENSE)

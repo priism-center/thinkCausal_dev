@@ -11,6 +11,7 @@ create_script(
   uploaded_file_delim,
   selected_columns,
   column_names,
+  change_data_type,
   estimand,
   common_support
 )

@@ -46,14 +46,6 @@ convert_data_types_ <- function(x, new_data_type){
   return(x)
 }
 
-coerce_to_logical <- function(x){
-  out <- NA
-  out[x %in% c(1, '1', TRUE, T, 'TRUE', 'T', 'true', 't')] <- TRUE
-  out[x %in% c(0, '0', FALSE, F, 'FALSE', 'F', 'false', 'f')] <- FALSE
-  return(out)
-}
-
-
 #' Simplify data types for humans
 #'
 #' Categorizes R data types into 'Continuous', 'Categorical', or 'Binary'  

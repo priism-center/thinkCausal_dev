@@ -7,11 +7,11 @@ shinyUI(
         # download roboto font
         tags$link(rel = "stylesheet", type = "text/css", href = "//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic"),
         
+        # make all links open in a new tab
+        tags$head(tags$base(target = "_blank")),
+        
         # load custom CSS files
         map(list.files('www/css'), function(file) includeCSS(file.path('www', 'css', file))),
-
-        # add help slideover
-        help_slideover,
 
         # set main navigation
         tags$div(
@@ -24,13 +24,21 @@ shinyUI(
                 analysis_header,
                 reproducibility_header,
                 settings_header
-                )
+                ),
+            br(),br(),br()
         ),
-
-        # load custom JavaScript
-        tags$script(src = "js/helpSlideOver.js"),
         
+        # add help slideover
+        help_slideover,
+
         # add beta ribbon
-        tags$div(class = 'cornerRibbon', 'BETA')
+        tags$div(class = 'cornerRibbon', 'BETA'),
+        
+        # add header and footer elements
+        tags$header(),
+        tags$footer(HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>')),
+        
+        # load custom JavaScript
+        tags$script(src = "js/helpSlideOver.js")
     )
 )
