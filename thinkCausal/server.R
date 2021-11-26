@@ -1537,6 +1537,7 @@ shinyServer(function(input, output, session) {
     validate_model_fit(store)
     
     # extract estimates and format
+    # TODO: unclear if credible interval is 80 or 95
     tab <- summary(store$model_results)$estimates %>% 
       as.data.frame() %>% 
       mutate(rownames = rownames(.)) %>% 
@@ -1564,7 +1565,6 @@ shinyServer(function(input, output, session) {
     show_message_updating(div_id)
     
     # create plot
-    # TODO: this is not in plotBart
     p <- plot_PATE(
       .model = store$model_results,
       type = input$plot_result_style,
@@ -1819,7 +1819,7 @@ shinyServer(function(input, output, session) {
     # change theme
     theme_custom <- switch(
       input$settings_options_ggplotTheme,
-      "Minimal" = ggplot2::theme_minimal, 
+      "Minimal" = theme_minimal_no_transparency, 
       "Simple" = ggplot2::theme_bw, 
       "Classic" = ggplot2::theme_classic, 
       "Gray" = ggplot2::theme_gray
