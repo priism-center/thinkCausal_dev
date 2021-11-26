@@ -22,9 +22,9 @@ moderator_page <- tabPanel(
                                        value = 2,
                                        min = 1, max = 3, step = 1)), 
           conditionalPanel(condition = "input.icate_type == 'ordered'", 
-                           selectInput(inputId = 'plotBart_waterfall_desc', 
-                                       label = "Show in descending order:", 
-                                       choices = c('Yes', 'No')), 
+                           # selectInput(inputId = 'plotBart_waterfall_desc', 
+                           #             label = "Show in descending order:", 
+                           #             choices = c('Yes', 'No')), 
                            selectInput(inputId = 'plotBart_waterfall_order', 
                                        label = "Order by:", 
                                        choices = NULL), 
@@ -43,6 +43,14 @@ moderator_page <- tabPanel(
                                max = 50,
                                value = 30,
                                step = 1
+                             ), 
+                             sliderInput(
+                               inputId = "plotBart_ICATE_alpha",
+                               label = "Transparency:",
+                               min = 0,
+                               max = 1,
+                               value = .6,
+                               step = .1
                              )
                            ), 
 
@@ -65,46 +73,30 @@ moderator_page <- tabPanel(
         )
     )),
     tabPanel(
-      title = 'Subgroup Analyses',
+      title = 'Exploratory Subgroup Analyses',
       sidebarLayout(
         sidebarPanel(
           h4("Subgroup analyses"),
           p("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
           br(),
-          conditionalPanel(condition = "input.analysis_model_moderator_yes_no == 'Yes'",
-                           radioButtons(inputId = 'moderation_type_class',
-                                        label = 'Type of Subgroup Analysis:',
-                                        choices = c('Prespecified',
-                                                    'Exploratory'),
-                                        selected = 'Prespecified')
-
-                           ),
-
-          conditionalPanel(condition = "input.moderation_type_class == 'Prespecified' & input.analysis_model_moderator_yes_no == 'Yes'",
-                           selectInput(inputId = "analysis_moderator_vars",
-                                       label = "Group by:",
-                                       multiple = FALSE,
-                                       choices = NULL,
-                                       selected = NULL)),
-
-          conditionalPanel(condition = "input.moderation_type_class != 'Prespecified' & input.analysis_model_moderator_yes_no == 'Yes'",
-                           selectInput(inputId = "analysis_moderators_explore_select",
-                                       label = "Group by:",
-                                       multiple = FALSE,
-                                       choices = NULL,
-                                       selected = NULL)),
-
-          conditionalPanel(condition = "input.analysis_model_moderator_yes_no == 'No'",
-                           selectInput(inputId = "analysis_moderators_explore_only",
-                                       label = "Group by:",
-                                       multiple = FALSE,
-                                       choices = NULL,
-                                       selected = NULL)), 
+          selectInput(inputId = 'plotBart_moderator_vars', 
+                      label = 'Subgroup Anlaysis by:',
+                      multiple = F, 
+                      choices = NULL, 
+                      selected = NULL), 
+          br(), 
+          
+          uiOutput(outputId = "sub_group_ui"), 
+          
+          br(), 
+          actionButton(inputId = 'anaysis_moderator_fit', 
+                       label = 'Analyze Sub-group'), 
           br(), br(),
           tags$button(type = 'button',
                       class = 'btn btn-default help',
                       onclick = "openHelpPage('Concept3')",
                       'What is this plot telling me?'),
+          
           br(),br(),
           div(class = 'backNextContainer',
               actionButton(inputId = 'analysis_moderator_analyses_button_back', 
