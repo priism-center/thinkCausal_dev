@@ -1241,46 +1241,46 @@ shinyServer(function(input, output, session) {
   })
   
   
-  # specify model -----------------------------------------------------------
-                           
-  # pop ups for estimand and common support help 
-  observeEvent(input$analysis_model_radio_estimand, {
-    
-    req(input$analysis_model_radio_estimand)
-    
-    if(input$analysis_model_estimand == 'Unsure'){
-      show_popup_learn_estimand(session)
-    }
-  })
-  
-  observeEvent(input$analysis_model_support, {
-    
-    req(input$analysis_model_radio_support)
-      
-    if (input$analysis_model_radio_support == 'Unsure'){
-      show_popup_learn_common_support(session)
-    }
-  })
-
-  observeEvent(input$learn_estimand_no, {
-    close_popup(session = session)
-  })
-  
-  observeEvent(input$learn_common_support_no, {
-    close_popup(session = session)
-  })
-  
-  observeEvent(input$learn_estimand_yes, {
-    close_popup(session = session)
-    # add updateTabsetPanel to the page of estimand explanation
-  })
-  
-  observeEvent(input$learn_common_support_yes, {
-    close_popup(session = session)
-    # add updateTabsetPanel to the page of common support explanation
-  })
-  
-                           
+  # # specify model -----------------------------------------------------------
+  #                          
+  # # pop ups for estimand and common support help 
+  # observeEvent(input$analysis_model_radio_estimand, {
+  #   
+  #   req(input$analysis_model_radio_estimand)
+  #   
+  #   if(input$analysis_model_estimand == 'Unsure'){
+  #     show_popup_learn_estimand(session)
+  #   }
+  # })
+  # 
+  # observeEvent(input$analysis_model_support, {
+  #   
+  #   req(input$analysis_model_radio_support)
+  #     
+  #   if (input$analysis_model_radio_support == 'Unsure'){
+  #     show_popup_learn_common_support(session)
+  #   }
+  # })
+  # 
+  # observeEvent(input$learn_estimand_no, {
+  #   close_popup(session = session)
+  # })
+  # 
+  # observeEvent(input$learn_common_support_no, {
+  #   close_popup(session = session)
+  # })
+  # 
+  # observeEvent(input$learn_estimand_yes, {
+  #   close_popup(session = session)
+  #   # add updateTabsetPanel to the page of estimand explanation
+  # })
+  # 
+  # observeEvent(input$learn_common_support_yes, {
+  #   close_popup(session = session)
+  #   # add updateTabsetPanel to the page of common support explanation
+  # })
+  # 
+  #                          
   # # render text output to summarize the users inputs
   # output$analysis_model_summary <- renderText({
   #   
@@ -1672,6 +1672,9 @@ shinyServer(function(input, output, session) {
                       choices = c("None", cols_categorical_cleaned))
     updateSelectInput(inputId = "plotBart_ICATE_color", 
                       choices = c("None", cols_categorical_cleaned))
+    moderator_options <- gsub("X_", '', names(store$selected_df)[3:length(names(store$selected_df))])
+    updateSelectInput(inputId = "plotBart_moderator_vars", 
+                      choices = c('',moderator_options))
   })
     
   # ICATE plots
@@ -1693,33 +1696,30 @@ shinyServer(function(input, output, session) {
     }
     
     if(input$icate_type == 'ordered'){
-      if(input$plotBart_ICATE_color != 'ICATE'){
-        print(input$plotBart_ICATE_color)
+      if(input$plotBart_waterfall_order != 'ICATE'){
         order <- store$selected_df[[paste0('X_', input$plotBart_waterfall_order)]]
       }
       else{
-        print(input$plotBart_ICATE_color)
         order <- NULL
       }
       
-      if(input$plotBart_ICATE_color != 'None'){
-        color <- store$selected_df[[paste0('X_', input$plotBart_waterfall_color)]]
+      if(input$plotBart_waterfall_color!= 'None'){
+        color.by <- store$selected_df[[paste0('X_', input$plotBart_waterfall_color)]]
       }
       else{
-        color <- NULL
+        color.by <- NULL
       }
+      
 
       p <- plot_waterfall(store$model_results, 
                           .order = order, 
-                          .color = color, 
-                          descending = ifelse(input$plotBart_waterfall_desc == 'Yes', T, F))
+                          .color = color.by)
       
       # add theme
       p <- p + theme_custom()
     }
     
     if(input$icate_type == 'tree'){
-      print(dim(store$model_results$data.rsp@x))
       p <- plot_moderator_search(store$model_results, depth = input$plotBart_tree_depth)
       
       # add theme
@@ -1742,22 +1742,7 @@ shinyServer(function(input, output, session) {
     div_id <- 'analysis_moderators_explore_plot'
     show_message_updating(div_id)
     
-    # # TODO: this does not close once plot is finished
-    # shinyWidgets::show_alert(
-    #   title = 'Rendering Plot...',
-    #   text = tags$div(
-    #     img(src = file.path('img', 'tree.gif'),
-    #         width = "20%"),
-    #     h5("...sometimes this takes a while..."),
-    #   ),
-    #   html = TRUE,
-    #   btn_labels = NA,
-    #   closeOnClickOutside = T
-    # )
 
-    # plot it
-    # TODO: this is not in plotBart
-    # TODO: dynamically select the select input OR change select options with observeEvent
     moderator_vars <- input$analysis_moderator_vars
     p <- plot_continuous_sub(.model = store$model_results, 
                              grouped_on = moderator_vars)
@@ -1770,6 +1755,56 @@ shinyServer(function(input, output, session) {
     
     return(p)
   })
+  
+  
+
+  # subgroup plots 
+  observeEvent(input$anaysis_moderator_fit, {
+    if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$categorical)){
+      if(input$categorical_exploratory_choice == 'Overlaid density'){
+        output$analysis_moderators_explore_plot <- renderPlot({
+          div_id <- 'analysis_moderators_explore_plot'
+          show_message_updating(div_id)
+           p <-  plot_moderator_d_density(store$model_results, 
+                                          store$selected_df[[paste0('X_', input$plotBart_moderator_vars)]])
+           p <- p + theme_custom()
+           
+           # remove overlay
+           close_message_updating(div_id)
+           
+           return(p)
+           
+         })
+      }
+    }
+
+  })
+  
+  
+observeEvent(input$plotBart_moderator_vars, {
+    if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$categorical)){
+      output$sub_group_ui <- renderUI({
+        selectInput('categorical_exploratory_choice', 
+                    label = 'Choose a plot type:', 
+                    choices = c('','Overlaid density', 'Verticle CI'))})
+    }
+  
+    if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$continuous)){
+      output$sub_group_ui <- renderUI({
+        selectInput('continuous_exploratory_choice', 
+                    label = 'Choose a plot type:', 
+                    choices = c('','Loess', 'Verticle CI'))})
+    }
+    
+  })
+    
+    
+
+   
+
+ 
+
+  
   
   
   # concepts ----------------------------------------------------------------
