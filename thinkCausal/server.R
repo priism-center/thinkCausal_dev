@@ -1564,7 +1564,6 @@ shinyServer(function(input, output, session) {
     show_message_updating(div_id)
     
     # create plot
-    # TODO: this is not in plotBart
     p <- plot_PATE(
       .model = store$model_results,
       type = input$plot_result_style,
@@ -1772,24 +1771,72 @@ shinyServer(function(input, output, session) {
   
   # subgroup plots 
   observeEvent(input$anaysis_moderator_fit, {
-    if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$categorical)){
-      if(input$categorical_exploratory_choice == 'Overlaid density'){
-        output$analysis_moderators_explore_plot <- renderPlot({
+    selected_moderator <- input$plotBart_moderator_vars
+    #output$analysis_moderators_explore_plot <- renderPlot({
+      # categorical plots 
+      if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$categorical)){
+        if(input$categorical_exploratory_choice == 'Overlaid density'){
+          output$analysis_moderators_explore_plot <- renderPlot({
+            div_id <- 'analysis_moderators_explore_plot'
+            show_message_updating(div_id)
+            p <-  plot_moderator_d_density(store$model_results, 
+                                           store$verified_df[[paste0('X_', selected_moderator)]])
+            p <- p + theme_custom()
+            
+            # remove overlay
+            close_message_updating(div_id)
+            
+            return(p)
+          })
+        }
+        if(input$categorical_exploratory_choice == 'Verticle intervals'){
+          output$analysis_moderators_explore_plot <- renderPlot({
           div_id <- 'analysis_moderators_explore_plot'
           show_message_updating(div_id)
-          p <-  plot_moderator_d_density(store$model_results, 
-                                         store$verified_df[[paste0('X_', input$plotBart_moderator_vars)]])
+          p <- plot_moderator_d_linerange(.model = store$model_results, 
+                                     moderator = store$verified_df[[paste0('X_', selected_moderator)]])
+          
+          # remove overlay
+          close_message_updating(div_id)
+          p <- p + theme_custom()
+          
+          return(p)
+          })
+        }
+        
+      } # end of categorical block
+      # continuous plots
+      if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$continuous)){
+        if(input$continuous_exploratory_choice == 'Loess'){
+          output$analysis_moderators_explore_plot <- renderPlot({
+          div_id <- 'analysis_moderators_explore_plot'
+          show_message_updating(div_id)
+          p <-  plot_moderator_c_loess(store$model_results, 
+                                         store$verified_df[[paste0('X_', selected_moderator)]])
           p <- p + theme_custom()
           
           # remove overlay
           close_message_updating(div_id)
           
           return(p)
+          })
+        }
+        if(input$continuous_exploratory_choice == 'Partial dependency'){
+          output$analysis_moderators_explore_plot <- renderPlot({
+          div_id <- 'analysis_moderators_explore_plot'
+          show_message_updating(div_id)
+          p <-  plot_moderator_c_pd(store$model_results, 
+                                       store$verified_df[[paste0('X_', selected_moderator)]])
+          p <- p + theme_custom()
           
-        })
+          # remove overlay
+          close_message_updating(div_id)
+          
+          return(p)
+          })
+        }
       }
-    }
-    
+    #})
   })
   
   
@@ -1798,14 +1845,14 @@ shinyServer(function(input, output, session) {
       output$sub_group_ui <- renderUI({
         selectInput('categorical_exploratory_choice', 
                     label = 'Choose a plot type:', 
-                    choices = c('','Overlaid density', 'Verticle CI'))})
+                    choices = c('','Overlaid density', 'Verticle intervals'))})
     }
     
     if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$continuous)){
       output$sub_group_ui <- renderUI({
         selectInput('continuous_exploratory_choice', 
                     label = 'Choose a plot type:', 
-                    choices = c('','Loess', 'Verticle CI'))})
+                    choices = c('','Loess', 'Partial dependency'))})
     }
     
   })

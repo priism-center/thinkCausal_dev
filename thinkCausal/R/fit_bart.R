@@ -6,6 +6,7 @@ fit_bart <- function(.data, support, ran.eff, .estimand){
         confounders = clean_confounders_for_bart(.data[, 3:length(.data)]), 
         estimand = .estimand, 
         commonSup.rule = support, 
+        keepTrees = T, 
         seed = 2
       )
   }
@@ -19,6 +20,7 @@ fit_bart <- function(.data, support, ran.eff, .estimand){
       group.by = ran.eff, 
       group.effects = T, 
       commonSup.rule = support, 
+      keepTrees = T,
       seed = 2
       
     )
