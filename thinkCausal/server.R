@@ -1,6 +1,9 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
 
+  # do this when app stops
+  # onStop(fun = function() show_popup_crash())
+
   # initialize list to store variables
   store <- reactiveValues(uploaded_df = data.frame(), log = list(as.character(Sys.time())))
 
@@ -134,7 +137,7 @@ shinyServer(function(input, output, session) {
   })
 
   # save input and remove downstream dataframes if study design changes
-  observeEvent(input$analysis_design, {
+  observeEvent(input$analysis_design_button_next, {
 
     # save input to store
     store$analysis_design <- input$analysis_design

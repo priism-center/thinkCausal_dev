@@ -136,13 +136,6 @@ show_popup_fitting_BART_waiting <- function(session){
 
 show_popup_welcome <- function(session){
   content <- tags$div(
-    # div(
-    #   style = 'margin: auto; text-align: center;',
-    #   img(style = 'border-radius: 5px; border-color: white; box-shadow: 5px 5px 5px rgba(0,0,0,0.5)',
-    #       src = file.path('img', 'spongebob-welcome.gif'),
-    #       width = "50%")
-    #   ),
-    # br(),br(),
     h2(style = 'margin: auto; text-align: center',
        "Welcome!"),
     br(),
@@ -159,10 +152,34 @@ show_popup_welcome <- function(session){
       ")
     )
   )
-  show_popup(session = session, content,
+  show_popup(session = session, 
+             content,
              size = 'm',
              close_button = shiny::modalButton("Get started"),
              easyClose = TRUE)
+}
+
+show_popup_crash <- function(){
+  content <- tags$div(
+    div(
+      style = 'margin: auto; text-align: center;',
+      img(src = file.path('img', 'error.png'),
+          width = "40%")
+      ),
+    br(),br(),
+    h2(style = 'margin: auto; text-align: center',
+       "Error!"),
+    br(),
+    div(style = 'margin: auto; text-align: center; font-size: 1.4em',
+        HTML(
+          "If this occurs again, please raise an issue on the <a href='https://github.com/gperrett/thinkCausal_dev/issues' target='_blank'>GitHub page</a> if you have any questions</li>"
+        ))
+  )
+  
+  show_popup(session = getDefaultReactiveDomain(), 
+             content,
+             size = 'm',
+             style = "z-index: 99999")
 }
 
 
