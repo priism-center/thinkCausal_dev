@@ -469,12 +469,11 @@ footer a, footer a:hover {
 .bottom-shadow {
   position: sticky;
   bottom: 0;
-  height: 30px;
+  height: 20px;
   width: 100%;
-  -moz-box-shadow: inset 0 -30px 10px -20px #787878;
-  -webkit-box-shadow: inset 0 -30px 10px -20px #787878;
-  box-shadow: inset 0 -30px 10px -20px #787878;
-  opacity: 0.3;
+  -moz-box-shadow: inset 0 -30px 10px -20px #fff;
+  -webkit-box-shadow: inset 0 -30px 10px -20px #fff;
+  box-shadow: inset 0 -30px 10px -20px #fff;
+  opacity: 0.8;
   z-index: 1;
-}
 }
