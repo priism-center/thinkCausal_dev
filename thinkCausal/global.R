@@ -17,7 +17,6 @@ library(dplyr)
 library(ggplot2)
 library(stringr)
 library(purrr)
-library(rpart.plot) # for plotting single regression tree; TODO: move to plotBart?
 
 # for bart
 library(plotBart) # devtools::install_github("joemarlo/plotBart")
