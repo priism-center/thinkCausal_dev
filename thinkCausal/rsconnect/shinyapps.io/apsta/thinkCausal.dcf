@@ -1,0 +1,12 @@
+name: thinkCausal
+title: thinkCausal
+username:
+account: apsta
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5224902
+bundleId: 5305842
+url: https://apsta.shinyapps.io/thinkCausal/
+when: 1638202457.43754
+asMultiple: FALSE
+asStatic: FALSE

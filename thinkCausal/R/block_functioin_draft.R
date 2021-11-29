@@ -53,8 +53,8 @@ fit_blocked_pate <- function(.model, block){
 
 }
 #
-block <- dat[, c('u74', 'u75')]
-fit_blocked_pate(.model, block = block)
+# block <- dat[, c('u74', 'u75')]
+# fit_blocked_pate(.model, block = block)
 #
 # fit_blocked_pate <- function(.model, block){
 #   getPATEEstimate.bart.ppd = function(samples.cate, weights, sigma, samples.obs, samples.cf, n.obs){
