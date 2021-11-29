@@ -1754,7 +1754,7 @@ shinyServer(function(input, output, session) {
     div_id <- 'analysis_moderators_explore_plot'
     show_message_updating(div_id)
 
-
+    # make plot
     moderator_vars <- input$analysis_moderator_vars
     p <- plot_continuous_sub(.model = store$model_results,
                              grouped_on = moderator_vars)
@@ -1769,9 +1769,8 @@ shinyServer(function(input, output, session) {
   })
 
 
-
   # subgroup plots
-  observeEvent(input$anaysis_moderator_fit, {
+  observeEvent(input$analysis_moderator_fit, {
     selected_moderator <- input$plotBart_moderator_vars
     #output$analysis_moderators_explore_plot <- renderPlot({
       # categorical plots
@@ -1780,8 +1779,9 @@ shinyServer(function(input, output, session) {
           output$analysis_moderators_explore_plot <- renderPlot({
             div_id <- 'analysis_moderators_explore_plot'
             show_message_updating(div_id)
-            p <-  plot_moderator_d_density(store$model_results,
-                                           store$verified_df[[paste0('X_', selected_moderator)]])
+
+            p <- plot_moderator_d_density(store$model_results,
+                                          store$verified_df[[paste0('X_', selected_moderator)]])
             p <- p + theme_custom()
 
             # remove overlay
@@ -1794,12 +1794,13 @@ shinyServer(function(input, output, session) {
           output$analysis_moderators_explore_plot <- renderPlot({
           div_id <- 'analysis_moderators_explore_plot'
           show_message_updating(div_id)
+
           p <- plot_moderator_d_linerange(.model = store$model_results,
-                                     moderator = store$verified_df[[paste0('X_', selected_moderator)]])
+                                          moderator = store$verified_df[[paste0('X_', selected_moderator)]])
+          p <- p + theme_custom()
 
           # remove overlay
           close_message_updating(div_id)
-          p <- p + theme_custom()
 
           return(p)
           })
@@ -1812,8 +1813,8 @@ shinyServer(function(input, output, session) {
           output$analysis_moderators_explore_plot <- renderPlot({
           div_id <- 'analysis_moderators_explore_plot'
           show_message_updating(div_id)
-          p <-  plot_moderator_c_loess(store$model_results,
-                                         store$verified_df[[paste0('X_', selected_moderator)]])
+          p <- plot_moderator_c_loess(store$model_results,
+                                      store$verified_df[[paste0('X_', selected_moderator)]])
           p <- p + theme_custom()
 
           # remove overlay
@@ -1826,8 +1827,8 @@ shinyServer(function(input, output, session) {
           output$analysis_moderators_explore_plot <- renderPlot({
           div_id <- 'analysis_moderators_explore_plot'
           show_message_updating(div_id)
-          p <-  plot_moderator_c_pd(store$model_results,
-                                       store$verified_df[[paste0('X_', selected_moderator)]])
+          p <- plot_moderator_c_pd(store$model_results,
+                                   store$verified_df[[paste0('X_', selected_moderator)]])
           p <- p + theme_custom()
 
           # remove overlay
@@ -1857,13 +1858,6 @@ shinyServer(function(input, output, session) {
     }
 
   })
-
-
-
-
-
-
-
 
 
 

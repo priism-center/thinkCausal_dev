@@ -113,8 +113,9 @@ data_page <- tabPanel(
                       ),
                       mainPanel(
                         wellPanel(
-                          style = "overflow-y:scroll; max-height: 400px; background-color: transparent;",
-                          uiOutput(outputId = 'analysis_data_modify_UI')
+                          style = "overflow-y:scroll; max-height: 400px; background-color: transparent; padding: 15px 15px 0 15px;",
+                          uiOutput(outputId = 'analysis_data_modify_UI'),
+                          div(class = 'bottom-shadow')
                         ),
                         hr(style = "height: 1px; background-color: #bfbfbf"),
                         h4("Your data", style = "padding: 0; margin: 0"),

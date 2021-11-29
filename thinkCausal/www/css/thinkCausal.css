@@ -465,3 +465,15 @@ footer {
 footer a, footer a:hover {
   color: white;
 }
+
+.bottom-shadow {
+  position: sticky;
+  bottom: 0;
+  height: 20px;
+  width: 100%;
+  -moz-box-shadow: inset 0 -30px 10px -20px #fff;
+  -webkit-box-shadow: inset 0 -30px 10px -20px #fff;
+  box-shadow: inset 0 -30px 10px -20px #fff;
+  opacity: 0.8;
+  z-index: 1;
+}

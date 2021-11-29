@@ -11,7 +11,7 @@ shinyUI(
         tags$head(tags$base(target = "_blank")),
         
         # load custom CSS files
-        map(list.files('www/css'), function(file) includeCSS(file.path('www', 'css', file))),
+        map(list.files('www/css', pattern = "*.css"), function(file) includeCSS(file.path('www', 'css', file))),
 
         # set main navigation
         tags$div(
