@@ -121,15 +121,14 @@ shinyServer(function(input, output, session) {
       'The <b>',
       name,
       '</b> led to an ',
-      c('<i>increase</i>', '<i>decrease</i>'),
+      '<i>increase/decrease</i>',
       ' of X <b>',
       units,
       '</b> for <b>',
       participants,
       '</b> in this study'
     )
-
-    text_out <- HTML(paste0(text_out, collapse = '<br><br>'))
+    text_out <- HTML(text_out)
 
     return(text_out)
   })
@@ -880,7 +879,7 @@ shinyServer(function(input, output, session) {
 
     p <- tryCatch({
       plot_exploration(
-        .data = store$verified_df, #TODO: formalize sampling?
+        .data = store$verified_df, 
         .plot_type = input$analysis_eda_select_plot_type,
         .x = input$analysis_eda_variable_x,
         .y = input$analysis_eda_variable_y,
@@ -901,10 +900,6 @@ shinyServer(function(input, output, session) {
     # warning = function(e) NULL,
     # error = function(e) NULL
     )
-
-    # TODO: this doesn't catch the error codes
-    # validate(need(is.ggplot(p),
-    #               "Variable selection is not valid. Please try another combination."))
 
     # add theme
     p <- p + theme_custom()
@@ -1135,21 +1130,18 @@ shinyServer(function(input, output, session) {
              width = input$settings_options_ggplotWidth,
              units = 'in',
              device = 'png')
-    })
-
-
-  # run the eda module server. the UI is rendered server side within an observeEvent function
-  # edaServer(id = 'analysis_plots_descriptive', input_data = store$verified_df) #user_data) #
-
+  })
 
 
   # model -------------------------------------------------------------------
+  
+  # create list of moderator combinations
   observeEvent(input$analysis_data_save, {
-
+    
     cols_categorical <- store$column_types$categorical
     X_cols_categorical <- grep("^X_", cols_categorical, value = TRUE)
     cols_categorical_cleaned <- gsub("X_", '', X_cols_categorical)
-
+    
     # update options for random intercept
     updateSelectInput(
       session = session,
@@ -1157,9 +1149,9 @@ shinyServer(function(input, output, session) {
       choices = c("None", cols_categorical_cleaned),
       selected = "None"
     )
-
+    
     # create pre-specified moderator options
-
+    
     # create moderator options
     cols_continuous <- store$column_types$continuous
     X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
@@ -1174,15 +1166,169 @@ shinyServer(function(input, output, session) {
       mutate(mod = paste(V1, V2, sep = ' x ')) %>%
       pull(mod)
     X_mods <- c(gsub("X_", '', X_cols), X_mods)
-
+    
     updateSelectInput(session = session,
                       inputId = 'analysis_model_moderator_vars',
                       choices = X_mods,
                       selected = NULL)
-
+    
   })
-
-
+  
+  # when user runs the model, take a number of actions
+  observeEvent(input$analysis_model_button_next, {
+    
+    # launch popup if data is not yet selected
+    if (!is.data.frame(store$verified_df)) {
+      show_popup_model_no_data_warning(session)
+    }
+    
+    observeEvent(input$analysis_model_button_popup, {
+      close_popup(session = session)
+      updateNavbarPage(session, inputId = "nav", selected = "Data")
+      updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
+    })
+    
+    # spawn red text if selection isn't made
+    if (isTRUE(is.null(input$analysis_model_radio_design))) {
+      output$analysis_model_text_design_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    if (isTRUE(is.null(input$analysis_model_radio_estimand))) {
+      output$analysis_model_text_estimand_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    if (isTRUE(is.null(input$analysis_model_radio_support))) {
+      output$analysis_model_text_support_noinput <- renderUI({
+        html_out <- tags$span(style = 'color: red;',
+                              "Please make a selection",
+                              br(), br())
+        return(html_out)
+      })
+    }
+    
+    # stop here if data hasn't been uploaded and selected
+    validate_data_verified(store)
+    
+    # stop here if inputs aren't found
+    # TODO
+    # req(input$)
+    # print('Dataframe going into bartC: \n')
+    # print(store$verified_df)
+    # print('Column types of dataframe going into bartC: \n')
+    # print(store$verified_df  %>% summarize_all(class))
+    
+    # remove current model if it exists
+    store$model_results <- NULL
+    store$model_fit_good <- NULL
+    
+    # insert popup to notify user of model fit process
+    # TODO: estimate the time remaining empirically?
+    # TODO: show console redirect
+    show_popup_fitting_BART_waiting(session)
+    
+    
+    # pull the response, treatment, and confounders variables out of the df
+    # treatment_v <- store$verified_df[, 1]
+    # response_v <- store$verified_df[, 2]
+    # confounders_mat <- as.matrix(store$verified_df[, 3:ncol(store$verified_df)])
+    # colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
+    common_support_rule <- input$analysis_over_ride_common_support
+    if (input$analysis_model_support == 'No') common_support_rule <- 'none'
+    
+    # run model
+    # store$console_message <- capture.output({
+    store$model_results <- tryCatch({
+      fit_bart(.data = store$verified_df,
+               support = common_support_rule,
+               ran.eff = input$analysis_random_intercept,
+               .estimand = base::tolower(input$analysis_model_estimand))
+      
+    },
+    # warning = function(w) NULL,
+    error = function(e) NULL
+    )
+    # })
+    # print(store$console_message)
+    
+    # close the alert
+    # shinyWidgets::closeSweetAlert()
+    close_popup(session = session)
+    
+    # error handling
+    # TODO: refine the popup; probably should pass the bart error to the popup somehow
+    # TODO: is there a better way to detect if the model fit?
+    did_model_fit <- !isTRUE(is.null(store$model_results))
+    if (!did_model_fit){
+      store$model_fit_good <- FALSE
+      show_popup(session = session,
+                 'Model did not fit',
+                 close_button = shiny::modalButton("Close"))
+    }
+    req(did_model_fit)
+    
+    # store the results
+    # TODO: need way to test if actually have a good fit
+    store$model_fit_good <- TRUE
+    
+    # # update select on moderators page
+    updateSelectInput(session = session,
+                      inputId = 'analysis_moderator_vars',
+                      choices = input$analysis_model_moderator_vars,
+                      selected = input$analysis_model_moderator_vars[1])
+    
+    # add to log
+    log_event <- paste0(
+      'Ran BART model with following specification: \n',
+      '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
+      '\t', 'Causal estimand: ', input$analysis_model_radio_estimand, '\n',
+      '\t', 'Common support rule: ', input$analysis_model_radio_support, '\n',
+      '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
+      '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
+      '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
+      '\t', 'Good model fit: ', store$model_fit_good
+    )
+    store$log <- append(store$log, log_event)
+    
+    # common support warning
+    common_support_check <- check_common_support(store$model_results)
+    
+    # display popup if any observations would be removed
+    any_points_removed <- common_support_check$proportion_removed_sd > 0 | common_support_check$proportion_removed_chi > 0
+    if(any_points_removed & input$analysis_model_support == 'No'){
+      show_popup_common_support_warning(session = session, common_support_check = common_support_check)
+    }
+    
+    # nav buttons within the popup
+    # TODO: the 'see common support diagnostics doesn't go anywhere
+    observeEvent(input$common_support_new_rule, {
+      updateNavbarPage(session, inputId = "nav", selected = "Model")
+      close_popup(session = session)
+    })
+    observeEvent(input$common_support_continue, {
+      updateNavbarPage(session, inputId = "nav", selected = "Results")
+      close_popup(session = session)
+    })
+    
+    # move to next page based on model fit
+    no_points_removed <- common_support_check$proportion_removed_sd == 0 | common_support_check$proportion_removed_chi == 0
+    if(no_points_removed & input$analysis_model_support == 'No'){
+      updateNavbarPage(session, inputId = "nav", selected = "Results")
+    }
+    
+    if( input$analysis_model_support != 'No'){
+      updateNavbarPage(session, inputId = "nav", selected = "Results")
+    }
+    
+  })
+  
 
   # diagnostics -------------------------------------------------------------
 
@@ -1215,13 +1361,13 @@ shinyServer(function(input, output, session) {
 
     }
   })
-
+  
   # trace plot
-  output$analysis_diagnostics_plot_trace <- renderPlot({
-
+  analysis_diagnostics_plot_trace <- reactive({
+    
     # stop here if model isn't fit yet
     validate_model_fit(store)
-
+    
     # call function
     p <- plotBart::plot_trace(.model = store$model_results)
 
@@ -1230,9 +1376,10 @@ shinyServer(function(input, output, session) {
 
     return(p)
   })
+  output$analysis_diagnostics_plot_trace <- renderPlot(analysis_diagnostics_plot_trace())
 
   # common support plot
-  output$analysis_diagnostics_plot_support <- renderPlot({
+  analysis_diagnostics_plot_support <- reactive({
 
     # stop here if model isn't fit yet
     validate_model_fit(store)
@@ -1251,275 +1398,35 @@ shinyServer(function(input, output, session) {
 
     return(p)
   })
-
-
-  # # specify model -----------------------------------------------------------
-  #
-  # # pop ups for estimand and common support help
-  # observeEvent(input$analysis_model_radio_estimand, {
-  #
-  #   req(input$analysis_model_radio_estimand)
-  #
-  #   if(input$analysis_model_estimand == 'Unsure'){
-  #     show_popup_learn_estimand(session)
-  #   }
-  # })
-  #
-  # observeEvent(input$analysis_model_support, {
-  #
-  #   req(input$analysis_model_radio_support)
-  #
-  #   if (input$analysis_model_radio_support == 'Unsure'){
-  #     show_popup_learn_common_support(session)
-  #   }
-  # })
-  #
-  # observeEvent(input$learn_estimand_no, {
-  #   close_popup(session = session)
-  # })
-  #
-  # observeEvent(input$learn_common_support_no, {
-  #   close_popup(session = session)
-  # })
-  #
-  # observeEvent(input$learn_estimand_yes, {
-  #   close_popup(session = session)
-  #   # add updateTabsetPanel to the page of estimand explanation
-  # })
-  #
-  # observeEvent(input$learn_common_support_yes, {
-  #   close_popup(session = session)
-  #   # add updateTabsetPanel to the page of common support explanation
-  # })
-  #
-  #
-  # # render text output to summarize the users inputs
-  # output$analysis_model_summary <- renderText({
-  #
-  #   # extract inputs
-  #   design <- input$analysis_model_radio_design
-  #   estimand <- input$analysis_model_radio_estimand
-  #   support <- input$analysis_model_radio_support
-  #   if (is.null(design)) design <- "None"
-  #   if (is.null(estimand)) estimand <- "None"
-  #   if (is.null(support)) support <- "None"
-  #
-  #   # grab text from object
-  #   design_text <- analysis_model_text$design[[design]]
-  #   estimand_text <- analysis_model_text$estimand[[estimand]]
-  #   support_text <- analysis_model_text$support[[support]]
-  #
-  #   # paste together all the text
-  #   custom_text <- paste0(
-  #     "<h3>Design</h3>",
-  #     design_text,
-  #     "<br><br>",
-  #     "<h3>Estimand</h3>",
-  #     estimand_text,
-  #     "<br><br>",
-  #     "<h3>Common Support</h3>",
-  #     support_text
-  #   )
-  #
-  #   return(custom_text)
-  # })
-  #
-  # # render text below the radio buttons
-  # output$analysis_model_text_design <- renderUI({
-  #
-  #   if (isTRUE(input$analysis_model_radio_design == 'quasi')){
-  #     html_out <- tags$span(
-  #       style = 'color: red;',
-  #       "Natural experiment design is not currently supported",
-  #       br(), br()
-  #     )
-  #     return(html_out)
-  #   }
-  #
-  #   html_out <- ''
-  #   return(html_out)
-  # })
-  #
-  # # remove no text UI spawns if user makes a selection
-  # observeEvent(input$analysis_model_radio_design, {
-  #   removeUI('#analysis_model_text_design_noinput')
-  # })
-  # observeEvent(input$analysis_model_radio_estimand, {
-  #   removeUI('#analysis_model_text_estimand_noinput')
-  # })
-  # observeEvent(input$analysis_model_radio_support, {
-  #   removeUI('#analysis_model_text_support_noinput')
-  # })
-
-  # render the console out (for the popup)
-  # store$console_message <- 'hello'
-  # output$console_output <- renderPrint(print(store$console_message))
-
-  # when user runs the model, take a number of actions
-  observeEvent(input$analysis_model_button_next, {
-
-    # launch popup if data is not yet selected
-    if (!is.data.frame(store$verified_df)) {
-      show_popup_model_no_data_warning(session)
-    }
-
-    observeEvent(input$analysis_model_button_popup, {
-      close_popup(session = session)
-      updateNavbarPage(session, inputId = "nav", selected = "Data")
-      updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
-    })
-
-    # spawn red text if selection isn't made
-    if (isTRUE(is.null(input$analysis_model_radio_design))) {
-      output$analysis_model_text_design_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    if (isTRUE(is.null(input$analysis_model_radio_estimand))) {
-      output$analysis_model_text_estimand_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    if (isTRUE(is.null(input$analysis_model_radio_support))) {
-      output$analysis_model_text_support_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-
-    # stop here if data hasn't been uploaded and selected
-    validate_data_verified(store)
-
-    # stop here if inputs aren't found
-    # TODO
-    # req(input$)
-    # print('Dataframe going into bartC: \n')
-    # print(store$verified_df)
-    # print('Column types of dataframe going into bartC: \n')
-    # print(store$verified_df  %>% summarize_all(class))
-
-    # remove current model if it exists
-    store$model_results <- NULL
-    store$model_fit_good <- NULL
-
-    # insert popup to notify user of model fit process
-    # TODO: estimate the time remaining empirically?
-    # TODO: show console redirect
-    # shinyWidgets::show_alert(
-    #   title = 'Fitting BART model...',
-    #   text = tags$div(
-    #     img(src = file.path('img', 'tree.gif'),
-    #         width = "50%"),
-    #     h5("...sometimes this takes a while..."),
-    #   ),
-    #   html = TRUE,
-    #   btn_labels = NA,
-    #   closeOnClickOutside = FALSE
-    # )
-    show_popup_fitting_BART_waiting(session)
-
-
-    # pull the response, treatment, and confounders variables out of the df
-    # treatment_v <- store$verified_df[, 1]
-    # response_v <- store$verified_df[, 2]
-    # confounders_mat <- as.matrix(store$verified_df[, 3:ncol(store$verified_df)])
-    # colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
-    common_support_rule <- input$analysis_over_ride_common_support
-    if (input$analysis_model_support == 'No') common_support_rule <- 'none'
-
-    # run model
-    # store$console_message <- capture.output({
-    store$model_results <- tryCatch({
-      fit_bart(.data = store$verified_df,
-               support = common_support_rule,
-               ran.eff = input$analysis_random_intercept,
-               .estimand = base::tolower(input$analysis_model_estimand))
-
+  output$analysis_diagnostics_plot_support <- renderPlot(analysis_diagnostics_plot_support())
+  
+  # download plot
+  output$download_diagnostic_plot <- downloadHandler(
+    filename = function() {
+      switch(
+        req(input$analysis_diagnostics_tabs),
+        "Trace plot" = 'diagnostic_trace_plot.png',
+        "Common support" = 'diagnostic_common_support_plot.png'
+      )
     },
-    # warning = function(w) NULL,
-    error = function(e) NULL
-    )
-    # })
-    # print(store$console_message)
+    content = function(file) {
 
-    # close the alert
-    # shinyWidgets::closeSweetAlert()
-    close_popup(session = session)
+      # get the plot that is on the active tab
+      active_plot <- switch(
+        req(input$analysis_diagnostics_tabs),
+        'Trace plot' = analysis_diagnostics_plot_trace(),
+        'Common support' = analysis_diagnostics_plot_support()
+      )
 
-    # error handling
-    # TODO: refine the popup; probably should pass the bart error to the popup somehow
-    # TODO: is there a better way to detect if the model fit?
-    did_model_fit <- !isTRUE(is.null(store$model_results))
-    if (!did_model_fit){
-      store$model_fit_good <- FALSE
-      show_popup(session = session,
-                 'Model did not fit',
-                 close_button = shiny::modalButton("Close"))
+      # write out plot
+      ggsave(file,
+             plot = active_plot,
+             height = input$settings_options_ggplotHeight,
+             width = input$settings_options_ggplotWidth,
+             units = 'in',
+             device = 'png')
     }
-    req(did_model_fit)
-
-    # store the results
-    # TODO: need way to test if actually have a good fit
-    store$model_fit_good <- TRUE
-
-    # # update select on moderators page
-    updateSelectInput(session = session,
-                      inputId = 'analysis_moderator_vars',
-                      choices = input$analysis_model_moderator_vars,
-                      selected = input$analysis_model_moderator_vars[1])
-
-    # add to log
-    log_event <- paste0(
-      'Ran BART model with following specification: \n',
-      '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
-      '\t', 'Causal estimand: ', input$analysis_model_radio_estimand, '\n',
-      '\t', 'Common support rule: ', input$analysis_model_radio_support, '\n',
-      '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
-      '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
-      '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
-      '\t', 'Good model fit: ', store$model_fit_good
-    )
-    store$log <- append(store$log, log_event)
-
-    # common support warning
-    common_support_check <- check_common_support(store$model_results)
-
-    # display popup if any observations would be removed
-    any_points_removed <- common_support_check$proportion_removed_sd > 0 | common_support_check$proportion_removed_chi > 0
-    if(any_points_removed & input$analysis_model_support == 'No'){
-      show_popup_common_support_warning(session = session, common_support_check = common_support_check)
-    }
-
-    # nav buttons within the popup
-    # TODO: the 'see common support diagnostics doesn't go anywhere
-    observeEvent(input$common_support_new_rule, {
-      updateNavbarPage(session, inputId = "nav", selected = "Model")
-      close_popup(session = session)
-    })
-    observeEvent(input$common_support_continue, {
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
-      close_popup(session = session)
-    })
-
-    # move to next page based on model fit
-    no_points_removed <- common_support_check$proportion_removed_sd == 0 | common_support_check$proportion_removed_chi == 0
-    if(no_points_removed & input$analysis_model_support == 'No'){
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
-    }
-
-    if( input$analysis_model_support != 'No'){
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
-    }
-
-  })
+  )
 
 
   # results -----------------------------------------------------------------
@@ -1545,7 +1452,7 @@ shinyServer(function(input, output, session) {
   # TODO: render the interpretation text
 
   # PATE plot
-  output$analysis_results_plot_PATE <- renderPlot({
+  analysis_results_plot_PATE <- reactive({
 
     # stop here if model isn't fit yet
     validate_model_fit(store)
@@ -1580,87 +1487,22 @@ shinyServer(function(input, output, session) {
 
     return(p)
   })
-
-  # reproducible script
-  # TODO: this hasn't been tested
-  reproducible_script <- reactive({
-
-    # these probably should be stored in realtime and then extracted here
-    # this would prevent issues if user goes back and changes something but doesn't save it
-
-    # file inputs
-    uploaded_file_name <- input$analysis_data_upload$name
-    uploaded_file_type <-  tools::file_ext(uploaded_file_name)
-    uploaded_file_header <- input$analysis_data_header
-    uploaded_file_delim <- input$analysis_data_delim_value
-
-    # get the selected columns and names
-    selected_columns <- colnames(store$col_assignment_df)
-    column_names <- colnames(store$user_modified_df)
-
-    # TODO: add data type changes
-    change_data_type <- group_list$data
-
-    # model
-    estimand <- base::tolower(input$analysis_model_radio_estimand)
-    common_support <- input$analysis_model_radio_support
-
-    # create the script
-    reproducible_script <- create_script(
-      uploaded_file_name = uploaded_file_name,
-      uploaded_file_type = uploaded_file_type,
-      uploaded_file_header = uploaded_file_header,
-      uploaded_file_delim = uploaded_file_delim,
-      selected_columns = selected_columns,
-      column_names = column_names,
-      change_data_type = change_data_type,
-      estimand = estimand,
-      common_support = common_support
-    )
-
-    return(reproducible_script)
-  })
-
-  # download reproducible script
-  output$analysis_results_button_download <- downloadHandler(
-    filename <-  function() {
-      time <- gsub("-|:| ", "", Sys.time())
-      paste0(time, '_thinkCausal_script.zip')
-    },
-    content <- function(filename){
-
-      # go to a temp dir to avoid permission issues
-      owd <- setwd(tempdir())
-      on.exit(setwd(owd))
-      files <- NULL;
-
-      # create file containing the clean_auto_convert_logicals function
-      functionFile <- file("clean_auto_convert_logicals.R")
-      writeLines(attributes(attributes(clean_auto_convert_logicals)$srcref)$srcfile$lines,
-                 functionFile)
-      close(functionFile)
-      files <- "clean_auto_convert_logicals.R"
-
-      # create file containing the clean_dummies_to_categorical function
-      functionFile <- file("clean_dummies_to_categorical.R")
-      writeLines(attributes(attributes(clean_dummies_to_categorical)$srcref)$srcfile$lines,
-                 functionFile)
-      close(functionFile)
-      files <- c("clean_dummies_to_categorical.R", files)
-
-      # create the script file
-      fileConn <- file("thinkCausal_script.R")
-      writeLines(reproducible_script(), fileConn)
-      close(fileConn)
-      files <- c('thinkCausal_script.R', files)
-
-      # create the zip file
-      zip(filename, files)
+  output$analysis_results_plot_PATE <- renderPlot(analysis_results_plot_PATE())
+  output$download_PATE_plot <- downloadHandler(
+    filename = "PATE_plot.png",
+    content = function(file) {
+      ggsave(file,
+             plot = analysis_results_plot_PATE(),
+             height = input$settings_options_ggplotHeight,
+             width = input$settings_options_ggplotWidth,
+             units = 'in',
+             device = 'png')
     }
   )
-
+  
 
   # moderators  -------------------------------------------------------------
+  
   # update options
   observeEvent(input$analysis_data_save, {
     cols_categorical <- store$column_types$categorical
@@ -1679,12 +1521,31 @@ shinyServer(function(input, output, session) {
     updateSelectInput(inputId = "plotBart_moderator_vars",
                       choices = c('',moderator_options))
   })
+  
+  # render plot type options
+  observeEvent(input$plotBart_moderator_vars, {
+    if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$categorical)){
+      output$sub_group_ui <- renderUI({
+        selectInput('categorical_exploratory_choice',
+                    label = 'Choose a plot type:',
+                    choices = c('','Overlaid density', 'Verticle intervals'))})
+    }
+    
+    if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$continuous)){
+      output$sub_group_ui <- renderUI({
+        selectInput('continuous_exploratory_choice',
+                    label = 'Choose a plot type:',
+                    choices = c('','Loess', 'Partial dependency'))})
+    }
+    
+  })
 
   # ICATE plots
-  output$icate <- renderPlot({
+  analysis_moderators_icate_plot <- reactive({
 
     # stop here if model isn't fit yet
     validate_model_fit(store)
+    
     if(input$icate_type == 'histogram'){
       if(input$plotBart_ICATE_color != 'None'){
         group <- store$verified_df[[paste0('X_', input$plotBart_ICATE_color)]]
@@ -1696,7 +1557,6 @@ shinyServer(function(input, output, session) {
                       group.by = group,
                       nbins = input$plotBart_ICATE_n_bins,
                       .alpha = input$plotBart_ICATE_alpha)
-
       # add theme
       p <- p + theme_custom()
     }
@@ -1716,7 +1576,6 @@ shinyServer(function(input, output, session) {
         color.by <- NULL
       }
 
-
       p <- plot_waterfall(store$model_results,
                           .order = order,
                           .color = color.by)
@@ -1727,16 +1586,46 @@ shinyServer(function(input, output, session) {
 
     if(input$icate_type == 'tree'){
       p <- plot_moderator_search(store$model_results, depth = input$plotBart_tree_depth)
-
-      # add theme
-      p <- p + theme_custom()
     }
+    
     return(p)
   })
-
+  output$analysis_moderators_icate_plot <- renderPlot(analysis_moderators_icate_plot())
+  output$download_ICATE_plot <- downloadHandler(
+    filename = function(){
+      switch(
+        input$icate_type,
+        "tree" = "ICATE_tree_plot.png",
+        "histogram" = "ICATE_histogram_plot.png",
+        "ordered" = "ICATE_ordered_plot.png"
+      )
+    },
+    content = function(file) {
+      
+      if (input$icate_type == 'tree'){
+        # TODO: this doesn't work
+        grDevices::png(
+          filename = file, 
+          height = input$settings_options_ggplotHeight,
+          width = input$settings_options_ggplotWidth,
+          units = 'in',
+          res = 300
+        )
+        analysis_moderators_icate_plot()
+        dev.off()
+      } else {
+        ggsave(file,
+               plot = analysis_moderators_icate_plot(),
+               height = input$settings_options_ggplotHeight,
+               width = input$settings_options_ggplotWidth,
+               units = 'in',
+               device = 'png')
+      }
+    }
+  )
 
   # plot the moderators
-  output$analysis_moderators_explore_plot <- renderPlot({
+  analysis_moderators_explore_plot <- reactive({
 
     # stop here if model isn't fit yet
     validate_model_fit(store)
@@ -1761,9 +1650,21 @@ shinyServer(function(input, output, session) {
 
     return(p)
   })
-
+  output$analysis_moderators_explore_plot <- renderPlot(analysis_moderators_explore_plot())
+  output$download_ESA_plot <- downloadHandler(
+    filename = "moderators_plot.png",
+    content = function(file) {
+      ggsave(file,
+             plot = analysis_moderators_explore_plot(),
+             height = input$settings_options_ggplotHeight,
+             width = input$settings_options_ggplotWidth,
+             units = 'in',
+             device = 'png')
+    }
+  )
 
   # subgroup plots
+  # TODO: this is a mess and prevents plot downloading; Joe to rewrite
   observeEvent(input$analysis_moderator_fit, {
     selected_moderator <- input$plotBart_moderator_vars
     #output$analysis_moderators_explore_plot <- renderPlot({
@@ -1834,25 +1735,6 @@ shinyServer(function(input, output, session) {
       }
     #})
   })
-
-
-  observeEvent(input$plotBart_moderator_vars, {
-    if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$categorical)){
-      output$sub_group_ui <- renderUI({
-        selectInput('categorical_exploratory_choice',
-                    label = 'Choose a plot type:',
-                    choices = c('','Overlaid density', 'Verticle intervals'))})
-    }
-
-    if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$continuous)){
-      output$sub_group_ui <- renderUI({
-        selectInput('continuous_exploratory_choice',
-                    label = 'Choose a plot type:',
-                    choices = c('','Loess', 'Partial dependency'))})
-    }
-
-  })
-
 
 
   # concepts ----------------------------------------------------------------
@@ -1928,6 +1810,87 @@ shinyServer(function(input, output, session) {
     return(p)
   })
 
+
+  # script ------------------------------------------------------------------
+
+  # reproducible script
+  # TODO: this hasn't been tested
+  reproducible_script <- reactive({
+    
+    # these probably should be stored in realtime and then extracted here
+    # this would prevent issues if user goes back and changes something but doesn't save it
+    
+    # file inputs
+    uploaded_file_name <- input$analysis_data_upload$name
+    uploaded_file_type <-  tools::file_ext(uploaded_file_name)
+    uploaded_file_header <- input$analysis_data_header
+    uploaded_file_delim <- input$analysis_data_delim_value
+    
+    # get the selected columns and names
+    selected_columns <- colnames(store$col_assignment_df)
+    column_names <- colnames(store$user_modified_df)
+    
+    # TODO: add data type changes
+    change_data_type <- group_list$data
+    
+    # model
+    estimand <- base::tolower(input$analysis_model_radio_estimand)
+    common_support <- input$analysis_model_radio_support
+    
+    # create the script
+    reproducible_script <- create_script(
+      uploaded_file_name = uploaded_file_name,
+      uploaded_file_type = uploaded_file_type,
+      uploaded_file_header = uploaded_file_header,
+      uploaded_file_delim = uploaded_file_delim,
+      selected_columns = selected_columns,
+      column_names = column_names,
+      change_data_type = change_data_type,
+      estimand = estimand,
+      common_support = common_support
+    )
+    
+    return(reproducible_script)
+  })
+  
+  # download reproducible script
+  output$analysis_results_button_download <- downloadHandler(
+    filename <-  function() {
+      time <- gsub("-|:| ", "", Sys.time())
+      paste0(time, '_thinkCausal_script.zip')
+    },
+    content <- function(filename){
+      
+      # go to a temp dir to avoid permission issues
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      files <- NULL;
+      
+      # create file containing the clean_auto_convert_logicals function
+      functionFile <- file("clean_auto_convert_logicals.R")
+      writeLines(attributes(attributes(clean_auto_convert_logicals)$srcref)$srcfile$lines,
+                 functionFile)
+      close(functionFile)
+      files <- "clean_auto_convert_logicals.R"
+      
+      # create file containing the clean_dummies_to_categorical function
+      functionFile <- file("clean_dummies_to_categorical.R")
+      writeLines(attributes(attributes(clean_dummies_to_categorical)$srcref)$srcfile$lines,
+                 functionFile)
+      close(functionFile)
+      files <- c("clean_dummies_to_categorical.R", files)
+      
+      # create the script file
+      fileConn <- file("thinkCausal_script.R")
+      writeLines(reproducible_script(), fileConn)
+      close(fileConn)
+      files <- c('thinkCausal_script.R', files)
+      
+      # create the zip file
+      zip(filename, files)
+    }
+  )
+  
 
   # log ---------------------------------------------------------------------
 

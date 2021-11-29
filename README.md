@@ -5,7 +5,7 @@
 [![last commit](https://img.shields.io/github/last-commit/gperrett/thinkCausal_dev?style=flat-square)](https://github.com/gperrett/thinkCausal_dev/commits/master)
 <!-- badges: end -->
 
-thinkCausal is federally funded project devoted to building scaffolded causal inference software implementing Bayesian Additive Regression Trees.
+thinkCausal is federally funded project devoted to building scaffolded causal inference software implementing Bayesian Additive Regression Trees. You can find a live, beta version [here](https://apsta.shinyapps.io/thinkCausal/).
 
 <br>
 <p align="center">

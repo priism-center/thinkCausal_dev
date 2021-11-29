@@ -12,6 +12,8 @@ diagnostics_page <- tabPanel(
                     onclick = "openHelpPage('Concept2')",
                     'What are these plots telling me?'),
         br(),br(),
+        downloadButton('download_diagnostic_plot', label = "Download plot"),
+        br(), br(),
         uiOutput(outputId = 'analysis_diagnosis_buttons_ui'),
         br(),
         create_progress_bar(6/7*100)

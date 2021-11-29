@@ -59,6 +59,8 @@ remove_downstream_data <- function(store, page = NULL){
   # always remove these
   store$verified_df <- NULL
   store$column_types <- NULL
+  store$model_results <- NULL
+  store$model_fit_good <- NULL
   
   return(store)
 }

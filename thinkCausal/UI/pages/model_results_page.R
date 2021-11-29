@@ -48,6 +48,8 @@ results_page <- tabPanel(
                           onclick = "openHelpPage('Concept2')",
                           'What is this plot telling me?'),
               br(), br(),
+              downloadButton('download_PATE_plot', label = "Download plot"),
+              br(), br(),
               actionButton(inputId = "analysis_results_button_back",
                            label = "See diagnostics"),
               br(),br(),

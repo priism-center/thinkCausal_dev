@@ -60,6 +60,8 @@ moderator_page <- tabPanel(
                       onclick = "openHelpPage('Concept3')",
                       'What is this plot telling me?'),
           br(),br(),
+          downloadButton('download_ICATE_plot', label = "Download plot"),
+          br(), br(),
           div(class = 'backNextContainer',
               actionButton(inputId = 'analysis_moderator_icate_button_back',
                            label = 'Back'),
@@ -68,7 +70,7 @@ moderator_page <- tabPanel(
         ),
         mainPanel(
           br(),
-          plotOutput(outputId = "icate",
+          plotOutput(outputId = "analysis_moderators_icate_plot",
                      height = 500)
         )
       )),
@@ -81,13 +83,11 @@ moderator_page <- tabPanel(
           br(),
           selectInput(inputId = 'plotBart_moderator_vars',
                       label = 'Subgroup analysis by:',
-                      multiple = F,
+                      multiple = FALSE,
                       choices = NULL,
                       selected = NULL),
           br(),
-
           uiOutput(outputId = "sub_group_ui"),
-
           br(),
           actionButton(inputId = 'analysis_moderator_fit',
                        label = 'Analyze subgroup'),
@@ -98,6 +98,8 @@ moderator_page <- tabPanel(
                       'What is this plot telling me?'),
 
           br(),br(),
+          downloadButton('download_ESA_plot', label = "Download plot"),
+          br(), br(),
           div(class = 'backNextContainer',
               actionButton(inputId = 'analysis_moderator_analyses_button_back',
                            label = 'Back'),
