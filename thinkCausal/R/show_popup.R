@@ -136,13 +136,13 @@ show_popup_fitting_BART_waiting <- function(session){
 
 show_popup_welcome <- function(session){
   content <- tags$div(
-    div(
-      style = 'margin: auto; text-align: center;', 
-      img(style = 'border-radius: 5px; border-color: white; box-shadow: 5px 5px 5px rgba(0,0,0,0.5)',
-          src = file.path('img', 'spongebob-welcome.gif'),
-          width = "50%")
-      ),
-    br(),br(),
+    # div(
+    #   style = 'margin: auto; text-align: center;',
+    #   img(style = 'border-radius: 5px; border-color: white; box-shadow: 5px 5px 5px rgba(0,0,0,0.5)',
+    #       src = file.path('img', 'spongebob-welcome.gif'),
+    #       width = "50%")
+    #   ),
+    # br(),br(),
     h2(style = 'margin: auto; text-align: center',
        "Welcome!"),
     br(),
@@ -155,11 +155,11 @@ show_popup_welcome <- function(session){
           <li>We do not save your data so if you leave and come back, you'll have to start from the beginning</li>
           <li>thinkCausal is still in beta and we'll be making updates over the coming months</li>
           <li>Please feel free to reach out on the <a href='https://github.com/gperrett/thinkCausal_dev' target='_blank'>GitHub page</a> if you have any questions</li>
-        </ul> 
+        </ul>
       ")
     )
   )
-  show_popup(session = session, content, 
+  show_popup(session = session, content,
              size = 'm',
              close_button = shiny::modalButton("Get started"),
              easyClose = TRUE)
