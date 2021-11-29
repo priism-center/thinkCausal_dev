@@ -100,7 +100,7 @@ moderator_page <- tabPanel(
           br(),br(),
           div(class = 'backNextContainer',
               actionButton(inputId = 'analysis_moderator_analyses_button_back',
-                           label = 'Back to tree'),
+                           label = 'Back'),
               actionButton(inputId = 'analysis_moderator_analyses_button_results',
                            label = 'Back to model results')
           ),

@@ -79,16 +79,10 @@ shinyServer(function(input, output, session) {
     updateNavbarPage(session, inputId = "nav", selected = "Results")
   })
   observeEvent(input$analysis_moderator_icate_button_next, {
-    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE Regression Tree")
-  })
-  observeEvent(input$analysis_moderator_tree_button_back, {
-    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE")
-  })
-  observeEvent(input$analysis_moderator_tree_button_next, {
-    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "Subgroup Analyses")
+    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "Exploratory Subgroup Analyses")
   })
   observeEvent(input$analysis_moderator_analyses_button_back, {
-    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE Regression Tree")
+    updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE")
   })
   observeEvent(input$analysis_moderator_analyses_button_results, {
     updateNavbarPage(session, inputId = "nav", selected = "Results")
