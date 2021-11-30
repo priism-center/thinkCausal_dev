@@ -23,7 +23,7 @@ Cleans up strings for use as column names in dataframes. Makes the following cha
 }
 }
 \examples{
-.names <- c("yes", "TRUE", "nope\%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye', '')
+.names <- c("yes", "TRUE", "nope\%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye', '', 'no', 'no')
 clean_names(.names)
 }
 \author{

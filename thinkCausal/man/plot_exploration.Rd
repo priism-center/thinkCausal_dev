@@ -24,7 +24,7 @@ plot_exploration(
 )
 }
 \arguments{
-\item{.data}{typically store$selected_df}
+\item{.data}{typically store$verified_df}
 
 \item{.plot_type}{one of c("Pairs", 'Scatter', 'Histogram', 'Density', 'Boxplot')}
 

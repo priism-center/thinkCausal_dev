@@ -18,7 +18,7 @@
 #'
 #' @importFrom stringr str_replace_all
 #' @examples
-#' .names <- c("yes", "TRUE", "nope%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye', '')
+#' .names <- c("yes", "TRUE", "nope%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye', '', 'no', 'no')
 #' clean_names(.names)
 clean_names <- function(.names){
   
@@ -47,9 +47,21 @@ clean_names <- function(.names){
     return(string)
   }))
   
-  # replace blanks with 'BLANK_i'
-  blanks <- .names == ''
-  .names[blanks] <- paste0('BLANK_', 1:sum(blanks))
+  # replace blanks with 'BLANK'
+  .names[.names == ''] <- "BLANK"
+  
+  # add trailing numbers to duplicate names
+  for (name in .names){
+    these_names <- .names[.names == name]
+    if (length(these_names) > 1){
+      new_names <- paste0(these_names, paste0("_", seq_along(these_names)))
+      .names[.names == name] <- new_names
+    }
+  }
   
   return(.names)
 }
+
+
+
+
