@@ -1818,8 +1818,7 @@ shinyServer(function(input, output, session) {
     updateNavbarPage(session, inputId = "nav", selected = "All concepts")
   })
   observeEvent(input$welcome_link_Analysis, {
-    updateNavbarPage(session, inputId = "nav", selected = "Data")
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
+    updateNavbarPage(session, inputId = "nav", selected = "Design")
   })
 
 

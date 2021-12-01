@@ -19,15 +19,6 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_post_treatment"),
-          text = create_info_icon(
-            label = strong("Post treatment variables"),
-            text = "All covariates that were measured after participants recived the treatment"
-          ),
-          labels = NULL,
-          options = sortable_options(multiDrag = TRUE)
-        ),
-        add_rank_list(
           input_id = paste0(ns_prefix, "_dragdrop_treatment"),
           text = strong("Treatment"),
           labels = auto_columns$Z,
@@ -40,9 +31,18 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_post_treatment"),
+          text = create_info_icon(
+            label = strong("Post-treatment variables to exclude from analysis"),
+            text = "All variables that could potentially be affected by the treatment"
+          ),
+          labels = NULL,
+          options = sortable_options(multiDrag = TRUE)
+        ),
+        add_rank_list(
           input_id = paste0(ns_prefix, "_dragdrop_delete"),
           text = create_info_icon(
-            label = strong("Exclude these variables"),
+            label = strong("ID or index variables to exclude from analysis"),
             text = "Exclude index or ID variables in addition to extraneous variables"
           ),
           labels = auto_columns$ID,
@@ -66,15 +66,6 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_post_treatment"),
-          text = create_info_icon(
-            label = strong("Post treatment variables"),
-            text = "All covariates that were measured after participants recived the treatment"
-          ),
-          labels = NULL,
-          options = sortable_options(multiDrag = TRUE)
-        ),
-        add_rank_list(
           input_id = paste0(ns_prefix, "_dragdrop_block"),
           text = strong("Blocking variable(s)"),
           labels = NULL,
@@ -93,9 +84,18 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
+          input_id = paste0(ns_prefix, "_dragdrop_post_treatment"),
+          text = create_info_icon(
+            label = strong("Post-treatment variables to exclude from analysis"),
+            text = "All variables that could potentially be affected by the treatment"
+          ),
+          labels = NULL,
+          options = sortable_options(multiDrag = TRUE)
+        ),
+        add_rank_list(
           input_id = paste0(ns_prefix, "_dragdrop_delete"),
           text = create_info_icon(
-            label = strong("Exclude these variables"),
+            label = strong("ID or index variables to exclude from analysis"),
             text = "Exclude index or ID variables in addition to extraneous variables"
           ),
           labels = auto_columns$ID,
