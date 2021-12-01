@@ -7,8 +7,14 @@ moderator_page <- tabPanel(
       sidebarLayout(
         sidebarPanel(
           h4("Individual conditional average treatment effects"),
-          p("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+          p("It is recomended to use all 3 plot types to inform exploratory subgroup analyses in the following section."),
           br(),
+          conditionalPanel(condition = "input.icate_type == 'tree'",
+                             p('Fit a regression tree on ICATEs to help identify specific variables where the treatment effect is most variable')),
+          conditionalPanel(condition = "input.icate_type == 'ordered'",
+                           p('Plot the orderd ICATEs to help identify if there is high or low treatment effect variability across covaraites. You may color the plot by categorical covaraites or re-order the plot by continuous covariates.')),
+          conditionalPanel(condition = "input.icate_type == 'histogram'",
+                           p('Plot the distribution of ICATEs a wider distribution suggests greater variaiton in the treatment effect across variables. Color by categorical variables to see differences in distributions.')),
           radioButtons(inputId = "icate_type",
                        label = 'Plot type:',
                        choices = list(

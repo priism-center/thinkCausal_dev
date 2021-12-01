@@ -147,12 +147,12 @@ show_popup_welcome <- function(session){
           <li>{...Walk through the process}</li>
           <li>We do not save your data so if you leave and come back, you'll have to start from the beginning</li>
           <li>thinkCausal is still in beta and we'll be making updates over the coming months</li>
-          <li>Please feel free to reach out on the <a href='https://github.com/gperrett/thinkCausal_dev' target='_blank'>GitHub page</a> if you have any questions</li>
+          <li>Please feel free to reach out on the <a href='https://github.com/gperrett/thinkCausal_dev' target='_blank'>GitHub page</a> or email gp77@nyu.edu if you have any questions</li>
         </ul>
       ")
     )
   )
-  show_popup(session = session, 
+  show_popup(session = session,
              content,
              size = 'm',
              close_button = shiny::modalButton("Get started"),
@@ -175,8 +175,8 @@ show_popup_crash <- function(){
           "If this occurs again, please raise an issue on the <a href='https://github.com/gperrett/thinkCausal_dev/issues' target='_blank'>GitHub page</a> if you have any questions</li>"
         ))
   )
-  
-  show_popup(session = getDefaultReactiveDomain(), 
+
+  show_popup(session = getDefaultReactiveDomain(),
              content,
              size = 'm',
              style = "z-index: 99999")

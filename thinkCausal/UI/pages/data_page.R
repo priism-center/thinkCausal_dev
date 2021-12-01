@@ -1,5 +1,5 @@
 data_page <- tabPanel(
-  title = 'Data', 
+  title = 'Data',
          tabsetPanel(
            id = "analysis_data_tabs",
            tabPanel(title = "Upload",
@@ -7,15 +7,16 @@ data_page <- tabPanel(
                     sidebarLayout(
                       sidebarPanel(
                         h4("Upload your data"),
-                        HTML("<p>Data should be rectangular and in <a href='https://en.wikipedia.org/wiki/Wide_and_narrow_data' target='_blank' rel='noopener noreferrer'>wide format</a> where each column represents one variable.</p>"),
+                        HTML("<p>Data should be rectangular and in <a href='https://en.wikipedia.org/wiki/Wide_and_narrow_data' target='_blank' rel='noopener noreferrer'>wide format</a> where each column represents one variable.</p>
+                             <p> Files can be uploaded from .csv, Excel(.xlsx), .txt, SPSS (.sav) or STATA (.dta) formats.</p>"),
                         div(
                           id = "upload_file_div",
-                          fileInput(inputId = "analysis_data_upload", 
+                          fileInput(inputId = "analysis_data_upload",
                                     label = "Choose file:",
                                     buttonLabel = 'Browse',
                                     multiple = FALSE,
-                                    accept = c('.csv', '.txt', '.xlsx', '.dta', '.spss'),
-                                    placeholder = 'csv, txt, xlsx, dta, or spss'),
+                                    accept = c('.csv', '.txt', '.xlsx', '.dta', '.sav'),
+                                    placeholder = 'csv, txt, xlsx, dta, or sav'),
                         ),
                         conditionalPanel(
                           condition = "output.show_delim == true",
@@ -27,8 +28,8 @@ data_page <- tabPanel(
                             inline = FALSE
                           )
                         ),
-                        checkboxInput(inputId = "analysis_data_header", 
-                                      label = "Data contains a header row", 
+                        checkboxInput(inputId = "analysis_data_header",
+                                      label = "Data contains a header row",
                                       value = TRUE),
                         br(),
                         tags$button(type = 'button',
@@ -42,8 +43,8 @@ data_page <- tabPanel(
                                        label = "Back"),
                           actionButton(inputId = 'analysis_data_button_columnAssignSave',
                                        label = 'Save role assignments')
-                        ), 
-                        br(), 
+                        ),
+                        br(),
                       ),
                       mainPanel(
                         br(),
@@ -56,7 +57,10 @@ data_page <- tabPanel(
                     sidebarLayout(
                       sidebarPanel(
                         h4("Are any of these variables part of a natural group?"),
-                        p("Variables that have been dummy coded should be grouped together. Please verify any pre-filled groups. Empty groups will be ignored."),
+                        p("Variables that have been dummy coded should be grouped together for plotting, random effects and subgroup analyses.
+                          All categorical variables will automatically be dummy coded for modle fitting.
+                          Please verify any pre-filled groups.
+                          Empty groups will be ignored."),
                         br(),
                         actionButton(inputId = 'analysis_data_add_group',
                                      label = 'Add group'),
