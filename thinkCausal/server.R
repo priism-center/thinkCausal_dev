@@ -503,8 +503,8 @@ shinyServer(function(input, output, session) {
     }
 
     # create a copy of the dataframe that the user can modify on the verify page
+    colnames(store$grouped_df) <- clean_names(colnames(store$grouped_df))
     store$user_modifed_df <- store$grouped_df
-
   })
 
   # once new data is uploaded, grouped result is cleared, and the number of groups changes to either the number of smart defaul groups or 1

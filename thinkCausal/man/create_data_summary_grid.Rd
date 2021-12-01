@@ -4,7 +4,13 @@
 \alias{create_data_summary_grid}
 \title{Create a UI displaying the role, variable name, variable type, and percent NA for each column in a dataframe}
 \usage{
-create_data_summary_grid(.data, default_data_types, ns_prefix)
+create_data_summary_grid(
+  .data,
+  default_data_types,
+  ns_prefix,
+  design,
+  blocking_variables = NULL
+)
 }
 \arguments{
 \item{.data}{a dataframe}
