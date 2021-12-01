@@ -58,7 +58,7 @@ data_page <- tabPanel(
                       sidebarPanel(
                         h4("Are any of these variables part of a natural group?"),
                         p("Variables that have been dummy coded should be grouped together for plotting, random effects and subgroup analyses.
-                          All categorical variables will automatically be dummy coded for modle fitting.
+                          All categorical variables will automatically be dummy coded for model fitting.
                           Please verify any pre-filled groups.
                           Empty groups will be ignored."),
                         br(),

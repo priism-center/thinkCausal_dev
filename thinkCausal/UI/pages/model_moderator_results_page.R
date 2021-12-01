@@ -85,7 +85,7 @@ moderator_page <- tabPanel(
       sidebarLayout(
         sidebarPanel(
           h4("Subgroup analyses"),
-          p("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+          p("Text to come soon..."),
           br(),
           selectInput(inputId = 'plotBart_moderator_vars',
                       label = 'Subgroup analysis by:',

@@ -15,7 +15,7 @@ model_page <- tabPanel(
                                      'ATT - Average treatment effect on the treated' = 'ATT')),
              selectInput('analysis_random_intercept',
                          # label = 'Random intercept',
-                         label = create_info_icon('Random intercept', 'Specify a random intercept for a variable that represent clustered/nested data.'),
+                         label = create_info_icon('Random intercept', 'Specify a random intercept for a variable that represents clustered/nested data.'),
                          choices = NULL),
              selectInput('analysis_model_support',
                          label = 'Remove observations with weak common support',

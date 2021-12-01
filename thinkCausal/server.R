@@ -1454,6 +1454,8 @@ shinyServer(function(input, output, session) {
 
   # TODO: render the interpretation text
   output$results_text <- renderText({
+    # stop here if model isn't fit yet
+    validate_model_fit(store)
 
     # TODO: somehow clean these inputs
     name <- input$treatment_name
@@ -1497,7 +1499,7 @@ shinyServer(function(input, output, session) {
       if(as.data.frame(summary(store$model_results)$estimates)[1] > 0) point <- 'higher'
       if(as.data.frame(summary(store$model_results)$estimates)[1] < 0) point <- 'lower'
       point <- 'lower'
-      text_out <- paste0('When comparing two similar groups of ', participants, ', the group that recived the ', name, 'is expected to have outcomes that are ', as.character(round(as.data.frame(summary(store$model_results)$estimates)[1], 2)), units, ' ', point, ', on average, compared to the group of ', participants, 'that did not recive the ', treatment, '. Simmilarity is conceptualized with respect to all covirates included in the analysis.')
+      text_out <- paste0('When comparing two similar groups of ', participants, ', the group that recived the ', name, 'is expected to have outcomes that are ', as.character(round(as.data.frame(summary(store$model_results)$estimates)[1], 2)), units, ' ', point, ', on average, compared to the group of ', participants, 'that did not recive the ', name, '. Simmilarity is conceptualized with respect to all covirates included in the analysis.')
     }
 
 

@@ -26,6 +26,8 @@ library(bartCause)
 options(shiny.reactlog = TRUE) # for testing; when running, hit Ctrl-F3 to see the reactivity tree
 options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size limit to 10mb
 
+# set seed
+set.seed(2)
 
 # UI files (this should always be last) -----------------------------------
 

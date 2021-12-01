@@ -5,9 +5,9 @@ account: apsta
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5224902
-bundleId: 5306155
+bundleId: 5314156
 url: https://apsta.shinyapps.io/thinkCausal/
-when: 1638206721.44967
+when: 1638362960.47361
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: DESCRIPTION|manual_workflow.R|NAMESPACE|man|stand_alone|tests
+ignoredFiles: DESCRIPTION|manual_workflow.R|NAMESPACE|data|man|stand_alone|tests
