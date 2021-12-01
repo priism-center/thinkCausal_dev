@@ -1498,8 +1498,7 @@ shinyServer(function(input, output, session) {
     } else{
       if(as.data.frame(summary(store$model_results)$estimates)[1] > 0) point <- 'higher'
       if(as.data.frame(summary(store$model_results)$estimates)[1] < 0) point <- 'lower'
-      point <- 'lower'
-      text_out <- paste0('When comparing two similar groups of ', participants, ', the group that recived the ', name, 'is expected to have outcomes that are ', as.character(round(as.data.frame(summary(store$model_results)$estimates)[1], 2)), units, ' ', point, ', on average, compared to the group of ', participants, 'that did not recive the ', name, '. Simmilarity is conceptualized with respect to all covirates included in the analysis.')
+      text_out <- paste0('When comparing two groups of ', participants, ' who are similar on all covariates included in the analysis except for the ', name, ' the group of ', participants, ' that recived the ', name, ' are expected to have outcomes that are ', as.character(round(as.data.frame(summary(store$model_results)$estimates)[1], 2)),' ', units, ' ', point, ', on average, compared to the group of ', participants, ' that did not recive the ', name, '.')
     }
 
 
