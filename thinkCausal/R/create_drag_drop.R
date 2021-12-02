@@ -121,7 +121,7 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups, grouped_va
 
   if(is.null(grouped_varibles)){
     # infer which columns are grouped (i.e. smart defaults)
-    auto_groups <- clean_detect_dummy_cols_unique(df)
+    auto_groups <- NULL#list(contains_dummy = FALSE, dummy_columns = NULL)#clean_detect_dummy_cols_unique(df)
     n_dummy_groups <- max(n_dummy_groups, length(auto_groups), 1) # show at least one (empty) group on the Group page
     ungrouped_vars <- setdiff(cat_var_names, unlist(auto_groups))
   }else{

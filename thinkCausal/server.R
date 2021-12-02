@@ -508,9 +508,9 @@ shinyServer(function(input, output, session) {
   })
 
   # once new data is uploaded, grouped result is cleared, and the number of groups changes to either the number of smart defaul groups or 1
-  observeEvent(uploaded_df(), {
+  observeEvent(input$analysis_data_button_columnAssignSave, {
     group_list$data <- c()
-    auto_groups <- clean_detect_dummy_cols_unique(store$col_assignment_df)
+    auto_groups <- NULL#list(contains_dummy = FALSE, dummy_columns = NULL)#clean_detect_dummy_cols_unique(store$col_assignment_df)
     store$n_dummy_groups <- max(length(auto_groups), 1)
   })
 
@@ -1442,7 +1442,7 @@ shinyServer(function(input, output, session) {
 
     # extract estimates and format
     # TODO: unclear if credible interval is 80 or 95
-    tab <- summary(store$model_results)$estimates %>%
+    tab <- summary(store$model_results, ci.style = 'quant')$estimates %>%
       as.data.frame() %>%
       mutate(rownames = rownames(.)) %>%
       select(' ' = rownames, 1:4) %>%
@@ -1456,11 +1456,11 @@ shinyServer(function(input, output, session) {
   output$results_text <- renderText({
     # stop here if model isn't fit yet
     validate_model_fit(store)
-    
-    text_out <- create_interpretation(.model = store$model_results, 
+
+    text_out <- create_interpretation(.model = store$model_results,
                                       type = input$interpretation,
-                                      treatment = input$treatment_name, 
-                                      units = input$treatment_units, 
+                                      treatment = input$treatment_name,
+                                      units = input$treatment_units,
                                       participants = input$treatment_participants)
 
     return(text_out)
@@ -1545,7 +1545,7 @@ shinyServer(function(input, output, session) {
       output$sub_group_ui <- renderUI({
         selectInput('categorical_exploratory_choice',
                     label = 'Choose a plot type:',
-                    choices = c('','Overlaid density', 'Verticle intervals'))})
+                    choices = c('','Overlaid density', 'Vertical intervals'))})
     }
 
     if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$continuous)){
@@ -1702,7 +1702,7 @@ shinyServer(function(input, output, session) {
             return(p)
           })
         }
-        if(input$categorical_exploratory_choice == 'Verticle intervals'){
+        if(input$categorical_exploratory_choice == 'Vertical intervals'){
           output$analysis_moderators_explore_plot <- renderPlot({
           div_id <- 'analysis_moderators_explore_plot'
           show_message_updating(div_id)
