@@ -26,7 +26,7 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
         ),
         add_rank_list(
           input_id = paste0(ns_prefix, "_dragdrop_response"),
-          text = strong("Response"),
+          text = strong("Outcome"),
           labels = auto_columns$Y,
           options = sortable_options(multiDrag = TRUE)
         ),

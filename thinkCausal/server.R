@@ -115,7 +115,7 @@ shinyServer(function(input, output, session) {
     participants <- input$treatment_participants
 
     # set defaults
-    if (name == '') name <- 'treatment'
+    if (name == '') name <- 'treatment condition'
     if (units == '') units <- 'units'
     if (participants == '') participants <- 'participants'
 
@@ -1456,51 +1456,12 @@ shinyServer(function(input, output, session) {
   output$results_text <- renderText({
     # stop here if model isn't fit yet
     validate_model_fit(store)
-
-    # TODO: somehow clean these inputs
-    name <- input$treatment_name
-    units <- input$treatment_units
-    participants <- input$treatment_participants
-
-    # set defaults
-    if (name == '') name <- 'treatment condition'
-    if (units == '') units <- 'units'
-    if (participants == '') participants <- 'participants'
-    if(input$interpretation == 'Causal'){
-      if(as.data.frame(summary(store$model_results)$estimates)[3] > 0) direction <- 'led to an increase'
-      if(as.data.frame(summary(store$model_results)$estimates)[4] < 0) direction <- 'led to a decrease'
-
-      # create the text
-      if(isTRUE(exists('direction'))){
-          text_out <- paste0(
-            'The ',
-            name,
-            direction,
-            ' of ',
-            as.character(round(as.data.frame(summary(store$model_results)$estimates)[1], 2)),
-            ' ',
-            units,
-            ' for ',
-            participants,
-            ' in this study.'
-          )
-      } else{
-        text_out <- paste0(
-          'There is insufficent evidence to support that the ', name, ' led to a change in ', units,  ' for ',
-          participants,
-          ' in this study.'
-        )
-      }
-
-
-
-      text_out <- HTML(text_out)
-    } else{
-      if(as.data.frame(summary(store$model_results)$estimates)[1] > 0) point <- 'higher'
-      if(as.data.frame(summary(store$model_results)$estimates)[1] < 0) point <- 'lower'
-      text_out <- paste0('When comparing two groups of ', participants, ' who are similar on all covariates included in the analysis except for the ', name, ' the group of ', participants, ' that recived the ', name, ' are expected to have outcomes that are ', as.character(round(as.data.frame(summary(store$model_results)$estimates)[1], 2)),' ', units, ' ', point, ', on average, compared to the group of ', participants, ' that did not recive the ', name, '.')
-    }
-
+    
+    text_out <- create_interpretation(.model = store$model_results, 
+                                      type = input$interpretation,
+                                      treatment = input$treatment_name, 
+                                      units = input$treatment_units, 
+                                      participants = input$treatment_participants)
 
     return(text_out)
   })
