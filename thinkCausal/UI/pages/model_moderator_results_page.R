@@ -94,6 +94,7 @@ moderator_page <- tabPanel(
                       selected = NULL),
           br(),
           uiOutput(outputId = "sub_group_ui"),
+         # uiOutput(outputId = "sub_group_pannel"), 
           br(),
           actionButton(inputId = 'analysis_moderator_fit',
                        label = 'Analyze subgroup'),

@@ -7,19 +7,20 @@ create_interpretation <- function(.model, type, treatment, units, participants){
     if(.model$estimand == 'ate') estimand <- paste0('For ', participants, ' in this study, receiving the ', treatment)
     if(.model$estimand == 'atc') estimand <- paste0('For ', participants, ' in this study that did not receive the ', treatment, ' receiving the ', treatment, ' would have')
 
-    if(as.data.frame(summary(.model)$estimates)[3] > 0) result <- paste0(' led to an increase of ', as.character(round(as.data.frame(summary(.model)$estimates)[1], 2)), ' ', units)
-    if(as.data.frame(summary(.model)$estimates)[4] < 0) result <- paste0(' led to a decrease of ', as.character(round(as.data.frame(summary(.model)$estimates)[1], 2)), ' ', units)
-    if(isFALSE(exists('result'))) result <- paste0(' there is insufficent evidence to support that receiving the ',  treatment, ' led to a change in ', units)
+    if(as.data.frame(summary(.model)$estimates)[1] > 0) result <- paste0(' led to an increase of ', as.character(round(as.data.frame(summary(.model)$estimates)[1], 2)), ' ', units)
+    if(as.data.frame(summary(.model)$estimates)[1] < 0) result <- paste0(' led to a decrease of ', as.character(round(as.data.frame(summary(.model)$estimates)[1], 2)), ' ', units)
 
     if(.model$estimand == 'att') counterfactual <- paste0(' compared to what would have happened had these ', participants, ' not received the ',treatment, '.')
     if(.model$estimand == 'ate') counterfactual <- paste0(' compared to what would have happend if ', participants, ' did not receive the ', treatment, '.')
     if(.model$estimand == 'atc') counterfactual <- paste0(' compared to the observed state where these ', participants, ' did not receive the ', treatment, '.')
 
     text <- paste0(estimand, result, counterfactual)
-  }else{
+  }
+  
+  if(type != 'Causal'){
     if(as.data.frame(summary(.model)$estimates)[1] > 0) point <- 'higher'
     if(as.data.frame(summary(.model)$estimates)[1] < 0) point <- 'lower'
-    text <- paste0('When comparing two groups of ', participants, ' who are similar on all covariates included in the analysis except for the ', treatment, ' the group of ', participants, ' that received the ', treatment, ' are expected to have outcomes that are ', as.character(round(as.data.frame(summary(store$model_results)$estimates)[1], 2)),' ', units, ' ', point, ', on average, compared to the group of ', participants, ' that did not receive the ', treatment, '.')
+    text <- paste0('When comparing two groups of ', participants, ' who are similar on all covariates included in the analysis except for the ', treatment, ' the group of ', participants, ' that received the ', treatment, ' are expected to have outcomes that are ', as.character(round(as.data.frame(summary(.model)$estimates)[1], 2)),' ', units, ' ', point, ', on average, compared to the group of ', participants, ' that did not receive the ', treatment, '.')
   }
 
   return(text)

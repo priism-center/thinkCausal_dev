@@ -1543,9 +1543,23 @@ shinyServer(function(input, output, session) {
   observeEvent(input$plotBart_moderator_vars, {
     if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$categorical)){
       output$sub_group_ui <- renderUI({
+        
         selectInput('categorical_exploratory_choice',
                     label = 'Choose a plot type:',
-                    choices = c('','Overlaid density', 'Vertical intervals'))})
+                    choices = c('','Overlaid density', 'Vertical intervals'))
+        
+      })
+        
+        output$sub_group_pannel <- renderUI({
+        radioButtons(inputId = 'panel', 
+                     label = 'Panel plots:', 
+                     choices = c('Yes', 'No'), 
+                     selected = 'No', 
+                     inline = T)
+        
+        })
+      
+
     }
 
     if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$continuous)){
@@ -1693,8 +1707,9 @@ shinyServer(function(input, output, session) {
             show_message_updating(div_id)
 
             p <- plot_moderator_d_density(store$model_results,
-                                          store$verified_df[[paste0('X_', selected_moderator)]])
-            p <- p + theme_custom()
+                                          store$verified_df[[paste0('X_', selected_moderator)]]) 
+            
+            p <- p + theme_custom() 
 
             # remove overlay
             close_message_updating(div_id)
