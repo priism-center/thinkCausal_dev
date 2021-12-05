@@ -693,6 +693,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$analysis_data_save, {
 
     req(store$user_modified_df)
+    
+    # remove saved dataframes if they exist
+    store <- remove_downstream_data(store, 'verify')
 
     # new column names
     old_col_names <- colnames(store$user_modified_df)
@@ -1696,7 +1699,14 @@ shinyServer(function(input, output, session) {
 
   # subgroup plots
   # TODO: this is a mess and prevents plot downloading; Joe to rewrite
+  # TODO: there's an issue where the if the user makes the plot but then goes back
+  # and adjusts the data (therefore removing the model), this plot fails to render even
+  # though there is a validate* function
   observeEvent(input$analysis_moderator_fit, {
+    
+    # stop here if model isn't fit yet
+    validate_model_fit(store)
+    
     selected_moderator <- input$plotBart_moderator_vars
     #output$analysis_moderators_explore_plot <- renderPlot({
       # categorical plots

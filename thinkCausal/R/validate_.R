@@ -41,6 +41,7 @@ validate_design <- function(store){
 
 remove_downstream_data <- function(store, page = NULL){
   # remove downstream data so validate_* functions stop any processes naturally
+  # usage: store <- remove_downstream_data(store, page = 'group)
   
   # page_order <- c('design', 'upload', 'group')
   # if (page %notin% page_order) stop(paste0('page must be one of ', page_order))
@@ -53,6 +54,10 @@ remove_downstream_data <- function(store, page = NULL){
   }
   
   if (page == 'group'){
+    
+  }
+  
+  if (page == 'verify'){
     
   }
 
