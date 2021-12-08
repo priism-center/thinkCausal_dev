@@ -36,9 +36,12 @@ shinyUI(
         
         # add header and footer elements
         tags$header(),
-        tags$footer(HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>')),
-        
-        # load custom JavaScript
-        tags$script(src = "js/helpSlideOver.js")
+        tags$footer(
+            # link to priism
+            HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>'),
+            
+            # load custom JavaScript files
+            map(list.files('www/js', pattern = "*.js"), function(file) tags$script(src = file.path('js', file)))
+        )  
     )
 )
