@@ -163,7 +163,7 @@ shinyServer(function(input, output, session) {
 
     # stop if not one of the accepted file types
     # this should be caught by fileInput() on the UI side
-    accepted_filetypes <- c('csv', 'txt', 'xlsx', 'dta', 'spss')
+    accepted_filetypes <- c('csv', 'txt', 'xlsx', 'dta', 'sav')
     validate(need(
       filetype %in% accepted_filetypes,
       paste(
@@ -199,7 +199,7 @@ shinyServer(function(input, output, session) {
           delim = input$analysis_data_delim_value,
           col_names = input$analysis_data_header
         )
-      } else if (filetype == 'svs'){
+      } else if (filetype == 'sav'){
         uploaded_file <- Hmisc::spss.get(file = filepath)
       } else stop("File type is invalid")
     },

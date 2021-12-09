@@ -1,3 +1,5 @@
+# TODO: should adjust this to accept yes, no
+
 #' Convert all psuedo-logical columns in a dataframe to booleans
 #'
 #' Converts columns of a dataframe containing binary c(0, 1), c("T", "F"), c("True", "False") to boolean c(TRUE, FALSE). Is agnostic to case.
@@ -13,11 +15,12 @@
 #'
 #' @examples
 #' x <- data.frame(
-#'    zero_one = sample(0:1, 10, replace = TRUE),
-#'    TF = sample(c("T", "F"), 10, replace = TRUE),
-#'    truefalse = sample(c('true', 'false'), 10, replace = TRUE),
-#'    char = sample(LETTERS, 10)
-#'  )
+#'   zero_one = sample(0:1, 10, replace = TRUE),
+#'   TF = sample(c("T", "F"), 10, replace = TRUE),
+#'   truefalse = sample(c('true', 'false'), 10, replace = TRUE),
+#'   char = sample(LETTERS, 10),
+#'   yn = sample(c("yes", "no"), 10, replace = TRUE)
+)
 #' clean_auto_convert_logicals(x)
 clean_auto_convert_logicals <- function(input_data){
   # function converts columns of 0:1, T:F, True:False to logicals
