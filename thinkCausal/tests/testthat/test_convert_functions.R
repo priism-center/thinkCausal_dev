@@ -1,3 +1,4 @@
+
 my_character = c('one', 'two', 'three')
 my_logical = c(TRUE, FALSE, FALSE)
 my_numeric = c(1.24, 7, -22)

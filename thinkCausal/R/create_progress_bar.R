@@ -8,7 +8,7 @@
 #' @return HTML
 #' @export
 #'
-#'
+#' @import shiny
 #' @examples
 #' create_progress_bar(80)
 create_progress_bar <- function(progress) {

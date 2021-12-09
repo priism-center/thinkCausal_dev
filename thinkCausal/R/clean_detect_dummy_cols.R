@@ -8,6 +8,7 @@
 #' @return
 #' @export
 #'
+#' @import purrr
 #' @examples
 #' .data <- tibble(test = 1:5,
 #'                 to_dummy = c('level1', 'level1', 'level2', 'level2', 'level3'),

@@ -1,3 +1,4 @@
+
 x <- data.frame(
   zero_one = c(0, 1, 0, 1, 1),
   TF = c("T", "T", "F", "T",  "F"),
@@ -13,17 +14,17 @@ test_that("create_progress_bar() output is correct", {
   expect_s3_class(progress_bar, 'shiny.tag')
 })
 
-reproducible_script <- create_script(
- uploaded_file_name = 'test.csv',
- uploaded_file_type = 'csv',
- uploaded_file_header = 'TRUE',
- uploaded_file_delim = ',',
- selected_columns = c("Z", "Y", "X1", 'X2', "X3"),
- column_names = c("treatment", "response", "covariate1", "covariate2", "covariate3"),
- estimand = 'att',
- common_support = 'none'
-)
-test_that("create_script() output is correct", {
-  expect_type(reproducible_script, 'character')
-  expect_equal(length(reproducible_script), 1)
-})
+# reproducible_script <- create_script(
+#  uploaded_file_name = 'test.csv',
+#  uploaded_file_type = 'csv',
+#  uploaded_file_header = 'TRUE',
+#  uploaded_file_delim = ',',
+#  selected_columns = c("Z", "Y", "X1", 'X2', "X3"),
+#  column_names = c("treatment", "response", "covariate1", "covariate2", "covariate3"),
+#  estimand = 'att',
+#  common_support = 'none'
+# )
+# test_that("create_script() output is correct", {
+#   expect_type(reproducible_script, 'character')
+#   expect_equal(length(reproducible_script), 1)
+# })

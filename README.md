@@ -7,6 +7,8 @@
 
 thinkCausal is federally funded project devoted to building scaffolded causal inference software implementing Bayesian Additive Regression Trees. You can find a live, beta version [here](https://apsta.shinyapps.io/thinkCausal/).
 
+See also the R packages [bartCause](https://github.com/vdorie/bartCause) and [plotBart](https://github.com/joemarlo/plotBart) for much of the underlying causal inference functionality.
+
 <br>
 <p align="center">
 <img src="screenshot.png" width=80%>
