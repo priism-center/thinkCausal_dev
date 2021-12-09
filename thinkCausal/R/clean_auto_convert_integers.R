@@ -37,7 +37,8 @@ clean_detect_integers <- function(x, n_levels_threshold = 15){
   if(inherits(x, 'data.frame')) stop('x cannot be a dataframe')
   
   # does x match its self coerced to an integer 
-  is_integer <- all.equal(x, as.integer(x))
+  is_integer <- tryCatch(all.equal(x, as.integer(x)),
+                         error = function(e) FALSE)
   
   if (isTRUE(is_integer)){
     n_levels <- dplyr::n_distinct(x)

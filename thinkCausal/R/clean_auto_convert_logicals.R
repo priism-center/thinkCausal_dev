@@ -20,7 +20,7 @@
 #'   truefalse = sample(c('true', 'false'), 10, replace = TRUE),
 #'   char = sample(LETTERS, 10),
 #'   yn = sample(c("yes", "no"), 10, replace = TRUE)
-)
+#'   )
 #' clean_auto_convert_logicals(x)
 clean_auto_convert_logicals <- function(input_data){
   # function converts columns of 0:1, T:F, True:False to logicals
