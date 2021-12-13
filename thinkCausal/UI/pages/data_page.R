@@ -8,14 +8,14 @@ data_page <- tabPanel(
                       sidebarPanel(
                         h4("Upload your data"),
                         HTML("<p>Data should be rectangular and in <a href='https://en.wikipedia.org/wiki/Wide_and_narrow_data' target='_blank' rel='noopener noreferrer'>wide format</a> where each column represents one variable.</p>
-                             <p> Files can be uploaded from .csv, Excel(.xlsx), .txt, SPSS (.sav) or STATA (.dta) formats.</p>"),
+                             <p> Files can be uploaded from .csv, .txt, Excel (.xlsx), SPSS (.sav) or STATA (.dta) formats.</p>"),
                         div(
                           id = "upload_file_div",
                           fileInput(inputId = "analysis_data_upload",
                                     label = "Choose file:",
                                     buttonLabel = 'Browse',
                                     multiple = FALSE,
-                                    accept = c('.csv', '.txt', '.xlsx', '.dta', '.sav'),
+                                    accept = c('.csv', '.txt', '.xlsx', 'sav', '.dta'),
                                     placeholder = 'csv, txt, xlsx, dta, or sav'),
                         ),
                         conditionalPanel(
