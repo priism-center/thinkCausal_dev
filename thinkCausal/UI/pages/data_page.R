@@ -15,7 +15,7 @@ data_page <- tabPanel(
                                     label = "Choose file:",
                                     buttonLabel = 'Browse',
                                     multiple = FALSE,
-                                    accept = c('.csv', '.txt', '.xlsx', 'sav', '.dta'),
+                                    accept = c('.csv', '.txt', '.xlsx', '.sav', '.dta'),
                                     placeholder = 'csv, txt, xlsx, dta, or sav'),
                         ),
                         conditionalPanel(
