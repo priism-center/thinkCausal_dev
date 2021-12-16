@@ -16,7 +16,7 @@ data_page <- tabPanel(
                                     buttonLabel = 'Browse',
                                     multiple = FALSE,
                                     accept = c('.csv', '.txt', '.xlsx', '.sav', '.dta'),
-                                    placeholder = 'csv, txt, xlsx, dta, or sav'),
+                                    placeholder = 'csv, txt, xlsx, sav, or dta'),
                         ),
                         conditionalPanel(
                           condition = "output.show_delim == true",

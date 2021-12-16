@@ -30,6 +30,14 @@ shinyUI(
         
         # add help slideover
         help_slideover,
+        
+        # add link to feedback form
+        tags$div(class = 'feedback-button',
+                 onclick = "window.open(
+                 'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
+                 '_blank')",
+                 'Feedback'
+        ),
 
         # add beta ribbon
         tags$div(class = 'cornerRibbon', 'BETA'),
