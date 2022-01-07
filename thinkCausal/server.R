@@ -1953,6 +1953,13 @@ shinyServer(function(input, output, session) {
                  functionFile)
       close(functionFile)
       files <- c("clean_dummies_to_categorical.R", files)
+      
+      # create file containing the plot_exploration function
+      functionFile <- file("plot_exploration.R")
+      writeLines(attributes(attributes(plot_exploration)$srcref)$srcfile$lines,
+                 functionFile)
+      close(functionFile)
+      files <- c("plot_exploration.R", files)
 
       # create the script file
       fileConn <- file("thinkCausal_script.R")

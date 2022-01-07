@@ -38,7 +38,8 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "library(bartCause)", "\n",
   "library(plotBart) #devtools::install_github('joemarlo/plotBart')", "\n",
   "source('clean_auto_convert_logicals.R')", "\n",
-  "source('clean_dummies_to_categorical.R')",
+  "source('clean_dummies_to_categorical.R')", "\n",
+  "source('plot_exploration.R')", 
   "\n\n"
   )
   
@@ -77,7 +78,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   )
   
   eda <- if(!is.null(descriptive_plot)){
-    script <- c()
+    script <- c("# descriptive plots")
     for (i in 1:nrow(descriptive_plot)) {
       if (descriptive_plot[i,6] != "None"){ # plots that are specified .shape
         #  first convert the type of the variable specified for .shape argument
