@@ -913,7 +913,29 @@ shinyServer(function(input, output, session) {
     return(p)
   })
   output$analysis_eda_plot <- renderPlot(descriptive_plot())
-
+  
+  # to save the parameters of downloaded descriptive plots for reproducible script
+  downloaded_descriptive_plot_parameters <- reactiveValues(df = list())
+  
+  # parameters of current descriptive plot
+  descriptive_plot_parameters <-  reactive({
+    list(.plot_type = input$analysis_eda_select_plot_type,
+               .x = input$analysis_eda_variable_x,
+               .y = input$analysis_eda_variable_y,
+               .fill = input$analysis_eda_variable_fill,
+               .fill_static = 'grey20', #"#5c5980",
+               .shape = input$analysis_eda_variable_shape,
+               .size = input$analysis_eda_variable_size,
+               .alpha = input$analysis_eda_variable_alpha,
+               .vars_pairs = input$analysis_eda_variable_pairs_vars,
+               .n_bins = input$analysis_eda_variable_n_bins,
+               .jitter = input$analysis_eda_check_jitter,
+               .groups = input$analysis_eda_variable_group,
+               .facet = input$analysis_eda_variable_facet,
+               .facet_second = input$analysis_eda_variable_facet_second,
+               .include_regression = input$analysis_eda_variable_regression)
+  })
+  
   output$download_descriptive_plot <- downloadHandler(
     filename = 'descriptive_plot.png',
     content = function(file) {
@@ -923,6 +945,8 @@ shinyServer(function(input, output, session) {
              width = input$settings_options_ggplotWidth,
              units = 'in',
              device = 'png')
+      # save the parameters of the downloaded descriptive plot
+      downloaded_descriptive_plot_parameters$df <- rbind(downloaded_descriptive_plot_parameters$df, descriptive_plot_parameters())
     })
 
   # text above the brush table
@@ -1486,7 +1510,7 @@ shinyServer(function(input, output, session) {
     show_message_updating(div_id)
 
     # create plot
-    p <- plot_PATE(
+    p <- plotBart::plot_PATE(
       .model = store$model_results,
       type = input$plot_result_style,
       ci_80 = sum(input$show_interval == 0.80) > 0,
@@ -1619,7 +1643,7 @@ shinyServer(function(input, output, session) {
     }
 
     if(input$icate_type == 'tree'){
-      p <- plot_moderator_search(store$model_results, depth = input$plotBart_tree_depth)
+      p <- plotBart::plot_moderator_search(store$model_results, depth = input$plotBart_tree_depth)
     }
 
     return(p)
@@ -1873,7 +1897,15 @@ shinyServer(function(input, output, session) {
 
     # TODO: add data type changes
     change_data_type <- group_list$data
-
+    
+    # eda
+    descriptive_plot <-
+      if(!is.null(dim(downloaded_descriptive_plot_parameters$df))){
+        as.data.frame(downloaded_descriptive_plot_parameters$df) %>% distinct()
+      }else{
+        NULL
+      }
+    
     # model
     estimand <- base::tolower(input$analysis_model_radio_estimand)
     common_support <- input$analysis_model_radio_support
@@ -1887,6 +1919,7 @@ shinyServer(function(input, output, session) {
       selected_columns = selected_columns,
       column_names = column_names,
       change_data_type = change_data_type,
+      descriptive_plot = descriptive_plot,
       estimand = estimand,
       common_support = common_support
     )

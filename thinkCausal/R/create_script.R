@@ -14,7 +14,7 @@
 #'  estimand = 'att',
 #'  common_support = 'none'
 #' )
-create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, change_data_type, estimand, common_support){
+create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, change_data_type, descriptive_plot, estimand, common_support){
 
   # choose which file readr was used
   file_readr <- switch(
@@ -67,6 +67,68 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   script_data_type <- paste0(script, collapse = "\n")
   
   script_rename <- paste0("colnames(X) <- ", column_names, "\n\n")
+ 
+  # change column names for the following eda and analysis 
+  script_data_verified <- paste0(
+    "# new column names", "\n",
+    "old_col_names <- colnames(X)", "\n",
+    "new_col_names <- paste0(c('Z', 'Y', rep('X', length(old_col_names)-2)), '_', old_col_names)","\n",
+    "colnames(X) <- new_col_names","\n\n"
+  )
+  
+  eda <- if(!is.null(descriptive_plot)){
+    script <- c()
+    for (i in 1:nrow(descriptive_plot)) {
+      if (descriptive_plot[i,6] != "None"){ # plots that are specified .shape
+        #  first convert the type of the variable specified for .shape argument
+        tmp <- paste0('descriptive_plot', i, ' <- ',"X %>% mutate(", descriptive_plot[i,6], " = as.character(", descriptive_plot[i,6], ")) %>% ",'\n',
+                      'plot_exploration(', '\n',
+                      '.plot_type = "', descriptive_plot[i,1],'", \n',
+                      '.x = "', descriptive_plot[i,2], '", \n',
+                      '.y = "', descriptive_plot[i,3], '", \n',
+                      '.fill = "', descriptive_plot[i,4], '", \n',
+                      '.fill_static = "', descriptive_plot[i,5], '", \n',
+                      '.shape = "', descriptive_plot[i,6], '", \n',
+                      '.size = "', descriptive_plot[i,7], '", \n',
+                      '.alpha = ', descriptive_plot[i,8], ', \n',
+                      '.vars_pairs = ', descriptive_plot[i,9], ', \n',
+                      '.n_bins = ', descriptive_plot[i,10], ', \n',
+                      '.jitter = ', descriptive_plot[i,11], ', \n',
+                      '.groups = "', descriptive_plot[i,12], '", \n',
+                      '.facet = "', descriptive_plot[i,13], '", \n',
+                      '.facet_second = "', descriptive_plot[i,14], '", \n',
+                      '.include_regression = "', descriptive_plot[i,15], '"\n',
+                      ')', '\n',
+                      'descriptive_plot', i, '\n')
+      }else{ # plots that aren't specified .shape
+        tmp <- paste0('descriptive_plot', i, ' <- ',
+          'plot_exploration(', '\n',
+          '.data = X,', '\n',
+          '.plot_type = "', descriptive_plot[i,1],'", \n',
+          '.x = "', descriptive_plot[i,2], '", \n',
+          '.y = "', descriptive_plot[i,3], '", \n',
+          '.fill = "', descriptive_plot[i,4], '", \n',
+          '.fill_static = "', descriptive_plot[i,5], '", \n',
+          '.shape = "', descriptive_plot[i,6], '", \n',
+          '.size = "', descriptive_plot[i,7], '", \n',
+          '.alpha = ', descriptive_plot[i,8], ', \n',
+          '.vars_pairs = ', descriptive_plot[i,9], ', \n',
+          '.n_bins = ', descriptive_plot[i,10], ', \n',
+          '.jitter = ', descriptive_plot[i,11], ', \n',
+          '.groups = "', descriptive_plot[i,12], '", \n',
+          '.facet = "', descriptive_plot[i,13], '", \n',
+          '.facet_second = "', descriptive_plot[i,14], '", \n',
+          '.include_regression = "', descriptive_plot[i,15], '"\n',
+          ')', '\n',
+          'descriptive_plot', i, '\n')
+      }
+      script <- c(script, tmp)
+    }
+  }else{
+    script <- '\n'
+  }
+  
+  script_eda <- paste0(script, "\n", collapse = "\n")
   
   script_model <- paste0(
   "# run model", "\n",
@@ -92,7 +154,8 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   )
   
   # combine into one string
-  script <- paste0(script_head, script_data_munge, script_data_type, script_rename, script_model, script_plots)
+  script <- paste0(script_head, script_data_munge, script_data_type, script_rename, 
+                   script_data_verified, script_eda, script_model, script_plots)
   
   return(script)
 }
