@@ -39,7 +39,8 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "library(plotBart) #devtools::install_github('joemarlo/plotBart')", "\n",
   "source('clean_auto_convert_logicals.R')", "\n",
   "source('clean_dummies_to_categorical.R')", "\n",
-  "source('plot_exploration.R')", 
+  "source('plot_exploration.R')", "\n",
+  "source('clean_detect_column_types.R')", 
   "\n\n"
   )
   
@@ -69,8 +70,8 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   
   script_rename <- paste0("colnames(X) <- ", column_names, "\n\n")
  
-  # change column names for the following eda and analysis 
-  script_data_verified <- if(!is.null(overlap_plot)){
+  # change column names and get variables for the following data visualization
+  script_data_verified <- if(!is.null(overlap_plot)){ # if an overlap plot is downloaded
     paste0(
       "# new column names", "\n",
       "old_col_names <- colnames(X)", "\n",
@@ -92,7 +93,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   }
     
   
-  eda <- if(!is.null(descriptive_plot)){
+  eda <- if(!is.null(descriptive_plot)){ # if a descriptive plot is downloaded
     script <- c("# descriptive plots")
     for (i in 1:nrow(descriptive_plot)) {
       if (descriptive_plot[i,6] != "None"){ # plots that are specified .shape
@@ -146,10 +147,10 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   
   script_eda <- paste0(script, collapse = "\n")
   
-  overlap <- if(!is.null(overlap_plot)){
+  overlap <- if(!is.null(overlap_plot)){ # if an overlap plot is downloaded
     script <- c("\n# common support plot")
-    # if there is a plot of p-score, calcultae p-score
-    if(2 %in% overlap_plot[,1]){
+    
+    if(2 %in% overlap_plot[,1]){ # if there is an overlap plot of pscores, calculate pscores
       tmp <- paste0('# calculate pscores', '\n',
                     'pscores <- plotBart::propensity_scores(', '\n',
                     '.data = X,', '\n',
@@ -161,7 +162,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
     }
     
     for(i in 1:nrow(overlap_plot)){
-      if(as.numeric(overlap_plot[i,1]) == 1){
+      if(as.numeric(overlap_plot[i,1]) == 1){ # overlap plot by variables
         tmp <- paste0(
           'overlap_select_var <- c(', sapply(strsplit(paste0(as.character(overlap_plot[i,4]), collapse = ', '), '[, ]+'), function(x) toString(dQuote(x))), ')', '\n',
           'overlap_plot', i, ' <- ',
@@ -172,7 +173,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
           'plot_type = "', overlap_plot[i,5], '"\n',
           ')', '\n',
           'overlap_plot', i, '\n')
-      }else{
+      }else{ # overlap plot of pscores
         tmp <- paste0('overlap_plot', i, ' <- ',
           'plotBart::plot_overlap_pScores(', '\n',
           '.data = X,', '\n',

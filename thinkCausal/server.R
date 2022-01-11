@@ -831,7 +831,7 @@ shinyServer(function(input, output, session) {
 
   # EDA ---------------------------------------------------------------------
 
-  # only show continuous variables if histogram, boxplot, or boxplot is selected
+  # only show continuous variables if histogram, density, or boxplot is selected
   # only show categorical if barplot
   observeEvent(input$analysis_eda_select_plot_type, {
 
@@ -1944,12 +1944,6 @@ shinyServer(function(input, output, session) {
         NULL
       }
     
-    print(downloaded_overlap_plot_parameters$df)
-    print(overlap_plot)
-    print(2 %in% overlap_plot[,1])
-    print(overlap_plot[1,4])
-    print(as.character(overlap_plot[1,4]))
-    
     # model
     estimand <- base::tolower(input$analysis_model_radio_estimand)
     common_support <- input$analysis_model_radio_support
@@ -2005,6 +1999,13 @@ shinyServer(function(input, output, session) {
                  functionFile)
       close(functionFile)
       files <- c("plot_exploration.R", files)
+      
+      # create file containing the clean_detect_column_types function
+      functionFile <- file("clean_detect_column_types.R")
+      writeLines(attributes(attributes(clean_detect_column_types)$srcref)$srcfile$lines,
+                 functionFile)
+      close(functionFile)
+      files <- c("clean_detect_column_types.R", files)
 
       # create the script file
       fileConn <- file("thinkCausal_script.R")
