@@ -14,7 +14,7 @@
 #'  estimand = 'att',
 #'  common_support = 'none'
 #' )
-create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, change_data_type, descriptive_plot, estimand, common_support){
+create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, change_data_type, descriptive_plot, overlap_plot, estimand, common_support){
 
   # choose which file readr was used
   file_readr <- switch(
@@ -70,12 +70,27 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   script_rename <- paste0("colnames(X) <- ", column_names, "\n\n")
  
   # change column names for the following eda and analysis 
-  script_data_verified <- paste0(
-    "# new column names", "\n",
-    "old_col_names <- colnames(X)", "\n",
-    "new_col_names <- paste0(c('Z', 'Y', rep('X', length(old_col_names)-2)), '_', old_col_names)","\n",
-    "colnames(X) <- new_col_names","\n\n"
-  )
+  script_data_verified <- if(!is.null(overlap_plot)){
+    paste0(
+      "# new column names", "\n",
+      "old_col_names <- colnames(X)", "\n",
+      "new_col_names <- paste0(c('Z', 'Y', rep('X', length(old_col_names)-2)), '_', old_col_names)", "\n",
+      "colnames(X) <- new_col_names", "\n",
+      "treatment_col <- '", overlap_plot[1,2], "'\n",
+      "response_col <- '", overlap_plot[1,3], "'\n",
+      "column_types <- clean_detect_column_types(X)", "\n",
+      "cols_continuous <- column_types$continuous", "\n",
+      "confounder_cols <- grep('^X_', cols_continuous, value = TRUE)","\n\n"
+    )
+  }else{
+    paste0(
+      "# new column names", "\n",
+      "old_col_names <- colnames(X)", "\n",
+      "new_col_names <- paste0(c('Z', 'Y', rep('X', length(old_col_names)-2)), '_', old_col_names)","\n",
+      "colnames(X) <- new_col_names", "\n\n"
+    )
+  }
+    
   
   eda <- if(!is.null(descriptive_plot)){
     script <- c("# descriptive plots")
@@ -129,10 +144,56 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
     script <- '\n'
   }
   
-  script_eda <- paste0(script, "\n", collapse = "\n")
+  script_eda <- paste0(script, collapse = "\n")
+  
+  overlap <- if(!is.null(overlap_plot)){
+    script <- c("\n# common support plot")
+    # if there is a plot of p-score, calcultae p-score
+    if(2 %in% overlap_plot[,1]){
+      tmp <- paste0('# calculate pscores', '\n',
+                    'pscores <- plotBart::propensity_scores(', '\n',
+                    '.data = X,', '\n',
+                    'treatment = treatment_col,', '\n',
+                    'response = response_col,', '\n',
+                    'confounders = confounder_cols', '\n',
+                    ')', '\n')
+      script <- c(script, tmp)
+    }
+    
+    for(i in 1:nrow(overlap_plot)){
+      if(as.numeric(overlap_plot[i,1]) == 1){
+        tmp <- paste0(
+          'overlap_select_var <- c(', sapply(strsplit(paste0(as.character(overlap_plot[i,4]), collapse = ', '), '[, ]+'), function(x) toString(dQuote(x))), ')', '\n',
+          'overlap_plot', i, ' <- ',
+          'plotBart::plot_overlap_vars(', '\n',
+          '.data = X,', '\n',
+          'treatment = treatment_col,', '\n',
+          'confounders = overlap_select_var,', '\n',
+          'plot_type = "', overlap_plot[i,5], '"\n',
+          ')', '\n',
+          'overlap_plot', i, '\n')
+      }else{
+        tmp <- paste0('overlap_plot', i, ' <- ',
+          'plotBart::plot_overlap_pScores(', '\n',
+          '.data = X,', '\n',
+          'treatment = treatment_col,', '\n',
+          'response = response_col,', '\n',
+          'confounders = confounder_cols,', '\n',
+          'plot_type = "', overlap_plot[i,5], '",\n',
+          'pscores = pscores', '\n',
+          ')', '\n',
+          'overlap_plot', i, '\n')
+      }
+      script <- c(script, tmp)
+    }
+  }else{
+    script <- '\n'
+  }
+  
+  script_overlap <- paste0(script, collapse = "\n")
   
   script_model <- paste0(
-  "# run model", "\n",
+  "\n# run model", "\n",
   "treatment_v <- X[, 1]", "\n",
   "response_v <- X[, 2]", "\n",
   "confounders_mat <- as.matrix(X[, 3:ncol(X)])", "\n",
@@ -156,7 +217,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   
   # combine into one string
   script <- paste0(script_head, script_data_munge, script_data_type, script_rename, 
-                   script_data_verified, script_eda, script_model, script_plots)
+                   script_data_verified, script_eda, script_overlap, script_model, script_plots)
   
   return(script)
 }

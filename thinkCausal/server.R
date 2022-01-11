@@ -1097,7 +1097,35 @@ shinyServer(function(input, output, session) {
 
     return(p)
   })
-
+  
+  # to save the parameters of downloaded overlap plots for reproducible script
+  downloaded_overlap_plot_parameters <- reactiveValues(df = list())
+  
+  # parameters of current overlap plot
+  overlap_plot_parameters <- reactive({
+    # get variables
+    X <- store$verified_df
+    col_names <- colnames(X)
+    treatment_col <- grep("^Z_", col_names, value = TRUE)
+    response_col <- grep("^Y_", col_names, value = TRUE)
+    cols_continuous <- store$column_types$continuous
+    confounder_cols <- grep("^X_", cols_continuous, value = TRUE)
+    
+    if(input$analysis_plot_overlap_type == 1){ # overlap plot by variables
+      list(analysis_plot_overlap_type = 1,
+           treatment = treatment_col,
+           response = response_col,
+           confounders = paste(input$analysis_plot_overlap_select_var, collapse = ','),
+           plot_type = input$analysis_plot_overlap_method)
+    }else{ # p-score plot
+      list(analysis_plot_overlap_type = 2,
+           treatment = treatment_col,
+           response = response_col,
+           confounders = paste(confounder_cols, collapse = ','),
+           plot_type = input$analysis_plot_overlap_method)
+    }
+  })
+  
   output$download_overlap_plot <- downloadHandler(
     filename = 'overlap_plot.png',
     content = function(file) {
@@ -1107,8 +1135,10 @@ shinyServer(function(input, output, session) {
              width = input$settings_options_ggplotWidth,
              units = 'in',
              device = 'png')
+      # save the parameters of the downloaded overlap plot
+      downloaded_overlap_plot_parameters$df <- rbind(downloaded_overlap_plot_parameters$df, overlap_plot_parameters())
     })
-
+  
   # create the balance plot
   balance_plot <- reactive({
 
@@ -1906,6 +1936,20 @@ shinyServer(function(input, output, session) {
         NULL
       }
     
+    # overlap
+    overlap_plot <-
+      if(!is.null(dim(downloaded_overlap_plot_parameters$df))){
+        as.data.frame(downloaded_overlap_plot_parameters$df) %>% distinct()
+      }else{
+        NULL
+      }
+    
+    print(downloaded_overlap_plot_parameters$df)
+    print(overlap_plot)
+    print(2 %in% overlap_plot[,1])
+    print(overlap_plot[1,4])
+    print(as.character(overlap_plot[1,4]))
+    
     # model
     estimand <- base::tolower(input$analysis_model_radio_estimand)
     common_support <- input$analysis_model_radio_support
@@ -1920,6 +1964,7 @@ shinyServer(function(input, output, session) {
       column_names = column_names,
       change_data_type = change_data_type,
       descriptive_plot = descriptive_plot,
+      overlap_plot = overlap_plot,
       estimand = estimand,
       common_support = common_support
     )
