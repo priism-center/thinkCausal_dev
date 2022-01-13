@@ -14,7 +14,7 @@
 #'  estimand = 'att',
 #'  common_support = 'none'
 #' )
-create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, change_data_type, descriptive_plot, overlap_plot, estimand, common_support){
+create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, change_data_type, descriptive_plot, overlap_plot, balance_plot, estimand, common_support){
 
   # choose which file readr was used
   file_readr <- switch(
@@ -149,7 +149,6 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   
   overlap <- if(!is.null(overlap_plot)){ # if an overlap plot is downloaded
     script <- c("\n# common support plot")
-    
     if(2 %in% overlap_plot[,1]){ # if there is an overlap plot of pscores, calculate pscores
       tmp <- paste0('# calculate pscores', '\n',
                     'pscores <- plotBart::propensity_scores(', '\n',
@@ -193,6 +192,26 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   
   script_overlap <- paste0(script, collapse = "\n")
   
+  balance <- if(!is.null(balance_plot)){ # if a balance plot is downloaded
+    script <- c("\n# balance plot")
+    for(i in 1:nrow(balance_plot)){
+      tmp <- paste0(
+        'balance_select_var <- c(', sapply(strsplit(paste0(as.character(balance_plot[i,2]), collapse = ', '), '[, ]+'), function(x) toString(dQuote(x))), ')', '\n',
+        'balance_plot', i, ' <- ',
+        'plotBart::plot_balance(', '\n',
+        '.data = X,', '\n',
+        'treatment = treatment_col,', '\n',
+        'confounders = balance_select_var', '\n',
+        ')', '\n',
+        'balance_plot', i, '\n')
+      script <- c(script, tmp)
+    }
+  }else{
+    script <- '\n'
+  }
+  
+  script_balance <- paste0(script, collapse = "\n")
+  
   script_model <- paste0(
   "\n# run model", "\n",
   "treatment_v <- X[, 1]", "\n",
@@ -218,7 +237,8 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   
   # combine into one string
   script <- paste0(script_head, script_data_munge, script_data_type, script_rename, 
-                   script_data_verified, script_eda, script_overlap, script_model, script_plots)
+                   script_data_verified, script_eda, script_overlap, script_balance,
+                   script_model, script_plots)
   
   return(script)
 }

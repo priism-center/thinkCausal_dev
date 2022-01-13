@@ -1130,7 +1130,7 @@ shinyServer(function(input, output, session) {
     filename = 'overlap_plot.png',
     content = function(file) {
       ggsave(file,
-             plot = descriptive_plot(),
+             plot = overlap_plot(),
              height = input$settings_options_ggplotHeight,
              width = input$settings_options_ggplotWidth,
              units = 'in',
@@ -1181,15 +1181,33 @@ shinyServer(function(input, output, session) {
     return(p)
   })
 
+  # to save the parameters of downloaded balance plots for reproducible script
+  downloaded_balance_plot_parameters <- reactiveValues(df = list())
+  
+  # parameters of current balance plot
+  balance_plot_parameters <- reactive({
+    # get variables
+    X <- store$verified_df
+    col_names <- colnames(X)
+    treatment_col <- grep("^Z_", col_names, value = TRUE)
+    confounder_cols <- input$analysis_plot_balance_select_var
+    
+    list(treatment = treatment_col,
+         confounders = paste(confounder_cols, collapse = ','))
+    
+  })
+  
   output$download_balance_plot <- downloadHandler(
     filename = 'balance_plot.png',
     content = function(file) {
       ggsave(file,
-             plot = descriptive_plot(),
+             plot = balance_plot(),
              height = input$settings_options_ggplotHeight,
              width = input$settings_options_ggplotWidth,
              units = 'in',
              device = 'png')
+      # save the parameters of the downloaded overlap plot
+      downloaded_balance_plot_parameters$df <- rbind(downloaded_balance_plot_parameters$df, balance_plot_parameters())
   })
 
 
@@ -1944,6 +1962,14 @@ shinyServer(function(input, output, session) {
         NULL
       }
     
+    # balance
+    balance_plot <-
+      if(!is.null(dim(downloaded_balance_plot_parameters$df))){
+        as.data.frame(downloaded_balance_plot_parameters$df) %>% distinct()
+      }else{
+        NULL
+      }
+    
     # model
     estimand <- base::tolower(input$analysis_model_radio_estimand)
     common_support <- input$analysis_model_radio_support
@@ -1959,6 +1985,7 @@ shinyServer(function(input, output, session) {
       change_data_type = change_data_type,
       descriptive_plot = descriptive_plot,
       overlap_plot = overlap_plot,
+      balance_plot = balance_plot,
       estimand = estimand,
       common_support = common_support
     )
