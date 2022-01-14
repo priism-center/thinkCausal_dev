@@ -34,9 +34,10 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   
   # construct strings for each section
   script_head <- paste0(
+  "##### BETA -- work-in-progress #####", "\n\n", 
   "library(tidyverse)", "\n",
   "library(bartCause)", "\n",
-  "library(plotBart) #devtools::install_github('joemarlo/plotBart')", "\n",
+  "library(plotBart) # remotes::install_github('joemarlo/plotBart', ref = '0.1.2')", "\n",
   "source('clean_auto_convert_logicals.R')", "\n",
   "source('clean_dummies_to_categorical.R')", "\n",
   "source('plot_exploration.R')", "\n",
@@ -241,4 +242,14 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
                    script_model, script_plots)
   
   return(script)
+}
+
+
+create_script_readme <- function(){
+  paste0(
+    "Reproducible script instructions", "\n\n",
+    "-Unzip this folder and save all files to a local folder.", "\n",
+    "-Open 'thinkCausal_script.R' using Rstudio and set the working directory (setwd()) to the newly created folder.", "\n",
+    "-Execute each line individually or click 'Run' in the top right of the Rstudio script editor."
+  )
 }

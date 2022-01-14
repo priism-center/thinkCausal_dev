@@ -382,6 +382,7 @@ border 0 fixes the buttons moving around when you hover / click */
 html {
   overflow: -moz-scrollbars-vertical; 
   overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
 /* controls the look and placement of notifications created from shiny::showNotification */

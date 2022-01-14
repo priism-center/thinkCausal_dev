@@ -2005,13 +2005,19 @@ shinyServer(function(input, output, session) {
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       files <- NULL;
+      
+      # create README
+      fileConn <- file("README.txt")
+      writeLines(create_script_readme(), fileConn)
+      close(fileConn)
+      files <- c('README.txt', files)
 
       # create file containing the clean_auto_convert_logicals function
       functionFile <- file("clean_auto_convert_logicals.R")
       writeLines(attributes(attributes(clean_auto_convert_logicals)$srcref)$srcfile$lines,
                  functionFile)
       close(functionFile)
-      files <- "clean_auto_convert_logicals.R"
+      files <- c("clean_auto_convert_logicals.R", files)
 
       # create file containing the clean_dummies_to_categorical function
       functionFile <- file("clean_dummies_to_categorical.R")
