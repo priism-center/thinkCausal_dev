@@ -37,7 +37,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "##### BETA -- work-in-progress #####", "\n\n", 
   "library(tidyverse)", "\n",
   "library(bartCause)", "\n",
-  "library(plotBart) # remotes::install_github('joemarlo/plotBart', ref = '0.1.2')", "\n",
+  "library(plotBart) # remotes::install_github('joemarlo/plotBart', ref = '0.1.3')", "\n",
   "source('clean_auto_convert_logicals.R')", "\n",
   "source('clean_dummies_to_categorical.R')", "\n",
   "source('plot_exploration.R')", "\n",
@@ -230,9 +230,9 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   
   script_plots <- paste0(
   "# plot results and diagnostics", "\n",
-  "plot_ITE(model_results) + labs(title = 'My individual treatment effects')", "\n",
-  "plot_trace(model_results)", "\n",
-  "plot_diagnostic_common_support(model_results, .rule = '", common_support, "')",
+  "plotBart::plot_ITE(model_results) + labs(title = 'My individual treatment effects')", "\n",
+  "plotBart::plot_trace(model_results)", "\n",
+  "plotBart::plot_diagnostic_common_support(model_results, .rule = '", common_support, "')",
   "\n"
   )
   

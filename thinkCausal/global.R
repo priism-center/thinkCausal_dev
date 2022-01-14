@@ -19,7 +19,7 @@ library(stringr)
 library(purrr)
 
 # for bart
-library(plotBart) # devtools::install_github("joemarlo/plotBart", ref = "0.1.2")
+library(plotBart) # devtools::install_github("joemarlo/plotBart", ref = "0.1.3")
 library(bartCause)
 
 # global options

@@ -1659,10 +1659,12 @@ shinyServer(function(input, output, session) {
       else{
         group <- NULL
       }
-      p <- plot_ICATE(store$model_results,
-                      group.by = group,
-                      nbins = input$plotBart_ICATE_n_bins,
-                      .alpha = input$plotBart_ICATE_alpha)
+      p <- plotBart::plot_ICATE(
+        store$model_results,
+        .group_by = group,
+        n_bins = input$plotBart_ICATE_n_bins,
+        .alpha = input$plotBart_ICATE_alpha
+      )
       # add theme
       p <- p + theme_custom()
     }
@@ -1682,16 +1684,19 @@ shinyServer(function(input, output, session) {
         color.by <- NULL
       }
 
-      p <- plot_waterfall(store$model_results,
-                          .order = order,
-                          .color = color.by)
+      # plot it
+      p <- plotBart::plot_waterfall(
+        .model = store$model_results,
+        .order = order,
+        .color = color.by
+      )
 
       # add theme
       p <- p + theme_custom()
     }
 
     if(input$icate_type == 'tree'){
-      p <- plotBart::plot_moderator_search(store$model_results, depth = input$plotBart_tree_depth)
+      p <- plotBart::plot_moderator_search(store$model_results, max_depth = input$plotBart_tree_depth)
     }
 
     return(p)
@@ -1788,8 +1793,10 @@ shinyServer(function(input, output, session) {
             div_id <- 'analysis_moderators_explore_plot'
             show_message_updating(div_id)
 
-            p <- plot_moderator_d_density(store$model_results,
-                                          store$verified_df[[paste0('X_', selected_moderator)]]) 
+            p <- plotBart::plot_moderator_d_density(
+              .model = store$model_results,
+              moderator = store$verified_df[[paste0('X_', selected_moderator)]]
+            )
             
             p <- p + theme_custom() 
 
@@ -1804,8 +1811,10 @@ shinyServer(function(input, output, session) {
           div_id <- 'analysis_moderators_explore_plot'
           show_message_updating(div_id)
 
-          p <- plot_moderator_d_linerange(.model = store$model_results,
-                                          moderator = store$verified_df[[paste0('X_', selected_moderator)]])
+          p <- plotBart::plot_moderator_d_linerange(
+            .model = store$model_results,
+            moderator = store$verified_df[[paste0('X_', selected_moderator)]]
+          )
           p <- p + theme_custom()
 
           # remove overlay
@@ -1822,8 +1831,10 @@ shinyServer(function(input, output, session) {
           output$analysis_moderators_explore_plot <- renderPlot({
           div_id <- 'analysis_moderators_explore_plot'
           show_message_updating(div_id)
-          p <- plot_moderator_c_loess(store$model_results,
-                                      store$verified_df[[paste0('X_', selected_moderator)]])
+          p <- plotBart::plot_moderator_c_loess(
+            .model = store$model_results,
+            moderator = store$verified_df[[paste0('X_', selected_moderator)]]
+          )
           p <- p + theme_custom()
 
           # remove overlay
@@ -1836,8 +1847,10 @@ shinyServer(function(input, output, session) {
           output$analysis_moderators_explore_plot <- renderPlot({
           div_id <- 'analysis_moderators_explore_plot'
           show_message_updating(div_id)
-          p <- plot_moderator_c_pd(store$model_results,
-                                   store$verified_df[[paste0('X_', selected_moderator)]])
+          p <- plotBart::plot_moderator_c_pd(
+            .model = store$model_results,
+            moderator = store$verified_df[[paste0('X_', selected_moderator)]]
+          )
           p <- p + theme_custom()
 
           # remove overlay
