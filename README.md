@@ -24,27 +24,3 @@ shiny::runGitHub("thinkCausal_dev", "gperrett", subdir = 'thinkCausal', ref = 'v
 ```
 -->
 
-### Folder structure
-    .
-    ├── student_work            # Personal store for students
-    ├── thinkCausal             # Main project directory
-    │   ├── data                # Test data
-    │   ├── man                 # Compiled manual for functions
-    │   ├── R                   # Functions
-    │   ├── tests               # Unit tests
-    │   ├── UI                  # Scripts that build the UI
-    │   │  ├── concepts         # Modules that define each concept sub-page
-    │   │  ├── headers          # UI code that defines the top nav bar hierarchy
-    │   │  ├── markdowns        # Markdowns containing static text such as the help slideover
-    │   │  └── pages            # UI code that defines each page
-    │   ├── www                 # Browser-side code such as CSS, JavaScript, imgs
-    │   ├── DESCRIPTION         # Unused but required for required for documenting R functions via devtools
-    │   ├── global.R            # Code that is run prior to launching the Shiny app
-    │   ├── manual_workflow.R   # Testing script useful for replicating the tool's workflow
-    │   ├── NAMESPACE           # Unused but required for required for documenting R functions via devtools
-    │   ├── server.R            # Server-side code for Shiny app
-    │   └── UI.R                # Main UI framework
-    ├── writing                 # Store for vignettes and similar content
-    ├── LICENSE
-    ├── screenshot.png
-    └── README.md
