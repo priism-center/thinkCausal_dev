@@ -1,11 +1,10 @@
 library(shiny)
 
 # for reading data
-library(foreign)
 library(readstata13)
 library(openxlsx)
 library(Hmisc) # for spss
-library(readr)
+library(readr) # for csv, txt
 
 # for javascript tools
 library(shinyjs) # for running javascript on the server-side

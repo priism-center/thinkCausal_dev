@@ -20,8 +20,8 @@ thinkCausal is managed by [NYU PRIISM](https://steinhardt.nyu.edu/priism) and is
 
 ### Run the latest development build locally via R
 ``` r
-# packages <- c('shiny', 'foreign', 'readstata13', 'openxlsx', 'Hmisc', 'readr', 'shinyjs', 'DT', 'sortable', 'dplyr', 'ggplot2', 'stringr', 'purrr', 'bartCause')
+# packages <- c('shiny', 'readstata13', 'openxlsx', 'Hmisc', 'readr', 'shinyjs', 'DT', 'sortable', 'dplyr', 'ggplot2', 'stringr', 'purrr', 'bartCause')
 # install.packages(packages)
-# remotes::install_github('joemarlo/plotBart')
+# remotes::install_github('joemarlo/plotBart', ref = "0.1.3")
 shiny::runGitHub("thinkCausal_dev", "gperrett", subdir = 'thinkCausal', launch.browser = TRUE)
 ```

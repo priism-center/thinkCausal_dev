@@ -208,7 +208,7 @@ shinyServer(function(input, output, session) {
       stop(safeError(e))
     })
 
-    # clean column names; bad csvs will crash the server
+    # clean column names; bad names will crash the server
     colnames(uploaded_file) <- clean_names(colnames(uploaded_file))
 
     return(uploaded_file)
