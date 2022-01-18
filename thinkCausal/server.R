@@ -1366,8 +1366,8 @@ shinyServer(function(input, output, session) {
     log_event <- paste0(
       'Ran BART model with following specification: \n',
       '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
-      '\t', 'Causal estimand: ', input$analysis_model_radio_estimand, '\n',
-      '\t', 'Common support rule: ', input$analysis_model_radio_support, '\n',
+      '\t', 'Causal estimand: ', input$analysis_model_estimand, '\n',
+      '\t', 'Common support rule: ', common_support_rule, '\n',
       '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
       '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
       '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
@@ -1984,9 +1984,18 @@ shinyServer(function(input, output, session) {
       }
     
     # model
-    estimand <- base::tolower(input$analysis_model_radio_estimand)
-    common_support <- input$analysis_model_radio_support
-
+    common_support_rule <- input$analysis_over_ride_common_support
+    if (input$analysis_model_support == 'No') common_support_rule <- 'none'
+    
+    BART_model <- 
+      if(isTRUE(store$model_fit_good)){ # if a model successfully fitted
+        data.frame(support = common_support_rule,
+                   ran.eff = input$analysis_random_intercept,
+                   estimand = base::tolower(input$analysis_model_estimand))
+      }else{
+        NULL
+      }
+    
     # create the script
     reproducible_script <- create_script(
       uploaded_file_name = uploaded_file_name,
@@ -1999,8 +2008,7 @@ shinyServer(function(input, output, session) {
       descriptive_plot = descriptive_plot,
       overlap_plot = overlap_plot,
       balance_plot = balance_plot,
-      estimand = estimand,
-      common_support = common_support
+      BART_model = BART_model
     )
 
     return(reproducible_script)
@@ -2052,6 +2060,13 @@ shinyServer(function(input, output, session) {
                  functionFile)
       close(functionFile)
       files <- c("clean_detect_column_types.R", files)
+      
+      # create file containing the clean_confounders_for_bart function
+      functionFile <- file("clean_confounders_for_bart.R")
+      writeLines(attributes(attributes(clean_confounders_for_bart)$srcref)$srcfile$lines,
+                 functionFile)
+      close(functionFile)
+      files <- c("clean_confounders_for_bart.R", files)
 
       # create the script file
       fileConn <- file("thinkCausal_script.R")
