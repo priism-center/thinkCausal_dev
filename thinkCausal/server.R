@@ -2021,7 +2021,10 @@ shinyServer(function(input, output, session) {
       paste0(time, '_thinkCausal_script.zip')
     },
     content <- function(filename){
-
+      
+      # prevent download if model is not yet fit
+      validate_model_fit(store)
+      
       # go to a temp dir to avoid permission issues
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
@@ -2032,41 +2035,16 @@ shinyServer(function(input, output, session) {
       writeLines(create_script_readme(), fileConn)
       close(fileConn)
       files <- c('README.txt', files)
-
-      # create file containing the clean_auto_convert_logicals function
-      functionFile <- file("clean_auto_convert_logicals.R")
-      writeLines(attributes(attributes(clean_auto_convert_logicals)$srcref)$srcfile$lines,
-                 functionFile)
-      close(functionFile)
-      files <- c("clean_auto_convert_logicals.R", files)
-
-      # create file containing the clean_dummies_to_categorical function
-      functionFile <- file("clean_dummies_to_categorical.R")
-      writeLines(attributes(attributes(clean_dummies_to_categorical)$srcref)$srcfile$lines,
-                 functionFile)
-      close(functionFile)
-      files <- c("clean_dummies_to_categorical.R", files)
       
-      # create file containing the plot_exploration function
-      functionFile <- file("plot_exploration.R")
-      writeLines(attributes(attributes(plot_exploration)$srcref)$srcfile$lines,
-                 functionFile)
-      close(functionFile)
-      files <- c("plot_exploration.R", files)
-      
-      # create file containing the clean_detect_column_types function
-      functionFile <- file("clean_detect_column_types.R")
-      writeLines(attributes(attributes(clean_detect_column_types)$srcref)$srcfile$lines,
-                 functionFile)
-      close(functionFile)
-      files <- c("clean_detect_column_types.R", files)
-      
-      # create file containing the clean_confounders_for_bart function
-      functionFile <- file("clean_confounders_for_bart.R")
-      writeLines(attributes(attributes(clean_confounders_for_bart)$srcref)$srcfile$lines,
-                 functionFile)
-      close(functionFile)
-      files <- c("clean_confounders_for_bart.R", files)
+      # write function code to individual files
+      functions <- c(
+        'clean_auto_convert_logicals', 
+        'clean_dummies_to_categorical',
+        'plot_exploration',
+        'clean_detect_column_types',
+        'clean_confounders_for_bart'
+      )
+      files <- write_function_files(files, functions)
 
       # create the script file
       fileConn <- file("thinkCausal_script.R")
