@@ -14,7 +14,7 @@
 #'  estimand = 'att',
 #'  common_support = 'none'
 #' )
-create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, change_data_type, descriptive_plot, overlap_plot, balance_plot, estimand, common_support){
+create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, change_data_type, descriptive_plot, overlap_plot, balance_plot, BART_model){
 
   # choose which file readr was used
   file_readr <- switch(
@@ -41,7 +41,8 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "source('clean_auto_convert_logicals.R')", "\n",
   "source('clean_dummies_to_categorical.R')", "\n",
   "source('plot_exploration.R')", "\n",
-  "source('clean_detect_column_types.R')", 
+  "source('clean_detect_column_types.R')", "\n",
+  "source('clean_confounders_for_bart.R')", 
   "\n\n"
   )
   
@@ -213,26 +214,53 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   
   script_balance <- paste0(script, collapse = "\n")
   
-  script_model <- paste0(
-  "\n# run model", "\n",
-  "treatment_v <- X[, 1]", "\n",
-  "response_v <- X[, 2]", "\n",
-  "confounders_mat <- as.matrix(X[, 3:ncol(X)])", "\n",
-  "model_results <- bartCause::bartc(
-    response = response_v,
-    treatment = treatment_v,
-    confounders = confounders_mat,
-    estimand = '", estimand, "',
-    commonSup.rule = '", common_support, "'\n",
-  ")",
-  "\n\n"
-  )
-  
+  script_model <- if(!is.null(BART_model)){
+    if(BART_model$ran.eff == 'None'){
+      paste0(
+        "\n# run model", "\n",
+        "treatment_v <- X[, 1]", "\n",
+        "response_v <- X[, 2]", "\n",
+        "confounders_mat <- clean_confounders_for_bart(X[, 3:ncol(X)])", "\n",
+        "model_results <- bartCause::bartc(", "\n",
+        "response = response_v,", "\n",
+        "treatment = treatment_v,", "\n",
+        "confounders = confounders_mat,", "\n",
+        "estimand = '", BART_model$estimand, "',\n",
+        "commonSup.rule = '", BART_model$support, "',\n",
+        "keepTrees = T,", "\n",
+        "seed = 2", "\n",
+        ")",
+        "\n\n"
+      )
+    }else{
+      paste0(
+        "\n# run model", "\n",
+        "treatment_v <- X[, 1]", "\n",
+        "response_v <- X[, 2]", "\n",
+        "confounders_mat <- clean_confounders_for_bart(X[, 3:ncol(X)])", "\n",
+        "model_results <- bartCause::bartc(", "\n",
+        "response = response_v,", "\n",
+        "treatment = treatment_v,", "\n",
+        "confounders = confounders_mat,", "\n",
+        "estimand = '", BART_model$estimand, "',\n",
+        "group.by = '", BART_model$ran.eff, "',\n",
+        "group.effects = T,", "\n",
+        "commonSup.rule = '", BART_model$support, "',\n",
+        "keepTrees = T,", "\n",
+        "seed = 2", "\n",
+        ")",
+        "\n\n"
+      )
+    }
+  }else{
+    '\n'
+  }
+
   script_plots <- paste0(
   "# plot results and diagnostics", "\n",
   "plotBart::plot_ITE(model_results) + labs(title = 'My individual treatment effects')", "\n",
   "plotBart::plot_trace(model_results)", "\n",
-  "plotBart::plot_diagnostic_common_support(model_results, .rule = '", common_support, "')",
+  "plotBart::plot_diagnostic_common_support(model_results, .rule = '", BART_model$support, "')",
   "\n"
   )
   
