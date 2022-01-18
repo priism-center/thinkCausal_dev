@@ -261,16 +261,30 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
     '\n'
   }
 
-  script_plots <- paste0(
-  "# plot results and diagnostics", "\n",
-  "plotBart::plot_ITE(model_results) + labs(title = 'My individual treatment effects')", "\n",
-  "plotBart::plot_trace(model_results)", "\n",
-  "plotBart::plot_diagnostic_common_support(model_results, .rule = '", BART_model$support, "')", "\n",
-  '\n',
-  '# example: save a plot', '\n',
-  'p <- plotBart::plot_ITE(model_results)', '\n',
-  'ggplot2::ggsave("myplot.png", p, width = 5, height = 5)', '\n'
-  )
+  script_plots <- if(!is.null(BART_model)){
+    paste0("# plot results and diagnostics", "\n",
+           "plotBart::plot_PATE(", "\n",
+           ".model = model_results,", "\n",
+           "type = 'Density',", "\n",
+           "ci_80 = 'none',", "\n",
+           "ci_95 = 'none',", "\n",
+           ".mean = T,", "\n",
+           ".median = F,", "\n",
+           "reference = NULL", "\n",
+           ")","\n\n",
+           "plotBart::plot_trace(model_results)", "\n\n",
+           "plotBart::plot_common_support(", "\n",
+           ".model = model_results,", "\n",
+           "rule = 'both'", "\n",
+           ") + theme(legend.position = 'bottom', strip.text = element_text(hjust = 0))", "\n",
+           '\n',
+           '# example: save a plot', '\n',
+           'p <- plotBart::plot_trace(model_results)', '\n',
+           'ggplot2::ggsave("myplot.png", p, width = 5, height = 5)', '\n'
+    )
+  }else{
+    '\n'
+  }
   
   # combine into one string
   script <- paste0(script_head, script_data_munge, script_data_type, script_rename, 
