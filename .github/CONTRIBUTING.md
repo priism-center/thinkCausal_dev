@@ -15,7 +15,7 @@ Feel free to raise an [issue](https://github.com/gperrett/thinkCausal_dev/issues
 
 thinkCausal is a mix of 'base' R and tidyverse code. We try to adhere to the [tidyverse style guide](https://style.tidyverse.org/) for code formatting. The easiest way to to format ~90% of your R code is `Code -> Reformat Code` within Rstudio.
 
-We heavily use [roxygen2](https://roxygen2.r-lib.org/) for documenting functions and [testthat](https://testthat.r-lib.org/) for unit testing. Please familiarize yourself with both and feel free to reach out with an [issue](https://github.com/gperrett/thinkCausal_dev/issues) if you have any questions.
+We use [roxygen2](https://roxygen2.r-lib.org/) for documenting functions and [testthat](https://testthat.r-lib.org/) for unit testing. Please familiarize yourself with both and feel free to reach out with an [issue](https://github.com/gperrett/thinkCausal_dev/issues) if you have any questions.
 
 ## Content structure
 
@@ -35,9 +35,10 @@ The core Shiny app is within the `/thinkCausal` directory. Drafts for articles a
     │   │  └── pages            # UI code that defines each page
     │   ├── www                 # Browser-side code such as CSS, JavaScript, imgs
     │   ├── DESCRIPTION         # Unused but required for required for documenting R functions via devtools
+    │   ├── NAMESPACE           # Unused but required for required for documenting R functions via devtools
+    │   ├── NEWS.md             # Descriptions of major updates in user-readable language
     │   ├── global.R            # Code that is run prior to launching the Shiny app
     │   ├── manual_workflow.R   # Testing script useful for replicating the tool's workflow
-    │   ├── NAMESPACE           # Unused but required for required for documenting R functions via devtools
     │   ├── server.R            # Server-side code for Shiny app
     │   └── UI.R                # Main UI framework
     ├── writing                 # Store for vignettes and similar content

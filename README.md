@@ -10,20 +10,18 @@ thinkCausal is federally funded project devoted to building scaffolded causal in
 
 See also the R packages [bartCause](https://github.com/vdorie/bartCause) and [plotBart](https://github.com/joemarlo/plotBart) for much of the underlying causal inference functionality.
 
-If you'd like to contribute to this project, please see the [contribution guidelines](/.github/CONTRIBUTING.md).
+thinkCausal is managed by [NYU PRIISM](https://steinhardt.nyu.edu/priism) and is open to contributions. If you'd like to contribute to this project, please see the [contribution guidelines](/.github/CONTRIBUTING.md).
 
 <br>
 <p align="center">
 <img src="screenshot.png" width=80%>
 </p>
+<br>
 
-<!--
-### Run the latest development build via R
+### Run the latest development build locally via R
 ``` r
-# packages <- c('shiny', 'foreign', 'readstata13', 'openxlsx', 'Hmisc', 'readr', 'shinyjs', 'shinyWidgets', 'DT', 'sortable', 'tidyverse', 'dplyr', 'ggplot2', 'stringr', 'purrr', 'viridis', 'rpart.plot', 'bartCause')
+# packages <- c('shiny', 'foreign', 'readstata13', 'openxlsx', 'Hmisc', 'readr', 'shinyjs', 'DT', 'sortable', 'dplyr', 'ggplot2', 'stringr', 'purrr', 'bartCause')
 # install.packages(packages)
-# devtools::install_github('joemarlo/plotBart')
-shiny::runGitHub("thinkCausal_dev", "gperrett", subdir = 'thinkCausal', ref = 'v0.1.0',  launch.browser = TRUE)
+# remotes::install_github('joemarlo/plotBart')
+shiny::runGitHub("thinkCausal_dev", "gperrett", subdir = 'thinkCausal', launch.browser = TRUE)
 ```
--->
-
