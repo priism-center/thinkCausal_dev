@@ -38,11 +38,16 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "library(tidyverse)", "\n",
   "library(bartCause)", "\n",
   "library(plotBart) # remotes::install_github('joemarlo/plotBart', ref = '0.1.3')", "\n",
+  "\n",
+  '# set the working directory to where this script is saved', '\n',
+  'setwd(here::here())', '\n',
+  '\n',
+  '# load the neccessary functions', "\n",
   "source('clean_auto_convert_logicals.R')", "\n",
   "source('clean_dummies_to_categorical.R')", "\n",
   "source('plot_exploration.R')", "\n",
   "source('clean_detect_column_types.R')", "\n",
-  "source('clean_confounders_for_bart.R')", 
+  "source('clean_confounders_for_bart.R')", "\n",
   "\n\n"
   )
   
@@ -260,8 +265,11 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "# plot results and diagnostics", "\n",
   "plotBart::plot_ITE(model_results) + labs(title = 'My individual treatment effects')", "\n",
   "plotBart::plot_trace(model_results)", "\n",
-  "plotBart::plot_diagnostic_common_support(model_results, .rule = '", BART_model$support, "')",
-  "\n"
+  "plotBart::plot_diagnostic_common_support(model_results, .rule = '", BART_model$support, "')", "\n",
+  '\n',
+  '# example: save a plot', '\n',
+  'p <- plotBart::plot_ITE(model_results)', '\n',
+  'ggplot2::ggsave("myplot.png", p, width = 5, height = 5)', '\n'
   )
   
   # combine into one string
@@ -277,8 +285,8 @@ create_script_readme <- function(){
   paste0(
     "Reproducible script instructions", "\n\n",
     "-Unzip this folder and save all files to a local folder.", "\n",
-    "-Open 'thinkCausal_script.R' using Rstudio and set the working directory (setwd()) to the newly created folder.", "\n",
+    "-Save your dataset to the newly created folder", "\n",
+    "-Open 'thinkCausal_script.R' using Rstudio and ensure the working directory (setwd()) is set to the newly created folder.", "\n",
     "-Execute each line individually or click 'Run' in the top right of the Rstudio script editor."
   )
 }
-
