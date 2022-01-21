@@ -29,15 +29,18 @@ options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size li
 set.seed(2)
 
 
-# UI files (this should always be last) -----------------------------------
 
-# read in all the UI and module files
+# source ------------------------------------------------------------------
+
+# functions
 map(list.files('R', recursive = TRUE), function(file) source(file.path('R', file)))
+
+# modules
+# path_modules <- list.files('modules', pattern = "(_module.R)$", recursive = TRUE, full.names = TRUE)
+# map(path_modules, function(file) source(file))
+# rm(path_modules)
+
+# UI
 map(list.files(file.path('UI', 'concepts')), function(file) source(file.path("UI", "concepts", file)))
 map(list.files(file.path('UI', 'pages')), function(file) source(file.path("UI", "pages", file)))
 map(list.files(file.path('UI', 'headers')), function(file) source(file.path("UI", "headers", file)))
-
-
-# module files -------------------------------- ---------------------------
-# path_modules <- list.files('modules', pattern = "*_module.R", recursive = TRUE, full.names = TRUE)
-# map(path_modules, function(file) source(file))
