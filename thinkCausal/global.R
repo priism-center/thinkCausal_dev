@@ -36,3 +36,8 @@ map(list.files('R', recursive = TRUE), function(file) source(file.path('R', file
 map(list.files(file.path('UI', 'concepts')), function(file) source(file.path("UI", "concepts", file)))
 map(list.files(file.path('UI', 'pages')), function(file) source(file.path("UI", "pages", file)))
 map(list.files(file.path('UI', 'headers')), function(file) source(file.path("UI", "headers", file)))
+
+
+# module files -------------------------------- ---------------------------
+# path_modules <- list.files('modules', pattern = "*_module.R", recursive = TRUE, full.names = TRUE)
+# map(path_modules, function(file) source(file))
