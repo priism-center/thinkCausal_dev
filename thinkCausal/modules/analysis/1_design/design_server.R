@@ -6,11 +6,10 @@ server_design <- function(store, id, nav, analysis_data_tabs, x){
     function(input, output, session) {
       
       # launch pop up if first time
-      # TODO: may need to rename to follow nesting convention
-      store$launched_first_time_popup <- FALSE
+      isolate({store$analysis$design$launched_first_time_popup <- FALSE})
       observeEvent(nav(), {
-        if (nav() == 'Design' & isFALSE(store$launched_first_time_popup)){
-          store$launched_first_time_popup <- TRUE
+        if (nav() == 'Design' & isFALSE(store$analysis$design$launched_first_time_popup)){
+          store$analysis$design$launched_first_time_popup <- TRUE
           show_popup_welcome(session = session)
         }
       })
