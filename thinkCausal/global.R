@@ -30,7 +30,9 @@ set.seed(2)
 
 # set IDs for each page
 module_ids <- list(
-  learning = list(),
+  learning = list(
+    randomization = 'learning_randomization'
+  ),
   analysis = list(
     design = 'analysis_design',
     data = 'analysis_data'
@@ -48,7 +50,7 @@ path_modules <- list.files('modules', pattern = "(_module.R)$", recursive = TRUE
 map(path_modules, function(file) source(file))
 rm(path_modules)
 
-# UI
+# UI 
 map(list.files(file.path('UI', 'concepts')), function(file) source(file.path("UI", "concepts", file)))
 map(list.files(file.path('UI', 'pages')), function(file) source(file.path("UI", "pages", file)))
 map(list.files(file.path('UI', 'headers')), function(file) source(file.path("UI", "headers", file)))

@@ -97,7 +97,7 @@ shinyServer(function(input, output, session) {
   store <- server_design(store = store, id = 'analysis_design', nav = reactive(input$nav),
                          analysis_data_tabs = reactive(input$analysis_data_tabs), x = session)
   # TODO: store like this
-  # store <- server_design(store = store, id = store$module_ids$analysis$design)
+  # store <- server_design(store = store, id = isolate(store$module_ids$analysis$design))
 
   # upload data -------------------------------------------------------------
 
@@ -1829,7 +1829,8 @@ shinyServer(function(input, output, session) {
   })
 
   # run the modules
-  randomizationServer(id = 'concepts_randomization', plot_theme = theme_custom)
+  server_learning_randomization(id = isolate(store$module_ids$learning$randomization), 
+                                plot_theme = theme_custom)
   PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
   #poServer(id = 'potential_outcomes_test')
 
