@@ -1,4 +1,5 @@
-# require(shiny)
+# require(dplyr)
+# require(...)
 
 
 # global objects ----------------------------------------------------------
@@ -8,5 +9,6 @@
 
 # source ui and server functions ------------------------------------------
 
-source('modules/1_design/design_ui.R')
-source('modules/1_design/design_server.R')
+source('modules/analysis/3_eda/eda_ui.R')
+source('modules/analysis/3_eda/eda_server.R')
+
