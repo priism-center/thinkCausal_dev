@@ -93,28 +93,11 @@ shinyServer(function(input, output, session) {
 
   # design text  ------------------------------------------------------------
   
-  # launch pop up if first time
-  # TODO: can this go in the design module server? may need to rename to follow nesting convention
-  store$launched_first_time_popup <- FALSE
-  observeEvent(input$nav, {
-    if (input$nav == 'Design' & isFALSE(store$launched_first_time_popup)){
-      store$launched_first_time_popup <- TRUE
-      show_popup_welcome(session = session)
-    }
-  })
-
   # run the design module server
-  design_page_selection <- server_design(store = store, id = 'analysis_design')
-  store <- design_page_selection$store
+  store <- server_design(store = store, id = 'analysis_design', nav = reactive(input$nav),
+                         analysis_data_tabs = reactive(input$analysis_data_tabs), x = session)
   # TODO: store like this
   # store <- server_design(store = store, id = store$module_ids$analysis$design)
-
-  # TODO: does this work if moved tp the module?
-  observeEvent(design_page_selection$analysis_design_button_next(), {
-    updateNavbarPage(session, inputId = "nav", selected = "Data")
-    updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
-  })
-
 
   # upload data -------------------------------------------------------------
 
@@ -1503,9 +1486,9 @@ shinyServer(function(input, output, session) {
 
     text_out <- create_interpretation(.model = store$model_results,
                                       type = input$interpretation,
-                                      treatment = design_page_selection$treatment_name(),
-                                      units = design_page_selection$treatment_units(),
-                                      participants = design_page_selection$treatment_participants())
+                                      treatment = store$analysis$design$treatment_name,
+                                      units = store$analysis$design$treatment_units,
+                                      participants = store$analysis$design$treatment_participants)
 
     return(text_out)
   })

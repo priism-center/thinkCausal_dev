@@ -1,9 +1,19 @@
 
-server_design <- function(store, id){
+server_design <- function(store, id, nav, analysis_data_tabs, x){
   ns <- NS(id)
   moduleServer(
     id,
     function(input, output, session) {
+      
+      # launch pop up if first time
+      # TODO: may need to rename to follow nesting convention
+      store$launched_first_time_popup <- FALSE
+      observeEvent(nav(), {
+        if (nav() == 'Design' & isFALSE(store$launched_first_time_popup)){
+          store$launched_first_time_popup <- TRUE
+          show_popup_welcome(session = session)
+        }
+      })
       
       # render example language
       output$analysis_design_text <- renderText({
@@ -40,23 +50,20 @@ server_design <- function(store, id){
         
         # save input to store
         store$analysis_design <- input$analysis_design
+        store$analysis$design$treatment_name <- input$treatment_name
+        store$analysis$design$treatment_units <- input$treatment_units
+        store$analysis$design$treatment_participants <- input$treatment_participants
         
         # remove saved dataframes if they exist
         store <- remove_downstream_data(store, page = 'design')
       })
       
-      # TODO: return back store only
-      # e.g. maybe nest like; I don't think it needs to be reactive either?
-      # store$analysis$design$treatment_name <- input$treatment_name
-      # return(store)
-      
-      return(list(
-        store = store,
-        analysis_design_button_next = reactive({input$analysis_design_button_next}),
-        treatment_name = reactive({input$treatment_name}),
-        treatment_units = reactive({input$treatment_units}),
-        treatment_participants = reactive({input$treatment_participants})
-      ))
+      observeEvent(input$analysis_design_button_next, {
+        updateNavbarPage(x, inputId = "nav", selected = "Data")
+        updateTabsetPanel(x, inputId = "analysis_data_tabs", selected = "Upload")
+      })
+
+      return(store)
     }
   )
 }
