@@ -36,9 +36,9 @@ set.seed(2)
 map(list.files('R', recursive = TRUE), function(file) source(file.path('R', file)))
 
 # modules
-# path_modules <- list.files('modules', pattern = "(_module.R)$", recursive = TRUE, full.names = TRUE)
-# map(path_modules, function(file) source(file))
-# rm(path_modules)
+path_modules <- list.files('modules', pattern = "(_module.R)$", recursive = TRUE, full.names = TRUE)
+map(path_modules, function(file) source(file))
+rm(path_modules)
 
 # UI
 map(list.files(file.path('UI', 'concepts')), function(file) source(file.path("UI", "concepts", file)))
