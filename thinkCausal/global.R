@@ -28,6 +28,14 @@ options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size li
 # set seed
 set.seed(2)
 
+# set IDs for each page
+module_ids <- list(
+  learning = list(),
+  analysis = list(
+    design = 'analysis_design',
+    data = 'analysis_data'
+  )
+)
 
 
 # source ------------------------------------------------------------------

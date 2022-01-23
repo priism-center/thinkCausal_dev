@@ -1,5 +1,4 @@
-# require(dplyr)
-# require(...)
+# require(shiny)
 
 
 # global objects ----------------------------------------------------------
@@ -11,4 +10,3 @@
 
 source('modules/1_design/design_ui.R')
 source('modules/1_design/design_server.R')
-

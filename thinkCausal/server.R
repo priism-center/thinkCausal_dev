@@ -5,7 +5,11 @@ shinyServer(function(input, output, session) {
   # onStop(fun = function() show_popup_crash())
 
   # initialize list to store variables
-  store <- reactiveValues(uploaded_df = data.frame(), log = list(as.character(Sys.time())))
+  store <- reactiveValues(
+    uploaded_df = data.frame(), 
+    log = list(as.character(Sys.time())),
+    module_ids = module_ids
+  )
 
 
   # back next buttons -------------------------------------------------------
@@ -90,6 +94,7 @@ shinyServer(function(input, output, session) {
   # design text  ------------------------------------------------------------
   
   # launch pop up if first time
+  # TODO: can this go in the design module server? may need to rename to follow nesting convention
   store$launched_first_time_popup <- FALSE
   observeEvent(input$nav, {
     if (input$nav == 'Design' & isFALSE(store$launched_first_time_popup)){
@@ -98,9 +103,13 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # run the design module server
   design_page_selection <- server_design(store = store, id = 'analysis_design')
   store <- design_page_selection$store
+  # TODO: store like this
+  # store <- server_design(store = store, id = store$module_ids$analysis$design)
 
+  # TODO: does this work if moved tp the module?
   observeEvent(design_page_selection$analysis_design_button_next(), {
     updateNavbarPage(session, inputId = "nav", selected = "Data")
     updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")

@@ -45,6 +45,11 @@ server_design <- function(store, id){
         store <- remove_downstream_data(store, page = 'design')
       })
       
+      # TODO: return back store only
+      # e.g. maybe nest like; I don't think it needs to be reactive either?
+      # store$analysis$design$treatment_name <- input$treatment_name
+      # return(store)
+      
       return(list(
         store = store,
         analysis_design_button_next = reactive({input$analysis_design_button_next}),
