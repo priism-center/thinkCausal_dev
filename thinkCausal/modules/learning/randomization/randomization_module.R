@@ -27,7 +27,7 @@ rownames(randomization_df) <- seq_len(nrow(randomization_df))
 
 # UI ----------------------------------------------------------------------
 
-randomizationUI <- function(id) {
+ui_learning_randomization <- function(id) {
   ns <- NS(id)
   tagList(
     sidebarLayout(
@@ -82,7 +82,7 @@ randomizationUI <- function(id) {
 
 # server ------------------------------------------------------------------
 
-randomizationServer <- function(id, plot_theme = ggplot2::theme_get) {
+server_learning_randomization <- function(id, plot_theme = ggplot2::theme_get) {
   ns <- NS(id)
   moduleServer(
     id,

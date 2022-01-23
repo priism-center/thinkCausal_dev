@@ -107,7 +107,7 @@ shinyServer(function(input, output, session) {
   design_page_selection <- server_design(store = store, id = 'analysis_design')
   store <- design_page_selection$store
   # TODO: store like this
-  # store <- server_design(store = store, id = store$module_ids$analysis$design)
+  # store <- server_design(store = store, id = isolate(store$module_ids$analysis$design))
 
   # TODO: does this work if moved tp the module?
   observeEvent(design_page_selection$analysis_design_button_next(), {
@@ -1846,7 +1846,8 @@ shinyServer(function(input, output, session) {
   })
 
   # run the modules
-  randomizationServer(id = 'concepts_randomization', plot_theme = theme_custom)
+  server_learning_randomization(id = isolate(store$module_ids$learning$randomization), 
+                                plot_theme = theme_custom)
   PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
   #poServer(id = 'potential_outcomes_test')
 
