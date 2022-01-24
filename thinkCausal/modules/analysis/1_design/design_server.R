@@ -1,5 +1,5 @@
 
-server_design <- function(store, id, nav, analysis_data_tabs, x){
+server_design <- function(store, id, nav, x){
   ns <- NS(id)
   moduleServer(
     id,

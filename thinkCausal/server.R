@@ -94,8 +94,7 @@ shinyServer(function(input, output, session) {
   # design text  ------------------------------------------------------------
   
   # run the design module server
-  store <- server_design(store = store, id = isolate(store$module_ids$analysis$design), nav = reactive(input$nav),
-                         analysis_data_tabs = reactive(input$analysis_data_tabs), x = session)
+  store <- server_design(store = store, id = isolate(store$module_ids$analysis$design), nav = reactive(input$nav), x = session)
 
   # upload data -------------------------------------------------------------
 
