@@ -1007,7 +1007,7 @@ shinyServer(function(input, output, session) {
     confounder_cols <- grep("^X_", cols_continuous, value = TRUE)
 
     # calculate pscores
-    pscores <- plotBart::propensity_scores(
+    pscores <- plotBart:::propensity_scores(
       .data = X,
       treatment = treatment_col,
       response = response_col,
