@@ -28,7 +28,7 @@ options(shiny.maxRequestSize = 10*1024^2) # increase maximum file upload size li
 # set seed
 set.seed(2)
 
-# set IDs for each page
+# set module IDs
 module_ids <- list(
   learning = list(
     randomization = 'learning_randomization'
@@ -54,3 +54,9 @@ rm(path_modules)
 map(list.files(file.path('UI', 'concepts')), function(file) source(file.path("UI", "concepts", file)))
 map(list.files(file.path('UI', 'pages')), function(file) source(file.path("UI", "pages", file)))
 map(list.files(file.path('UI', 'headers')), function(file) source(file.path("UI", "headers", file)))
+
+
+# create namespace functions ----------------------------------------------
+
+# make functions for each id and save them in the global environment
+purrr::map(unlist(module_ids), make_namespace_function)
