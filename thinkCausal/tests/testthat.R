@@ -1,3 +1,3 @@
 library(testthat)
 
-test_local(".", stop_on_failure = TRUE)
+test_local("thinkCausal", stop_on_failure = TRUE)
