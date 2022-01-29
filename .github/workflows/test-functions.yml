@@ -17,5 +17,5 @@ jobs:
           working-directory: thinkCausal
           extra-packages: testthat
       - name: Run tests
-        run: Rscript -e "source('thinkCausal/tests/testthat.R')"
+        run: Rscript -e "install.packages('testthat'); source('thinkCausal/tests/testthat.R')"
 
