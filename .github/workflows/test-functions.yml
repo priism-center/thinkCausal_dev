@@ -15,6 +15,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           working-directory: thinkCausal
+          extra-packages: testthat
       - name: Run tests
         run: Rscript -e "source('thinkCausal/tests/testthat.R')"
 
