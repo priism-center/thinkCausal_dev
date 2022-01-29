@@ -20,7 +20,7 @@ runs:
       - name: Install and activate renv
         run: |
           install.packages("renv")
-          set("thinkCausal")
+          setwd("thinkCausal")
           renv::activate()
         shell: Rscript {0}
 
