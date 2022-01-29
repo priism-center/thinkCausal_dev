@@ -20,8 +20,6 @@ runs:
       - name: Install and activate renv
         run: |
           install.packages("renv")
-          setwd('thinkCausal')
-          renv::activate()
         shell: Rscript {0}
 
       - name: Get R and OS version
@@ -39,7 +37,7 @@ runs:
           restore-keys: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{inputs.cache-version }}-
 
       - name: Install renv dependencies
-        run: renv::restore()
+        run: renv::restore('thinkCausal')
         shell: Rscript {0}
 
       - name: Don't use tar 1.30 from Rtools35 to store the cache
