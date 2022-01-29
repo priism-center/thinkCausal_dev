@@ -11,7 +11,6 @@
 #' @export 
 #' 
 #' @importFrom dplyr mutate across
-#' @importFrom tidyselect where
 #' @importFrom DT datatable
 #' 
 #' @examples

@@ -2016,7 +2016,7 @@ shinyServer(function(input, output, session) {
 
   # download reproducible script
   output$analysis_results_button_download <- downloadHandler(
-    filename <-  function() {
+    filename <- function() {
       time <- gsub("-|:| ", "", Sys.time())
       paste0(time, '_thinkCausal_script.zip')
     },

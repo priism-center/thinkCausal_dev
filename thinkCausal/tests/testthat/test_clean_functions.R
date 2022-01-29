@@ -55,14 +55,14 @@ test_that("clean_detect_plot_vars() output is correct", {
 })
 
 
-X <- tibble(
-  test = 1:5,
-  to_dummy = c('level1', 'level1', 'level2', 'level2', 'level3'),
-  to_dummy2 = c('char1', 'char3', 'char3', 'char2', 'char1')
-)
-X <- fastDummies::dummy_cols(X)
-is_dummy <- clean_detect_dummy_cols(X)
-test_that("clean_detect_dummy_cols() output is correct", {
-  expect_true(is_dummy$contains_dummy)
-  expect_type(is_dummy, 'list')
-})
+# X <- tibble(
+#   test = 1:5,
+#   to_dummy = c('level1', 'level1', 'level2', 'level2', 'level3'),
+#   to_dummy2 = c('char1', 'char3', 'char3', 'char2', 'char1')
+# )
+# X <- fastDummies::dummy_cols(X)
+# is_dummy <- clean_detect_dummy_cols(X)
+# test_that("clean_detect_dummy_cols() output is correct", {
+#   expect_true(is_dummy$contains_dummy)
+#   expect_type(is_dummy, 'list')
+# })
