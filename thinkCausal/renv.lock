@@ -543,18 +543,6 @@
       "Hash": "c98eb5133d9cb9e1622b8691487f11bb",
       "Requirements": []
     },
-    "fastDummies": {
-      "Package": "fastDummies",
-      "Version": "1.6.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "15fcf98f57d734f967370f36f4533219",
-      "Requirements": [
-        "data.table",
-        "stringr",
-        "tibble"
-      ]
-    },
     "fastmap": {
       "Package": "fastmap",
       "Version": "1.1.0",
