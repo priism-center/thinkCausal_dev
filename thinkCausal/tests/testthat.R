@@ -1,4 +1,3 @@
 library(testthat)
-library(thinkCausal)
 
-test_check("thinkCausal")
+test_local(".", stop_on_failure = TRUE)

@@ -9,7 +9,7 @@
 #' @param .fill 
 #' @param .fill_static 
 #' @param .size 
-#' @param shape
+#' @param .shape
 #' @param .alpha 
 #' @param .vars_pairs 
 #' @param .n_bins 
