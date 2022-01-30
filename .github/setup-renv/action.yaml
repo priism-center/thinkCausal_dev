@@ -1,5 +1,5 @@
 # Workflow derived from https://github.com/r-lib/actions/blob/v2/setup-renv/action.yaml
-# tweaked to allow for renv to be in subdirectory
+# tweaked to allow for renv to be in thinkCausal subdirectory
 
 name: 'setup-renv'
 description: 'Action to setup renv and install R dependencies in the lockfile'
@@ -10,10 +10,6 @@ inputs:
     required: true
     default: 1
 
-defaults:
-  run:
-    working-directory: thinkCausal
-
 runs:
   using: "composite"
   steps:
@@ -21,12 +17,14 @@ runs:
         shell: bash
         run: |
           echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
+        working-directory: thinkCausal
 
       - name: Install and activate renv
         run: |
           install.packages("renv")
           renv::activate()
         shell: Rscript {0}
+        working-directory: thinkCausal
 
       - name: Get R and OS version
         id: get-version
@@ -34,6 +32,7 @@ runs:
           cat("##[set-output name=os-version;]", sessionInfo()$running, "\n", sep = "")
           cat("##[set-output name=r-version;]", R.Version()$version.string, sep = "")
         shell: Rscript {0}
+        working-directory: thinkCausal
 
       - name: Restore Renv package cache
         uses: actions/cache@v2
@@ -45,6 +44,7 @@ runs:
       - name: Install renv dependencies
         run: renv::restore()
         shell: Rscript {0}
+        working-directory: thinkCausal
 
       - name: Don't use tar 1.30 from Rtools35 to store the cache
         shell: bash
@@ -52,4 +52,5 @@ runs:
           if command -v /c/Rtools/bin/tar && /c/Rtools/bin/tar --version | grep -q 'tar (GNU tar) 1.30'
             then echo 'C:/Program Files/Git/usr/bin' >> $GITHUB_PATH
           fi
+        working-directory: thinkCausal
 
