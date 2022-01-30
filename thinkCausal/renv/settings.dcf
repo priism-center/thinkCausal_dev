@@ -1,8 +1,6 @@
 bioconductor.version:
 external.libraries:
-ignored.packages: dbplyr, curl, tidyverse, DBI, openxlsx, googledrive, foreign,
-    googlesheets4, haven, tinytex, ggthemes, httpuv, cowplot, ggforce,
-    htmlTable
+ignored.packages:
 package.dependency.fields: Imports, Depends, LinkingTo
 r.version:
 snapshot.type: implicit
