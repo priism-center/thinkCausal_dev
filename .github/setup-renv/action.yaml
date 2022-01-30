@@ -13,6 +13,15 @@ inputs:
 runs:
   using: "composite"
   steps:
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          while read -r cmd
+          do
+            eval sudo $cmd
+          done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "20.04"), sep = "\n")')
+        working-directory: thinkCausal
+  
       - name: Set RENV_PATHS_ROOT
         shell: bash
         run: |
