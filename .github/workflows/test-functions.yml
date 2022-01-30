@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [main, master, workflows]
 
-defaults:
-  run:
-    working-directory: thinkCausal
-
 jobs:
   test-functions:
     runs-on: ubuntu-latest
@@ -20,4 +16,5 @@ jobs:
       - name: Run tests
         shell: Rscript {0}
         run: print(getwd()); testhat::test_local();
+        working-directory: thinkCausal
 
