@@ -16,5 +16,5 @@ jobs:
       - name: Run tests
         shell: Rscript {0}
         working-directory: thinkCausal
-        run: source('tests/testthat.R')
+        run: getwd(); renv::restore(); devtools::test();
 
