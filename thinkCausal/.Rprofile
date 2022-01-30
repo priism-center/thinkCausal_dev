@@ -14,7 +14,9 @@ renv::settings$ignored.packages(
     "haven",
     "tinytex",
     "ggthemes",
-    "httpuv"
-  ),
-  persist = TRUE
+    "httpuv",
+    "cowplot",
+    "ggforce",
+    "htmlTable"
+  )
 )
