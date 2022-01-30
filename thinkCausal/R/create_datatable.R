@@ -10,7 +10,7 @@
 #' @return HTML datatable
 #' @export 
 #' 
-#' @import dplyr
+#' @importFrom dplyr mutate across
 #' @importFrom DT datatable
 #' 
 #' @examples
