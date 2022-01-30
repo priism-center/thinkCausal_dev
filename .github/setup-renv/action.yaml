@@ -15,6 +15,7 @@ runs:
   steps:
       - name: Install system dependencies
         if: runner.os == 'Linux'
+        shell: bash
         run: |
           while read -r cmd
           do
