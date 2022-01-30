@@ -1,4 +1,6 @@
 source("renv/activate.R")
+
+# packages for renv to ignore
 renv::settings$ignored.packages(
   c(
     "dbplyr",
@@ -11,6 +13,8 @@ renv::settings$ignored.packages(
     "googlesheets4",
     "haven",
     "tinytex",
-    "ggthemes"
+    "ggthemes",
+    "httpuv"
   ),
-  persist = TRUE)
+  persist = TRUE
+)

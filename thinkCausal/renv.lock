@@ -596,19 +596,6 @@
         "yaml"
       ]
     },
-    "httpuv": {
-      "Package": "httpuv",
-      "Version": "1.6.5",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "97fe71f0a4a1c9890e6c2128afa04bc0",
-      "Requirements": [
-        "R6",
-        "Rcpp",
-        "later",
-        "promises"
-      ]
-    },
     "httr": {
       "Package": "httr",
       "Version": "1.4.2",
@@ -1223,7 +1210,6 @@
         "fontawesome",
         "glue",
         "htmltools",
-        "httpuv",
         "jsonlite",
         "later",
         "lifecycle",
@@ -1275,7 +1261,6 @@
         "debugme",
         "digest",
         "htmlwidgets",
-        "httpuv",
         "httr",
         "jsonlite",
         "parsedate",

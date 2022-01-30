@@ -19,5 +19,5 @@ jobs:
       - uses: joemarlo/thinkCausal_dev/.github/setup-renv@workflows
       - name: Run tests
         shell: Rscript {0}
-        run: print(getwd()); devtools::test();
+        run: print(getwd()); testhat::test_local();
 
