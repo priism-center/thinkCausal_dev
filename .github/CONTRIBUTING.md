@@ -17,6 +17,10 @@ thinkCausal is a mix of 'base' R and tidyverse code. We try to adhere to the [ti
 
 We use [roxygen2](https://roxygen2.r-lib.org/) for documenting functions and [testthat](https://testthat.r-lib.org/) for unit testing. Please familiarize yourself with both and feel free to reach out with an [issue](https://github.com/gperrett/thinkCausal_dev/issues) if you have any questions.
 
+## Dependencies
+
+We use [`renv`](https://rstudio.github.io/renv/index.html) to manage dependencies. You can use `renv::restore()` to install all the necessary packages. Please limit adding additional packages.
+
 ## Content structure
 
 The core Shiny app is within the `/thinkCausal` directory. Drafts for articles and vignettes should be stored within the `/writing` directory. If you're a NYU student, please use the `/student_work` directory for storing draft work.
