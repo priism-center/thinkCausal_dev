@@ -20,7 +20,7 @@ runs:
           while read -r cmd
           do
             eval sudo $cmd
-          done < <(Rscript -e 'cat(install.packages('remotes'); remotes::system_requirements("ubuntu", "20.04"), sep = "\n")')
+          done < <(Rscript -e 'cat(install.packages('remotes')\; remotes::system_requirements("ubuntu", "20.04"), sep = "\n")')
         working-directory: thinkCausal
   
       - name: Set RENV_PATHS_ROOT
