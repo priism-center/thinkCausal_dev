@@ -14,15 +14,16 @@ runs:
   steps:
       - name: Set RENV_PATHS_ROOT
         shell: bash
-        working-directory: thinkCausal
         run: |
           echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
+        working-directory: thinkCausal
 
       - name: Install and activate renv
         run: |
           install.packages("renv")
           renv::activate()
         shell: Rscript {0}
+        working-directory: thinkCausal
 
       - name: Get R and OS version
         id: get-version
@@ -30,6 +31,7 @@ runs:
           cat("##[set-output name=os-version;]", sessionInfo()$running, "\n", sep = "")
           cat("##[set-output name=r-version;]", R.Version()$version.string, sep = "")
         shell: Rscript {0}
+        working-directory: thinkCausal
 
       - name: Restore Renv package cache
         uses: actions/cache@v2
@@ -41,6 +43,7 @@ runs:
       - name: Install renv dependencies
         run: renv::restore()
         shell: Rscript {0}
+        working-directory: thinkCausal
 
       - name: Don't use tar 1.30 from Rtools35 to store the cache
         shell: bash
