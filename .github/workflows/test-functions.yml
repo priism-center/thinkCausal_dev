@@ -2,9 +2,9 @@ name: test-functions
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, workflows]
   pull_request:
-    branches: [main, master]
+    branches: [main, master, workflows]
 
 jobs:
   test-functions:
