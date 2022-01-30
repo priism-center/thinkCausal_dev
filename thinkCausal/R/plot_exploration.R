@@ -3,7 +3,7 @@
 #' To be used programmatically. Not recommended for script/console use.
 #'
 #' @param .data typically store$verified_df
-#' @param .plot_type  one of c("Pairs", 'Scatter', 'Histogram', 'Density', 'Boxplot')
+#' @param .plot_type  one of c('Scatter', 'Histogram', 'Density', 'Boxplot')
 #' @param .x 
 #' @param .y 
 #' @param .fill 
@@ -27,7 +27,6 @@
 #' @seealso \code{\link{clean_detect_plot_vars}}
 #' 
 #' @import ggplot2
-#' @importFrom GGally ggpairs
 #'
 #' @examples
 #' library(arm)
@@ -37,7 +36,7 @@
 #' X <- clean_auto_convert_logicals(X)
 #' plot_exploration(
 #'  .data = X,
-#'  .plot_type = 'Boxplot', #c("Pairs", 'Scatter', 'Histogram', 'Density', 'Boxplot'),
+#'  .plot_type = 'Boxplot', #c('Scatter', 'Histogram', 'Density', 'Boxplot'),
 #'  .x = 're78',
 #'  .y = 'age',
 #'  .fill = NULL,
@@ -54,7 +53,7 @@
 #'  .include_regression = 'None'
 #' )
 plot_exploration <- function(.data,
-                             .plot_type = c("Pairs", 'Scatter', 'Histogram', "Barplot", 'Density', 'Boxplot'),
+                             .plot_type = c('Scatter', 'Histogram', "Barplot", 'Density', 'Boxplot'),
                              .x,
                              .y,
                              .fill,
@@ -80,9 +79,9 @@ plot_exploration <- function(.data,
   p <- ggplot(.data, aes_string(x = sym(.x)))
   
   # pairs plot
-  if (.plot_type == 'Pairs'){
-    p <- GGally::ggpairs(.data[, .vars_pairs])
-  }
+  # if (.plot_type == 'Pairs'){
+  #   p <- GGally::ggpairs(.data[, .vars_pairs])
+  # }
   
   # scatter
   if (.plot_type == 'Scatter'){

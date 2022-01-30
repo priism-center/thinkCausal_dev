@@ -5,7 +5,7 @@ library(bartCause)
 library(ggforce)
 library(gridExtra)
 library(cowplot)
-library(ggthemes) 
+# library(ggthemes) 
 library(latex2exp)
 library(htmlwidgets)
 
