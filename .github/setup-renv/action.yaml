@@ -1,5 +1,5 @@
 # Workflow derived from https://github.com/r-lib/actions/blob/v2/setup-renv/action.yaml
-# tweaked to allow for renv to be in thinkCausal subdirectory
+# tweaked to allow for renv to be in thinkCausal subdirectory and installs curl dependency
 
 name: 'setup-renv'
 description: 'Action to setup renv and install R dependencies in the lockfile'
@@ -16,7 +16,7 @@ runs:
       - name: Install curl
         if: runner.os == 'Linux'
         shell: bash
-        run: sudo apt install r-cran-curl
+        run: sudo apt-get install libcurl4-openssl-dev r-base
         working-directory: thinkCausal
   
       - name: Set RENV_PATHS_ROOT
