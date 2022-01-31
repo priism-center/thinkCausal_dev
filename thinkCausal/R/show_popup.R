@@ -1,4 +1,6 @@
 
+### these are the shiny modal popups, just standardized and removed from server.R ###
+
 show_popup <- function(session, ..., size = 's', close_button = NULL, easyClose = FALSE){
   popup <- shiny::modalDialog(
     ...,
@@ -69,7 +71,6 @@ show_popup_group_name_warning <- function(session, group_name_check){
   )
   show_popup(session = session, content, close_button = shiny::modalButton("Close"))
 }
-
 
 show_popup_learn_estimand <- function(session){
   content <- tags$div(

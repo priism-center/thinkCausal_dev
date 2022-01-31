@@ -6,7 +6,7 @@ x1 <- data.frame(
   TF = sample(c("T", "F"), 10, replace = TRUE),
   char = sample(LETTERS, 10)
 )
-converted_x1 <- clean_auto_convert_integers(x1)
+converted_x1 <- suppressWarnings(clean_auto_convert_integers(x1))
 test_that("clean_auto_convert_integers() output is correct", {
   expect_s3_class(converted_x1$zero_one, "factor")
   expect_s3_class(converted_x1$integers, "factor")
