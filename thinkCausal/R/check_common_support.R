@@ -2,7 +2,7 @@
 #'
 #' @param .model a model produced by bartCause::bartc(). Typically store$model_results
 #'
-#' @author Vince Dorrie, George Perrett, Joe Marlo
+#' @author Vince Dorie, George Perrett, Joe Marlo
 #'
 #' @return
 #' @export

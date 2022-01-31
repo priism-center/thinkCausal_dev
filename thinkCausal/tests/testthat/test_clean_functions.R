@@ -1,4 +1,24 @@
 
+x1 <- data.frame(
+  zero_one = sample(0:1, 10, replace = TRUE),
+  integers = sample(0:10, 10, replace = TRUE),
+  runif = runif(10),
+  TF = sample(c("T", "F"), 10, replace = TRUE),
+  char = sample(LETTERS, 10)
+)
+converted_x1 <- clean_auto_convert_integers(x1)
+test_that("clean_auto_convert_integers() output is correct", {
+  expect_s3_class(converted_x1$zero_one, "factor")
+  expect_s3_class(converted_x1$integers, "factor")
+  expect_type(converted_x1$runif, "double")
+  expect_type(converted_x1$TF, "character")
+  expect_type(converted_x1$char, "character")
+  expect_s3_class(converted_x1, 'data.frame')
+})
+
+
+# -------------------------------------------------------------------------
+
 x <- data.frame(
    zero_one = c(0, 1, 0, 1, 1),
    TF = c("T", "T", "F", "T",  "F"),
@@ -10,6 +30,9 @@ test_that("clean_auto_convert_logicals() output is correct", {
                list('FALSE' = 7, 'TRUE' = 8))
   expect_s3_class(converted_x, 'data.frame')
 })
+
+
+# -------------------------------------------------------------------------
 
 y <- data.frame(
   treatment = c(TRUE, TRUE, FALSE, TRUE, FALSE),
@@ -24,12 +47,18 @@ test_that("clean_detect_ZYX_columns() output is correct", {
   expect_type(detected_y, 'list')
 })
 
+
+# -------------------------------------------------------------------------
+
 col_names <- c("yes", "TRUE", "nope%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye')
 cleaned_names <- clean_names(col_names)
 test_that("clean_names() output is correct", {
   expect_equal(cleaned_names, c("yes", "TRUE",  "nope_percent", "n98", "Abcdeacoauu", "yep_.yep", "hello_goodbye"))
   expect_type(cleaned_names, 'character')
 })
+
+
+# -------------------------------------------------------------------------
 
 X <- data.frame(X1 = 1:5, X2 = rnorm(5), X3 = LETTERS[1:5], X4 = as.factor(LETTERS[1:5]))
 column_types <- clean_detect_column_types(X)
@@ -38,6 +67,9 @@ test_that("clean_detect_column_types() output is correct", {
   expect_equal(column_types, list(categorical = c("X3", "X4"), continuous = c("X2", "X1")))
   expect_type(column_types, 'list')
 })
+
+
+# -------------------------------------------------------------------------
 
 X <- data.frame(
  treatment = sample(as.logical(0:1), 5, TRUE),
@@ -55,14 +87,25 @@ test_that("clean_detect_plot_vars() output is correct", {
 })
 
 
-# X <- tibble(
-#   test = 1:5,
-#   to_dummy = c('level1', 'level1', 'level2', 'level2', 'level3'),
-#   to_dummy2 = c('char1', 'char3', 'char3', 'char2', 'char1')
-# )
-# X <- fastDummies::dummy_cols(X)
-# is_dummy <- clean_detect_dummy_cols(X)
-# test_that("clean_detect_dummy_cols() output is correct", {
-#   expect_true(is_dummy$contains_dummy)
-#   expect_type(is_dummy, 'list')
-# })
+# -------------------------------------------------------------------------
+
+x6 <- tibble(
+  test = 1:5,
+  to_dummy = c('level1', 'level1', 'level2', 'level2', 'level3'),
+  to_dummy2 = c('char1', 'char3', 'char3', 'char2', 'char1')
+)
+converted_x6 <- fastDummies::dummy_cols(x6)
+dummies_detected <- clean_detect_dummy_cols(converted_x6)
+test_that("clean_detect_dummy_cols() output is correct", {
+  expect_type(dummies_detected, 'list')
+  expect_true(dummies_detected$contains_dummy)
+  expect_equal(dummies_detected$dummy_columns[[1]],
+               c("to_dummy_level1", "to_dummy_level2", "to_dummy_level3"))
+  expect_equal(dummies_detected$dummy_columns[[2]],
+               c("to_dummy2_char1", "to_dummy2_char2", "to_dummy2_char3"))
+})
+
+
+# -------------------------------------------------------------------------
+
+
