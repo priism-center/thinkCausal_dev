@@ -9,10 +9,21 @@ test_that("create_datatable() output is correct", {
   expect_s3_class(js_table, 'datatables')
 })
 
+
+# -------------------------------------------------------------------------
+
 progress_bar <- create_progress_bar(50)
 test_that("create_progress_bar() output is correct", {
   expect_s3_class(progress_bar, 'shiny.tag')
 })
+
+
+# -------------------------------------------------------------------------
+
+
+
+# -------------------------------------------------------------------------
+
 
 # reproducible_script <- create_script(
 #  uploaded_file_name = 'test.csv',
@@ -28,3 +39,12 @@ test_that("create_progress_bar() output is correct", {
 #   expect_type(reproducible_script, 'character')
 #   expect_equal(length(reproducible_script), 1)
 # })
+
+# TODO
+# create_data_summary_grid
+# create_drag_drop
+# create_info_icon
+# create_interactive_table
+# create_interpretation
+# create_progress_bar
+# create_script

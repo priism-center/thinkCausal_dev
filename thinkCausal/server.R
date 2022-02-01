@@ -1322,19 +1322,24 @@ shinyServer(function(input, output, session) {
     if (input$analysis_model_support == 'No') common_support_rule <- 'none'
 
     # run model
-    # store$console_message <- capture.output({
-    store$model_results <- tryCatch({
-      fit_bart(.data = store$verified_df,
-               support = common_support_rule,
-               ran.eff = input$analysis_random_intercept,
-               .estimand = base::tolower(input$analysis_model_estimand))
-
-    },
-    # warning = function(w) NULL,
-    error = function(e) NULL
+    # store$model_results <- withProgress(
+    #   message = 'Fitting BART model',
+    #   session = session,
+    #   {
+    #     fit_bart(
+    #       .data = store$verified_df,
+    #       support = common_support_rule,
+    #       ran.eff = input$analysis_random_intercept,
+    #       .estimand = base::tolower(input$analysis_model_estimand)
+    #     )
+    #   }
+    # )
+    store$model_results <- fit_bart(
+      .data = store$verified_df,
+      support = common_support_rule,
+      ran.eff = input$analysis_random_intercept,
+      .estimand = base::tolower(input$analysis_model_estimand)
     )
-    # })
-    # print(store$console_message)
 
     # close the alert
     # shinyWidgets::closeSweetAlert()
@@ -2016,7 +2021,7 @@ shinyServer(function(input, output, session) {
 
   # download reproducible script
   output$analysis_results_button_download <- downloadHandler(
-    filename <-  function() {
+    filename <- function() {
       time <- gsub("-|:| ", "", Sys.time())
       paste0(time, '_thinkCausal_script.zip')
     },

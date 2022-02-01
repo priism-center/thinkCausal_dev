@@ -1,6 +1,6 @@
 Package: thinkCausal
 Version: 0.2.0
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8
 Suggests: 
     testthat

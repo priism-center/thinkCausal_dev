@@ -1,4 +1,27 @@
 
+x1 <- data.frame(
+  zero_one = sample(0:1, 10, replace = TRUE),
+  integers = sample(0:10, 10, replace = TRUE),
+  runif = runif(10),
+  TF = sample(c("T", "F"), 10, replace = TRUE),
+  char = sample(LETTERS, 10)
+)
+converted_x1 <- suppressWarnings(
+  convert_data_types(
+    x1,
+    c('Binary', 'Categorical', 'Continuous', 'Binary', 'Continuous')
+  )
+)
+test_that("convert_data_types() output is correct", {
+  expect_s3_class(converted_x1, 'data.frame')
+  expect_equal(as.vector(sapply(converted_x1, class)),
+               c("logical", 'character', 'numeric', 'logical', 'numeric'))
+})
+
+
+# -------------------------------------------------------------------------
+
+
 my_character = c('one', 'two', 'three')
 my_logical = c(TRUE, FALSE, FALSE)
 my_numeric = c(1.24, 7, -22)

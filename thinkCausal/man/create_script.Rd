@@ -12,8 +12,10 @@ create_script(
   selected_columns,
   column_names,
   change_data_type,
-  estimand,
-  common_support
+  descriptive_plot,
+  overlap_plot,
+  balance_plot,
+  BART_model
 )
 }
 \value{
