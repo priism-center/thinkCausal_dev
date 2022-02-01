@@ -1,0 +1,86 @@
+---
+title: "post treatment variables"
+author: "George Perrett"
+date: "2/1/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+```
+
+
+```{r}
+# simulate data
+set.seed(2)
+N <- 400
+z <- rbinom(N, 1, .5)
+bugs1 <- rbinom( N , size=1 , prob=.1 )
+bugs0 <- rbinom( N , size=1 , prob=0.6)
+
+y0 <- 6 -3*bugs0 + rnorm(N)
+y1 <- 6 -3*bugs1 + rnorm(N)
+h1 <- ifelse(z ==1, y1, y0)
+bugs <- ifelse(z ==1, bugs1, bugs0)
+d <- data.frame(h1, z, bugs)
+mean(y1 - y0)
+
+
+
+```
+
+
+The treatment works becuase it kills bugs, when we control for bugs we are removing the treatment effect from our analysis. 
+
+
+```{r}
+# plot treatment and control 
+ggplot(d, aes(jitter(z), h1, col = as.factor(z))) + 
+  geom_point() + 
+  scale_color_manual(values = c(4, 2)) 
+
+# plot treatment and control  with bugs post treatment
+ggplot(d, aes(jitter(z), h1, col = as.factor(z), shape = as.factor(bugs))) + 
+  geom_point() + 
+  scale_color_manual(values = c(4, 2)) + 
+  scale_shape_manual(values = c(1, 19)) + 
+  theme_bw() + 
+  labs(x = 'z')
+
+```
+
+```{r}
+# analyses
+ggplot(d, aes(h1, fill = as.factor(z))) + 
+  geom_histogram(position = 'identity', alpha = .7, bins = 20) 
+
+# correct ananlysis no post treatment
+d %>% 
+  group_by(z) %>% 
+  mutate(mean = mean(h1))%>% 
+ggplot(aes(h1, fill = as.factor(z))) + 
+  geom_density(alpha = .7) + 
+  scale_fill_manual(values = c(4, 2)) + theme_bw() + 
+  geom_vline(aes(xintercept = mean)) + 
+  facet_grid(z~.)
+
+lm(h1~z, d)
+
+# incorrect includes post treatment
+d %>% 
+  group_by(z, bugs) %>% 
+  mutate(mean = mean(h1))%>% 
+ggplot(aes(h1, fill = as.factor(z))) + 
+  geom_density(alpha = .7) + 
+  scale_fill_manual(values = c(4, 2)) + theme_bw() + 
+  geom_vline(aes(xintercept = mean)) + 
+  facet_grid(z~bugs)
+
+summary(lm(h1~z + bugs, d))
+
+
+
+```
+
