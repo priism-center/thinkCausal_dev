@@ -17,6 +17,8 @@ thinkCausal is a mix of 'base' R and [`tidyverse`](https://www.tidyverse.org/) c
 
 We use [`roxygen2`](https://roxygen2.r-lib.org/) for documenting functions and [`testthat`](https://testthat.r-lib.org/) for unit testing. Please familiarize yourself with both and feel free to reach out with an [issue](https://github.com/gperrett/thinkCausal_dev/issues) if you have any questions.
 
+Independent lessons should be written as [modules](https://shiny.rstudio.com/articles/modules.html). Any global variables (e.g. a dataframe read in from csv) should be stored in a list specific to that module. E.g. the Post-treatment module stores the dataframe `plants_df` within a module-specific `list()` named `store_l_post_treatment` like `store_l_post_treatment$plants_df <- readr::read_csv('...')`.
+
 ## Dependencies
 
 We use [`renv`](https://rstudio.github.io/renv/index.html) to manage dependencies. You can use `renv::restore()` to install all the necessary packages. Please limit adding additional packages.

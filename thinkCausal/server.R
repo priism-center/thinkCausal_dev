@@ -1872,9 +1872,9 @@ shinyServer(function(input, output, session) {
   # concepts ----------------------------------------------------------------
 
   # add listeners that link the concepts title image to its article
-  tab_titles <- c("Randomization", 'Fundamental problem', 'Assumptions', 'Regression methods', 'Decision trees')
+  tab_titles <- c("Randomization", 'Fundamental problem', 'Assumptions', 'Regression methods', 'Decision trees', 'Post-treatment variables')
   lapply(tab_titles, function(page_to_go_to) {
-    page_id <- paste0("concepts_link_", tolower(gsub(' ', '_', page_to_go_to)))
+    page_id <- paste0("concepts_link_", tolower(gsub('-| ', '_', page_to_go_to)))
     observeEvent(input[[page_id]], {
       shinyjs::runjs("window.scrollTo(0, 0)")
       updateNavbarPage(session, "nav", page_to_go_to)
@@ -1884,6 +1884,7 @@ shinyServer(function(input, output, session) {
   # run the modules
   randomizationServer(id = 'concepts_randomization', plot_theme = theme_custom)
   PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
+  server_post_treatment(id = 'concepts_post_treatment', plot_theme = theme_custom)
   #poServer(id = 'potential_outcomes_test')
 
 
