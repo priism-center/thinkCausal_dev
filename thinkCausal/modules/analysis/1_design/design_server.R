@@ -1,18 +1,9 @@
 
-server_design <- function(store, id, nav, x){
+server_design <- function(store, id, global_session){
   ns <- NS(id)
   moduleServer(
     id,
     function(input, output, session) {
-      
-      # launch pop up if first time
-      isolate({store$analysis$design$launched_first_time_popup <- FALSE})
-      observeEvent(nav(), {
-        if (nav() == 'Design' & isFALSE(store$analysis$design$launched_first_time_popup)){
-          store$analysis$design$launched_first_time_popup <- TRUE
-          show_popup_welcome(session = session)
-        }
-      })
       
       # render example language
       output$analysis_design_text <- renderText({
@@ -58,8 +49,8 @@ server_design <- function(store, id, nav, x){
       })
       
       observeEvent(input$analysis_design_button_next, {
-        updateNavbarPage(x, inputId = "nav", selected = "Data")
-        updateTabsetPanel(x, inputId = "analysis_data_tabs", selected = "Upload")
+        updateNavbarPage(global_session, inputId = "nav", selected = "Data")
+        updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Upload")
       })
 
       return(store)

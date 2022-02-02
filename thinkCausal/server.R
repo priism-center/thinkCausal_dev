@@ -93,8 +93,17 @@ shinyServer(function(input, output, session) {
 
   # design text  ------------------------------------------------------------
   
+  # launch pop up if first time
+  isolate({store$analysis$design$launched_first_time_popup <- FALSE})
+  observeEvent(input$nav, {
+    if (input$nav == 'Design' & isFALSE(store$analysis$design$launched_first_time_popup)){
+      store$analysis$design$launched_first_time_popup <- TRUE
+      show_popup_welcome(session = session)
+    }
+  })
+  
   # run the design module server
-  store <- server_design(store = store, id = isolate(store$module_ids$analysis$design), nav = reactive(input$nav), x = session)
+  store <- server_design(store = store, id = isolate(store$module_ids$analysis$design), global_session = session)
 
   # upload data -------------------------------------------------------------
 
