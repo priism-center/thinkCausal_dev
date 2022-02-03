@@ -25,6 +25,7 @@ h1 <- 6 -3*bugs1 + rnorm(N)
 height <- ifelse(z ==1, h1, h0)
 bugs <- ifelse(z ==1, bugs1, bugs0)
 d <- data.frame(height = height, bugs, pest_control = z)
+write_csv(d, '~/Dropbox/thinkCausal_dev/writing/post_treatment/plants.csv')
 po <- data.frame(h1, h0, bugs_z1 = .1, bugs_z0 = .6)
 po$id <- 1:nrow(po)
 mean(y1 - y0)
@@ -72,7 +73,7 @@ y.z1.b0 <- sum(lm(height~pest_control + bugs, d)$coeff[1:2])
 y.z0.b0 <- lm(height~pest_control + bugs, d)$coeff[1]
 y.z0.b1 <- sum(lm(height~pest_control + bugs, d)$coeff[-2])
 
-
+# plot 1 
 ggplot(d, aes(jitter(pest_control), height, col = as.factor(pest_control))) +
   geom_point() +
   geom_segment(
@@ -95,7 +96,7 @@ ggplot(d, aes(jitter(pest_control), height, col = as.factor(pest_control))) +
   theme_bw()
 
 
-
+# plot 2
 ggplot(d, aes(jitter(pest_control), height, col = as.factor(pest_control), shape = as.factor(bugs))) + 
   geom_point() + 
   geom_segment(x = -.2, 
@@ -130,20 +131,6 @@ ggplot(d, aes(jitter(pest_control), height, col = as.factor(pest_control), shape
   scale_shape_manual(values = c(19, 1)) + 
   theme_bw()
 
-
-
-
-d %>% filter(pest_control ==1) %>% select(height) %>% summarise(sd(height))
-
-# plot treatment and control  with bugs post treatment
-ggplot(d, aes(jitter(z), h1, col = as.factor(z), shape = as.factor(bugs))) + 
-  geom_point() + 
-  scale_color_manual(values = c(4, 2)) + 
-  scale_shape_manual(values = c(19, 1)) + 
-  theme_bw() + 
-  labs(x = '')
-
-?geom_segment()
 ```
 
 Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable `bugs` is very close to the true treatment effect. The analysis that includes the post-treatment variable `bugs` is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!
