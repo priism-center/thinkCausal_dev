@@ -1,0 +1,24 @@
+/* controls the quiz*/
+
+.quiz-container {
+  background: white;
+  padding: 5em;
+  max-width: min(100%, 700px)
+}
+
+.quiz-container > h3 {
+  color: #4d4d4d;
+  font-weight: 600
+}
+
+.submit-button {
+  
+}
+
+.restart-button {
+  max-width: 150px !important;
+}
+
+.learning-content {
+  display: none;
+}
