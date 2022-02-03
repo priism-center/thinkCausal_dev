@@ -36,6 +36,8 @@ store_l_post_treatment$plants_df$z_as_text <- ifelse(store_l_post_treatment$plan
 
 # set the text for question 1
 question_1 <- tagList(
+  h4("We'll start with a couple practice questions to test your current knowledge. It's okay if you do not get them all correct."),
+  hr(),
   h3("Question 1"),
   p("You’re tasked with determining if omega-3 fish oil supplements cause a decrease in blood pressure over a 6 month period. You have data from an experiment where participants were randomly assigned to take omega-3 fish oil supplements or a placebo supplement for 6 months. Besides the treatment variable (fish_oil) and the outcome variable (bp_6month) you have the following covariates: "),
   tags$ul(
@@ -91,16 +93,10 @@ correct_answer_1 <- list(c('bp_3month'),
 
 # set the text for question 2
 question_2 <- tagList(
+  h4("We'll start with a couple practice questions to test your current knowledge. It's okay if you do not get them all correct."),
+  hr(),
   h3("Question 2"),
   p("A middle school offers an optional meditation class to 8th grade students and you’re tasked with determining if the meditation class causes higher grades at the end of 8th grade. Besides the treatment variable (meditation) and the outcome variable (grades), the school provided you with several other covariates. All covariates were pulled from administrative data at the end of 8th grade. Each covariate is show below:  "),
-  # tags$ul(
-  #   tags$li('6th grade grades  measured'),
-  #   tags$li('7th grade grades'),
-  #   tags$li('number of detentions during 8th grade '),
-  #   tags$li('Race'),
-  #   tags$li('Parent income at the end of 8th grade')
-  # ),
-  # p("Lorem ipsum")
 )
 
 # set the UI elements for question 2
@@ -169,20 +165,17 @@ ui_post_treatment <- function(id) {
       # UI content for the learning module
       div(
         class = 'learning-content', # required
-        h3('Post-treatment variables'),
+        style = "max-width: 800px",
         includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_1.md')),
         br(),
-        plotOutput(ns('posttreatment_plot'), height = 500, width = 700),
+        radioButtons(inputId = ns('include_pt'),
+                     label = 'Include post-treatment variable bugs?',
+                     choices = c('Include bugs', 'Do not include bugs'),
+                     selected = 'Do not include bugs'),
+        plotOutput(outputId = ns('posttreatment_plot'), 
+                   height = 500),
         br(),
         includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_2.md'))
-
-        # p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-        # sliderInput(inputId = ns('slider_test'),
-        #             label = 'Another UI element',
-        #             min = 0,
-        #             max = 1,
-        #             value = 0.5),
-        # textOutput(outputId = ns('text_test'))
       )
     )
   )
@@ -208,25 +201,43 @@ server_post_treatment <- function(id, plot_theme = ggplot2::theme_get) {
         message_wrong = store_l_post_treatment$message_wrong
       )
       
-      # example server to run outside of the quiz
-      # output$text_test <- renderText({
-      #   input$slider_test
-      # })
-      
       # plot jitter
       output$posttreatment_plot <- renderPlot({
 
-        # create plot
-        p <- ggplot(data = store_l_post_treatment$plants_df,
-                    aes(x = jitter(as.numeric(z)), y = h1, col = z_as_text)) +
-          geom_point() +
-          scale_color_manual(values = c(4, 2)) +
-          scale_x_continuous(labels = c('Control', 'Treatment'), breaks = c(0, 1)) +
-          labs(title = 'TBD',
-               subtitle = 'TBD',
-               x = 'Treatment status',
-               y = 'Plant height',
-               color = NULL)
+        if (input$include_pt == 'Include bugs') {
+          
+          # create plot with post-treatment variable
+          p <- store_l_post_treatment$plants_df %>% 
+            group_by(bugs, z) %>% 
+            mutate(mean = mean(h1)) %>% 
+            ggplot(aes(x = jitter(as.numeric(z)), y = h1, 
+                       group = bugs, shape = bugs, col = z_as_text)) +
+            geom_point() +
+            # TODO: fix this
+            geom_hline(aes(yintercept = mean)) +
+            scale_color_manual(values = c(4, 2)) +
+            scale_x_continuous(labels = c('Control', 'Treatment'), breaks = c(0, 1)) +
+            scale_shape_manual(values = c(19, 1)) + 
+            labs(title = 'TBD',
+                 subtitle = 'TBD',
+                 x = 'Treatment status',
+                 y = 'Plant height',
+                 color = NULL)
+          
+        } else {
+          
+          # create plot without post-treatment variable
+          p <- ggplot(data = store_l_post_treatment$plants_df,
+                      aes(x = jitter(as.numeric(z)), y = h1, col = z_as_text)) +
+            geom_point() +
+            scale_color_manual(values = c(4, 2)) +
+            scale_x_continuous(labels = c('Control', 'Treatment'), breaks = c(0, 1)) +
+            labs(title = 'TBD',
+                 subtitle = 'TBD',
+                 x = 'Treatment status',
+                 y = 'Plant height',
+                 color = NULL)
+        }
 
         # add theme
         p <- p + plot_theme()

@@ -1,5 +1,12 @@
 ### this is the module that wraps a learning module with a quiz ###
 ### see post-treatment learning module for an example ###
+### this might cause namespace issues ###
+### constraints for questions are: question must return a list of user inputs that can be checked against ##
+### you can have as many questions as you want ###
+### cannot change logic --> first incorrect answer stops the quiz and puts the user in the article ###
+### known bugs: 
+# - double clicking on submit answer button will skip the next question
+# - sortable divs require answers to be in the same order as answer key
 
 require(shiny)
 require(shinyjs)
@@ -79,6 +86,9 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
       output$UI_quiz <- renderUI({
         
         if (get_state(store) == 'quiz-complete'){
+          
+          # scroll to top
+          shinyjs::runjs("window.scrollTo(0, 0)")
 
           # render ending message and confetti
           all_correct <- quiz_is_all_correct(store)
@@ -101,12 +111,9 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
             get_state(store, 'current-answers'),
             actionButton(inputId = NS(NS(id_parent)(id))('submit_button'),
                          label = 'Submit',
-                         class = 'submit-button')
+                         class = 'submit-button'),
+            br(), 
           )
-
-          # wrap html in a div
-          html_content <- div(class = 'quiz-container',
-                              html_content)
         }
 
         # add the restart button
@@ -118,6 +125,10 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
                        class = 'restart-button'),
           br(), hr(), br(), br()
         )
+        
+        # wrap html in a div
+        html_content <- div(class = 'quiz-container',
+                            html_content)
 
         return(html_content)
       })
