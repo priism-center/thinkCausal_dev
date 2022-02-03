@@ -1,7 +1,8 @@
 
 ui_design <- function(store, id){
   ns <- NS(id)
-
+  tabPanel(
+    title = 'Design',
     fluidRow(
       column(4,
              wellPanel(
@@ -52,6 +53,6 @@ ui_design <- function(store, id){
              )
       )
     )
-  
+  )
 }
 
