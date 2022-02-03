@@ -4,7 +4,8 @@ analysis_header <- navbarMenu(
     title = 'Design',
     ui_design(id = 'analysis_design')
   ),
-  data_page,
+  ui_data(id = 'analysis_data'),
+  # data_page,
   eda_page,
   model_page,
   diagnostics_page,
