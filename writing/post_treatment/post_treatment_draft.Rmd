@@ -20,11 +20,13 @@ z <- rbinom(N, 1, .5)
 bugs1 <- rbinom( N , size=1 , prob=.1 )
 bugs0 <- rbinom( N , size=1 , prob=0.6)
 
-y0 <- 6 -3*bugs0 + rnorm(N)
-y1 <- 6 -3*bugs1 + rnorm(N)
-h1 <- ifelse(z ==1, y1, y0)
+h0 <- 6 -3*bugs0 + rnorm(N)
+h1 <- 6 -3*bugs1 + rnorm(N)
+height <- ifelse(z ==1, h1, h0)
 bugs <- ifelse(z ==1, bugs1, bugs0)
-d <- data.frame(h1, z, bugs)
+d <- data.frame(height = height, bugs, pest_control = z)
+po <- data.frame(h1, h0, bugs_z1 = .1, bugs_z0 = .6)
+po$id <- 1:nrow(po)
 mean(y1 - y0)
 
 
@@ -32,55 +34,136 @@ mean(y1 - y0)
 ```
 
 
-The treatment works becuase it kills bugs, when we control for bugs we are removing the treatment effect from our analysis. 
+Including *post-treatment variables* in models for both randomized and observational studies generally is not a good idea and shoud be avoided. By *post-treatment variables*, we mean variables that can be effected by the treatment and our measured after treatment assignment. When post-treatment variables are included as a predictor or input in a causal analysis [estimates]() of the treatment effect can be [biased]()
 
+## Consider a simple example: 
+
+A farmer wants to know if a non-toxic environmentally friendly pest-control method will cause plants to grow taller. The farmer conducted an experiment by randomly assigning half of their 400 plants to revive pest-control and the other half to receive no pest-control. Each plants treatment assignment was recorded with the variable `pest_control` . 
+
+At the end of the growing season, 6 months later, the farmer measures the height of each plant with the variable `height` as well as whether or not there were any bug bites on each plant with the variable `bugs` (plant had no bugs = 0, plant had bugs = 1). The variable `bugs` is a post-treatment variable because it was measured after the treatment had been assigned and it is possible that values of `bugs` may be effected by reciving the pest-control treatment. 
+
+
+After all of the data is recorded, the farmers  data-set looks like this: 
 
 ```{r}
-# plot treatment and control 
-ggplot(d, aes(jitter(z), h1, col = as.factor(z))) + 
+DT::datatable(d) # we will use the thinkCausal datatable settings
+```
+
+
+
+The farmer is unsure if they should control for `bugs` when analyzing the results of the experiment. Use the checkboxes below to compare the results of an analyses that control for the post-treatment variable `bugs` or do not control for the post-treatment variable `bugs`.
+
+When `bugs` **is not included** in the analysis, the causal effect of `pest_control` is a comparison between the average height of plants that received the pest-control (colored in red) against the average height and plants that did not receive the pest-control(colored in blue). 
+
+Plants that received the pest-control grew an average of 1.595 inches taller, than they would have grown had they not received the pest-control. 
+
+When `bugs` **is included** in the analysis, the causal effect of `pest_control` is a comparison between the average height of plants that received the pest-control (colored in red) against the average height and plants that did not receive the pest-control(colored in blue) **that is made within groups of plants that had bugs and did not have bugs**. 
+
+Plants that received the pest-control grew an average of -0.1778 inches taller, than they would have grown had they not received the pest-control. 
+
+```{r}
+
+y.z1<- sum(lm(height~pest_control, d)$coeff)
+y.z0 <- lm(height~pest_control, d)$coeff[1]
+
+sum(lm(height~pest_control + bugs, d)$coeff)
+y.z1.b1 <- sum(lm(height~pest_control + bugs, d)$coeff)
+y.z1.b0 <- sum(lm(height~pest_control + bugs, d)$coeff[1:2])
+y.z0.b0 <- lm(height~pest_control + bugs, d)$coeff[1]
+y.z0.b1 <- sum(lm(height~pest_control + bugs, d)$coeff[-2])
+
+
+ggplot(d, aes(jitter(pest_control), height, col = as.factor(pest_control))) +
+  geom_point() +
+  geom_segment(
+    x = -.2,
+    xend = .2,
+    y = y.z0,
+    yend = y.z0,
+    size = 1,
+    col = 'black'
+  ) +
+  geom_segment(
+    x =  .8,
+    xend = 1.2,
+    y = y.z1,
+    yend = y.z1,
+    size = 1,
+    col = 'black'
+  ) +
+  scale_color_manual(values = c(4, 2)) +
+  theme_bw()
+
+
+
+ggplot(d, aes(jitter(pest_control), height, col = as.factor(pest_control), shape = as.factor(bugs))) + 
   geom_point() + 
-  scale_color_manual(values = c(4, 2)) 
+  geom_segment(x = -.2, 
+               xend = .2, 
+               y = y.z0.b0, 
+               yend = y.z0.b0, 
+               size = 1, 
+               col = 'black', 
+               linetype = 2) + 
+    geom_segment(x = -.2, 
+               xend = .2, 
+               y = y.z0.b1, 
+               yend = y.z0.b1, 
+               size = 1, 
+               col = 'black', 
+               linetype = 3) + 
+    geom_segment(x =  .8, 
+               xend = 1.2, 
+               y = y.z1.b0, 
+               yend = y.z1.b0, 
+               size = 1, 
+               col = 'black', 
+               linetype = 2) + 
+          geom_segment(x =  .8, 
+               xend = 1.2, 
+               y = y.z1.b1, 
+               yend = y.z1.b1, 
+               size = 1, 
+               col = 'black', 
+               linetype = 3) +
+  scale_color_manual(values = c(4, 2)) + 
+  scale_shape_manual(values = c(19, 1)) + 
+  theme_bw()
+
+
+
+
+d %>% filter(pest_control ==1) %>% select(height) %>% summarise(sd(height))
 
 # plot treatment and control  with bugs post treatment
 ggplot(d, aes(jitter(z), h1, col = as.factor(z), shape = as.factor(bugs))) + 
   geom_point() + 
   scale_color_manual(values = c(4, 2)) + 
-  scale_shape_manual(values = c(1, 19)) + 
+  scale_shape_manual(values = c(19, 1)) + 
   theme_bw() + 
-  labs(x = 'z')
+  labs(x = '')
 
+?geom_segment()
 ```
+
+Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable `bugs` is very close to the true treatment effect. The analysis that includes the post-treatment variable `bugs` is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!
+
+# Why are analysis with post-treatment variables biased?
+
+To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable `z` records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable `gym`. 
+
+Post-treatment variables, like `gym`, have different [potential outcomes]() that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the [potential outcomes]() and observed outcomes of `gym` for 2 individuals from our exercise study.In real contexts, we would not have access to both [potential outcomes]() but we can imagine them for the purposes of this example. Notice that two individuals differ in `z` but have the same value for `gym` despite haviving different [potential outcomes](). Controlling for `gym` is not a fair comparison of `strength` because we are not accounting for how `z` changes the value of `gym`. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by `z`. 
+
+
 
 ```{r}
-# analyses
-ggplot(d, aes(h1, fill = as.factor(z))) + 
-  geom_histogram(position = 'identity', alpha = .7, bins = 20) 
 
-# correct ananlysis no post treatment
-d %>% 
-  group_by(z) %>% 
-  mutate(mean = mean(h1))%>% 
-ggplot(aes(h1, fill = as.factor(z))) + 
-  geom_density(alpha = .7) + 
-  scale_fill_manual(values = c(4, 2)) + theme_bw() + 
-  geom_vline(aes(xintercept = mean)) + 
-  facet_grid(z~.)
-
-lm(h1~z, d)
-
-# incorrect includes post treatment
-d %>% 
-  group_by(z, bugs) %>% 
-  mutate(mean = mean(h1))%>% 
-ggplot(aes(h1, fill = as.factor(z))) + 
-  geom_density(alpha = .7) + 
-  scale_fill_manual(values = c(4, 2)) + theme_bw() + 
-  geom_vline(aes(xintercept = mean)) + 
-  facet_grid(z~bugs)
-
-summary(lm(h1~z + bugs, d))
-
-
-
+tribble(
+  ~Individual, ~z, ~gym, ~`gym if z = 0`, ~`gym if z = 1`, ~strength, 
+  "1", "0", "3", "**3**", "5", "\u22ee",
+  "2", "1", "3", "1", "**3**","\u22ee", 
+  "\u22ee","\u22ee","\u22ee","\u22ee","\u22ee","\u22ee",
+)
 ```
 
+# Identifying post-treatment variables in practice
