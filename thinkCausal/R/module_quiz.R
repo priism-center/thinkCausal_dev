@@ -15,7 +15,8 @@ ui_quiz <- function(id) {
   ns <- NS(id)
   tagList(
     shinyjs::useShinyjs(),
-    uiOutput(outputId = ns('UI_quiz'))
+    div(class = 'quiz-container',
+        uiOutput(outputId = ns('UI_quiz')))
   )
 }
 
@@ -87,7 +88,7 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
         # grade it
         if (is_correct){
           # add UI indicator
-          add_checkmark(ns = ns, div_selector = '.quiz-container > h3')
+          add_checkmark(ns = ns, div_selector = '.quiz-container h3')
           
           # change the state
           shinyjs::delay(1000, {
@@ -97,7 +98,7 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
           
         } else {
           # add UI indicator
-          add_red_x(ns = ns, div_selector = '.quiz-container > h3')
+          add_red_x(ns = ns, div_selector = '.quiz-container h3')
           
           # change the state
           shinyjs::delay(1000, {
@@ -122,9 +123,6 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
                        style = 'background: #c0bbc4 !important'),
           br(), br(), hr(), br()
         )
-        
-        # wrap html in a div
-        html_content <- div(class = 'quiz-container', html_content)
 
         return(html_content)
       })
