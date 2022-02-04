@@ -17,6 +17,15 @@ concepts_page <- tabPanel(
     column(
       width = 4,
       wellPanel(
+        actionLink('concepts_link_post_treatment_variables', img(src = 'thumbnails/propensity.png')),
+        br(),
+        h3("Post-treatment variables"),
+        p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit.")
+      )
+    ),
+    column(
+      width = 4,
+      wellPanel(
         actionLink('concepts_link_randomization', img(src = 'thumbnails/propensity.png')),
         br(),
         h3("Randomization"),
@@ -31,16 +40,7 @@ concepts_page <- tabPanel(
         h3("PO"),
         p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit.")
       )
-    ),
-      column(
-        width = 4,
-        wellPanel(
-          img(src = 'thumbnails/regression.png'),
-          br(),
-          h3("All confounders measured"),
-          p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit.")
-        )
-      )
+    )
     ),
 
   fluidRow(

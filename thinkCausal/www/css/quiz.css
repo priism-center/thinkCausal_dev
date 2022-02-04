@@ -1,0 +1,53 @@
+/* controls the quiz*/
+
+.quiz-container {
+  max-width: min(100%, 800px)
+}
+
+.quiz-container h3 {
+  color: #4d4d4d;
+  font-weight: 600;
+}
+
+.quiz-container hr {
+    border-top: 0.1em solid #cccccc !important;
+}
+
+.quiz-container .skip-button {
+  max-width: 80px !important;
+  font-size: 0.8em !important;
+  background: none !important;
+  color: grey !important;;
+  float: right;
+}
+
+.quiz-container .skip-button:hover {
+  background: none !important;
+  color: black !important;
+}
+
+.quiz-container .skip-button:active {
+  background: none !important;
+  -webkit-box-shadow: none;
+}
+
+
+.quiz-container .submit-button {
+  max-width: 150px;
+  float: right;
+}
+
+
+.restart-button {
+  max-width: 150px !important;
+}
+
+/* this lives outside of the .quiz-container */
+.learning-content {
+  display: none;
+}
+/* can also hide the entire quiz
+.quiz-container {
+  display: none;
+}
+*/

@@ -10,8 +10,7 @@
 #' @return HTML datatable
 #' @export 
 #' 
-#' @importFrom dplyr mutate across
-#' @importFrom tidyselect where
+#' @import dplyr
 #' @importFrom DT datatable
 #' 
 #' @examples

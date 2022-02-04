@@ -276,7 +276,7 @@ shinyServer(function(input, output, session) {
     confounder_cols <- grep("^X_", cols_continuous, value = TRUE)
 
     # calculate pscores
-    pscores <- plotBart::propensity_scores(
+    pscores <- plotBart:::propensity_scores(
       .data = X,
       treatment = treatment_col,
       response = response_col,
@@ -552,19 +552,24 @@ shinyServer(function(input, output, session) {
     if (input$analysis_model_support == 'No') common_support_rule <- 'none'
 
     # run model
-    # store$console_message <- capture.output({
-    store$model_results <- tryCatch({
-      fit_bart(.data = store$verified_df,
-               support = common_support_rule,
-               ran.eff = input$analysis_random_intercept,
-               .estimand = base::tolower(input$analysis_model_estimand))
-
-    },
-    # warning = function(w) NULL,
-    error = function(e) NULL
+    # store$model_results <- withProgress(
+    #   message = 'Fitting BART model',
+    #   session = session,
+    #   {
+    #     fit_bart(
+    #       .data = store$verified_df,
+    #       support = common_support_rule,
+    #       ran.eff = input$analysis_random_intercept,
+    #       .estimand = base::tolower(input$analysis_model_estimand)
+    #     )
+    #   }
+    # )
+    store$model_results <- fit_bart(
+      .data = store$verified_df,
+      support = common_support_rule,
+      ran.eff = input$analysis_random_intercept,
+      .estimand = base::tolower(input$analysis_model_estimand)
     )
-    # })
-    # print(store$console_message)
 
     # close the alert
     # shinyWidgets::closeSweetAlert()
@@ -1078,9 +1083,9 @@ shinyServer(function(input, output, session) {
   # concepts ----------------------------------------------------------------
 
   # add listeners that link the concepts title image to its article
-  tab_titles <- c("Randomization", 'Fundamental problem', 'Assumptions', 'Regression methods', 'Decision trees')
+  tab_titles <- c("Randomization", 'Fundamental problem', 'Assumptions', 'Regression methods', 'Decision trees', 'Post-treatment variables')
   lapply(tab_titles, function(page_to_go_to) {
-    page_id <- paste0("concepts_link_", tolower(gsub(' ', '_', page_to_go_to)))
+    page_id <- paste0("concepts_link_", tolower(gsub('-| ', '_', page_to_go_to)))
     observeEvent(input[[page_id]], {
       shinyjs::runjs("window.scrollTo(0, 0)")
       updateNavbarPage(session, "nav", page_to_go_to)
@@ -1091,6 +1096,7 @@ shinyServer(function(input, output, session) {
   server_learning_randomization(id = isolate(store$module_ids$learning$randomization), 
                                 plot_theme = theme_custom)
   PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
+  server_post_treatment(id = 'concepts_post_treatment', plot_theme = theme_custom)
   #poServer(id = 'potential_outcomes_test')
 
 
@@ -1228,7 +1234,7 @@ shinyServer(function(input, output, session) {
 
   # download reproducible script
   output$analysis_results_button_download <- downloadHandler(
-    filename <-  function() {
+    filename <- function() {
       time <- gsub("-|:| ", "", Sys.time())
       paste0(time, '_thinkCausal_script.zip')
     },

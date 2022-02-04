@@ -26,7 +26,7 @@
 
 /* this makes the sortable bucket into a grid*/
 .sortable-wide .rank-list-item {
-  width: min(100%, 245px);
+  /*width: min(100%, 245px);*/
   height: 45px;
   float: left
 }

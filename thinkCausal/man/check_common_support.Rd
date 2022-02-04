@@ -16,5 +16,5 @@ check_common_support(.model)
 Check for common support via the standard deviation and chi-square rules
 }
 \author{
-Vince Dorrie, George Perrett, Joe Marlo
+Vince Dorie, George Perrett, Joe Marlo
 }

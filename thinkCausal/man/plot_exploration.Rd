@@ -6,7 +6,7 @@
 \usage{
 plot_exploration(
   .data,
-  .plot_type = c("Pairs", "Scatter", "Histogram", "Barplot", "Density", "Boxplot"),
+  .plot_type = c("Scatter", "Histogram", "Barplot", "Density", "Boxplot"),
   .x,
   .y,
   .fill,
@@ -26,7 +26,7 @@ plot_exploration(
 \arguments{
 \item{.data}{typically store$verified_df}
 
-\item{.plot_type}{one of c("Pairs", 'Scatter', 'Histogram', 'Density', 'Boxplot')}
+\item{.plot_type}{one of c('Scatter', 'Histogram', 'Density', 'Boxplot')}
 
 \item{.x}{}
 
@@ -68,7 +68,7 @@ X <- dplyr::select(X, 'treat', 're78', 'age', 'educ', 'black', 'hisp', 'married'
 X <- clean_auto_convert_logicals(X)
 plot_exploration(
  .data = X,
- .plot_type = 'Boxplot', #c("Pairs", 'Scatter', 'Histogram', 'Density', 'Boxplot'),
+ .plot_type = 'Boxplot', #c('Scatter', 'Histogram', 'Density', 'Boxplot'),
  .x = 're78',
  .y = 'age',
  .fill = NULL,

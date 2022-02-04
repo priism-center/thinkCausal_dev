@@ -1,6 +1,6 @@
 # Contributing to thinkCausal
 
-This outlines how to contribute to thinkCausal and applies to both programmatic and educational content changes. thinkCausal heavily uses [bartCause](https://github.com/vdorie/bartCause) and [plotBart](https://github.com/joemarlo/plotBart). Please consider contributing to those packages if you have specific model or plotting changes.
+This outlines how to contribute to thinkCausal and applies to both programmatic and educational content changes. thinkCausal heavily uses [`bartCause`](https://github.com/vdorie/bartCause) and [`plotBart`](https://github.com/joemarlo/plotBart). Please consider contributing to those packages if you have specific model or plotting changes.
 
 ## Issues
 Issues and questions can be submitted through the [Github Issues page](https://github.com/gperrett/thinkCausal_dev/issues).
@@ -13,9 +13,15 @@ Feel free to raise an [issue](https://github.com/gperrett/thinkCausal_dev/issues
 
 ## Code guidelines
 
-thinkCausal is a mix of 'base' R and tidyverse code. We try to adhere to the [tidyverse style guide](https://style.tidyverse.org/) for code formatting. The easiest way to to format ~90% of your R code is `Code -> Reformat Code` within Rstudio.
+thinkCausal is a mix of 'base' R and [`tidyverse`](https://www.tidyverse.org/) code. We try to adhere to the [tidyverse style guide](https://style.tidyverse.org/) for code formatting. The easiest way to to format ~90% of your R code is `Code -> Reformat Code` within Rstudio.
 
-We use [roxygen2](https://roxygen2.r-lib.org/) for documenting functions and [testthat](https://testthat.r-lib.org/) for unit testing. Please familiarize yourself with both and feel free to reach out with an [issue](https://github.com/gperrett/thinkCausal_dev/issues) if you have any questions.
+We use [`roxygen2`](https://roxygen2.r-lib.org/) for documenting functions and [`testthat`](https://testthat.r-lib.org/) for unit testing. Please familiarize yourself with both and feel free to reach out with an [issue](https://github.com/gperrett/thinkCausal_dev/issues) if you have any questions.
+
+Independent lessons should be written as [modules](https://shiny.rstudio.com/articles/modules.html). Any global variables (e.g. a dataframe read in from csv) should be stored in a list specific to that module. E.g. the Post-treatment module stores the dataframe `plants_df` within a module-specific `list()` named `store_l_post_treatment` like `store_l_post_treatment$plants_df <- readr::read_csv('...')`.
+
+## Dependencies
+
+We use [`renv`](https://rstudio.github.io/renv/index.html) to manage dependencies. You can use `renv::restore()` to install all the necessary packages. Please limit adding additional packages.
 
 ## Content structure
 
