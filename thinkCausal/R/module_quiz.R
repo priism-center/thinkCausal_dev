@@ -5,7 +5,6 @@
 ### you can have as many questions as you want ###
 ### cannot change logic --> first incorrect answer stops the quiz and puts the user in the article ###
 ### known bugs: 
-# - double clicking on submit answer button will skip the next question
 # - sortable divs require answers to be in the same order as answer key
 
 require(shiny)
@@ -76,8 +75,10 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
       # on button submit, record answer and change the state 
       observeEvent(input$submit_button, {
         
-        # TODO: freeze panel somehow? insert overlay div to prevent double click?
-        # fade to next question?
+        # TODO: fade to next question?
+        
+        # disable submit button to prevent double clicks
+        shinyjs::disable(selector = '.submit-button')
         
         # record answers
         store <- quiz_set_state(store, variable = 'current-response', value = input$answers)
@@ -86,12 +87,13 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
         is_correct <- quiz_is_current_correct(store)
         
         # grade it
+        delay_in_ms <- 1500
         if (is_correct){
           # add UI indicator
           add_checkmark(ns = ns, div_selector = '.quiz-container h3')
           
           # change the state
-          shinyjs::delay(1000, {
+          shinyjs::delay(delay_in_ms, {
             new_state <- quiz_get_state(store, variable = 'next-state')
             store <- quiz_set_state(store, variable = 'current-state', value = new_state)
           })
@@ -101,7 +103,7 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
           add_red_x(ns = ns, div_selector = '.quiz-container h3')
           
           # change the state
-          shinyjs::delay(1000, {
+          shinyjs::delay(delay_in_ms, {
             store <- quiz_set_state(store, variable = 'current-state', value = 'quiz-complete')
           })
         }
