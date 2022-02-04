@@ -14,8 +14,10 @@
 }
 
 .submit-button {
-  
+  max-width: 150px !important;
+  float: right;
 }
+
 
 .restart-button {
   max-width: 150px !important;

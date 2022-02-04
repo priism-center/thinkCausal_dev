@@ -58,7 +58,12 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
         # state behavior
         if (store$state == 'quiz-complete'){
           # determine the UI
-          store$ui_html <- quiz_ui_quiz_complete(store, message_correct, message_wrong)
+          store$ui_html <- quiz_ui_quiz_complete(
+            store,
+            ns = ns,
+            message_correct = message_correct,
+            message_wrong = message_wrong
+          )
           
           # make non-quiz content visible
           shinyjs::runjs('$(".learning-content").show()')
@@ -110,24 +115,8 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
       })
       
       # render the UI
-      output$UI_quiz <- renderUI({
+      output$UI_quiz <- renderUI(store$ui_html)
 
-        # extract UI determined by the state
-        ui_html <- store$ui_html
-        
-        # add the restart button
-        html_content <- tagList(
-          ui_html,
-          br(),
-          actionButton(inputId = ns('restart_button'),
-                       label = 'Restart quiz',
-                       class = 'restart-button',
-                       style = 'background: #c0bbc4 !important'),
-          br(), br(), hr(), br()
-        )
-
-        return(html_content)
-      })
     }
   )
 }
@@ -234,7 +223,7 @@ quiz_is_all_correct <- function(store) {
 }
 
 #' @describeIn quiz_get_state UI to show once the quiz is completed
-quiz_ui_quiz_complete <- function(store, message_correct, message_wrong){
+quiz_ui_quiz_complete <- function(store, ns, message_correct, message_wrong){
   # render ending message and confetti
   all_correct <- quiz_is_all_correct(store)
   if (all_correct) {
@@ -245,11 +234,23 @@ quiz_ui_quiz_complete <- function(store, message_correct, message_wrong){
     html_content <- tagList(br(), add_message_wrong(message_wrong))
   }
   
+  # add restart button
+  html_content <- tagList(
+    html_content,
+    br(),
+    actionButton(inputId = ns('restart_button'),
+                 label = 'Restart quiz',
+                 class = 'restart-button',
+                 style = 'background: #c0bbc4 !important'),
+    br(), br(), hr(), br()
+  )
+  
   return(html_content)
 }
 
 #' @describeIn quiz_get_state UI to show for each question
 quiz_ui_question <- function(store, ns){
+  
   # render the questions
   html_content <- tagList(
     # question text
@@ -261,10 +262,9 @@ quiz_ui_question <- function(store, ns){
     # action button to submit answer
     actionButton(inputId = ns('submit_button'),
                  label = 'Submit',
-                 class = 'submit-button'),
-    br(), 
+                 class = 'submit-button')
   )
-  
+
   return(html_content)
 }
 
