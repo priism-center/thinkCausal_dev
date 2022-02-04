@@ -96,8 +96,7 @@ shinyServer(function(input, output, session) {
 
   # upload data -------------------------------------------------------------
 
-  data_page <- server_data(store = store, id = isolate(store$module_ids$analysis$data), global_session = session)
-  store <- data_page$store
+  store <- server_data(store = store, id = isolate(store$module_ids$analysis$data), global_session = session)
 
   # EDA ---------------------------------------------------------------------
 
@@ -1160,17 +1159,17 @@ shinyServer(function(input, output, session) {
     # this would prevent issues if user goes back and changes something but doesn't save it
 
     # file inputs
-    uploaded_file_name <- data_page$analysis_data_upload_name()
+    uploaded_file_name <- store$analysis$data$upload$analysis_data_upload$name
     uploaded_file_type <-  tools::file_ext(uploaded_file_name)
-    uploaded_file_header <- data_page$analysis_data_header()
-    uploaded_file_delim <- data_page$analysis_data_delim_value()
+    uploaded_file_header <- store$analysis$data$upload$analysis_data_header
+    uploaded_file_delim <- store$analysis$data$upload$analysis_data_delim_value
 
     # get the selected columns and names
     selected_columns <- colnames(store$col_assignment_df)
     column_names <- colnames(store$user_modified_df)
 
     # data type changes
-    change_data_type <- data_page$group_list()
+    change_data_type <- store$analysis$data$group$group_list
     
     # eda
     descriptive_plot <-

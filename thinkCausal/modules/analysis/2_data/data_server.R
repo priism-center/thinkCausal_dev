@@ -756,12 +756,20 @@ server_data <- function(store, id, global_session){
                           choices = c('',moderator_options))
       })
       
-      return(list(store = store, 
-                  # for reproducible script
-                  group_list = reactive(group_list$data),
-                  analysis_data_upload_name = reactive(input$analysis_data_upload$name),
-                  analysis_data_header = reactive(input$analysis_data_header),
-                  analysis_data_delim_value = reactive(input$analysis_data_delim_value)))
+      # save into store for reproducible script
+      group_list_data <- reactive(group_list$data)
+      analysis_data_upload_name <- reactive(input$analysis_data_upload$name)
+      analysis_data_header <- reactive(input$analysis_data_header)
+      analysis_data_delim_value <- reactive(input$analysis_data_delim_value)
+      
+      observeEvent(input$analysis_data_save, {
+        store$analysis$data$group$group_list <- group_list_data()
+        store$analysis$data$upload$analysis_data_upload$name <- analysis_data_upload_name()
+        store$analysis$data$upload$analysis_data_header <- analysis_data_header()
+        store$analysis$data$upload$analysis_data_delim_value <- analysis_data_delim_value()
+      })
+      
+      return(store = store)
       
     })
 }
