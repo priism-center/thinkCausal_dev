@@ -20,3 +20,7 @@
 .learning-content {
   display: none;
 }
+
+hr.quiz-hr {
+  border-top: 0.1em solid #cccccc !important;
+}

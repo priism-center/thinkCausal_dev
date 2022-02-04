@@ -20,7 +20,7 @@ ui_quiz <- function(id) {
 }
 
 server_quiz <- function(id, id_parent, question_texts, question_prompts, correct_answers, message_correct, message_wrong) {
-  ns <- NS(id)
+  ns <- NS(NS(id_parent)(id))
   moduleServer(
     id,
     function(input, output, session) {
@@ -36,14 +36,50 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
         question_texts = question_texts,
         question_prompts = question_prompts,
         correct_answers = correct_answers,
-        responses = rep(NA, length(question_texts) + 1)
+        responses = rep(NA, length(question_texts) + 1),
+        ui_html = NULL
       )
       
-      # on button submit, manage the state
+      # reset quiz
+      observeEvent(input$restart_button, {
+        # reset the state to the first question
+        store <- quiz_set_state(store, variable = 'current-state', value = 'quiz-question-1')
+        
+        # remove any responses
+        store$responses <- rep(NA, length(question_texts) + 1)
+      })
+      
+      # control state behavior
+      observeEvent(store$state, {
+       
+        # scroll to top
+        shinyjs::runjs("window.scrollTo(0, 0)")
+        
+        # state behavior
+        if (store$state == 'quiz-complete'){
+          # determine the UI
+          store$ui_html <- quiz_ui_quiz_complete(store, message_correct, message_wrong)
+          
+          # make non-quiz content visible
+          shinyjs::runjs('$(".learning-content").show()')
+          
+        } else {
+          # determine the UI
+          store$ui_html <- quiz_ui_question(store, ns = ns)
+            
+          # hide non-quiz content
+          shinyjs::runjs('$(".learning-content").hide()')
+        }
+      })
+      
+      # on button submit, record answer change the state 
       observeEvent(input$submit_button, {
         
+        # TODO: freeze panel somehow? insert overlay div to prevent double click?
+        # fade to next question?
+        
         # record answers
-        store <- set_state(store, variable = 'current-response', value = input$answers)
+        store <- quiz_set_state(store, variable = 'current-response', value = input$answers)
         
         # is the answer correct
         is_correct <- quiz_is_current_correct(store)
@@ -55,80 +91,40 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
           
           # change the state
           shinyjs::delay(1000, {
-            new_state <- get_state(store, variable = 'next-state')
-            store <- set_state(store, variable = 'current-state', value = new_state)
+            new_state <- quiz_get_state(store, variable = 'next-state')
+            store <- quiz_set_state(store, variable = 'current-state', value = new_state)
           })
+          
         } else {
           # add UI indicator
           add_red_x(ns = ns)
           
           # change the state
           shinyjs::delay(1000, {
-            store <- set_state(store, variable = 'current-state', value = 'quiz-complete')
+            store <- quiz_set_state(store, variable = 'current-state', value = 'quiz-complete')
           })
         }
-        
-      })
-      
-      # reset quiz
-      observeEvent(input$restart_button, {
-        # reset the state to the first question
-        store <- set_state(store, variable = 'current-state', value = 'quiz-question-1')
-        
-        # remove any responses
-        store$responses <- rep(NA, length(question_texts) + 1)
-        
-        # hide content
-        shinyjs::runjs('$(".learning-content").hide()')
       })
       
       # render the UI
       output$UI_quiz <- renderUI({
+
+        # extract UI determined by the state
+        ui_html <- store$ui_html
         
-        if (get_state(store) == 'quiz-complete'){
-          
-          # scroll to top
-          shinyjs::runjs("window.scrollTo(0, 0)")
-
-          # render ending message and confetti
-          all_correct <- quiz_is_all_correct(store)
-          if (all_correct) {
-            html_content <- tagList(br(),
-                                    add_message_correct(message_correct),
-                                    add_confetti())
-          } else {
-            html_content <- tagList(br(), add_message_wrong(message_wrong))
-          }
-
-          # make non-quiz content visible
-          shinyjs::runjs('$(".learning-content").show()')
-
-        } else {
-
-          # render the questions
-          html_content <- tagList(
-            p(get_state(store, 'current-question')),
-            get_state(store, 'current-answers'),
-            actionButton(inputId = NS(NS(id_parent)(id))('submit_button'),
-                         label = 'Submit',
-                         class = 'submit-button'),
-            br(), 
-          )
-        }
-
         # add the restart button
         html_content <- tagList(
-          html_content,
+          ui_html,
           br(),
-          actionButton(inputId = NS(NS(id_parent)(id))('restart_button'),
+          actionButton(inputId = ns('restart_button'),
                        label = 'Restart quiz',
-                       class = 'restart-button'),
-          br(), hr(), br(), br()
+                       class = 'restart-button',
+                       style = 'background: #c0bbc4 !important'),
+          br(), br(), hr(class = 'quiz-hr'), br()
         )
         
         # wrap html in a div
-        html_content <- div(class = 'quiz-container',
-                            html_content)
+        html_content <- div(class = 'quiz-container', html_content)
 
         return(html_content)
       })
@@ -137,15 +133,15 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
 }
 
 
-
 # state machine -----------------------------------------------------------
-
 
 #' Manage the states of the quiz
 #'
 #' The quiz has states for each question and a final state for once the quiz ends. Only one state can be active at a time and the question text and answers shown depend on what state is active. 
 #' 
 #' These are `get` and `set` functions for retrieving state values and setting values. The states are originally created via a `reactiveValues` call within Shiny server (or `list` outside of Shiny; see example below).
+#' 
+#' See the post-treatment learning module for a working example.
 #'
 #' @param store a list formatted like in the example
 #' @param variable one of c('current-question', 'current-answers', 'current-correct-answer', 'next-state', 'current-response')
@@ -155,10 +151,11 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' question_1 <- "This is question 1"
 #' question_2 <- "This is question 2"
 #' question_texts <- list(question_1, question_2)
-#' question_prompts <- list(c('1a', '1b'), c('2a', '2b'))
+#' question_prompts <- list(radioButtons(...), radioButtons(...))
 #' correct_answers <- list(c('1a'), c('2b'))
 #' # use shiny::reactiveValues() in lieu of list()
 #' store <- list( 
@@ -169,9 +166,10 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
 #'   correct_answers = correct_answers,
 #'   responses = c('yes', NA, NA)
 #' )
-#' get_state(store, 'current-question')
-#' @describeIn get_state a getter function for the state machine
-get_state <- function(store, variable = NULL, state = NULL){
+#' quiz_get_state(store, 'current-question')
+#' }
+#' @describeIn quiz_get_state a getter function for the state machine
+quiz_get_state <- function(store, variable = NULL, state = NULL){
   if (is.null(state)) state <- store$state
   if (is.null(variable)) return(state)
   if (!(state %in% store$states)) stop('state not in store$states')
@@ -194,9 +192,9 @@ get_state <- function(store, variable = NULL, state = NULL){
 }
 
 
-#' @describeIn get_state a setter function for the state machine
-set_state <- function(store, variable, value, state = NULL){
-  if (is.null(state)) state <- get_state(store)
+#' @describeIn quiz_get_state a setter function for the state machine
+quiz_set_state <- function(store, variable, value, state = NULL){
+  if (is.null(state)) state <- quiz_get_state(store)
   if (is.null(value)) value <- character(0)
   
   if (variable == 'current-state'){
@@ -210,14 +208,14 @@ set_state <- function(store, variable, value, state = NULL){
   return(store)
 }
 
-#' @describeIn get_state check that current-response correct
+#' @describeIn quiz_get_state check that current-response is correct
 quiz_is_current_correct <- function(store){
-  current_response <- unname(get_state(store, variable = 'current-response'))
-  current_correct_answer <- unname(get_state(store, variable = 'current-correct-answer'))
+  current_response <- unname(quiz_get_state(store, variable = 'current-response'))
+  current_correct_answer <- unname(quiz_get_state(store, variable = 'current-correct-answer'))
   identical(current_response, current_correct_answer)
 }
 
-#' @describeIn get_state check that all recorded answers are correct
+#' @describeIn quiz_get_state check that all recorded answers are correct
 quiz_is_all_correct <- function(store) {
   tryCatch({
     # extract responses and correct answers
@@ -234,6 +232,41 @@ quiz_is_all_correct <- function(store) {
     return(is_identical)
   },
   error = function(e) FALSE)
+}
+
+#' @describeIn quiz_get_state UI to show once the quiz is completed
+quiz_ui_quiz_complete <- function(store, message_correct, message_wrong){
+  # render ending message and confetti
+  all_correct <- quiz_is_all_correct(store)
+  if (all_correct) {
+    html_content <- tagList(br(),
+                            add_message_correct(message_correct),
+                            add_confetti())
+  } else {
+    html_content <- tagList(br(), add_message_wrong(message_wrong))
+  }
+  
+  return(html_content)
+}
+
+#' @describeIn quiz_get_state UI to show for each question
+quiz_ui_question <- function(store, ns){
+  # render the questions
+  html_content <- tagList(
+    # question text
+    p(quiz_get_state(store, 'current-question')),
+    
+    # question answer UI (e.g. radiobuttons, sortable divs, etc.)
+    quiz_get_state(store, 'current-answers'),
+    
+    # action button to submit answer
+    actionButton(inputId = ns('submit_button'),
+                 label = 'Submit',
+                 class = 'submit-button'),
+    br(), 
+  )
+  
+  return(html_content)
 }
 
 
@@ -287,8 +320,8 @@ add_message_wrong <- function(text){
   )
 }
 
-# https://codepen.io/zer0kool/pen/KjZWRW
 add_confetti <- function(){
+  # https://codepen.io/zer0kool/pen/KjZWRW
   
   # individual confetti divs
   html <- div(

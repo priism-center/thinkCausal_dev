@@ -36,14 +36,14 @@ store_l_post_treatment$plants_df$z_as_text <- ifelse(store_l_post_treatment$plan
 
 # set the text for question 1
 question_1 <- tagList(
-  h4("We'll start with a couple practice questions to test your current knowledge. It's okay if you do not get them all correct."),
+  h4("We'll start with two practice questions to test your current knowledge. It's okay if you do not get them correct."),
   hr(),
   h3("Question 1"),
   p("You’re tasked with determining if omega-3 fish oil supplements cause a decrease in blood pressure over a 6 month period. You have data from an experiment where participants were randomly assigned to take omega-3 fish oil supplements or a placebo supplement for 6 months. Besides the treatment variable (fish_oil) and the outcome variable (bp_6month) you have the following covariates: "),
   tags$ul(
     tags$li('Blood pressure measured at the start of the study (bp_baseline)'),
     tags$li('Blood pressure measured  3 months into the study (bp_3month)'),
-    tags$li('Sex measured `at the start of the study (sex)'),
+    tags$li('Sex measured at the start of the study (sex)'),
     tags$li('Height measured at the start of the study (height)')
   ),
   p("Which covariates would you include in your analysis? Use the drag-drop below to move variables into the include or exclude bins.")
@@ -145,8 +145,8 @@ correct_answer_2 <- list(c('Detentions during 8th grade'),
 store_l_post_treatment$question_texts <- list(question_1, question_2)
 store_l_post_treatment$question_prompts <- list(question_prompt_1, question_prompt_2)
 store_l_post_treatment$correct_answers <- list(correct_answer_1, correct_answer_2)
-store_l_post_treatment$message_correct <- "You got all of them correct"
-store_l_post_treatment$message_wrong <- "You got at least one wrong"
+store_l_post_treatment$message_correct <- "Well done! You got all of them correct. Please read on below if you'd like to learn more about post-treatment variables."
+store_l_post_treatment$message_wrong <- "Hmmm, bummer! You got at least one wrong. Please take a minute to learn more about post-treatment variables below."
 
 # clean up otherwise may have conflicts with other learning modules
 rm(question_1, question_2, question_prompt_1, question_prompt_2, correct_answer_1, correct_answer_2)
