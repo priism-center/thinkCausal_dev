@@ -1,4 +1,4 @@
-create_drag_drop_roles <- function(.data, ns_prefix, design){
+create_drag_drop_roles <- function(ns, .data, ns_prefix, design){
   if (!inherits(.data, 'data.frame')) stop('.data must be a dataframe')
 
   # infer which columns are Z, Y, and X columns (i.e. smart defaults)
@@ -9,29 +9,29 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
     drag_drop_html <- tagList(
       bucket_list(
         header = "Drag the variables to their respective roles",
-        group_name = paste0(ns_prefix, "_dragdrop"),
+        group_name = ns(paste0(ns_prefix, "_dragdrop")),
         orientation = "horizontal",
         class = 'default-sortable sortable-wide',
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_covariates"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_covariates")),
           text = strong("Covariates"),
           labels = auto_columns$X,
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_treatment"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_treatment")),
           text = strong("Treatment"),
           labels = auto_columns$Z,
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_response"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_response")),
           text = strong("Outcome"),
           labels = auto_columns$Y,
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_post_treatment"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_post_treatment")),
           text = create_info_icon(
             label = strong("Post-treatment variables to exclude from analysis"),
             text = "All variables that could potentially be affected by the treatment"
@@ -40,7 +40,7 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_delete"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_delete")),
           text = create_info_icon(
             label = strong("ID or index variables to exclude from analysis"),
             text = "Exclude index or ID variables in addition to extraneous variables"
@@ -56,35 +56,35 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
     drag_drop_html <- tagList(
       bucket_list(
         header = "Drag the variables to their respective roles",
-        group_name = paste0(ns_prefix, "_dragdrop"),
+        group_name = ns(paste0(ns_prefix, "_dragdrop")),
         orientation = "horizontal",
         class = 'default-sortable sortable-wide',
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_covariates"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_covariates")),
           text = strong("Covariates"),
           labels = auto_columns$X,
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_block"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_block")),
           text = strong("Blocking variable(s)"),
           labels = NULL,
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_treatment"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_treatment")),
           text = strong("Treatment"),
           labels = auto_columns$Z,
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_response"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_response")),
           text = strong("Response"),
           labels = auto_columns$Y,
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_post_treatment"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_post_treatment")),
           text = create_info_icon(
             label = strong("Post-treatment variables to exclude from analysis"),
             text = "All variables that could potentially be affected by the treatment"
@@ -93,7 +93,7 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
           options = sortable_options(multiDrag = TRUE)
         ),
         add_rank_list(
-          input_id = paste0(ns_prefix, "_dragdrop_delete"),
+          input_id = ns(paste0(ns_prefix, "_dragdrop_delete")),
           text = create_info_icon(
             label = strong("ID or index variables to exclude from analysis"),
             text = "Exclude index or ID variables in addition to extraneous variables"
@@ -111,7 +111,7 @@ create_drag_drop_roles <- function(.data, ns_prefix, design){
 
 
 
-create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups, grouped_varibles = NULL){
+create_drag_drop_groups <- function(ns, .data, ns_prefix, n_dummy_groups, grouped_varibles = NULL){
 
   if (!inherits(.data, 'data.frame')) stop('.data must be a dataframe')
 
@@ -138,12 +138,12 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups, grouped_va
   drag_drop_html <- tagList(
     bucket_list(
       header = "Drag the variables to their respective groups (if any)",
-      group_name = paste0(ns_prefix, "_dragdrop_grouping"),
+      group_name = ns(paste0(ns_prefix, "_dragdrop_grouping")),
       orientation = "horizontal",
       class = 'default-sortable sortable-wide',
 
       add_rank_list(
-        input_id = paste0(ns_prefix, "_dragdrop_grouping_variables"),
+        input_id = ns(paste0(ns_prefix, "_dragdrop_grouping_variables")),
         text = strong("Ungrouped variables"),
         labels = ungrouped_vars,
         options = sortable_options(multiDrag = TRUE)
@@ -153,13 +153,13 @@ create_drag_drop_groups <- function(.data, ns_prefix, n_dummy_groups, grouped_va
     lapply(c(1:n_dummy_groups), function(i){
       bucket_list(
         header = " ",
-        group_name = "analysis_data_dragdrop_grouping",
+        group_name = ns("analysis_data_dragdrop_grouping"),
         orientation = "horizontal",
         class = 'default-sortable sortable-wide',
 
         add_rank_list(
-          input_id = paste0(ns_prefix, '_categorical_group_', i),
-          text = textInput(inputId = paste0("rename_group_", i),
+          input_id = ns(paste0(ns_prefix, '_categorical_group_', i)),
+          text = textInput(inputId = ns(paste0("rename_group_", i)),
                            label = NULL,
                            value = ifelse(i <= length(grouped_varibles), user_group_name[i], paste0("Group ", i))),
           labels = tryCatch(auto_groups[[i]], error = function(e) NULL),

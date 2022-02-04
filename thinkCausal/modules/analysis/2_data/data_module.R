@@ -9,6 +9,6 @@
 
 # source ui and server functions ------------------------------------------
 
-source('modules/3_eda/eda_ui.R')
-source('modules/3_eda/eda_server.R')
+source('modules/analysis/2_data/data_ui.R')
+source('modules/analysis/2_data/data_server.R')
 

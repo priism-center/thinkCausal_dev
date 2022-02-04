@@ -9,6 +9,6 @@
 
 # source ui and server functions ------------------------------------------
 
-source('modules/1_design/design_ui.R')
-source('modules/1_design/design_server.R')
+source('modules/analysis/4_model/model_ui.R')
+source('modules/analysis/4_model/model_server.R')
 

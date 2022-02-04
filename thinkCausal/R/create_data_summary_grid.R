@@ -16,7 +16,7 @@
 #' #     ns_prefix = 'analysis_data_'
 #' #   )
 #' # })
-create_data_summary_grid <- function(.data, default_data_types, ns_prefix, design, blocking_variables = NULL){
+create_data_summary_grid <- function(ns, .data, default_data_types, ns_prefix, design, blocking_variables = NULL){
   
   # set indices to map over
   all_col_names <- colnames(.data)
@@ -61,14 +61,14 @@ create_data_summary_grid <- function(.data, default_data_types, ns_prefix, desig
       column(width = 2,
              shinyjs::disabled(
                textInput(
-                 inputId = paste0(ns_prefix, "_", i, '_type'),
+                 inputId = ns(paste0(ns_prefix, "_", i, '_type')),
                  label = NULL,
                  value = column_types[i])
              )
       ),
       column(width = 4, 
              textInput(
-               inputId = paste0(ns_prefix, "_", i, "_rename"),
+               inputId = ns(paste0(ns_prefix, "_", i, "_rename")),
                label = NULL,
                value = all_col_names[i])
       ),
@@ -76,14 +76,14 @@ create_data_summary_grid <- function(.data, default_data_types, ns_prefix, desig
              if (i == 1){
                shinyjs::disabled(
                  selectInput(
-                   inputId = paste0(ns_prefix, "_", i, "_changeDataType"),
+                   inputId = ns(paste0(ns_prefix, "_", i, "_changeDataType")),
                    label = NULL, 
                    choices = variable_type_choices[[i]],
                    selected = default_data_types[i])
                )
              } else {
                selectInput(
-                 inputId = paste0(ns_prefix, "_", i, "_changeDataType"),
+                 inputId = ns(paste0(ns_prefix, "_", i, "_changeDataType")),
                  label = NULL, 
                  choices = variable_type_choices[[i]],
                  selected = default_data_types[i])
@@ -92,7 +92,7 @@ create_data_summary_grid <- function(.data, default_data_types, ns_prefix, desig
       column(width = 2, 
              shinyjs::disabled(
                textInput(
-                 inputId = paste0(ns_prefix, "_", i, "_percentNA"),
+                 inputId = ns(paste0(ns_prefix, "_", i, "_percentNA")),
                  label = NULL, 
                  placeholder = 'TBD')
              )

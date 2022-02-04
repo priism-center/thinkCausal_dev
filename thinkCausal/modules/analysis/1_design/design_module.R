@@ -1,5 +1,4 @@
-# require(dplyr)
-# require(...)
+# require(shiny)
 
 
 # global objects ----------------------------------------------------------
@@ -9,6 +8,5 @@
 
 # source ui and server functions ------------------------------------------
 
-source('modules/7_subgroup/subgroup_ui.R')
-source('modules/7_subgroup/subgroup_server.R')
-
+source('modules/analysis/1_design/design_ui.R')
+source('modules/analysis/1_design/design_server.R')
