@@ -49,6 +49,11 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
         store$responses <- rep(NA, length(question_texts) + 1)
       })
       
+      # skip quiz
+      observeEvent(input$skip_button, {
+        store <- quiz_set_state(store, variable = 'current-state', value = 'quiz-complete')
+      })
+      
       # control state behavior
       observeEvent(store$state, {
        
@@ -262,7 +267,12 @@ quiz_ui_question <- function(store, ns){
     # action button to submit answer
     actionButton(inputId = ns('submit_button'),
                  label = 'Submit',
-                 class = 'submit-button')
+                 class = 'submit-button'),
+    
+    # action button to skip quiz
+    actionButton(inputId = ns('skip_button'),
+                 label = 'Skip',
+                 class = 'skip-button')
   )
 
   return(html_content)
