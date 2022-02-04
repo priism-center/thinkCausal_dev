@@ -9,6 +9,10 @@
   font-weight: 600;
 }
 
+.quiz-container hr {
+    border-top: 0.1em solid #cccccc !important;
+}
+
 .submit-button {
   
 }
@@ -21,6 +25,3 @@
   display: none;
 }
 
-hr.quiz-hr {
-  border-top: 0.1em solid #cccccc !important;
-}

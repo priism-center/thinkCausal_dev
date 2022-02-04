@@ -72,7 +72,7 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
         }
       })
       
-      # on button submit, record answer change the state 
+      # on button submit, record answer and change the state 
       observeEvent(input$submit_button, {
         
         # TODO: freeze panel somehow? insert overlay div to prevent double click?
@@ -87,7 +87,7 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
         # grade it
         if (is_correct){
           # add UI indicator
-          add_checkmark(ns = ns)
+          add_checkmark(ns = ns, div_selector = '.quiz-container > h3')
           
           # change the state
           shinyjs::delay(1000, {
@@ -97,7 +97,7 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
           
         } else {
           # add UI indicator
-          add_red_x(ns = ns)
+          add_red_x(ns = ns, div_selector = '.quiz-container > h3')
           
           # change the state
           shinyjs::delay(1000, {
@@ -120,7 +120,7 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
                        label = 'Restart quiz',
                        class = 'restart-button',
                        style = 'background: #c0bbc4 !important'),
-          br(), br(), hr(class = 'quiz-hr'), br()
+          br(), br(), hr(), br()
         )
         
         # wrap html in a div
@@ -190,7 +190,6 @@ quiz_get_state <- function(store, variable = NULL, state = NULL){
     return(store$responses[store$states == state][[1]])
   }
 }
-
 
 #' @describeIn quiz_get_state a setter function for the state machine
 quiz_set_state <- function(store, variable, value, state = NULL){
@@ -273,11 +272,12 @@ quiz_ui_question <- function(store, ns){
 # helpers -----------------------------------------------------------------
 
 # adds a green checkmark to a div
-add_checkmark <- function(ns = NULL, div_id = 'submit_button'){
+add_checkmark <- function(ns = NULL, div_id = '#submit_button', div_selector = NULL){
   # ns <- shiny::NS(ns)
   div_id <- ns(div_id)
+  if (!is.null(div_selector)) div_id <- div_selector
   shinyjs::runjs({
-    div_selector <- paste0('$("#', div_id, '")')
+    div_selector <- paste0('$("', div_id, '")')
     paste0(
       'if (',
       div_selector,
@@ -289,11 +289,12 @@ add_checkmark <- function(ns = NULL, div_id = 'submit_button'){
 }
 
 # adds a red X to a div
-add_red_x <- function(ns = NULL, div_id = 'submit_button'){
+add_red_x <- function(ns = NULL, div_id = '#submit_button', div_selector = NULL){
   # ns <- shiny::NS(ns)
   div_id <- ns(div_id)
+  if (!is.null(div_selector)) div_id <- div_selector
   shinyjs::runjs({
-    div_selector <- paste0('$("#', div_id, '")')
+    div_selector <- paste0('$("', div_id, '")')
     paste0(
       'if (',
       div_selector,
