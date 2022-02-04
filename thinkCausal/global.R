@@ -18,7 +18,7 @@ library(stringr)
 library(purrr)
 
 # for bart
-library(plotBart) # devtools::install_github("joemarlo/plotBart", ref = "0.1.3")
+library(plotBart) # devtools::install_github("joemarlo/plotBart", ref = "0.1.4")
 library(bartCause)
 
 # global options
@@ -38,6 +38,7 @@ module_ids <- list(
     data = 'analysis_data'
   )
 )
+
 
 # source ------------------------------------------------------------------
 

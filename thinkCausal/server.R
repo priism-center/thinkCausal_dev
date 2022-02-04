@@ -280,7 +280,8 @@ shinyServer(function(input, output, session) {
       .data = X,
       treatment = treatment_col,
       response = response_col,
-      confounders = confounder_cols
+      confounders = confounder_cols,
+      seed = 44
     )
 
     return(pscores)
