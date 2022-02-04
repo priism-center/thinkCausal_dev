@@ -271,7 +271,7 @@ quiz_ui_question <- function(store, ns){
     
     # action button to skip quiz
     actionButton(inputId = ns('skip_button'),
-                 label = 'Skip',
+                 label = 'Skip quiz',
                  class = 'skip-button')
   )
 
