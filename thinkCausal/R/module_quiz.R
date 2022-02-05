@@ -1,11 +1,11 @@
 ### this is the module that wraps a learning module with a quiz ###
 ### see post-treatment learning module for an example ###
-### this might cause namespace issues ###
+### namespace issues **should be** taken care of ###
 ### constraints for questions are: question must return a list of user inputs that can be checked against ##
 ### you can have as many questions as you want ###
-### cannot change logic --> first incorrect answer stops the quiz and puts the user in the article ###
+### cannot change this logic --> first incorrect answer stops the quiz and puts the user in the article ###
 ### known bugs: 
-# - sortable divs require answers to be in the same order as answer key
+# - answer UI require user inputted answers to be in the same order as answer key
 
 require(shiny)
 require(shinyjs)
@@ -229,7 +229,8 @@ quiz_is_all_correct <- function(store) {
 
 #' @describeIn quiz_get_state UI to show once the quiz is completed
 quiz_ui_quiz_complete <- function(store, ns, message_correct, message_wrong){
-  # render ending message and confetti
+  
+  # render ending message based on if answers are correct
   all_correct <- quiz_is_all_correct(store)
   if (all_correct) {
     html_content <- tagList(br(),
@@ -242,11 +243,9 @@ quiz_ui_quiz_complete <- function(store, ns, message_correct, message_wrong){
   # add restart button
   html_content <- tagList(
     html_content,
-    br(),
     actionButton(inputId = ns('restart_button'),
                  label = 'Restart quiz',
-                 class = 'restart-button',
-                 style = 'background: #c0bbc4 !important'),
+                 class = 'restart-button'),
     br(), br(), hr(), br()
   )
   

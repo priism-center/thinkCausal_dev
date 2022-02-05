@@ -6,12 +6,6 @@ require(tibble)
 require(ggplot2)
 
 
-# notes -------------------------------------------------------------------
-
-# ns id is set as 'concepts_post_treatment'
-# the quiz UI elements exist inside another namespace
-
-
 # objects -----------------------------------------------------------------
 
 # list to store all post-treatment objects in
@@ -30,6 +24,20 @@ store_l_post_treatment$plants_df <- readr::read_csv(
   )
 )
 store_l_post_treatment$plants_df$z_as_text <- ifelse(store_l_post_treatment$plants_df$z, 'Treatment', 'Control')
+
+
+# namespace ---------------------------------------------------------------
+
+# pay close attention to how the namespace is managed. Since the quiz module
+# is inside the post-treatment module, its namespace is a 'child' of the post-treatment
+# module. The post-treatment module namespace id is set within module_ids object in global.R.
+# The quiz module id is always 'quiz' which then becomes 'learning_post_treatment-quiz'
+# UI and server elements outside of the quiz can be treated as you would normal modules
+
+# ns id is set as 'learning_post_treatment' per module_ids$learning$post_treatment
+
+# set namespace for UI quiz elements
+store_l_post_treatment$ns_quiz <- NS(NS(module_ids$learning$post_treatment)('quiz'))
 
 
 # set quiz structure ------------------------------------------------------
@@ -52,29 +60,29 @@ question_1 <- tagList(
 # set the UI elements for question 1
 question_prompt_1 <- sortable::bucket_list(
   header = "Drag the variables to their respective roles",
-  group_name = NS(NS('concepts_post_treatment')('quiz'))('answers'),
+  group_name = store_l_post_treatment$ns_quiz('answers'),
   orientation = "horizontal",
   class = 'default-sortable sortable-wide',
   sortable::add_rank_list(
-    input_id = NS(NS('concepts_post_treatment')('quiz'))('answers_variables'),
+    input_id = store_l_post_treatment$ns_quiz('answers_variables'),
     text = strong("Available"),
     labels = c('bp_3month', 'sex', 'height'),
     options = sortable::sortable_options(multiDrag = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = NS(NS('concepts_post_treatment')('quiz'))('answers_include'),
+    input_id = store_l_post_treatment$ns_quiz('answers_include'),
     text = strong("Control for"),
     labels = NULL,
     options = sortable::sortable_options(multiDrag = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = NS(NS('concepts_post_treatment')('quiz'))('answers_treatment'),
+    input_id = store_l_post_treatment$ns_quiz('answers_treatment'),
     text = strong("Treatment"),
     labels = c('fish_oil'),
     options = sortable::sortable_options(disabled = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = NS(NS('concepts_post_treatment')('quiz'))('answers_outcome'),
+    input_id = store_l_post_treatment$ns_quiz('answers_outcome'),
     text = strong("Outcome"),
     labels = c('bp_6month'),
     options = sortable::sortable_options(disabled = TRUE)
@@ -102,29 +110,29 @@ question_2 <- tagList(
 # set the UI elements for question 2
 question_prompt_2 <- sortable::bucket_list(
   header = "Drag the variables to their respective roles",
-  group_name = NS(NS('concepts_post_treatment')('quiz'))('answers'),
+  group_name = store_l_post_treatment$ns_quiz('answers'),
   orientation = "horizontal",
   class = 'default-sortable sortable-wide',
   sortable::add_rank_list(
-    input_id = NS(NS('concepts_post_treatment')('quiz'))('answers_variables'),
+    input_id = store_l_post_treatment$ns_quiz('answers_variables'),
     text = strong("Available"),
     labels = c('6th grade grades', '7th grade grades', 'Detentions during 8th grade', 'Race'),
     options = sortable::sortable_options(multiDrag = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = NS(NS('concepts_post_treatment')('quiz'))('answers_include'),
+    input_id = store_l_post_treatment$ns_quiz('answers_include'),
     text = strong("Control for"),
     labels = NULL,
     options = sortable::sortable_options(multiDrag = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = NS(NS('concepts_post_treatment')('quiz'))('answers_treatment'),
+    input_id = store_l_post_treatment$ns_quiz('answers_treatment'),
     text = strong("Treatment"),
     labels = c('Meditation'),
     options = sortable::sortable_options(disabled = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = NS(NS('concepts_post_treatment')('quiz'))('answers_outcome'),
+    input_id = store_l_post_treatment$ns_quiz('answers_outcome'),
     text = strong("Outcome"),
     labels = c('Grades'),
     options = sortable::sortable_options(disabled = TRUE)
@@ -154,7 +162,7 @@ rm(question_1, question_2, question_prompt_1, question_prompt_2, correct_answer_
 
 # UI ----------------------------------------------------------------------
 
-ui_post_treatment <- function(id) {
+ui_learning_post_treatment <- function(id) {
   ns <- NS(id)
   tagList(
     ui <- fluidPage(
@@ -165,7 +173,6 @@ ui_post_treatment <- function(id) {
       # UI content for the learning module
       div(
         class = 'learning-content', # required
-        style = "max-width: 800px",
         includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_1.md')),
         br(),
         radioButtons(inputId = ns('include_pt'),
@@ -184,7 +191,7 @@ ui_post_treatment <- function(id) {
 
 # server ------------------------------------------------------------------
 
-server_post_treatment <- function(id, plot_theme = ggplot2::theme_get) {
+server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) {
   ns <- NS(id)
   moduleServer(
     id,
@@ -192,8 +199,8 @@ server_post_treatment <- function(id, plot_theme = ggplot2::theme_get) {
       
       # run the quiz
       server_quiz(
-        id = "quiz",
-        id_parent = 'concepts_post_treatment',
+        id = "quiz", # this should always be quiz
+        id_parent = module_ids$learning$post_treatment,
         question_texts = store_l_post_treatment$question_texts,
         question_prompts = store_l_post_treatment$question_prompts,
         correct_answers = store_l_post_treatment$correct_answers,

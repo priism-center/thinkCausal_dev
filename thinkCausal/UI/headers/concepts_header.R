@@ -5,7 +5,7 @@ concepts_header <- navbarMenu(
   tabPanel(title = "Test your understanding", 
            includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))), 
   tabPanel(title = 'Post-treatment variables',
-           ui_post_treatment(id = "concepts_post_treatment")),
+           ui_learning_post_treatment(id = module_ids$learning$post_treatment)),
   tabPanel(title = 'PotentialOutcomes',
            PotentialOutcomesUI(id = "concepts_potentialoutcomes")),
   tabPanel(title = 'Randomization', 

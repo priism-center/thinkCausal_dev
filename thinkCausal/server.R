@@ -1097,7 +1097,8 @@ shinyServer(function(input, output, session) {
   server_learning_randomization(id = isolate(store$module_ids$learning$randomization), 
                                 plot_theme = theme_custom)
   PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
-  server_post_treatment(id = 'concepts_post_treatment', plot_theme = theme_custom)
+  server_learning_post_treatment(id = isolate(store$module_ids$learning$post_treatment),
+                                 plot_theme = theme_custom)
   #poServer(id = 'potential_outcomes_test')
 
 

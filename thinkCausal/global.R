@@ -31,7 +31,8 @@ set.seed(2)
 # set module IDs
 module_ids <- list(
   learning = list(
-    randomization = 'learning_randomization'
+    randomization = 'learning_randomization',
+    post_treatment = 'learning_post_treatment'
   ),
   analysis = list(
     design = 'analysis_design',
