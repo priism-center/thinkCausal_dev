@@ -9,21 +9,21 @@ require(ggplot2)
 # objects -----------------------------------------------------------------
 
 # list to store all post-treatment objects in
-store_l_post_treatment <- list()
+store_l_estimands <- list()
 
 # set path
-store_l_post_treatment$path_to_here <- file.path('modules', 'learning', 'post-treatment')
+store_l_estimands$path_to_here <- file.path('modules', 'learning', 'estimands')
 
 # read in randomization df
-store_l_post_treatment$plants_df <- readr::read_csv(
-  file.path(store_l_post_treatment$path_to_here, 'data', 'plants_df.csv'),
+store_l_estimands$plants_df <- readr::read_csv(
+  file.path(store_l_estimands$path_to_here, 'data', 'plants_df.csv'),
   col_types = readr::cols(
     h1 = readr::col_double(),
     z = readr::col_logical(),
     bugs = readr::col_logical()
   )
 )
-store_l_post_treatment$plants_df$z_as_text <- ifelse(store_l_post_treatment$plants_df$z, 'Treatment', 'Control')
+store_l_estimands$plants_df$z_as_text <- ifelse(store_l_estimands$plants_df$z, 'Treatment', 'Control')
 
 
 # namespace ---------------------------------------------------------------
@@ -37,7 +37,7 @@ store_l_post_treatment$plants_df$z_as_text <- ifelse(store_l_post_treatment$plan
 # ns id is set as 'learning_post_treatment' per module_ids$learning$post_treatment
 
 # set namespace for UI quiz elements
-store_l_post_treatment$ns_quiz <- NS(NS(module_ids$learning$post_treatment)('quiz'))
+store_l_estimands$ns_quiz <- NS(NS(module_ids$learning$estimands)('quiz'))
 
 
 # set quiz structure ------------------------------------------------------
@@ -60,29 +60,29 @@ question_1 <- tagList(
 # set the UI elements for question 1
 question_prompt_1 <- sortable::bucket_list(
   header = "Drag the variables to their respective roles",
-  group_name = store_l_post_treatment$ns_quiz('answers'),
+  group_name = store_l_estimands$ns_quiz('answers'),
   orientation = "horizontal",
   class = 'default-sortable sortable-wide',
   sortable::add_rank_list(
-    input_id = store_l_post_treatment$ns_quiz('answers_variables'),
+    input_id = store_l_estimands$ns_quiz('answers_variables'),
     text = strong("Available"),
     labels = c('bp_3month', 'sex', 'height'),
     options = sortable::sortable_options(multiDrag = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = store_l_post_treatment$ns_quiz('answers_include'),
+    input_id = store_l_estimands$ns_quiz('answers_include'),
     text = strong("Control for"),
     labels = NULL,
     options = sortable::sortable_options(multiDrag = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = store_l_post_treatment$ns_quiz('answers_treatment'),
+    input_id = store_l_estimands$ns_quiz('answers_treatment'),
     text = strong("Treatment"),
     labels = c('fish_oil'),
     options = sortable::sortable_options(disabled = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = store_l_post_treatment$ns_quiz('answers_outcome'),
+    input_id = store_l_estimands$ns_quiz('answers_outcome'),
     text = strong("Outcome"),
     labels = c('bp_6month'),
     options = sortable::sortable_options(disabled = TRUE)
@@ -110,29 +110,29 @@ question_2 <- tagList(
 # set the UI elements for question 2
 question_prompt_2 <- sortable::bucket_list(
   header = "Drag the variables to their respective roles",
-  group_name = store_l_post_treatment$ns_quiz('answers'),
+  group_name = store_l_estimands$ns_quiz('answers'),
   orientation = "horizontal",
   class = 'default-sortable sortable-wide',
   sortable::add_rank_list(
-    input_id = store_l_post_treatment$ns_quiz('answers_variables'),
+    input_id = store_l_estimands$ns_quiz('answers_variables'),
     text = strong("Available"),
     labels = c('6th grade grades', '7th grade grades', 'Detentions during 8th grade', 'Race'),
     options = sortable::sortable_options(multiDrag = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = store_l_post_treatment$ns_quiz('answers_include'),
+    input_id = store_l_estimands$ns_quiz('answers_include'),
     text = strong("Control for"),
     labels = NULL,
     options = sortable::sortable_options(multiDrag = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = store_l_post_treatment$ns_quiz('answers_treatment'),
+    input_id = store_l_estimands$ns_quiz('answers_treatment'),
     text = strong("Treatment"),
     labels = c('Meditation'),
     options = sortable::sortable_options(disabled = TRUE)
   ),
   sortable::add_rank_list(
-    input_id = store_l_post_treatment$ns_quiz('answers_outcome'),
+    input_id = store_l_estimands$ns_quiz('answers_outcome'),
     text = strong("Outcome"),
     labels = c('Grades'),
     options = sortable::sortable_options(disabled = TRUE)
@@ -150,11 +150,11 @@ correct_answer_2 <- list(c('Detentions during 8th grade'),
 
 # final quiz structure ----------------------------------------------------
 
-store_l_post_treatment$question_texts <- list(question_1, question_2)
-store_l_post_treatment$question_prompts <- list(question_prompt_1, question_prompt_2)
-store_l_post_treatment$correct_answers <- list(correct_answer_1, correct_answer_2)
-store_l_post_treatment$message_correct <- "Well done! You got all of them correct. Please read on below if you'd like to learn more about post-treatment variables."
-store_l_post_treatment$message_wrong <- "Hmmm, bummer! You got at least one wrong. Please take a minute to learn more about post-treatment variables below."
+store_l_estimands$question_texts <- list(question_1, question_2)
+store_l_estimands$question_prompts <- list(question_prompt_1, question_prompt_2)
+store_l_estimands$correct_answers <- list(correct_answer_1, correct_answer_2)
+store_l_estimands$message_correct <- "Well done! You got all of them correct. Please read on below if you'd like to learn more about post-treatment variables."
+store_l_estimands$message_wrong <- "Hmmm, bummer! You got at least one wrong. Please take a minute to learn more about post-treatment variables below."
 
 # clean up otherwise may have conflicts with other learning modules
 rm(question_1, question_2, question_prompt_1, question_prompt_2, correct_answer_1, correct_answer_2)
@@ -162,19 +162,16 @@ rm(question_1, question_2, question_prompt_1, question_prompt_2, correct_answer_
 
 # UI ----------------------------------------------------------------------
 
-ui_learning_post_treatment <- function(id) {
+ui_learning_estimands <- function(id) {
   ns <- NS(id)
   tagList(
     ui <- fluidPage(
-      
-      # the quiz UI
-      ui_quiz(id = ns('quiz')),
       
       # UI content for the learning module
       div(
         id = ns('learning-content'), # required
         class = 'learning-content', # required
-        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_1.md')),
+        includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_1.md')),
         br(),
         radioButtons(inputId = ns('include_pt'),
                      label = 'Include post-treatment variable bugs?',
@@ -183,7 +180,12 @@ ui_learning_post_treatment <- function(id) {
         plotOutput(outputId = ns('posttreatment_plot'), 
                    height = 500),
         br(),
-        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_2.md'))
+        
+        # the quiz UI
+        ui_quiz(id = ns('quiz')),
+        
+        br(),
+        includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_2.md'))
       )
     )
   )
@@ -192,7 +194,7 @@ ui_learning_post_treatment <- function(id) {
 
 # server ------------------------------------------------------------------
 
-server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) {
+server_learning_estimands <- function(id, plot_theme = ggplot2::theme_get) {
   ns <- NS(id)
   moduleServer(
     id,
@@ -201,13 +203,13 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
       # run the quiz
       server_quiz(
         id = "quiz", # this should always be quiz
-        id_parent = module_ids$learning$post_treatment,
-        question_texts = store_l_post_treatment$question_texts,
-        question_prompts = store_l_post_treatment$question_prompts,
-        correct_answers = store_l_post_treatment$correct_answers,
-        message_correct = store_l_post_treatment$message_correct,
-        message_wrong = store_l_post_treatment$message_wrong,
-        embed_quiz = FALSE
+        id_parent = module_ids$learning$estimands,
+        question_texts = store_l_estimands$question_texts,
+        question_prompts = store_l_estimands$question_prompts,
+        correct_answers = store_l_estimands$correct_answers,
+        message_correct = store_l_estimands$message_correct,
+        message_wrong = store_l_estimands$message_wrong,
+        embed_quiz = TRUE
       )
       
       # plot jitter
@@ -216,7 +218,7 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
         if (input$include_pt == 'Include bugs') {
           
           # create plot with post-treatment variable
-          p <- store_l_post_treatment$plants_df %>% 
+          p <- store_l_estimands$plants_df %>% 
             group_by(bugs, z) %>% 
             mutate(mean = mean(h1)) %>% 
             ggplot(aes(x = jitter(as.numeric(z)), y = h1, 
@@ -236,7 +238,7 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
         } else {
           
           # create plot without post-treatment variable
-          p <- ggplot(data = store_l_post_treatment$plants_df,
+          p <- ggplot(data = store_l_estimands$plants_df,
                       aes(x = jitter(as.numeric(z)), y = h1, col = z_as_text)) +
             geom_point() +
             scale_color_manual(values = c(4, 2)) +

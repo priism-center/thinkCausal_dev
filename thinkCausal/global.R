@@ -32,7 +32,8 @@ set.seed(2)
 module_ids <- list(
   learning = list(
     randomization = 'learning_randomization',
-    post_treatment = 'learning_post_treatment'
+    post_treatment = 'learning_post_treatment',
+    estimands = 'learning_estimands'
   ),
   analysis = list(
     design = 'analysis_design',

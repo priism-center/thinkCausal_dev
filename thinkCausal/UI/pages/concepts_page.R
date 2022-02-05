@@ -47,7 +47,7 @@ concepts_page <- tabPanel(
     column(
       width = 4,
       wellPanel(
-        img(src = 'thumbnails/balance.png'),
+        actionLink('concepts_link_causal_estimands', img(src = 'thumbnails/balance.png')),
         br(),
         h3("Causal Estimands"),
         p("Tincidunt pellentesque viverra ultrices bibendum mauris duis ad tempor, nam aliquet quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor elementum eget eleifend nisi cubilia.")

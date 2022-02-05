@@ -1,4 +1,4 @@
-/* controls the quiz*/
+/* controls the quiz */
 
 .quiz-container {
   max-width: min(100%, 800px)
@@ -36,6 +36,11 @@
   float: right;
 }
 
+.quiz-embedded {
+  padding: 4em;
+  margin: 1em;
+  border: 1em solid rgba(117, 115, 145, .6);
+}
 
 /* this lives outside of the .quiz-container */
 .learning-content {

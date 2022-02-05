@@ -14,12 +14,14 @@ ui_quiz <- function(id) {
   ns <- NS(id)
   tagList(
     shinyjs::useShinyjs(),
-    div(class = 'quiz-container',
-        uiOutput(outputId = ns('UI_quiz')))
+    div(
+      id = ns('quiz-container'),
+      class = 'quiz-container',
+      uiOutput(outputId = ns('UI_quiz')))
   )
 }
 
-server_quiz <- function(id, id_parent, question_texts, question_prompts, correct_answers, message_correct, message_wrong) {
+server_quiz <- function(id, id_parent = character(0), question_texts, question_prompts, correct_answers, message_correct, message_wrong, embed_quiz = TRUE) {
   ns <- NS(NS(id_parent)(id))
   moduleServer(
     id,
@@ -29,9 +31,12 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
       # validate(need(length(questions) == length(answers),
       #               'length(questions) must equal length(answers)'))
       
+      # add css class to the quiz container if embedding
+      if (isTRUE(embed_quiz)) shinyjs::addClass(id = 'quiz-container', class = 'quiz-embedded')
+      
       # set the current state and potential values
       store <- reactiveValues(
-        state = 'quiz-question-1',
+        state = if(isTRUE(embed_quiz)) 'quiz-complete' else 'quiz-question-1',
         states = c(paste0('quiz-question-', seq_along(question_texts)), 'quiz-complete'),
         question_texts = question_texts,
         question_prompts = question_prompts,
@@ -57,8 +62,8 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
       # control state behavior
       observeEvent(store$state, {
        
-        # scroll to top
-        shinyjs::runjs("window.scrollTo(0, 0)")
+        # scroll to top of quiz container
+        scroll_to_div(ns = ns, id = 'quiz-container')
         
         # state behavior
         if (store$state == 'quiz-complete'){
@@ -71,14 +76,16 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
           )
           
           # make non-quiz content visible
-          shinyjs::runjs('$(".learning-content").show()')
+          shinyjs::show(id = NS(id_parent)('learning-content'), asis = TRUE)
           
         } else {
           # determine the UI
           store$ui_html <- quiz_ui_question(store, ns = ns)
             
           # hide non-quiz content
-          shinyjs::runjs('$(".learning-content").hide()')
+          if (!isTRUE(embed_quiz)){
+            shinyjs::hide(id = NS(id_parent)('learning-content'), asis = TRUE)
+          }
         }
       })
       
@@ -88,7 +95,10 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
         # TODO: fade to next question?
         
         # disable submit button to prevent double clicks
-        shinyjs::disable(selector = '.submit-button')
+        shinyjs::disable(id = 'submit_button')
+        
+        # scroll to top of quiz container
+        scroll_to_div(ns = ns, id = 'quiz-container')
         
         # record answers
         store <- quiz_set_state(store, variable = 'current-response', value = input$answers)
@@ -97,10 +107,10 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
         is_correct <- quiz_is_current_correct(store)
         
         # grade it
-        delay_in_ms <- 1500
+        delay_in_ms <- 2000
         if (is_correct){
           # add UI indicator
-          add_checkmark(ns = ns, div_selector = '.quiz-container h3')
+          add_checkmark(ns = ns, id = 'quiz-container', element = 'h3')
           
           # change the state
           shinyjs::delay(delay_in_ms, {
@@ -110,7 +120,7 @@ server_quiz <- function(id, id_parent, question_texts, question_prompts, correct
           
         } else {
           # add UI indicator
-          add_red_x(ns = ns, div_selector = '.quiz-container h3')
+          add_red_x(ns = ns, id = 'quiz-container', element = 'h3')
           
           # change the state
           shinyjs::delay(delay_in_ms, {
@@ -257,18 +267,19 @@ quiz_ui_question <- function(store, ns){
   
   # render the questions
   html_content <- tagList(
+    
     # question text
     p(quiz_get_state(store, 'current-question')),
     
     # question answer UI (e.g. radiobuttons, sortable divs, etc.)
     quiz_get_state(store, 'current-answers'),
     
-    # action button to submit answer
+    # button to submit answer
     actionButton(inputId = ns('submit_button'),
                  label = 'Submit',
                  class = 'submit-button'),
     
-    # action button to skip quiz
+    # button to skip quiz
     actionButton(inputId = ns('skip_button'),
                  label = 'Skip quiz',
                  class = 'skip-button')
@@ -280,38 +291,53 @@ quiz_ui_question <- function(store, ns){
 
 # helpers -----------------------------------------------------------------
 
+
+scroll_to_div <- function(ns = NULL, id = 'quiz-container'){
+  if (!is.null(ns)) id <- ns(id)
+  js <- paste0("$('#", id, "')[0].scrollIntoView()")
+  shinyjs::runjs(js)
+}
+
 # adds a green checkmark to a div
-add_checkmark <- function(ns = NULL, div_id = '#submit_button', div_selector = NULL){
-  # ns <- shiny::NS(ns)
-  div_id <- ns(div_id)
-  if (!is.null(div_selector)) div_id <- div_selector
-  shinyjs::runjs({
-    div_selector <- paste0('$("', div_id, '")')
-    paste0(
-      'if (',
-      div_selector,
-      '.children().length===0){',
-      div_selector,
-      '.append("\t" + \'<span class="glyphicon glyphicon-ok" style="color:green"></span>\')}'
-    )
-  })
+add_checkmark <- function(ns = NULL, id = 'quiz-container', element = 'h3'){
+  
+  # construct selector
+  if (!is.null(ns)) id <- ns(id); id <- paste0("#", id)
+  if (!is.null(element)) selector <- paste(id, element)
+  div_selector <- paste0('$("', selector, '")')
+  
+  # construct javascript
+  js <- paste0(
+    'if (',
+    div_selector,
+    '.children().length===0){',
+    div_selector,
+    '.append("\t" + \'<span class="glyphicon glyphicon-ok" style="color:green"></span>\')}'
+  )
+  
+  # run js
+  shinyjs::runjs(js)
 }
 
 # adds a red X to a div
-add_red_x <- function(ns = NULL, div_id = '#submit_button', div_selector = NULL){
-  # ns <- shiny::NS(ns)
-  div_id <- ns(div_id)
-  if (!is.null(div_selector)) div_id <- div_selector
-  shinyjs::runjs({
-    div_selector <- paste0('$("', div_id, '")')
-    paste0(
-      'if (',
-      div_selector,
-      '.children().length===0){',
-      div_selector,
-      '.append("\t" + \'<span class="glyphicon glyphicon-remove" style="color:red"></span>\')}'
-    )
-  })
+add_red_x <- function(ns = NULL, id = 'quiz-container', element = 'h3'){
+  
+  # construct selector
+  if (!is.null(ns)) id <- ns(id); id <- paste0("#", id)
+  if (!is.null(element)) selector <- paste(id, element)
+  div_selector <- paste0('$("', selector, '")')
+  
+  # construct javascript
+  js <- paste0(
+    'if (',
+    div_selector,
+    '.children().length===0){',
+    div_selector,
+    '.append("\t" + \'<span class="glyphicon glyphicon-remove" style="color:red"></span>\')}'
+  )
+  
+  # run js
+  shinyjs::runjs(js)
 }
 
 add_message_correct <- function(text){

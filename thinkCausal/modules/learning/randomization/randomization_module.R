@@ -3,15 +3,18 @@ require(tidyr)
 require(tibble)
 require(ggplot2)
 
-path_to_here <- file.path('modules', 'learning', 'randomization')
-
 
 # objects -----------------------------------------------------------------
 
+# list to store all randomization objects in
+store_l_randomization <- list()
+
+# set path
+store_l_randomization$path_to_here <- file.path('modules', 'learning', 'randomization')
+
 # read in randomization df
-path_to_data <- file.path(path_to_here, 'data', 'randomization_df.csv')
-randomization_df <- read_csv(
-  path_to_data,
+store_l_randomization$randomization_df <- read_csv(
+  file.path(store_l_randomization$path_to_here, 'data', 'randomization_df.csv'),
   col_types = cols(
     Cholesterol_LDL = col_double(),
     Cholesterol_HDL = col_double(),
@@ -22,7 +25,7 @@ randomization_df <- read_csv(
     treat = col_double()
   )
 ) %>% as.data.frame()
-rownames(randomization_df) <- seq_len(nrow(randomization_df))
+rownames(store_l_randomization$randomization_df) <- seq_len(nrow(store_l_randomization$randomization_df))
 
 
 # UI ----------------------------------------------------------------------
@@ -40,15 +43,15 @@ ui_learning_randomization <- function(id) {
           inputId = ns("randomization_variable_x"),
           label = "(Observed) x variable: ",
           multiple = FALSE,
-          choices = setdiff(colnames(randomization_df), "treat"),
-          selected = setdiff(colnames(randomization_df), "treat")[1]
+          choices = setdiff(colnames(store_l_randomization$randomization_df), "treat"),
+          selected = setdiff(colnames(store_l_randomization$randomization_df), "treat")[1]
         ),
         selectInput(
           inputId = ns("randomization_variable_y"),
           label = "(Observed) y variable: ",
           multiple = FALSE,
-          choices = setdiff(colnames(randomization_df), "treat"),
-          selected = setdiff(colnames(randomization_df), "treat")[3]
+          choices = setdiff(colnames(store_l_randomization$randomization_df), "treat"),
+          selected = setdiff(colnames(store_l_randomization$randomization_df), "treat")[3]
         ),
         "Now select which datapoints to include in the treatment group by clicking on points in the plot. Assign only younger people to treatment. How do the unobserved univariate densities compare between treatment and control?",
         br(), br(),
@@ -99,7 +102,7 @@ server_learning_randomization <- function(id, plot_theme = ggplot2::theme_get) {
           # capture the point form the user click
           event_row <- rownames(
             nearPoints(
-              randomization_df,
+              store_l_randomization$randomization_df,
               input$randomization_plot_click,
               threshold = 15,
               maxpoints = 1
@@ -109,7 +112,7 @@ server_learning_randomization <- function(id, plot_theme = ggplot2::theme_get) {
           if (event_row %in% selected_points$row_names) {
             # remove point from selected list
             selected_points$row_names <- setdiff(selected_points$row_names, event_row)
-          } else if (event_row %in% rownames(randomization_df)) {
+          } else if (event_row %in% rownames(store_l_randomization$randomization_df)) {
             # add point to selected list
             selected_points$row_names <- c(selected_points$row_names, event_row)
             # remove floating UI box
@@ -122,7 +125,7 @@ server_learning_randomization <- function(id, plot_theme = ggplot2::theme_get) {
       
       # randomize assignment when user clicks button
       observeEvent(input$randomize_button, {
-        selected_points$row_names <- sample(rownames(randomization_df), size = round(nrow(randomization_df)/2))
+        selected_points$row_names <- sample(rownames(store_l_randomization$randomization_df), size = round(nrow(store_l_randomization$randomization_df)/2))
       })
       
       # remove assignment when user clicks button    
@@ -133,7 +136,7 @@ server_learning_randomization <- function(id, plot_theme = ggplot2::theme_get) {
       # top plot    
       output$randomization_plot <- renderPlot({
         # create plot
-        p <- randomization_df %>%
+        p <- store_l_randomization$randomization_df %>%
           dplyr::select(-treat) %>%
           rownames_to_column() %>% 
           mutate(Group = if_else(rowname %in% selected_points$row_names,
@@ -154,7 +157,7 @@ server_learning_randomization <- function(id, plot_theme = ggplot2::theme_get) {
       output$randomization_tc_plot <- renderPlot({
         
         # create plot
-        p <- randomization_df %>%
+        p <- store_l_randomization$randomization_df %>%
           dplyr::select(-treat) %>%
           rownames_to_column() %>%
           mutate(Group = if_else(rowname %in% selected_points$row_names,
@@ -180,6 +183,5 @@ server_learning_randomization <- function(id, plot_theme = ggplot2::theme_get) {
 
 
 # clean up ----------------------------------------------------------------
-rm(path_to_here)
-rm(path_to_data)
+
 
