@@ -10,6 +10,7 @@ library(readr) # for csv, txt
 library(shinyjs) # for running javascript on the server-side
 library(DT) # for javascript datatables
 library(sortable) # for drag and drop divs
+library(shinydisconnect) # for showing a popup when shiny crashes
 
 # for data munging and plotting
 library(dplyr)

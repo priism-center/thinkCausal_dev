@@ -1,9 +1,6 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
 
-  # do this when app stops
-  # onStop(fun = function() show_popup_crash())
-
   # initialize list to store variables
   store <- reactiveValues(
     uploaded_df = data.frame(), 

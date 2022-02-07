@@ -4,6 +4,7 @@ require(shiny)
 require(tidyr)
 require(tibble)
 require(ggplot2)
+require(DT)
 set.seed(44)
 
 
@@ -78,22 +79,43 @@ ui_learning_post_treatment <- function(id) {
         class = ns('learning-content'), # required
         class = 'learning-content', # required
         includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_1.md')),
-        DT::DTOutput(outputId = ns('data_preview')),
-        br(), br(),
-        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_2.md')),
         br(),
-        radioButtons(inputId = ns('include_pt'),
-                     label = h4('Include post-treatment variable bugs?'),
-                     choices = c('Include bugs', 'Do not include bugs'),
-                     selected = 'Do not include bugs',
-                     inline = TRUE),
+        radioButtons(inputId = ns('include_pt'), 
+                     label = h4('Control for post-treatment variable bugs?'),
+                     choices = c('Do not control for bugs', 'Control for bugs'),
+                     selected = 'Do not control for bugs',
+                     inline = TRUE
+        ), 
         plotOutput(outputId = ns('posttreatment_plot'), 
-                   height = 500),
-        br(),
-        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_3.md')),
-        DT::DTOutput(outputId = ns('data_bias')),
+                   height = 500, width = 700),
+        wellPanel(
+          conditionalPanel(
+            condition = "input.include_pt == 'Do not control for bugs'",
+            ns = ns,
+            includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_2.md'))
+          ),
+          conditionalPanel(
+            condition = "input.include_pt == 'Control for bugs'",
+            ns = ns,
+            includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_3.md'))
+          )
+        ),
+        br(), 
+        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_4.md')), 
+        img(src = file.path("img", "post-treatment-timeline.png"), 
+            height = 500, width = 700), 
         br(), br(),
-        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_4.md'))
+        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_5.md')), 
+        actionButton(inputId = ns('flip_treatment_button'), 
+                     label = 'Flip Treatment'), 
+        br(),
+        DT::dataTableOutput(outputId = ns('po_table')), 
+        br(), 
+        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_6.md')), 
+        br(),
+        DT::dataTableOutput(outputId = ns('zoom_table')),
+        br(),
+        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_7.md'))
       )
     )
   )
@@ -120,15 +142,6 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
         embed_quiz = FALSE
       )
       
-      # data table preview
-      output$data_preview <- DT::renderDataTable({
-        store_l_post_treatment$plants_df %>% 
-          mutate(bugs = as.numeric(bugs),
-                 pest_control = as.numeric(pest_control)) %>% 
-          select(height, bugs, `pest control` = pest_control) %>%
-          create_datatable(info = FALSE, selection = "none", pageLength = 10)
-      })
-      
       # plot jitter
       output$posttreatment_plot <- renderPlot({
         
@@ -143,7 +156,7 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
         y.z0.b1 <- sum(lm(height~pest_control + bugs, data = store_l_post_treatment$plants_df)$coeff[-2])
 
         # plot based on user input
-        if (input$include_pt == 'Include bugs') {
+        if (input$include_pt == 'Control for bugs') {
           
           # create plot with post-treatment variable
           p <- ggplot(data = store_l_post_treatment$plants_df, 
@@ -158,7 +171,7 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
                          size = 1, col = 'black', linetype = 2) + 
             geom_segment(x = 0.75, xend = 1.25, y = y.z1.b1, yend = y.z1.b1, 
                          size = 1, col = 'black', linetype = 3) +
-            labs(title = 'Including bugs variable')
+            labs(title = 'Controlling for bugs')
           
         } else {
           
@@ -171,14 +184,14 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
                          size = 1, col = 'black') +
             geom_segment(x =  0.75, xend = 1.25, y = y.z1, yend = y.z1,
                          size = 1, col = 'black') +
-            labs(title = 'Not including bugs variable')
+            labs(title = 'Not controlling for bugs')
         }
 
         # add scales and labs
         p <- p +
           scale_x_continuous(labels = c('Control', 'Treatment'), breaks = c(0, 1)) +
           scale_color_manual(values = c(4, 2)) +
-          scale_shape_manual(values = c(19, 1)) + 
+          scale_shape_manual(values = c(1, 19)) + 
           labs(x = 'Treatment status',
                y = 'Plant height',
                color = NULL,
@@ -190,16 +203,49 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
         return(p)
       })
       
+      
       # data table
-      output$data_bias <- DT::renderDataTable({
+      treatment_switcher <- reactiveValues(value = FALSE)
+      observeEvent(input$flip_treatment_button, {
+        treatment_switcher$value <- ifelse(treatment_switcher$value, FALSE, TRUE)
+      })
+      output$po_table <- DT::renderDataTable({
         
-        tribble(
-          ~Individual, ~z, ~gym, ~`gym if z = 0`, ~`gym if z = 1`, ~strength, 
-          "1", "0", "3", "**3**", "5", "\u22ee",
-          "2", "1", "3", "1", "**3**","\u22ee", 
-          "\u22ee","\u22ee","\u22ee","\u22ee","\u22ee","\u22ee",
+        # set values based on switcher
+        if (treatment_switcher$value){
+          z <- c(0, 1, 0, 1)
+          gym <- c(2, 6, 3, 7)
+          strength <- c(135, 140, 150, 167)
+        } else {
+          z <- c(1, 0, 1, 0)
+          gym <- c(4, 4, 5, 5)
+          strength <- c(145, 130, 160, 157)
+        }
+        
+        # create table
+        po_table <- data.frame(
+          Individual = c('Cong', 'Andi', 'Lindsey', 'Alex'),
+          z = z,
+          Baseline = c(150, 140, 200, 190),
+          Gym = gym,
+          Strength = strength
         ) %>% 
-          create_datatable(info = FALSE, selection = "none", bPaginate = FALSE)
+          create_datatable(info = FALSE, selection = "none", paging = FALSE)
+        
+        return(po_table)
+      })
+      
+      # 
+      output$zoom_table <- renderDataTable({
+        tribble(
+          ~Individual,~z, ~gym, ~`gym if z = 0`, ~`gym if z = 1`, 
+          'Cong',          1,     4,         "2",                "**4**",
+          'Andi',          0,     4,         "**4**",                "6",
+          'Lindsey',          1,     5,         "3",                "**5**",
+          'Alex',          0,     5,         "**5**",                "7",
+        ) %>% 
+          as.data.frame()  %>% 
+          create_datatable(paging = FALSE, info = FALSE, selection = "none")
       })
     }
   )

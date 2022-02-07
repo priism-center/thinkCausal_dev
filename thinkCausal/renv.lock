@@ -1568,6 +1568,19 @@
         "shiny"
       ]
     },
+    "shinydisconnect": {
+      "Package": "shinydisconnect",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0246e91be508acf9dd58c00db3dd765d",
+      "Requirements": [
+        "checkmate",
+        "glue",
+        "htmltools",
+        "shiny"
+      ]
+    },
     "shinyjs": {
       "Package": "shinyjs",
       "Version": "2.1.0",

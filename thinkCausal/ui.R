@@ -28,6 +28,11 @@ shinyUI(
             br(),br(),br()
         ),
         
+        # show disconnect message
+        shinydisconnect::disconnectMessage(
+            text = 'Ugh, an error occured. Please refresh the page. If this occurs again please report it via the feedback button.'
+        ),
+        
         # add help slideover
         help_slideover,
         
