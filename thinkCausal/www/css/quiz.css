@@ -39,7 +39,7 @@
 .quiz-embedded {
   padding: 4em;
   margin: 1em;
-  border: 1em solid rgba(117, 115, 145, .6);
+  border: 1em solid rgba(117, 115, 145, 0.6);
 }
 
 /* this lives outside of the .quiz-container */
@@ -52,3 +52,14 @@
   display: none;
 }
 */
+
+/* blurs all content in the div */
+.learning-content-blur {
+  filter: blur(0.3em);
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+}

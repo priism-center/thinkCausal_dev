@@ -3,21 +3,24 @@
 \name{quiz_get_state}
 \alias{quiz_get_state}
 \alias{quiz_set_state}
+\alias{quiz_is_answer_correct}
 \alias{quiz_is_current_correct}
 \alias{quiz_is_all_correct}
 \alias{quiz_ui_quiz_complete}
 \alias{quiz_ui_question}
-\title{Manage the states of the quiz}
+\title{Functions for managing the states of the quiz}
 \usage{
 quiz_get_state(store, variable = NULL, state = NULL)
 
 quiz_set_state(store, variable, value, state = NULL)
 
+quiz_is_answer_correct(answer, key)
+
 quiz_is_current_correct(store)
 
 quiz_is_all_correct(store)
 
-quiz_ui_quiz_complete(store, message_correct, message_wrong)
+quiz_ui_quiz_complete(store, ns, message_correct, message_wrong)
 
 quiz_ui_question(store, ns)
 }
@@ -44,6 +47,8 @@ See the post-treatment learning module for a working example.
 \item \code{quiz_get_state}: a getter function for the state machine
 
 \item \code{quiz_set_state}: a setter function for the state machine
+
+\item \code{quiz_is_answer_correct}: check that an answer matches a response, agnostic of ordering
 
 \item \code{quiz_is_current_correct}: check that current-response is correct
 

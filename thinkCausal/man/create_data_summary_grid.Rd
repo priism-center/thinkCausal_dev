@@ -5,6 +5,7 @@
 \title{Create a UI displaying the role, variable name, variable type, and percent NA for each column in a dataframe}
 \usage{
 create_data_summary_grid(
+  ns,
   .data,
   default_data_types,
   ns_prefix,
