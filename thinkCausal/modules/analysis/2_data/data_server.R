@@ -761,13 +761,14 @@ server_data <- function(store, id, global_session){
       analysis_data_upload_name <- reactive(input$analysis_data_upload$name)
       analysis_data_header <- reactive(input$analysis_data_header)
       analysis_data_delim_value <- reactive(input$analysis_data_delim_value)
+      analysis_data_save <- reactive(input$analysis_data_save)
       
       observeEvent(input$analysis_data_save, {
         store$analysis$data$group$group_list <- group_list_data()
         store$analysis$data$upload$analysis_data_upload$name <- analysis_data_upload_name()
         store$analysis$data$upload$analysis_data_header <- analysis_data_header()
         store$analysis$data$upload$analysis_data_delim_value <- analysis_data_delim_value()
-        store$analysis$data$verify$analysis_data_save <- reactive(input$analysis_data_save)
+        store$analysis$data$verify$analysis_data_save <- analysis_data_save()
       })
       
       return(store = store)

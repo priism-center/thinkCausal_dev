@@ -5,6 +5,7 @@ server_eda <- function(store, id, global_session){
     id,
     function(input, output, session) {
       
+      # back next buttons
       observeEvent(input[['analysis_plots_descriptive_button_back']], {
         updateNavbarPage(global_session, inputId = "nav", selected = "Data")
         updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Verify")
@@ -25,6 +26,7 @@ server_eda <- function(store, id, global_session){
         updateNavbarPage(global_session, inputId = "nav", selected = "Model")
       })
       
+      # update variables on the eda page once the save button on the verify data page is clicked
       observeEvent(store$analysis$data$verify$analysis_data_save, {
         new_col_names <- colnames(store$verified_df)
         cols_categorical <- store$column_types$categorical
