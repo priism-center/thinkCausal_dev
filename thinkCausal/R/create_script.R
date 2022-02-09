@@ -158,7 +158,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
     script <- c("\n# common support plot")
     if(2 %in% overlap_plot[,1]){ # if there is an overlap plot of pscores, calculate pscores
       tmp <- paste0('# calculate pscores', '\n',
-                    'pscores <- plotBart::propensity_scores(', '\n',
+                    'pscores <- plotBart:::propensity_scores(', '\n',
                     '.data = X,', '\n',
                     'treatment = treatment_col,', '\n',
                     'response = response_col,', '\n',

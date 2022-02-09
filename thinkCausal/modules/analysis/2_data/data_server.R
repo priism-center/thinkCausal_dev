@@ -610,75 +610,75 @@ server_data <- function(store, id, global_session){
         plot_vars <- clean_detect_plot_vars(.column_types = store$column_types,
                                             .treatment_column = column_treatment,
                                             .response_column = column_response)
-        
+        store$analysis$data$verify$plot_vars <- plot_vars
         # updateSelectInput(
         #   session = session,
         #   inputId = "analysis_eda_variable_pairs_vars",
         #   choices = new_col_names,
         #   selected = new_col_names
         # )
-        updateSelectInput(
-          session = global_session,
-          inputId = "analysis_eda_select_plot_type",
-          selected = plot_vars$plot_type
-        )
-        updateSelectInput(
-          session = global_session,
-          inputId = "analysis_eda_variable_x",
-          choices = new_col_names,
-          selected = plot_vars$X
-        )
-        updateSelectInput(
-          session = global_session,
-          inputId = "analysis_eda_variable_y",
-          choices = new_col_names,
-          selected = plot_vars$Y
-        )
-        updateSelectInput(
-          session = global_session,
-          inputId = "analysis_eda_variable_fill",
-          choices = c("None", new_col_names),
-          selected = plot_vars$fill
-        )
-        updateSelectInput(
-          session = global_session,
-          inputId = "analysis_eda_variable_shape",
-          choices = c("None", cols_categorical),
-          selected = plot_vars$shape
-        )
-        updateSelectInput(
-          session = global_session,
-          inputId = "analysis_eda_variable_size",
-          choices = c("None", new_col_names),
-          selected = plot_vars$size
-        )
-        updateSelectInput(
-          session = global_session,
-          inputId = "analysis_eda_variable_group",
-          choices = c("None", cols_categorical),
-          selected = plot_vars$grouping
-        )
-        updateSelectInput(
-          session = global_session,
-          inputId = "analysis_eda_variable_facet",
-          choices = c("None", cols_categorical)
-        )
-        
-        # update selects on balance plots
-        X_cols <- grep("^X_", new_col_names, value = TRUE)
-        X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
-        
-        # update options for balance
-        updateSelectInput(session = global_session,
-                          inputId = 'analysis_plot_balance_select_var',
-                          choices = X_cols_continuous,
-                          selected = X_cols_continuous
-        )
-        updateSelectInput(session = global_session,
-                          inputId = 'analysis_plot_overlap_select_var',
-                          choices = X_cols_continuous,
-                          selected = X_cols_continuous
-        )
+        # updateSelectInput(
+        #   session = global_session,
+        #   inputId = "analysis_eda_select_plot_type",
+        #   selected = plot_vars$plot_type
+        # )
+        # updateSelectInput(
+        #   session = global_session,
+        #   inputId = "analysis_eda_variable_x",
+        #   choices = new_col_names,
+        #   selected = plot_vars$X
+        # )
+        # updateSelectInput(
+        #   session = global_session,
+        #   inputId = "analysis_eda_variable_y",
+        #   choices = new_col_names,
+        #   selected = plot_vars$Y
+        # )
+        # updateSelectInput(
+        #   session = global_session,
+        #   inputId = "analysis_eda_variable_fill",
+        #   choices = c("None", new_col_names),
+        #   selected = plot_vars$fill
+        # )
+        # updateSelectInput(
+        #   session = global_session,
+        #   inputId = "analysis_eda_variable_shape",
+        #   choices = c("None", cols_categorical),
+        #   selected = plot_vars$shape
+        # )
+        # updateSelectInput(
+        #   session = global_session,
+        #   inputId = "analysis_eda_variable_size",
+        #   choices = c("None", new_col_names),
+        #   selected = plot_vars$size
+        # )
+        # updateSelectInput(
+        #   session = global_session,
+        #   inputId = "analysis_eda_variable_group",
+        #   choices = c("None", cols_categorical),
+        #   selected = plot_vars$grouping
+        # )
+        # updateSelectInput(
+        #   session = global_session,
+        #   inputId = "analysis_eda_variable_facet",
+        #   choices = c("None", cols_categorical)
+        # )
+        # 
+        # # update selects on balance plots
+        # X_cols <- grep("^X_", new_col_names, value = TRUE)
+        # X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
+        # 
+        # # update options for balance
+        # updateSelectInput(session = global_session,
+        #                   inputId = 'analysis_plot_balance_select_var',
+        #                   choices = X_cols_continuous,
+        #                   selected = X_cols_continuous
+        # )
+        # updateSelectInput(session = global_session,
+        #                   inputId = 'analysis_plot_overlap_select_var',
+        #                   choices = X_cols_continuous,
+        #                   selected = X_cols_continuous
+        # )
         
         
         #update moderator select on model page and moderator test page
@@ -767,6 +767,7 @@ server_data <- function(store, id, global_session){
         store$analysis$data$upload$analysis_data_upload$name <- analysis_data_upload_name()
         store$analysis$data$upload$analysis_data_header <- analysis_data_header()
         store$analysis$data$upload$analysis_data_delim_value <- analysis_data_delim_value()
+        store$analysis$data$verify$analysis_data_save <- reactive(input$analysis_data_save)
       })
       
       return(store = store)
