@@ -16,7 +16,7 @@ store_l_post_treatment <- list()
 # set path
 store_l_post_treatment$path_to_here <- file.path('modules', 'learning', 'post-treatment')
 
-# read in randomization df
+# read in plants df
 store_l_post_treatment$plants_df <- readr::read_csv(
   file.path(store_l_post_treatment$path_to_here, 'data', 'plants_df.csv'),
   col_types = readr::cols(
@@ -30,11 +30,23 @@ store_l_post_treatment$plants_df <- readr::read_csv(
   )
 )
 
+
 # add vars for plotting
 store_l_post_treatment$plants_df <- store_l_post_treatment$plants_df %>% 
   mutate(pest_control_as_jitter = pest_control + runif(n(), -0.25, 0.25),
          pest_control_as_text = ifelse(pest_control, 'Pest control', 'No pest control'),
          bugs_as_text = ifelse(bugs, 'Has bugs', 'No bugs'))
+
+# read in timeline df
+store_l_post_treatment$timeline_df <- readr::read_csv(
+  file.path(store_l_post_treatment$path_to_here, 'data', 'timeline.csv'), 
+  show_col_types = FALSE)
+
+store_l_post_treatment$timeline_df$status <- # set factor order of status for colors
+  factor(
+    store_l_post_treatment$timeline_df$status,
+    levels = c('pre-treatment', 'post-treatment', 'outcome')
+  )
 
 
 # namespace ---------------------------------------------------------------
@@ -54,6 +66,7 @@ store_l_post_treatment$ns_quiz <- NS(NS(module_ids$learning$post_treatment)('qui
 # quiz structure ----------------------------------------------------------
 
 source(file.path(store_l_post_treatment$path_to_here , 'R', 'post_treatment_quiz.R'))
+source(file.path(store_l_post_treatment$path_to_here , 'R', 'theme_timeline.R'))
 store_l_post_treatment$question_texts <- list(question_1, question_2)
 store_l_post_treatment$question_prompts <- list(question_prompt_1, question_prompt_2)
 store_l_post_treatment$correct_answers <- list(correct_answer_1, correct_answer_2)
@@ -102,20 +115,21 @@ ui_learning_post_treatment <- function(id) {
         ),
         br(), 
         includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_4.md')), 
-        img(src = file.path("img", "post-treatment-timeline.png"), 
-            height = 500, width = 700), 
-        br(), br(),
-        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_5.md')), 
-        actionButton(inputId = ns('flip_treatment_button'), 
-                     label = 'Flip Treatment'), 
-        br(),
-        DT::dataTableOutput(outputId = ns('po_table')), 
         br(), 
-        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_6.md')), 
-        br(),
-        DT::dataTableOutput(outputId = ns('zoom_table')),
-        br(),
-        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_7.md'))
+        plotOutput(ns('measured')),
+        plotOutput(ns('observed')), 
+        br(), br(),
+        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_5.md'))
+        # actionButton(inputId = ns('flip_treatment_button'), 
+        #              label = 'Flip Treatment'), 
+        # br(),
+        # DT::dataTableOutput(outputId = ns('po_table')), 
+        # br(), 
+        # includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_6.md')), 
+        # br(),
+        # DT::dataTableOutput(outputId = ns('zoom_table')),
+        # br(),
+        # includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_7.md'))
       )
     )
   )
@@ -142,14 +156,12 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
         embed_quiz = FALSE
       )
       
-      # plot jitter
+      
       output$posttreatment_plot <- renderPlot({
         
         # estimates
         y.z1 <- sum(lm(height~pest_control, data = store_l_post_treatment$plants_df)$coeff)
         y.z0 <- lm(height~pest_control, data = store_l_post_treatment$plants_df)$coeff[1]
-        
-        sum(lm(height~pest_control + bugs, data = store_l_post_treatment$plants_df)$coeff)
         y.z1.b1 <- sum(lm(height~pest_control + bugs, data = store_l_post_treatment$plants_df)$coeff)
         y.z1.b0 <- sum(lm(height~pest_control + bugs, data = store_l_post_treatment$plants_df)$coeff[1:2])
         y.z0.b0 <- lm(height~pest_control + bugs, data = store_l_post_treatment$plants_df)$coeff[1]
@@ -203,6 +215,71 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
         return(p)
       })
       
+      output$measured <- renderPlot({
+        p <- ggplot(data = store_l_post_treatment$timeline_df,
+                    aes(x = measured, y = 0)) +
+          geom_hline(yintercept = 0, color = "black") +
+          geom_segment(aes(
+            x = 0,
+            xend = 0,
+            y = .2,
+            yend = -.2
+          ), linetype = 'dashed') +
+          geom_segment(aes(
+            x = measured,
+            xend = measured,
+            y = 0,
+            yend = .yend
+          )) +
+          geom_point(aes(y = 0, x = measured, col = status), size = 3) +
+          coord_cartesian(xlim = c(-3, 9), ylim = c(-.2, .2)) +
+          geom_text(aes(
+            x = measured,
+            y = (.yend + .yend * .12),
+            label = variable
+          ), size = 3.5) +
+          geom_text(aes(x = 0, y = .21, label = "pre-school program begins")) +
+          labs(title = 'Timeline of Variable Measurment', col = NULL) +
+          theme_timeline() +
+          scale_color_manual(values = c(4, 2, 1))
+        
+        return(p)
+        
+      })
+      
+      
+      output$observed <- renderPlot({
+        p <- ggplot(data = store_l_post_treatment$timeline_df,
+                    aes(x = occured, y = 0)) +
+          geom_hline(yintercept = 0, color = "black") +
+          geom_segment(aes(
+            x = 0,
+            xend = 0,
+            y = .2,
+            yend = -.2
+          ), linetype = 'dashed') +
+          geom_segment(aes(
+            x = occured,
+            xend = occured,
+            y = 0,
+            yend = .yend
+          )) +
+          geom_point(aes(y = 0, x = occured, col = status), size = 3) +
+          coord_cartesian(xlim = c(-3, 9), ylim = c(-.2, .2)) +
+          geom_text(aes(
+            x = occured,
+            y = (.yend + .yend * .12),
+            label = variable
+          ), size = 3.5) +
+          geom_text(aes(x = 0, y = .21, label = "pre-school program begins")) +
+          labs(title = 'Timeline of Variable Occurance', col = NULL) +
+          theme_timeline() +
+          scale_color_manual(values = c(4, 2, 1))
+        
+        return(p)
+      })
+      
+   
       
       # data table
       treatment_switcher <- reactiveValues(value = FALSE)

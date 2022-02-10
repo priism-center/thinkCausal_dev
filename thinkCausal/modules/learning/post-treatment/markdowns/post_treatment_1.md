@@ -1,10 +1,10 @@
-# How to handle post-treatment variables
+## Post-treatment variables
 
-## Do not adjust for post-treatment variables 
+### Do not adjust for post-treatment variables 
 
 Including *post-treatment variables* in models for both randomized and observational studies generally is not a good idea and should be avoided. By *post-treatment variables*, we mean variables that can be effected by the treatment and our measured after treatment assignment. When post-treatment variables are included as a predictor or input in a causal analysis [estimates]() of the treatment effect can be [biased]()
 
-### Consider a simple example 
+#### Consider a simple example 
 
 A farmer wants to know if a non-toxic environmentally friendly pest-control method will cause plants to grow taller. The farmer conducted an experiment by randomly assigning half of their 400 plants to revive pest-control and the other half to receive no pest-control. Each plants treatment assignment was recorded with the variable `pest_control` . 
 
