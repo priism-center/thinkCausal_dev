@@ -220,9 +220,17 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   script_balance <- paste0(script, collapse = "\n")
   
   script_model <- if(!is.null(BART_model)){
-    if(BART_model$ran.eff == 'None'){
-      paste0(
+    
+    if(!is.na(BART_model$moderators)){ # if user specified moderators
+      script <- paste0(
         "\n# run model", "\n",
+        "moderators <- c(", sapply(strsplit(paste0(as.character(BART_model$moderators), collapse = ', '), '[, ]+'), function(x) toString(dQuote(x))), ')', '\n')
+    }else{
+      script <- paste0("\n# run model", "\n")
+    }
+    
+    if(BART_model$ran.eff == 'None'){
+        paste0(script,
         "treatment_v <- X[, 1]", "\n",
         "response_v <- X[, 2]", "\n",
         "confounders_mat <- clean_confounders_for_bart(X[, 3:ncol(X)])", "\n",
@@ -230,16 +238,15 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
         "response = response_v,", "\n",
         "treatment = treatment_v,", "\n",
         "confounders = confounders_mat,", "\n",
-        "estimand = '", BART_model$estimand, "',\n",
-        "commonSup.rule = '", BART_model$support, "',\n",
+        "estimand = '", BART_model$estimand[1], "',\n", # if there are more than one moderators, the estimand and support columns have the same values in each row in the BART_model dataframe
+        "commonSup.rule = '", BART_model$support[1], "',\n",
         "keepTrees = T,", "\n",
         "seed = 2", "\n",
         ")",
         "\n\n"
       )
     }else{
-      paste0(
-        "\n# run model", "\n",
+        paste0(script,
         "treatment_v <- X[, 1]", "\n",
         "response_v <- X[, 2]", "\n",
         "confounders_mat <- clean_confounders_for_bart(X[, 3:ncol(X)])", "\n",
@@ -247,10 +254,10 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
         "response = response_v,", "\n",
         "treatment = treatment_v,", "\n",
         "confounders = confounders_mat,", "\n",
-        "estimand = '", BART_model$estimand, "',\n",
-        "group.by = '", BART_model$ran.eff, "',\n",
+        "estimand = '", BART_model$estimand[1], "',\n",
+        "group.by = '", BART_model$ran.eff[1], "',\n",
         "group.effects = T,", "\n",
-        "commonSup.rule = '", BART_model$support, "',\n",
+        "commonSup.rule = '", BART_model$support[1], "',\n",
         "keepTrees = T,", "\n",
         "seed = 2", "\n",
         ")",
@@ -260,7 +267,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   }else{
     '\n'
   }
-
+    
   script_plots <- if(!is.null(BART_model)){
     paste0("# plot results and diagnostics", "\n",
            "plotBart::plot_PATE(", "\n",

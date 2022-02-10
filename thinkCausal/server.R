@@ -817,9 +817,21 @@ shinyServer(function(input, output, session) {
     
     BART_model <- 
       if(isTRUE(store$model_fit_good)){ # if a model successfully fitted
-        data.frame(support = common_support_rule,
-                   ran.eff = input$analysis_random_intercept,
-                   estimand = base::tolower(input$analysis_model_estimand))
+        
+        if(!is.null(input$analysis_model_moderator_vars)){ # if moderators are specified
+          data.frame(support = common_support_rule,
+                     ran.eff = input$analysis_random_intercept,
+                     estimand = base::tolower(input$analysis_model_estimand),
+                     moderators = input$analysis_model_moderator_vars
+          )
+        }else{
+          data.frame(support = common_support_rule,
+                     ran.eff = input$analysis_random_intercept,
+                     estimand = base::tolower(input$analysis_model_estimand),
+                     moderators = NA
+          )
+        }
+        
       }else{
         NULL
       }
