@@ -119,17 +119,10 @@ ui_learning_post_treatment <- function(id) {
         plotOutput(ns('measured')),
         plotOutput(ns('observed')), 
         br(), br(),
-        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_5.md'))
-        # actionButton(inputId = ns('flip_treatment_button'), 
-        #              label = 'Flip Treatment'), 
-        # br(),
-        # DT::dataTableOutput(outputId = ns('po_table')), 
-        # br(), 
-        # includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_6.md')), 
-        # br(),
-        # DT::dataTableOutput(outputId = ns('zoom_table')),
-        # br(),
-        # includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_7.md'))
+        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_5.md')),
+        br(),
+        wellPanel(includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_related.md'))),
+        includeMarkdown(file.path(store_l_post_treatment$path_to_here, "markdowns", 'post_treatment_citations.md'))
       )
     )
   )

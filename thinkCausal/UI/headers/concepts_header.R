@@ -6,6 +6,8 @@ concepts_header <- navbarMenu(
            includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))), 
   tabPanel(title = 'Post-treatment variables',
            ui_learning_post_treatment(id = module_ids$learning$post_treatment)),
+  tabPanel(title = 'Bias and efficiency',
+           ui_learning_bias_efficiency(id = module_ids$learning$bias_efficiency)),
   tabPanel(title = 'Causal estimands',
            ui_learning_estimands(id = module_ids$learning$estimands)),
   tabPanel(title = 'PotentialOutcomes',
@@ -17,8 +19,6 @@ concepts_header <- navbarMenu(
   # tabPanel(title = 'PO Test', 
   #          poUI(id = 'potential_outcomes_test')),
   tabPanel(title = "Fundamental problem",
-           includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))),
-  tabPanel(title = "Assumptions",
            includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))),
   tabPanel(title = "Regression methods",
            includeMarkdown(file.path("UI", "markdowns", 'concepts.md')))

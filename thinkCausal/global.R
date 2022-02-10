@@ -34,7 +34,12 @@ module_ids <- list(
   learning = list(
     randomization = 'learning_randomization',
     post_treatment = 'learning_post_treatment',
-    estimands = 'learning_estimands'
+    estimands = 'learning_estimands',
+    bias_efficiency = 'learning_bias_efficiency',
+    rct_covariates = 'learning_rct_covariates',
+    ignorability = 'learning_ignorability',
+    confounders_measured = 'learning_confounders_measured',
+    potential_outcomes = 'learning_potential_outcomes'
   ),
   analysis = list(
     design = 'analysis_design',

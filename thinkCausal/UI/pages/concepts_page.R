@@ -56,9 +56,9 @@ concepts_page <- tabPanel(
     column(
       width = 4,
       wellPanel(
-        img(src = 'thumbnails/regression_discontinuity.png'),
+        actionLink('concepts_link_bias_and_efficiency', img(src = 'thumbnails/balance.png')),
         br(),
-        h3("Regression Trees vs Linear Regression"),
+        h3("Bias and efficiency"),
         p("Vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu  ad tempor, nam aliquet quis feugiat augue.")
       )
     ),
