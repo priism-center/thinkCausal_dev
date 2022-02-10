@@ -354,13 +354,13 @@ shinyServer(function(input, output, session) {
 
     # stop here if model isn't fit yet
     validate_model_fit(store)
-
+    
     # extract estimates and format
     # TODO: unclear if credible interval is 80 or 95
     tab <- summary(store$model_results, ci.style = 'quant')$estimates %>%
       as.data.frame() %>%
       mutate(rownames = rownames(.)) %>%
-      select(' ' = rownames, 1:4) %>%
+      dplyr::select(' ' = rownames, 1:4) %>%
       rename_all(tools::toTitleCase) %>%
       create_datatable(paging = FALSE, info = FALSE, selection = "none")
 
