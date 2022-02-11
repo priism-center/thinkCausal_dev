@@ -40,7 +40,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "library(plotBart) # remotes::install_github('joemarlo/plotBart', ref = '0.1.3')", "\n",
   "\n",
   '# set the working directory to where this script is saved', '\n',
-  'setwd(here::here())', '\n',
+  'setwd("<user/your/path/to/this/file>")', '\n',
   '\n',
   '# load the neccessary functions', "\n",
   "source('clean_auto_convert_logicals.R')", "\n",

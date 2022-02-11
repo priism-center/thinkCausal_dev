@@ -80,10 +80,6 @@ shinyServer(function(input, output, session) {
   # EDA ---------------------------------------------------------------------
   
   store <- server_eda(store = store, id = isolate(store$module_ids$analysis$eda), global_session = session)
-  
-  # will put into options server
-  isolate(store$options$settings_options_ggplotHeight <- input$settings_options_ggplotHeight)
-  isolate(store$options$settings_options_ggplotWidth <- input$settings_options_ggplotWidth)
 
   # model -------------------------------------------------------------------
 
@@ -720,7 +716,7 @@ shinyServer(function(input, output, session) {
 
 
   # options -----------------------------------------------------------------
-
+  
   # change plot theme, font size, and point size
   theme_custom <- reactive({
 
@@ -763,6 +759,10 @@ shinyServer(function(input, output, session) {
 
     return(p)
   })
+  
+  # change plot download height and width
+  isolate(store$options$settings_options_ggplotHeight <- input$settings_options_ggplotHeight)
+  isolate(store$options$settings_options_ggplotWidth <- input$settings_options_ggplotWidth)
 
 
   # script ------------------------------------------------------------------
@@ -899,7 +899,7 @@ shinyServer(function(input, output, session) {
 
 
   # log ---------------------------------------------------------------------
-
+  
   # print the log
   # the log is created by appending text descriptions of events to store$log
   output$settings_log_text <- renderText({
