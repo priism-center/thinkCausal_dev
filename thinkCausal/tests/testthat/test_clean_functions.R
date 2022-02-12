@@ -108,4 +108,28 @@ test_that("clean_detect_dummy_cols() output is correct", {
 
 # -------------------------------------------------------------------------
 
+x7 <- data.frame(
+  momwhite = c(1,0,0,0,0,0,1),
+  momblack = c(0,1,1,1,1,0,0),
+  momhisp = c(0,0,0,0,0,0,0),
+  y.obs = rnorm(7, 10, 3)
+)
+
+cleaned_df_internal <- clean_dummies_to_categorical_internal(i = 1, df = x7,
+                                                             group_names = c('momwhite', 'momblack', 'momhisp'),
+                                                             rename_group = 'race', problematic_group_names = c())
+test_that("clean_dummies_to_categorical_internal() output is correct", {
+  expect_type(cleaned_df_internal, 'list')
+  expect_true(is.null(cleaned_df_internal[[1]]))
+  expect_equal(names(cleaned_df_internal[[2]]), c('y.obs','race'))
+  expect_equal(cleaned_df_internal[[3]][[1]],
+               c("race", "momwhite", "momblack", "momhisp"))
+})
+
+race <- c("momwhite", "momblack", "momhisp")
+cleaned_df <- clean_dummies_to_categorical(x7, race)
+test_that("clean_dummies_to_categorical() output is correct", {
+  expect_equal(names(cleaned_df), c('y.obs','race'))
+  expect_s3_class(cleaned_df, 'data.frame')
+})
 
