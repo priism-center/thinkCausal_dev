@@ -28,6 +28,9 @@ clean_names <- function(.names){
   # remove non-ASCII characters
   .names <- base::iconv(.names, from = 'UTF-8', to = 'ASCII//TRANSLIT')
   
+  # remove any whitespace
+  .names <- stringr::str_trim(.names, 'both')
+  
   # replace spaces with underscore
   .names <- stringr::str_replace_all(string = .names, pattern = ' ', replacement = '_')
   
@@ -38,7 +41,13 @@ clean_names <- function(.names){
   
   # remove punctuation except underscore and period
   pat <- "(?![._])[[:punct:]]"
-  .names <- stringr::str_replace_all(string = .names, pattern = pat, replacement = "")
+  .names <- stringr::str_remove_all(string = .names, pattern = pat)
+  
+  # remove dollar signs
+  .names <- stringr::str_remove_all(string = .names, pattern = "[$]")
+  
+  # remove leading special characters
+  .names <- stringr::str_remove_all(string = .names, pattern = "^[:punct:]")
   
   # add 'n' before numbers (names can't start with numbers)
   .names <- as.character(sapply(.names, function(string){

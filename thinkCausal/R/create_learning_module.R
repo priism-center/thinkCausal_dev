@@ -18,15 +18,21 @@ create_learning_module <- function(article_name = 'Lorem ipsum', include_quiz = 
   
   # checks for directory name
   if (!stringr::str_detect(getwd(), "/thinkCausal$")) stop('Working directory must be the /thinkCausal subdirectory')
-  if (missing(directory_name)){
-    directory_name <- paste0(tolower(gsub('_| ', '-', article_name)))
-    directory_name <- tolower(directory_name)
-  }
-  if (directory_name == '_template') stop('directory_name cannot be "_template"')
+  if (missing(directory_name)) directory_name <- clean_dir_name(article_name)
+  if (directory_name == '.template') stop('Directory name cannot be ".template"')
   path_to_modules <- file.path('modules', 'learning')
   full_dir <- file.path(path_to_modules, directory_name)
-  if (dir.exists(full_dir)) stop('directory already exists: please choose a new directory_name')
+  if (dir.exists(full_dir)) stop('Directory already exists: please choose a new directory_name')
   
+  # validate short_name
+  if (missing(short_name)) short_name <- clean_short_name(article_name)
+  
+  # notify of names using
+  cli::cli_h1('Using these names')
+  cli::cli_alert_success("Article name: {article_name}")
+  cli::cli_alert_success("Short name: {short_name}")
+  cli::cli_alert_success("Directory name: {directory_name}")
+
   # copy template
   dir.create(full_dir)
   file.copy(
@@ -35,12 +41,6 @@ create_learning_module <- function(article_name = 'Lorem ipsum', include_quiz = 
     recursive = TRUE,
     copy.mode = TRUE
   )
-  
-  # TODO: validate short_name
-  if (missing(short_name)){
-    short_name <- paste0(tolower(gsub('-| ', '_', article_name)))
-    short_name <- tolower(short_name)
-  }
   
   # replace text at top of module
   path_to_module <- file.path(full_dir, 'template_module.R')
@@ -54,6 +54,8 @@ create_learning_module <- function(article_name = 'Lorem ipsum', include_quiz = 
                         '# any text "template" is replaced with the new module short_name',
                         glue::glue("# the article name is '{article_name}' and the short name is '{short_name}'"))
   
+  # replace template text in markdowns
+  replace_template_text(file.path(full_dir, 'markdowns', 'template_1.md'), replacement_text = article_name)
   
   # replace all <template> with short_name
   replace_template_text(file.path(full_dir, 'R', 'template_quiz.R'), replacement_text = short_name)
@@ -67,7 +69,7 @@ create_learning_module <- function(article_name = 'Lorem ipsum', include_quiz = 
   if (isFALSE(include_quiz)) comment_out_quiz(file.path(full_dir, glue::glue("{short_name}_module.R")))
 
   # messages and reminders
-  cli::cli_alert_success("Learning module '{article_name}' created in {path_to_modules}/{directory_name}")
+  cli::cli_h1("Learning module '{article_name}' created in {path_to_modules}/{directory_name}")
   cli::cli_div(theme = list(span.emph = list(color = "orange")))
   cli::cli_h1('{.emph Did you remember to?}')
   cli::cli_h3('Update global.R?')
@@ -85,6 +87,18 @@ create_learning_module <- function(article_name = 'Lorem ipsum', include_quiz = 
   cli::cli_alert_warning("Store your data in {file.path(full_dir, 'data')} subdirectory")
   cli::cli_alert_warning("Store your R functions in {file.path(full_dir, 'R')} subdirectory")
   cli::cli_alert_warning("Save your objects to the `store_l_{short_name}` list to prevent namespace collisions")
+}
+
+clean_dir_name <- function(.name){
+  name_new <- tolower(clean_names(.name))
+  name_new <- stringr::str_replace_all(name_new, '\\.| |_', '-')
+  return(name_new)
+}
+
+clean_short_name <- function(.name){
+  name_new <- clean_dir_name(.name)
+  name_new <- stringr::str_replace_all(name_new, '-', '_')
+  return(name_new)
 }
 
 replace_template_text <- function(file_path, text_to_replace = 'template', replacement_text){
