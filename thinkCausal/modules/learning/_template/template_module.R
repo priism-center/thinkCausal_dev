@@ -1,5 +1,6 @@
 # this defines the template for a learning module
-# create_learning_module() creates new modules based on this template
+# `create_learning_module` function creates new modules based on this template
+# any text "template" is replaced with the new module short_name
 
 require(shiny)
 # require(tidyr)
@@ -16,7 +17,7 @@ store_l_template <- list()
 store_l_template$path_to_here <- file.path('modules', 'learning', 'template')
 
 # read in randomization df
-store_l_template$plants_df <- readr::read_csv(
+store_l_template$template_df <- readr::read_csv(
   file.path(store_l_template$path_to_here, 'data', 'template_df.csv'),
   col_types = readr::cols(
     h1 = readr::col_double(),
@@ -24,7 +25,7 @@ store_l_template$plants_df <- readr::read_csv(
     bugs = readr::col_logical()
   )
 )
-store_l_template$plants_df$z_as_text <- ifelse(store_l_template$plants_df$z, 'Treatment', 'Control')
+store_l_template$template_df$z_as_text <- ifelse(store_l_template$template_df$z, 'Treatment', 'Control')
 
 
 # namespace ---------------------------------------------------------------
@@ -104,7 +105,7 @@ server_learning_template <- function(id, plot_theme = ggplot2::theme_get) {
         embed_quiz = TRUE
       )
       
-      # plot jitter
+      # example plot
       output$posttreatment_plot <- renderPlot({
 
         if (input$include_pt == 'Include bugs') {
