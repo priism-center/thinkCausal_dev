@@ -65,7 +65,7 @@ concepts_page <- tabPanel(
     column(
       width = 4,
       wellPanel(
-        actionLink('concepts_link_decision_trees', img(src = 'thumbnails/decision_tree.png')),
+        actionLink('concepts_link_lorem_ipsum', img(src = 'thumbnails/decision_tree.png')),
         br(),
         h3("Decision trees"),
         p("Tincidunt pellentesque viverra ultrices bibendum mauris duis ad tempor, nam aliquet quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor elementum eget eleifend nisi cubilia.")

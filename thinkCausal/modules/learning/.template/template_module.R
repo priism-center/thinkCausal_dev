@@ -14,7 +14,7 @@ require(shiny)
 store_l_template <- list()
 
 # set path
-store_l_template$path_to_here <- file.path('modules', 'learning', 'template')
+store_l_template$path_to_here <- file.path('modules', 'learning', '.template')
 
 # read in randomization df
 store_l_template$template_df <- readr::read_csv(
@@ -42,9 +42,9 @@ store_l_template$template_df$z_as_text <- ifelse(store_l_template$template_df$z,
 store_l_template$ns_quiz <- NS(NS(module_ids$learning$template)('quiz'))
 
 
-# set quiz structure ------------------------------------------------------
+# source quiz and R functions ---------------------------------------------
 
-source(file.path(store_l_template$path_to_here, 'R/template_quiz.R'))
+purrr::walk(list.files(file.path(store_l_template$path_to_here, 'R'), full.names = TRUE), source)
 
 
 # UI ----------------------------------------------------------------------

@@ -30,7 +30,7 @@ create_learning_module <- function(article_name = 'Lorem ipsum', include_quiz = 
   # copy template
   dir.create(full_dir)
   file.copy(
-    from = list.files(file.path(path_to_modules, '_template'), full.names = TRUE),
+    from = list.files(file.path(path_to_modules, '.template'), full.names = TRUE),
     to = full_dir,
     recursive = TRUE,
     copy.mode = TRUE
@@ -56,9 +56,12 @@ create_learning_module <- function(article_name = 'Lorem ipsum', include_quiz = 
   
   
   # replace all <template> with short_name
-  replace_template_text(file.path(full_dir, 'R', 'template_quiz.R'))
-  replace_template_text(file.path(full_dir, 'template_module.R'))
-  replace_file_names(full_dir)
+  replace_template_text(file.path(full_dir, 'R', 'template_quiz.R'), replacement_text = short_name)
+  replace_template_text(file.path(full_dir, 'template_module.R'), 
+                        text_to_replace = '\\.template', 
+                        replacement_text = directory_name)
+  replace_template_text(file.path(full_dir, 'template_module.R'), replacement_text = short_name)
+  replace_file_names(full_dir, replacement_text = short_name)
   
   # if no quiz then comment out the correct lines
   if (isFALSE(include_quiz)) comment_out_quiz(file.path(full_dir, glue::glue("{short_name}_module.R")))
@@ -74,16 +77,17 @@ create_learning_module <- function(article_name = 'Lorem ipsum', include_quiz = 
   cli::cli_alert_warning('Add "{article_name}" to tab_titles')
   cli::cli_h3('Update /UI/headers/concepts_header.R?')
   cli::cli_alert_warning('Add "tabPanel(title = \'{article_name}\', ui_learning_{short_name}(id = module_ids$learning${short_name}))"')
-  cli::cli_h3('Update /UI/concepts_page.R?')
+  cli::cli_h3('Update /UI/pages/concepts_page.R?')
   link <- paste0("concepts_link_", tolower(gsub('-| ', '_', article_name)))
   cli::cli_alert_warning("Add a new column() containing actionLink('{link}', img(src = 'thumbnails/{short_name}.png')")
   cli::cli_h3('Other items to consider')
   cli::cli_alert_warning("Add a thumbnail image '{short_name}.png' to www/thumbnails")
-  cli::cli_alert_warning("Store your R functions in {file.path(full_dir, 'R')} subdirectory")
   cli::cli_alert_warning("Store your data in {file.path(full_dir, 'data')} subdirectory")
+  cli::cli_alert_warning("Store your R functions in {file.path(full_dir, 'R')} subdirectory")
+  cli::cli_alert_warning("Save your objects to the `store_l_{short_name}` list to prevent namespace collisions")
 }
 
-replace_template_text <- function(file_path, text_to_replace = 'template', replacement_text = short_name){
+replace_template_text <- function(file_path, text_to_replace = 'template', replacement_text){
   file_orig <- readLines(file_path)
   file_new <- stringr::str_replace_all(file_orig, text_to_replace, replacement_text)
   conn <- file(file_path)
@@ -91,7 +95,7 @@ replace_template_text <- function(file_path, text_to_replace = 'template', repla
   close(conn)
 }
 
-replace_file_names <- function(file_path, text_to_replace = 'template', replacement_text = short_name){
+replace_file_names <- function(file_path, text_to_replace = 'template', replacement_text){
   names_old <- list.files(file_path, recursive = TRUE)
   names_new <- stringr::str_replace_all(names_old, text_to_replace, replacement_text)
   
