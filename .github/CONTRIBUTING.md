@@ -29,23 +29,26 @@ The core Shiny app is within the `/thinkCausal` directory. Drafts for articles a
 
     .
     ├── student_work            # Personal store for students
-    ├── thinkCausal             # Main project directory
+    ├── thinkCausal             # Main project directory for Shiny app
     │   ├── data                # Test data
     │   ├── man                 # Compiled manual for functions
+    │   ├── modules
+    │   │  ├── analysis         # Modules for the analysis section
+    │   │  └── learning         # Modules for each article the learning section
     │   ├── R                   # Functions
+    │   ├── renv
     │   ├── tests               # Unit tests
     │   ├── UI                  # Scripts that build the UI
-    │   │  ├── concepts         # Modules that define each concept sub-page
+    │   │  ├── concepts         # Deprecated
     │   │  ├── headers          # UI code that defines the top nav bar hierarchy
-    │   │  ├── markdowns        # Markdowns containing static text such as the help slideover
+    │   │  ├── markdowns        # Depreacted
     │   │  └── pages            # UI code that defines each page
     │   ├── www                 # Browser-side code such as CSS, JavaScript, imgs
     │   ├── DESCRIPTION         # Unused but required for required for documenting R functions via devtools
     │   ├── NAMESPACE           # Unused but required for required for documenting R functions via devtools
     │   ├── NEWS.md             # Descriptions of major updates in user-readable language
     │   ├── global.R            # Code that is run prior to launching the Shiny app
-    │   ├── manual_workflow.R   # Testing script useful for replicating the tool's workflow
-    │   ├── server.R            # Server-side code for Shiny app
+    │   ├── server.R            # Server-side code
     │   └── UI.R                # Main UI framework
     ├── writing                 # Store for vignettes and similar content
     ├── LICENSE
