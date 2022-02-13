@@ -70,15 +70,19 @@ ui_learning_template <- function(id) {
       ),
       
       # the quiz UI
-      ui_quiz(id = ns('quiz')),
+      # can be moved within the UI; recommended to place at top of UI if not embedding
+      ui_quiz(id = ns('quiz')), # comment out this line if quiz is not required
       
       div(
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
-        class = ns('learning-content-blur'), # required for blur
-        class = 'learning-content-blur', # required for blur
+        class = ns('learning-content-blur'), # required for blur (comment out this line if blur is not required)
+        class = 'learning-content-blur', # required for blur (comment out this line remove if blur is not required)
         br(),
-        includeMarkdown(file.path(store_l_template$path_to_here, "markdowns", 'template_2.md'))
+        includeMarkdown(file.path(store_l_template$path_to_here, "markdowns", 'template_2.md')),
+        br(),
+        wellPanel(includeMarkdown(file.path(store_l_template$path_to_here, "markdowns", 'template_related.md'))),
+        includeMarkdown(file.path(store_l_template$path_to_here, "markdowns", 'template_citations.md'))
       )
     )
   )
