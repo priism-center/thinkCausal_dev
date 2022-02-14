@@ -322,7 +322,7 @@ add_checkmark <- function(ns = NULL, id = 'quiz-container', element = 'h3'){
     div_selector,
     '.children().length===0){',
     div_selector,
-    '.append("\t" + \'<span class="glyphicon glyphicon-ok" style="color:green"></span>\')}'
+    '.append("\t" + \'<span class="glyphicon glyphicon-ok" style="color:green; font-size: 0.9em;"></span>\')}'
   )
   
   # run js
@@ -343,7 +343,7 @@ add_red_x <- function(ns = NULL, id = 'quiz-container', element = 'h3'){
     div_selector,
     '.children().length===0){',
     div_selector,
-    '.append("\t" + \'<span class="glyphicon glyphicon-remove" style="color:red"></span>\')}'
+    '.append("\t" + \'<span class="glyphicon glyphicon-remove" style="color:red; font-size: 0.9em;"></span>\')}'
   )
   
   # run js
