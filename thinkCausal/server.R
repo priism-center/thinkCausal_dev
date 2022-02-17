@@ -11,11 +11,6 @@ shinyServer(function(input, output, session) {
 
   # back next buttons -------------------------------------------------------
 
-  # model page
-  observeEvent(input$analysis_model_button_back, {
-    updateNavbarPage(session, inputId = "nav", selected = "Exploratory plots")
-    updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
-  })
   # observeEvent(input$analysis_model_button_popup, {
   #   updateNavbarPage(session, inputId = "nav", selected = "Data")
   #   updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load")
@@ -80,166 +75,7 @@ shinyServer(function(input, output, session) {
 
   # model -------------------------------------------------------------------
 
-  # when user runs the model, take a number of actions
-  observeEvent(input$analysis_model_button_next, {
-
-    # launch popup if data is not yet selected
-    if (!is.data.frame(store$verified_df)) {
-      show_popup_model_no_data_warning(session)
-    }
-
-    observeEvent(input$analysis_model_button_popup, {
-      close_popup(session = session)
-      updateNavbarPage(session, inputId = "nav", selected = "Data")
-      updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
-    })
-
-    # spawn red text if selection isn't made
-    if (isTRUE(is.null(input$analysis_model_radio_design))) {
-      output$analysis_model_text_design_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    if (isTRUE(is.null(input$analysis_model_radio_estimand))) {
-      output$analysis_model_text_estimand_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    if (isTRUE(is.null(input$analysis_model_radio_support))) {
-      output$analysis_model_text_support_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-
-    # stop here if data hasn't been uploaded and selected
-    validate_data_verified(store)
-
-    # stop here if inputs aren't found
-    # TODO
-    # req(input$)
-    # print('Dataframe going into bartC: \n')
-    # print(store$verified_df)
-    # print('Column types of dataframe going into bartC: \n')
-    # print(store$verified_df  %>% summarize_all(class))
-
-    # remove current model if it exists
-    store$model_results <- NULL
-    store$model_fit_good <- NULL
-
-    # insert popup to notify user of model fit process
-    # TODO: estimate the time remaining empirically?
-    # TODO: show console redirect
-    show_popup_fitting_BART_waiting(session)
-
-
-    # pull the response, treatment, and confounders variables out of the df
-    # treatment_v <- store$verified_df[, 1]
-    # response_v <- store$verified_df[, 2]
-    # confounders_mat <- as.matrix(store$verified_df[, 3:ncol(store$verified_df)])
-    # colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
-    common_support_rule <- input$analysis_over_ride_common_support
-    if (input$analysis_model_support == 'No') common_support_rule <- 'none'
-
-    # run model
-    # store$model_results <- withProgress(
-    #   message = 'Fitting BART model',
-    #   session = session,
-    #   {
-    #     fit_bart(
-    #       .data = store$verified_df,
-    #       support = common_support_rule,
-    #       ran.eff = input$analysis_random_intercept,
-    #       .estimand = base::tolower(input$analysis_model_estimand)
-    #     )
-    #   }
-    # )
-    store$model_results <- fit_bart(
-      .data = store$verified_df,
-      support = common_support_rule,
-      ran.eff = input$analysis_random_intercept,
-      .estimand = base::tolower(input$analysis_model_estimand)
-    )
-
-    # close the alert
-    # shinyWidgets::closeSweetAlert()
-    close_popup(session = session)
-
-    # error handling
-    # TODO: refine the popup; probably should pass the bart error to the popup somehow
-    # TODO: is there a better way to detect if the model fit?
-    did_model_fit <- !isTRUE(is.null(store$model_results))
-    if (!did_model_fit){
-      store$model_fit_good <- FALSE
-      show_popup(session = session,
-                 'Model did not fit',
-                 close_button = shiny::modalButton("Close"))
-    }
-    req(did_model_fit)
-
-    # store the results
-    # TODO: need way to test if actually have a good fit
-    store$model_fit_good <- TRUE
-
-    # # update select on moderators page
-    updateSelectInput(session = session,
-                      inputId = 'analysis_moderator_vars',
-                      choices = input$analysis_model_moderator_vars,
-                      selected = input$analysis_model_moderator_vars[1])
-
-    # add to log
-    log_event <- paste0(
-      'Ran BART model with following specification: \n',
-      '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
-      '\t', 'Causal estimand: ', input$analysis_model_estimand, '\n',
-      '\t', 'Common support rule: ', common_support_rule, '\n',
-      '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
-      '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
-      '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
-      '\t', 'Good model fit: ', store$model_fit_good
-    )
-    store$log <- append(store$log, log_event)
-
-    # common support warning
-    common_support_check <- check_common_support(store$model_results)
-
-    # display popup if any observations would be removed
-    any_points_removed <- common_support_check$proportion_removed_sd > 0 | common_support_check$proportion_removed_chi > 0
-    if(any_points_removed & input$analysis_model_support == 'No'){
-      show_popup_common_support_warning(session = session, common_support_check = common_support_check)
-    }
-
-    # nav buttons within the popup
-    # TODO: the 'see common support diagnostics doesn't go anywhere
-    observeEvent(input$common_support_new_rule, {
-      updateNavbarPage(session, inputId = "nav", selected = "Model")
-      close_popup(session = session)
-    })
-    observeEvent(input$common_support_continue, {
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
-      close_popup(session = session)
-    })
-
-    # move to next page based on model fit
-    no_points_removed <- common_support_check$proportion_removed_sd == 0 | common_support_check$proportion_removed_chi == 0
-    if(no_points_removed & input$analysis_model_support == 'No'){
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
-    }
-
-    if( input$analysis_model_support != 'No'){
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
-    }
-
-  })
-
+  store <- server_model(store = store, id = isolate(store$module_ids$analysis$model), global_session = session)
 
   # diagnostics -------------------------------------------------------------
 
@@ -821,22 +657,22 @@ shinyServer(function(input, output, session) {
       }
     
     # model
-    common_support_rule <- input$analysis_over_ride_common_support
-    if (input$analysis_model_support == 'No') common_support_rule <- 'none'
+    common_support_rule <- store$analysis$model$analysis_over_ride_common_support
+    if (store$analysis$model$analysis_model_support == 'No') common_support_rule <- 'none'
     
     BART_model <- 
       if(isTRUE(store$model_fit_good)){ # if a model successfully fitted
         
-        if(!is.null(input$analysis_model_moderator_vars)){ # if moderators are specified
+        if(!is.null(store$analysis$model$analysis_model_moderator_vars)){ # if moderators are specified
           data.frame(support = common_support_rule,
-                     ran.eff = input$analysis_random_intercept,
-                     estimand = base::tolower(input$analysis_model_estimand),
-                     moderators = input$analysis_model_moderator_vars
+                     ran.eff = store$analysis$model$analysis_random_intercept,
+                     estimand = base::tolower(store$analysis$model$analysis_model_estimand),
+                     moderators = store$analysis$model$analysis_model_moderator_vars
           )
         }else{
           data.frame(support = common_support_rule,
-                     ran.eff = input$analysis_random_intercept,
-                     estimand = base::tolower(input$analysis_model_estimand),
+                     ran.eff = store$analysis$model$analysis_random_intercept,
+                     estimand = base::tolower(store$analysis$model$analysis_model_estimand),
                      moderators = NA
           )
         }
