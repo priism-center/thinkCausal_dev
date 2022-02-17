@@ -628,45 +628,6 @@ server_data <- function(store, id, global_session){
         updateNavbarPage(global_session, inputId = "nav", selected = "Exploratory plots")
         updateTabsetPanel(global_session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
       })
-      
-      # create list of moderator combinations on model page
-      # observeEvent(input$analysis_data_save, {
-      #   
-      #   cols_categorical <- store$column_types$categorical
-      #   X_cols_categorical <- grep("^X_", cols_categorical, value = TRUE)
-      #   cols_categorical_cleaned <- gsub("X_", '', X_cols_categorical)
-      #   
-      #   # update options for random intercept
-      #   updateSelectInput(
-      #     session = global_session,
-      #     inputId = "analysis_random_intercept",
-      #     choices = c("None", cols_categorical_cleaned),
-      #     selected = "None"
-      #   )
-      #   
-      #   # create pre-specified moderator options
-      #   
-      #   # create moderator options
-      #   cols_continuous <- store$column_types$continuous
-      #   X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
-      #   X_cols <- grep("^X_", colnames(store$verified_df), value = TRUE)
-      #   X_mods <- combn(X_cols, m = 2) %>% t() %>% as.data.frame()
-      #   remove <- X_mods[X_mods$V1 %in% X_cols_continuous & X_mods$V2 %in% X_cols_continuous,]
-      #   X_mods <- anti_join(X_mods, remove)
-      #   X_mods <- mutate(X_mods,
-      #                    V1 = gsub("X_", '', V1),
-      #                    V2 = gsub("X_", '', V2))
-      #   X_mods <- X_mods %>%
-      #     mutate(mod = paste(V1, V2, sep = ' x ')) %>%
-      #     pull(mod)
-      #   X_mods <- c(gsub("X_", '', X_cols), X_mods)
-      #   
-      #   updateSelectInput(session = global_session,
-      #                     inputId = 'analysis_model_moderator_vars',
-      #                     choices = X_mods,
-      #                     selected = NULL)
-      #   
-      # })
 
       # update moderator options
       observeEvent(input$analysis_data_save, {
