@@ -45,7 +45,8 @@ module_ids <- list(
     design = 'analysis_design',
     data = 'analysis_data',
     eda = 'analysis_eda',
-    model = 'analysis_model'
+    model = 'analysis_model',
+    diagnostic = 'analysis_diagnostic'
   )
 )
 
