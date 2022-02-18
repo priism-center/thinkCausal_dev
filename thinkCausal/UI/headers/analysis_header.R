@@ -5,6 +5,6 @@ analysis_header <- navbarMenu(
   ui_eda(id = 'analysis_eda'),
   ui_model(id = 'analysis_model'),
   ui_diagnostic(id = 'analysis_diagnostic'),
-  results_page, 
+  ui_results(id = 'analysis_results'),
   moderator_page
 )

@@ -17,14 +17,6 @@ shinyServer(function(input, output, session) {
   #   shinyWidgets::closeSweetAlert()
   # })
 
-  # results page
-  observeEvent(input$analysis_results_button_back, {
-    updateNavbarPage(session, inputId = "nav", selected = "Model diagnostics")
-  })
-  observeEvent(input$analysis_results_button_subgroup, {
-    updateNavbarPage(session, inputId = "nav", selected = "Subgroup results")
-  })
-
   # subgroup/moderators page
   observeEvent(input$analysis_moderator_icate_button_back, {
     updateNavbarPage(session, inputId = "nav", selected = "Results")
@@ -75,89 +67,7 @@ shinyServer(function(input, output, session) {
 
   # results -----------------------------------------------------------------
 
-  # render the summary table
-  output$analysis_results_table_summary <- DT::renderDataTable({
-
-    # stop here if model isn't fit yet
-    validate_model_fit(store)
-    
-    # extract estimates and format
-    # TODO: unclear if credible interval is 80 or 95
-    tab <- summary(store$model_results, ci.style = 'quant')$estimates %>%
-      as.data.frame() %>%
-      mutate(rownames = rownames(.)) %>%
-      dplyr::select(' ' = rownames, 1:4) %>%
-      rename_all(tools::toTitleCase) %>%
-      create_datatable(paging = FALSE, info = FALSE, selection = "none")
-
-    return(tab)
-  })
-
-  # TODO: render the interpretation text
-  output$results_text <- renderText({
-    # stop here if model isn't fit yet
-    validate_model_fit(store)
-
-    text_out <- create_interpretation(.model = store$model_results,
-                                      type = input$interpretation,
-                                      treatment = store$analysis$design$treatment_name,
-                                      units = store$analysis$design$treatment_units,
-                                      participants = store$analysis$design$treatment_participants)
-
-    return(text_out)
-  })
-
-
-
-  # PATE plot
-  analysis_results_plot_PATE <- reactive({
-
-    # stop here if model isn't fit yet
-    validate_model_fit(store)
-
-    # get value for reference bar
-    reference_bar <- NULL
-    if (input$show_reference == 'Yes') reference_bar <- req(input$reference_bar)
-
-    # add overlay
-    div_id <- 'analysis_results_plot_PATE'
-    show_message_updating(div_id)
-
-    # create plot
-    p <- plotBart::plot_PATE(
-      .model = store$model_results,
-      type = input$plot_result_style,
-      ci_80 = sum(input$show_interval == 0.80) > 0,
-      ci_95 = sum(input$show_interval == 0.95) > 0,
-      .mean = sum(input$central_tendency == 'Mean') > 0,
-      .median = sum(input$central_tendency == 'Median') > 0,
-      reference = reference_bar
-    )
-
-    # add theme
-    p <- p +
-      theme_custom() +
-      theme(legend.position = c(0.1, 0.9),
-            legend.title = element_blank())
-
-    # remove overlay
-    close_message_updating(div_id)
-
-    return(p)
-  })
-  output$analysis_results_plot_PATE <- renderPlot(analysis_results_plot_PATE())
-  output$download_PATE_plot <- downloadHandler(
-    filename = "PATE_plot.png",
-    content = function(file) {
-      ggsave(file,
-             plot = analysis_results_plot_PATE(),
-             height = input$settings_options_ggplotHeight,
-             width = input$settings_options_ggplotWidth,
-             units = 'in',
-             device = 'png')
-    }
-  )
-
+  store <- server_results(store = store, id = isolate(store$module_ids$analysis$results), global_session = session)
 
   # moderators  -------------------------------------------------------------
 
