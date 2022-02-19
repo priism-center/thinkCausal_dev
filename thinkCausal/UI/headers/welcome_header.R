@@ -2,7 +2,7 @@ welcome_header <- tabPanel(
   title = 'Welcome', 
   mainPanel(
     width = 12,
-    h2("thinkCausal"),
+    #h2("thinkCausal"),
     h3('Getting Started'),
     p("Welcome to thinkCausal! Learn the foundations of causal inference through interactive tools. Analyze causal inference data through a point and click interface."),
     br(),

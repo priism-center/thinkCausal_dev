@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="wrapper">
+    <br>
+    <div id="tabRankings" class="tabcontent">
+      <div id='tabRankingsContainers' class='rankingItem'>
+        <div id='plotContainer'>
+          <h3>The data</h3>
+          <div id='plot'></div>
+        </div>
+        <div id='treeContainer'>
+          <h3>Resulting decision tree</h3>
+          <div id='tree'></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="js/buildScatter.js"></script>
+<script src="js/buildTree.js"></script>
+<script src="js/showData.js"></script>
+</html>

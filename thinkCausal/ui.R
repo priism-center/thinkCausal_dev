@@ -14,18 +14,22 @@ shinyUI(
         map(list.files('www/css', pattern = "*.css"), function(file) includeCSS(file.path('www', 'css', file))),
 
         # set main navigation
-        tags$div(
-            class = "wrapper",
-            navbarPage(
-                id = "nav",
-                title = tags$div(class = 'logo', img(src='img/logo/thinkCausal_logo_pink.png')), #'thinkCausal',
-                welcome_header,
-                concepts_header,
-                analysis_header,
-                reproducibility_header,
-                settings_header
+        suppressWarnings(
+            tags$div(
+                class = "wrapper",
+                navbarPage(
+                    id = "nav",
+                    title = tags$div(class = 'logo', 
+                                     img(src='img/logo/thinkCausal_logo_mint.png'),
+                                     onclick="go_to_shiny_page('Welcome')"),
+                    welcome_header,
+                    concepts_header,
+                    analysis_header,
+                    reproducibility_header,
+                    settings_header
                 ),
-            br(),br(),br()
+                br(),br(),br()
+            )
         ),
         
         # show disconnect message

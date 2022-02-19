@@ -479,18 +479,24 @@ footer a, footer a:hover {
   z-index: 1;
 }
 
+.navbar  {
+  margin-bottom: 4em;
+}
+
 .navbar-brand{
-  padding: 0
+  padding-top: 0;
+  padding-left: 0;
 }
 
 .logo {
-  max-width: 6em;
+  cursor: pointer;
+  max-width: 5.5em;
 }
 
 .logo > img {
   float: left;
-  max-width: 75%;
+  max-width: 100%;
   height: auto;
   border-radius: 3px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
 }
