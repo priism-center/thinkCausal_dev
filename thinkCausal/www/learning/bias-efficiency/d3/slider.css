@@ -1,0 +1,38 @@
+/* this controls the look of ths sliders */
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 5px;
+  background: #b8b8b8;
+  outline: none;
+  opacity: 0.8;
+  -webkit-transition: 0.1s;
+  transition: opacity 0.1s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 20px;
+  background: #5c5980;
+  cursor: pointer;
+  border-color: #fafafa;
+  border-width: 2px;
+  border-radius: 4px;
+}
+
+.slider::-moz-range-thumb {
+  width: 12px;
+  height: 20px;
+  background: #5c5980;
+  cursor: pointer;
+  border-color: #fafafa;
+  border-width: 2px;
+  border-radius: 4px;
+}

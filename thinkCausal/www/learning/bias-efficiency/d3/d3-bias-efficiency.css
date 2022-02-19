@@ -1,0 +1,52 @@
+body {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  color: #424242;
+}
+
+span {
+  font-size: 1.5em;
+  font-weight: 1000;
+  font-family: monospace;
+  color: #394E48;
+}
+
+h1, h2, h3, h4 {
+  text-align: left;
+  font-weight: 100;
+  padding: 0px 0px 0px 0px;
+}
+
+svg {
+  margin: 15px;
+}
+
+.mainView {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em;
+}
+
+.slider-container {
+  display: flex;
+  padding: 1em;
+  width: 100%;
+}
+
+.container-item {
+  display: relative;
+  padding: 0 1em 2em 1em;
+}
+
+#main-histogram {
+
+}
+
+#main-histogram rect {
+  fill: #7a9e7eff
+}
+
+#main-histogram path,
+#main-histogram text,
+#main-histogram line {
+  color: #545454;
+}

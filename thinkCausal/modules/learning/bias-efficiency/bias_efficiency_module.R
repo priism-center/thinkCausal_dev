@@ -80,6 +80,14 @@ ui_learning_bias_efficiency <- function(id) {
         class = ns('learning-content'), # required
         class = 'learning-content', # required
         includeMarkdown(file.path(store_l_bias_efficiency$path_to_here, "markdowns", 'bias_efficiency_1.md')),
+      
+        # d3 plot
+        wellPanel(
+          tags$iframe(src = 'learning/bias-efficiency/d3/index.html', 
+                      height = 600, width = '100%',
+                      style = 'border-width: 0;', scrolling = "no")
+        ),
+
         includeMarkdown(file.path(store_l_bias_efficiency$path_to_here, "markdowns", 'bias_efficiency_2.md')),
         br(),
         wellPanel(includeMarkdown(file.path(store_l_bias_efficiency$path_to_here, "markdowns", 'bias_efficiency_related.md'))),

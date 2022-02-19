@@ -1,31 +1,40 @@
 <!DOCTYPE html>
+<meta charset="utf-8">
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="d3-bias-efficiency.css">
+    <link rel="stylesheet" type="text/css" href="slider.css">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"></script>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto">
 </head>
+
 <body>
-  <main class="wrapper">
-    <br>
-    <div id="tabRankings" class="tabcontent">
-      <div id='tabRankingsContainers' class='rankingItem'>
-        <div id='plotContainer'>
-          <h3>The data</h3>
-          <div id='plot'></div>
+    <div class="mainView">
+      <div class='slider-container'>
+        <div id='container-mean' class='container-item'>
+            <h3>Mean: <span id="output-mean"></span></h3>
+              <input type="range" min="-100" max="100" value="0" class="slider" id="input-mean">
         </div>
-        <div id='treeContainer'>
-          <h3>Resulting decision tree</h3>
-          <div id='tree'></div>
+        <div id='container-sd' class='container-item'>
+            <h3>Std dev: <span id="output-sd"></span></h3>
+              <input type="range" min="1" max="200" value="100" class="slider" id="input-sd">
+        </div>
+        <div id='container-n-data' class='container-item'>
+            <h3>n: <span id="output-n-data"></span></h3>
+              <input type="range" min="100" max="10000" step="100" value="5000" class="slider" id="input-n-data">
+        </div>
+        <div id='container-bins' class='container-item'>
+            <h3>n bins: <span id="output-bins"></span></h3>
+              <input type="range" min="5" max="100" step="5" value="50" class="slider" id="input-bins">
         </div>
       </div>
+      <div>
+          <svg id="main-histogram"></svg>
+      </div>
     </div>
-  </main>
+    <script src="d3-bias-efficiency-slider.js"></script>
+    <script src="d3-bias-efficiency.js"></script>
 </body>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://d3js.org/d3.v5.js"></script>
-<script src="js/buildScatter.js"></script>
-<script src="js/buildTree.js"></script>
-<script src="js/showData.js"></script>
 </html>

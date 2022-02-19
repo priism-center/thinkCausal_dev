@@ -8,6 +8,9 @@ shinyServer(function(input, output, session) {
     module_ids = module_ids
   )
 
+
+  # javascript initiated actions --------------------------------------------
+
   # move page when JS says so
   # usually triggered by links in the help slideover
   observeEvent(input$js_open_page, {
