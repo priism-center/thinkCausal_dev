@@ -209,10 +209,7 @@ ui_eda <- function(store, id){
               selected = 'Histogram'
             ),
             br(),
-            tags$button(type = 'button',
-                        class = 'btn btn-default help',
-                        onclick = "openHelpPage('Concept3')",
-                        'What is this plot telling me?'),
+            create_link_to_help('EDA'),
             br(),br(),
             downloadButton(ns('download_overlap_plot'), label = "Download plot"),
             br(), br(),
@@ -249,10 +246,7 @@ ui_eda <- function(store, id){
                      selected = NULL
                    ),
                    br(),
-                   tags$button(type = 'button',
-                               class = 'btn btn-default help',
-                               onclick = "openHelpPage('Concept3')",
-                               'What is this plot telling me?'),
+                   create_link_to_help('EDA'),
                    br(),br(),
                    downloadButton(ns('download_balance_plot'), label = "Download plot"),
                    br(), br(),

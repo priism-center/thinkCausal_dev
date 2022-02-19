@@ -8,6 +8,13 @@ shinyServer(function(input, output, session) {
     module_ids = module_ids
   )
 
+  # move page when JS says so
+  # usually triggered by links in the help slideover
+  observeEvent(input$js_open_page, {
+    new_page <- input$js_open_page
+    updateNavbarPage(session, inputId = "nav", selected = new_page)
+  })
+  
 
   # back next buttons -------------------------------------------------------
 

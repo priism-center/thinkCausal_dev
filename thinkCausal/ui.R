@@ -18,7 +18,7 @@ shinyUI(
             class = "wrapper",
             navbarPage(
                 id = "nav",
-                title = 'thinkCausal',
+                title = tags$div(class = 'logo', img(src='img/logo/thinkCausal_logo.png')), #'thinkCausal',
                 welcome_header,
                 concepts_header,
                 analysis_header,
@@ -48,7 +48,7 @@ shinyUI(
         tags$div(class = 'cornerRibbon', 'BETA'),
         
         # add header and footer elements
-        tags$header(),
+        tags$header(tags$title('thinkCausal')),
         tags$footer(
             # link to priism
             HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>'),

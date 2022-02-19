@@ -11,12 +11,20 @@ function openHelp() {
   }
 }
 
-// maybe replace with this https://css-tricks.com/sticky-smooth-active-nav/
+// open the help slide over to a specific header
 function openHelpPage(divID) {
-  document.getElementById("mySideBar").style.width = "min(100%, 700px)";
+  let mySideBar = document.getElementById('mySideBar')
+  mySideBar.style.width = "min(100%, 700px)";
   document.getElementById("mySideBarExit").style.width = "100%";
   let elmnt = document.getElementById(divID);
-  setTimeout(function(){elmnt.scrollIntoView(true);}, 600);
+  
+  // get the p after the div since the elmnt's sticky property makes it tricky to get the elmnt's position
+  let elmnt_next = elmnt.nextElementSibling
+  
+  // scroll to that position
+  let yOffset = $('.helpHeader').height() + 15 + elmnt.offsetHeight
+  let y = elmnt_next.offsetTop + window.pageYOffset - yOffset;
+  setTimeout(function(){mySideBar.scrollTo({top: y, behavior: 'smooth'}); }, 600);
 }
 
 function closeHelp() {
@@ -28,9 +36,12 @@ function closeHelp() {
 $(".markdownContainer h3").wrap("<div class='helpSubHeader'></div>");
 
 // add id to every h3 based on its title
+// prefix with namespace "help-"
 $('.helpSubHeader').each(function(){
   id = $(this).text()
   id = id.replace(/\s/g, '')
+  id = id.toLowerCase()
+  id = "help-" + id
   $(this).attr('id', id)
 })
 
@@ -46,3 +57,11 @@ resize_container()
 $(window).resize(function() {
   resize_container()
 })
+
+// make [page] active
+function go_to_shiny_page(page) {
+  closeHelp()
+  document.body.scrollTop = document.documentElement.scrollTop = 0
+  
+  Shiny.setInputValue("js_open_page", page, {priority: "event"})
+}

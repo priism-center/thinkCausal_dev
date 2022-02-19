@@ -312,8 +312,8 @@ scroll_to_div <- function(ns = NULL, id = 'quiz-container'){
 add_checkmark <- function(ns = NULL, id = 'quiz-container', element = 'h3'){
   
   # construct selector
-  if (!is.null(ns)) id <- ns(id); id <- paste0("#", id)
-  if (!is.null(element)) selector <- paste(id, element)
+  if (!missing(ns)) id <- paste0("#", ns(id))
+  if (!missing(element)) selector <- paste(id, element)
   div_selector <- paste0('$("', selector, '")')
   
   # construct javascript
@@ -333,8 +333,8 @@ add_checkmark <- function(ns = NULL, id = 'quiz-container', element = 'h3'){
 add_red_x <- function(ns = NULL, id = 'quiz-container', element = 'h3'){
   
   # construct selector
-  if (!is.null(ns)) id <- ns(id); id <- paste0("#", id)
-  if (!is.null(element)) selector <- paste(id, element)
+  if (!missing(ns)) id <- paste0("#", ns(id))
+  if (!missing(element)) selector <- paste(id, element)
   div_selector <- paste0('$("', selector, '")')
   
   # construct javascript

@@ -44,12 +44,7 @@ ui_design <- function(store, id){
                actionButton(inputId = ns("analysis_design_button_next"),
                             label = "Go to data"),
                br(), br(),
-               tags$button(
-                 type = 'button',
-                 class = 'btn btn-default help',
-                 onclick = "openHelpPage('Concept2')",
-                 'Help'
-               )
+               create_link_to_help('Study design')
              )
       )
     )

@@ -478,3 +478,19 @@ footer a, footer a:hover {
   opacity: 0.8;
   z-index: 1;
 }
+
+.navbar-brand{
+  padding: 0
+}
+
+.logo {
+  max-width: 6em;
+}
+
+.logo > img {
+  float: left;
+  max-width: 75%;
+  height: auto;
+  border-radius: 3px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}

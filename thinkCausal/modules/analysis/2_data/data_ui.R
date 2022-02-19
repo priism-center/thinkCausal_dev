@@ -35,10 +35,7 @@ ui_data <- function(store, id){
                                  label = "Data contains a header row",
                                  value = TRUE),
                    br(),
-                   tags$button(type = 'button',
-                               class = 'btn btn-default help',
-                               onclick = "openHelpPage('Dataloading')",
-                               'Help me'),
+                   create_link_to_help('Data'),
                    br(), br(),
                    div(
                      class = 'backNextContainer',
@@ -71,10 +68,7 @@ ui_data <- function(store, id){
                    actionButton(inputId = ns('analysis_data_remove_group'),
                                 label = 'Remove group'),
                    br(), br(),
-                   tags$button(type = 'button',
-                               class = 'btn btn-default help',
-                               onclick = "openHelpPage('Concept3')", # not sure where this is linked to
-                               'Help me'),
+                   create_link_to_help('Data'),
                    br(), br(),
                    div(
                      class = 'backNextContainer',
@@ -103,10 +97,7 @@ ui_data <- function(store, id){
                    actionButton(inputId = ns('analysis_data_button_reset'),
                                 label = 'Reset variable changes'),
                    br(), br(),
-                   tags$button(type = 'button',
-                               class = 'btn btn-default help',
-                               onclick = "openHelpPage('Concept3')",
-                               'Help me'),
+                   create_link_to_help('Data'),
                    br(), br(),
                    div(
                      class = 'backNextContainer',
