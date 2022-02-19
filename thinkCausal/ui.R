@@ -18,7 +18,7 @@ shinyUI(
             class = "wrapper",
             navbarPage(
                 id = "nav",
-                title = tags$div(class = 'logo', img(src='img/logo/thinkCausal_logo.png')), #'thinkCausal',
+                title = tags$div(class = 'logo', img(src='img/logo/thinkCausal_logo_pink.png')), #'thinkCausal',
                 welcome_header,
                 concepts_header,
                 analysis_header,

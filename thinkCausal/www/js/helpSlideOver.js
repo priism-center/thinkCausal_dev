@@ -63,5 +63,5 @@ function go_to_shiny_page(page) {
   closeHelp()
   document.body.scrollTop = document.documentElement.scrollTop = 0
   
-  Shiny.setInputValue("js_open_page", page, {priority: "event"})
+  setTimeout(function(){Shiny.setInputValue("js_open_page", page, {priority: "event"}); }, 400);
 }
