@@ -34,7 +34,7 @@ data_page <- tabPanel(
                         br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',
-                                    onclick = "openHelpPage('Dataloading')",
+                                    onclick = "openHelpSection('Dataloading')",
                                     'Help me'),
                         br(), br(),
                         div(
@@ -70,7 +70,7 @@ data_page <- tabPanel(
                         br(), br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',
-                                    onclick = "openHelpPage('Concept3')", # not sure where this is linked to
+                                    onclick = "openHelpSection('Concept3')", # not sure where this is linked to
                                     'Help me'),
                         br(), br(),
                         div(
@@ -102,7 +102,7 @@ data_page <- tabPanel(
                         br(), br(),
                         tags$button(type = 'button',
                                     class = 'btn btn-default help',
-                                    onclick = "openHelpPage('Concept3')",
+                                    onclick = "openHelpSection('Concept3')",
                                     'Help me'),
                         br(), br(),
                         div(

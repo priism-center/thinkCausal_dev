@@ -63,7 +63,7 @@ moderator_page <- tabPanel(
           br(), br(),
           tags$button(type = 'button',
                       class = 'btn btn-default help',
-                      onclick = "openHelpPage('Concept3')",
+                      onclick = "openHelpSection('Concept3')",
                       'What is this plot telling me?'),
           br(),br(),
           downloadButton('download_ICATE_plot', label = "Download plot"),
@@ -101,7 +101,7 @@ moderator_page <- tabPanel(
           br(), br(),
           tags$button(type = 'button',
                       class = 'btn btn-default help',
-                      onclick = "openHelpPage('Concept3')",
+                      onclick = "openHelpSection('Concept3')",
                       'What is this plot telling me?'),
 
           br(),br(),

@@ -12,7 +12,7 @@ function openHelp() {
 }
 
 // open the help slide over to a specific header
-function openHelpPage(divID) {
+function openHelpSection(divID) {
   let mySideBar = document.getElementById('mySideBar')
   mySideBar.style.width = "min(100%, 700px)";
   document.getElementById("mySideBarExit").style.width = "100%";
@@ -58,7 +58,7 @@ $(window).resize(function() {
   resize_container()
 })
 
-// make [page] active
+// make {page} active
 function go_to_shiny_page(page) {
   closeHelp()
   document.body.scrollTop = document.documentElement.scrollTop = 0

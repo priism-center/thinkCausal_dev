@@ -44,7 +44,7 @@ design_page <- tabPanel(
            tags$button(
              type = 'button',
              class = 'btn btn-default help',
-             onclick = "openHelpPage('Concept2')",
+             onclick = "openHelpSection('Concept2')",
              'Help'
              )
            )

@@ -9,7 +9,7 @@ diagnostics_page <- tabPanel(
         br(),
         tags$button(type = 'button',
                     class = 'btn btn-default help',
-                    onclick = "openHelpPage('Concept2')",
+                    onclick = "openHelpSection('Concept2')",
                     'What are these plots telling me?'),
         br(),br(),
         downloadButton('download_diagnostic_plot', label = "Download plot"),

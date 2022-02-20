@@ -8,10 +8,6 @@ This help section is still under development
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet massa vitae tortor condimentum lacinia quis vel.
 
-<a onclick="go_to_shiny_page('Post-treatment variables');">
-  <span class="glyphicon glyphicon-info-sign"></span>  Learn more about study design
-</a>
-
 <br>
 
 ### Data
@@ -23,6 +19,10 @@ Upload files are limited to 10mb.
 
 #### Upload data
 Each column of your dataset must be matched to one of these roles depending on study design: Covariate, Treatment, Outcome, Block, Post-treatment, or Exclude. These roles are auto-populated based on the column name and column values. You can change the roles by dragging-and-dropping the column names to each respective bucket. Treatment and Response should contain only one column respectively. Please exclude any ID columns or other irrelevant columns from your dataset.
+
+<a onclick="go_to_shiny_page('Post-treatment variables');">
+  <span class="glyphicon glyphicon-info-sign"></span>  Learn more about post-treatment variables
+</a>
 
 #### Group data
 

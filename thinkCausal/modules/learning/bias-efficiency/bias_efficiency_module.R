@@ -84,7 +84,7 @@ ui_learning_bias_efficiency <- function(id) {
         # d3 plot
         wellPanel(
           tags$iframe(src = 'learning/bias-efficiency/d3/index.html', 
-                      height = 600, width = '100%',
+                      height = 1400, width = '100%',
                       style = 'border-width: 0;', scrolling = "no")
         ),
 

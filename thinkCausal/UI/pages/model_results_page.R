@@ -45,7 +45,7 @@ results_page <- tabPanel(
               br(),
               tags$button(type = 'button',
                           class = 'btn btn-default help',
-                          onclick = "openHelpPage('Concept2')",
+                          onclick = "openHelpSection('Concept2')",
                           'What is this plot telling me?'),
               br(), br(),
               downloadButton('download_PATE_plot', label = "Download plot"),

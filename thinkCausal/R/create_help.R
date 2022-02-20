@@ -25,7 +25,7 @@ create_link_to_help <- function(header, button_label = 'Help me', type = c('butt
   header_cleaned <- base::tolower(header)
   header_cleaned <- stringr::str_remove_all(header_cleaned, " ")
   id <- glue::glue("help-{header_cleaned}")
-  js_code <- glue::glue("openHelpPage('{id}')")
+  js_code <- glue::glue("openHelpSection('{id}')")
   
   if (type == 'js_code') return(js_code)
   if (type == 'run_js') return(shinyjs::runjs(js_code))
