@@ -28,7 +28,7 @@ create_data_summary_grid <- function(ns, .data, default_data_types, ns_prefix, d
     n_covariates <- length(all_col_names)-(2 + n_blocks)
     column_types <- c(
       'Treatment', 
-      'Response', 
+      'Outcome', 
       rep('Block', n_blocks), 
       rep('Covariate', n_covariates)
     )
@@ -39,7 +39,7 @@ create_data_summary_grid <- function(ns, .data, default_data_types, ns_prefix, d
       lapply(1:n_covariates, function(x) c('Continuous', 'Categorical', 'Binary'))
     )
   } else {
-    column_types <- c('Treatment', 'Response', rep('Covariate', length(all_col_names)-2)) 
+    column_types <- c('Treatment', 'Outcome', rep('Covariate', length(all_col_names)-2)) 
     variable_type_choices <- c(
       list(c('Categorical', 'Binary')),
       list(c('Continuous', 'Binary')),
@@ -49,10 +49,10 @@ create_data_summary_grid <- function(ns, .data, default_data_types, ns_prefix, d
   
   # render the header to the table
   UI_header <- fluidRow(
-    column(2, h5('Role')),
-    column(4, h5('Rename variable')),
-    column(4, h5('Verify variable type')),
-    column(2, h5('Percent NA'))
+    column(2, h5(create_info_icon('Role', 'You already specified variable roles on the data upload page.'))),
+    column(4, h5(create_info_icon('Rename variable', 'Type in a new variable name, the software will take care of the rest.'))),
+    column(4, h5(create_info_icon('Verify variable type', 'Confirm that the assigned variable type matches your data. You can manually override the pre-selected type by clicking the dropdown.'))),
+    column(2, h5(create_info_icon('Percent NA', 'The percentage of missing data within each. Some changes you make to your data may change the Percent NA.')))
   )
   
   # render the rows
