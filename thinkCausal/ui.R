@@ -59,6 +59,6 @@ shinyUI(
             
             # load custom JavaScript files
             map(list.files('www/js', pattern = "*.js"), function(file) tags$script(src = file.path('js', file)))
-        )  
+        ) 
     )
 )

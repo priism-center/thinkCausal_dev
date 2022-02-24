@@ -1,5 +1,5 @@
 // hide the logo, feedback, header, and footer if on mobile
-function show_hide_mobile(){
+function showHideMobile(){
   let window_width = $(window).width();
   let logo = $(".logo")
   let feedback = $(".feedback-button")
@@ -13,7 +13,13 @@ function show_hide_mobile(){
     elements.forEach(el => el.show())
   }
 }
-show_hide_mobile()
-$(window).resize(function() {
-  show_hide_mobile()
-})
+showHideMobile()
+$(window).resize(showHideMobile)
+
+// send mobile TRUE/FALSE to shiny server
+function isOnMobile(){
+ let isMobile = +$(window).width() < 768 //window.matchMedia("only screen and (max-width: 767px)").matches 
+ Shiny.setInputValue("js_is_on_mobile", isMobile, {priority: "event"});
+}
+isOnMobile()
+$(window).resize(isOnMobile)

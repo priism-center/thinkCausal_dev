@@ -54,9 +54,7 @@ function resize_container(){
   document.getElementById("mySideBarContainer").style.width = x_width;
 }
 resize_container()
-$(window).resize(function() {
-  resize_container()
-})
+$(window).resize(resize_container)
 
 // make {page} active
 function go_to_shiny_page(page) {

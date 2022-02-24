@@ -1,11 +1,11 @@
 // bins
-var slider_bins = document.getElementById("input-bins");
-var output_bins = document.getElementById("output-bins");
-output_bins.innerHTML = slider_bins.value;
-
-slider_bins.oninput = function() {
-  output_bins.innerHTML = this.value;
-}
+// var slider_bins = document.getElementById("input-bins");
+// var output_bins = document.getElementById("output-bins");
+// output_bins.innerHTML = slider_bins.value;
+//
+// slider_bins.oninput = function() {
+//   output_bins.innerHTML = this.value;
+// }
 
 // mean
 var slider_mean = document.getElementById("input-mean");

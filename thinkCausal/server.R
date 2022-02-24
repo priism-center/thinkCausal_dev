@@ -5,7 +5,8 @@ shinyServer(function(input, output, session) {
   store <- reactiveValues(
     uploaded_df = data.frame(), 
     log = list(as.character(Sys.time())),
-    module_ids = module_ids
+    module_ids = module_ids,
+    js = NULL
   )
 
 
@@ -18,7 +19,14 @@ shinyServer(function(input, output, session) {
     updateNavbarPage(session, inputId = "nav", selected = new_page)
   })
   
+  # record if the user is on mobile or not
+  # TODO: only works intermittently
+  observeEvent(input$js_is_on_mobile, {
+    store$js$is_on_mobile <- input$js_is_on_mobile
+    # print(paste("is on mobile: ", store$js$is_on_mobile))
+  })
 
+  
   # back next buttons -------------------------------------------------------
 
   # model page

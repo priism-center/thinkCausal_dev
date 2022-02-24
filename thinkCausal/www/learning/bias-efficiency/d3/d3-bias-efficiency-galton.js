@@ -1,10 +1,11 @@
-//https://codepen.io/lmeetr/pen/NWPxomj
+//derived from https://codepen.io/lmeetr/pen/NWPxomj
 
-var Example = Example || {};
+var Example = {};
 var engine
 var world
 var render
 var runner
+var canvas = document.getElementById('galton-canvas')
 
 Example.galton = function() {
   var Engine = Matter.Engine,
@@ -26,12 +27,13 @@ Example.galton = function() {
 
   // create renderer
   var render = Render.create({
-    element: document.body,
+    canvas: canvas,
     engine: engine,
     options: {
       width: 500,
       height: 830,
-      wireframes: false
+      wireframes: false,
+      background: '#fff'
     }
   });
 
@@ -47,15 +49,16 @@ Example.galton = function() {
   let total = document.getElementById('input-n-data').value;
   let distMean = document.getElementById('input-mean').value;
   let distSd = document.getElementById('input-sd').value;
-  // console.log('n balls ' + total)
+  // console.log('n balls ' + total);
+
   setInterval(() => {
     if (total-- > 0) {
-      const circle = Bodies.circle(jStat.normal.sample(250 + +distMean, +distSd), -20, size, {// 250 + (-0.5 + Math.random()), -20, size, {
-        friction: 0.00001,
-        restitution: 0.5,
-        density: 0.001,
-        frictionAir: 0.042,
-        sleepThreshold: 25,
+      const circle = Bodies.circle(jStat.normal.sample(250 + +distMean, +distSd), -20, size, {
+        friction: 0.001,
+        restitution: 0.45,
+        density: 0.005,
+        frictionAir: 0.03,
+        sleepThreshold: 30,
         render: {
           fillStyle: "#7a9e7eff",
           visible: true
@@ -67,7 +70,7 @@ Example.galton = function() {
       });
       World.add(world, circle);
     }
-  }, 10);
+  }, 12);
 
   const pegs = [];
   const spacingY = 35;
@@ -83,7 +86,7 @@ Example.galton = function() {
           {
             isStatic: true,
             render: {
-              fillStyle: "#ffffff",
+              fillStyle: "black",
               visible: true
             }
           }
@@ -97,13 +100,14 @@ Example.galton = function() {
       world,
       Bodies.rectangle(
         300 - spacingX + (j * spacingX - i * spacingX),
-        lastI * spacingY + 255,
+        0.00 * spacingY + 542,//lastI * spacingY + 255,
         size / 2,
-        lastI + 800,
+        0.00 + 550, //lastI + 550,
         {
           isStatic: true,
+          sleepThreshold: 0.0000,
           render: {
-            fillStyle: "#ffffff",
+            fillStyle: "#cccccc",
             visible: true
           },
           chamfer: {
@@ -115,11 +119,12 @@ Example.galton = function() {
   }
   World.add(
     world,
-    Bodies.rectangle(250, lastI * 1.33 * spacingY + 257, 1000, 50, {
+    Bodies.rectangle(250, lastI * 1.33 * spacingY + 265, 1000, 15, {
       isStatic: true,
+      sleepThreshold: 0.00001,
       render: {
-        fillStyle: "#ffffff",
-        visible: true
+        fillStyle: "#737373",
+        visible: false
       }
     })
   );
@@ -136,15 +141,20 @@ Example.galton = function() {
       Matter.Runner.stop(runner);
       Matter.Engine.clear(engine);
       Matter.World.clear(world);
-      render.canvas.remove();
+      //render.canvas.remove();
     }
   };
 };
 
 var galton = Example.galton();
 
-document.getElementById('reset-galton').addEventListener('click', event => {
-  console.log(galton)
+function resetGalton(){
+  //console.log('resetting galton')
   galton.stop();
   galton = Example.galton();
-});
+}
+
+document.getElementById('reset-galton').addEventListener('click', resetGalton);
+document.getElementById('input-n-data').addEventListener('input', resetGalton);
+document.getElementById('input-mean').addEventListener('input', resetGalton);
+document.getElementById('input-sd').addEventListener('input', resetGalton);
