@@ -120,7 +120,7 @@ show_popup_model_no_data_warning <- function(session, ns){
                    label = 'Take me to the Data tab')
     )
   )
-  show_popup(session = session, content)
+  show_popup(session = session, content, easyClose = TRUE)
 }
 
 show_popup_fitting_BART_waiting <- function(session){

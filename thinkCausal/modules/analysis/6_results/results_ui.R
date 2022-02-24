@@ -69,9 +69,6 @@ ui_results <- function(store, id){
                  br(),
                  h4('Interpretation'),
                  textOutput(outputId = ns('results_text'))
-                 
-                 #   )
-                 # )
                )
              )
     )

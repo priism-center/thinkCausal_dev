@@ -1,0 +1,29 @@
+/* this defines reusable animations */
+
+@-webkit-keyframes flash-text-box {
+  0% {
+    background-color: rgba(255, 248, 38, 0.9);
+    filter: blur(2px);
+  }
+  50% {
+    background-color: rgba(255, 248, 38, 0.5);
+    filter: blur(1px);
+  }
+  80% {
+    background-color: rgba(255, 248, 38, 0.2);
+    filter: blur(0.5px);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* example of using the animation
+#analysis_results-results_text {
+    -webkit-animation-name: flash-text-box;
+    -webkit-animation-delay: 100ms;
+    -webkit-animation-duration: 900ms;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in-out;
+}
+*/

@@ -41,7 +41,7 @@ server_results <- function(store, id, global_session){
                                           treatment = store$analysis$design$treatment_name,
                                           units = store$analysis$design$treatment_units,
                                           participants = store$analysis$design$treatment_participants)
-        
+
         return(text_out)
       })
       

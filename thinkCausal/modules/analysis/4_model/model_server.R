@@ -55,37 +55,11 @@ server_model <- function(store, id, global_session){
         # launch popup if data is not yet selected
         if (!is.data.frame(store$verified_df)) {
           show_popup_model_no_data_warning(session, ns = ns)
-        }
-        
-        observeEvent(input$analysis_model_button_popup, {
-          close_popup(session = session)
-          updateNavbarPage(global_session, inputId = "nav", selected = "Data")
-          updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Upload")
-        })
-        
-        # spawn red text if selection isn't made
-        if (isTRUE(is.null(input$analysis_model_radio_design))) {
-          output$analysis_model_text_design_noinput <- renderUI({
-            html_out <- tags$span(style = 'color: red;',
-                                  "Please make a selection",
-                                  br(), br())
-            return(html_out)
-          })
-        }
-        if (isTRUE(is.null(input$analysis_model_radio_estimand))) {
-          output$analysis_model_text_estimand_noinput <- renderUI({
-            html_out <- tags$span(style = 'color: red;',
-                                  "Please make a selection",
-                                  br(), br())
-            return(html_out)
-          })
-        }
-        if (isTRUE(is.null(input$analysis_model_radio_support))) {
-          output$analysis_model_text_support_noinput <- renderUI({
-            html_out <- tags$span(style = 'color: red;',
-                                  "Please make a selection",
-                                  br(), br())
-            return(html_out)
+          
+          observeEvent(input$analysis_model_button_popup, {
+            close_popup(session = session)
+            updateNavbarPage(global_session, inputId = "nav", selected = "Data")
+            updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Upload")
           })
         }
         
@@ -158,7 +132,7 @@ server_model <- function(store, id, global_session){
         # TODO: need way to test if actually have a good fit
         store$model_fit_good <- TRUE
         
-        # # update select on moderators page
+        # update select on moderators page
         updateSelectInput(session = global_session,
                           inputId = 'analysis_moderator_vars',
                           choices = input$analysis_model_moderator_vars,
