@@ -113,10 +113,7 @@ server_data <- function(store, id, global_session){
       # render the drag and drop UI
       output$analysis_data_UI_dragdrop <- renderUI({
         
-        # stop here if design hasn't been specified
         validate_design(store)
-        
-        # stop here if data hasn't been uploaded
         validate_data_uploaded(store)
         
         # render the drag-drop UI
@@ -131,6 +128,7 @@ server_data <- function(store, id, global_session){
       # create new dataframe when user saves column assignments and move to next page
       observeEvent(input$analysis_data_button_columnAssignSave, {
         
+        validate_design(store)
         req(store$uploaded_df)
         
         # remove any previous dataframes from the store
