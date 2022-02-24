@@ -35,9 +35,9 @@ concepts_page <- tabPanel(
     column(
       width = 4,
       wellPanel(
-        img(src = 'thumbnails/PO.png'),
+        actionLink('concepts_link_potential_outcomes', img(src = 'thumbnails/potential_outcomes.png')),
         br(),
-        h3("PO"),
+        h3("Potential outcomes"),
         p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit.")
       )
     )

@@ -39,7 +39,7 @@ module_ids <- list(
     rct_covariates = 'learning_rct_covariates',
     ignorability = 'learning_ignorability',
     confounders_measured = 'learning_confounders_measured',
-    potential_outcomes = 'learning_potential_outcomes'
+    potential_outcomes = "learning_potential_outcomes"
   ),
   analysis = list(
     design = 'analysis_design',
@@ -71,4 +71,4 @@ map(list.files(file.path('UI', 'headers')), function(file) source(file.path("UI"
 # create namespace functions ----------------------------------------------
 
 # make functions for each id and save them in the global environment
-purrr::map(unlist(module_ids), make_namespace_function)
+# purrr::map(unlist(module_ids), make_namespace_function)

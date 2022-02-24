@@ -339,7 +339,7 @@ shinyServer(function(input, output, session) {
   })
 
 
-  # concepts ----------------------------------------------------------------
+  # learning modules ----------------------------------------------------------------
 
   # add listeners that link the concepts title image to its article
   # this allows the actionLinks in concepts_page.R to work
@@ -351,7 +351,8 @@ shinyServer(function(input, output, session) {
       'Decision trees',
       'Post-treatment variables',
       'Causal estimands',
-      'Bias and efficiency'
+      'Bias and efficiency',
+      'Potential outcomes'
     )
   lapply(tab_titles, function(page_to_go_to) {
     page_id <- paste0("concepts_link_", tolower(gsub('-| ', '_', page_to_go_to)))
@@ -364,13 +365,15 @@ shinyServer(function(input, output, session) {
   # run the modules
   server_learning_randomization(id = isolate(store$module_ids$learning$randomization), 
                                 plot_theme = theme_custom)
-  PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
+  # PotentialOutcomesServer(id = 'concepts_potentialoutcomes')
   server_learning_post_treatment(id = isolate(store$module_ids$learning$post_treatment),
                                  plot_theme = theme_custom)
   server_learning_bias_efficiency(id = isolate(store$module_ids$learning$bias_efficiency),
                                   plot_theme = theme_custom)
   server_learning_estimands(id = isolate(store$module_ids$learning$estimands),
                             plot_theme = theme_custom)
+  server_learning_potential_outcomes(id = isolate(store$module_ids$learning$potential_outcomes), 
+                                     plot_theme = theme_custom)
   #poServer(id = 'potential_outcomes_test')
 
 

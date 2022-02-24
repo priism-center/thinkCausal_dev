@@ -6,6 +6,8 @@ concepts_header <- navbarMenu(
   #          includeMarkdown(file.path("UI", "markdowns", 'concepts.md'))), 
   tabPanel(title = 'Post-treatment variables',
            ui_learning_post_treatment(id = module_ids$learning$post_treatment)),
+  tabPanel(title = 'Potential outcomes', 
+           ui_learning_potential_outcomes(id = module_ids$learning$potential_outcomes)),
   tabPanel(title = 'Bias and efficiency',
            ui_learning_bias_efficiency(id = module_ids$learning$bias_efficiency)),
   # tabPanel(title = 'Causal estimands',
