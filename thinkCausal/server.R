@@ -29,32 +29,11 @@ shinyServer(function(input, output, session) {
   
   # back next buttons -------------------------------------------------------
 
-  # model page
-  observeEvent(input$analysis_model_button_back, {
-    updateNavbarPage(session, inputId = "nav", selected = "Exploratory plots")
-    updateTabsetPanel(session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
-  })
   # observeEvent(input$analysis_model_button_popup, {
   #   updateNavbarPage(session, inputId = "nav", selected = "Data")
   #   updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load")
   #   shinyWidgets::closeSweetAlert()
   # })
-
-  # diagnostics page
-  observeEvent(input$analysis_diagnostics_button_back, {
-    updateNavbarPage(session, inputId = "nav", selected = "Model")
-  })
-  observeEvent(input$analysis_diagnostics_button_next, {
-    updateNavbarPage(session, inputId = "nav", selected = "Results")
-  })
-
-  # results page
-  observeEvent(input$analysis_results_button_back, {
-    updateNavbarPage(session, inputId = "nav", selected = "Model diagnostics")
-  })
-  observeEvent(input$analysis_results_button_subgroup, {
-    updateNavbarPage(session, inputId = "nav", selected = "Subgroup results")
-  })
 
   # subgroup/moderators page
   observeEvent(input$analysis_moderator_icate_button_back, {
@@ -98,351 +77,15 @@ shinyServer(function(input, output, session) {
 
   # model -------------------------------------------------------------------
 
-  # when user runs the model, take a number of actions
-  observeEvent(input$analysis_model_button_next, {
-
-    # launch popup if data is not yet selected
-    if (!is.data.frame(store$verified_df)) {
-      show_popup_model_no_data_warning(session)
-    }
-
-    observeEvent(input$analysis_model_button_popup, {
-      close_popup(session = session)
-      updateNavbarPage(session, inputId = "nav", selected = "Data")
-      updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Upload")
-    })
-
-    # spawn red text if selection isn't made
-    if (isTRUE(is.null(input$analysis_model_radio_design))) {
-      output$analysis_model_text_design_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    if (isTRUE(is.null(input$analysis_model_radio_estimand))) {
-      output$analysis_model_text_estimand_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-    if (isTRUE(is.null(input$analysis_model_radio_support))) {
-      output$analysis_model_text_support_noinput <- renderUI({
-        html_out <- tags$span(style = 'color: red;',
-                              "Please make a selection",
-                              br(), br())
-        return(html_out)
-      })
-    }
-
-    # stop here if data hasn't been uploaded and selected
-    validate_data_verified(store)
-
-    # stop here if inputs aren't found
-    # TODO
-    # req(input$)
-    # print('Dataframe going into bartC: \n')
-    # print(store$verified_df)
-    # print('Column types of dataframe going into bartC: \n')
-    # print(store$verified_df  %>% summarize_all(class))
-
-    # remove current model if it exists
-    store$model_results <- NULL
-    store$model_fit_good <- NULL
-
-    # insert popup to notify user of model fit process
-    # TODO: estimate the time remaining empirically?
-    # TODO: show console redirect
-    show_popup_fitting_BART_waiting(session)
-
-
-    # pull the response, treatment, and confounders variables out of the df
-    # treatment_v <- store$verified_df[, 1]
-    # response_v <- store$verified_df[, 2]
-    # confounders_mat <- as.matrix(store$verified_df[, 3:ncol(store$verified_df)])
-    # colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
-    common_support_rule <- input$analysis_over_ride_common_support
-    if (input$analysis_model_support == 'No') common_support_rule <- 'none'
-
-    # run model
-    # store$model_results <- withProgress(
-    #   message = 'Fitting BART model',
-    #   session = session,
-    #   {
-    #     fit_bart(
-    #       .data = store$verified_df,
-    #       support = common_support_rule,
-    #       ran.eff = input$analysis_random_intercept,
-    #       .estimand = base::tolower(input$analysis_model_estimand)
-    #     )
-    #   }
-    # )
-    store$model_results <- fit_bart(
-      .data = store$verified_df,
-      support = common_support_rule,
-      ran.eff = input$analysis_random_intercept,
-      .estimand = base::tolower(input$analysis_model_estimand)
-    )
-
-    # close the alert
-    # shinyWidgets::closeSweetAlert()
-    close_popup(session = session)
-
-    # error handling
-    # TODO: refine the popup; probably should pass the bart error to the popup somehow
-    # TODO: is there a better way to detect if the model fit?
-    did_model_fit <- !isTRUE(is.null(store$model_results))
-    if (!did_model_fit){
-      store$model_fit_good <- FALSE
-      show_popup(session = session,
-                 'Model did not fit',
-                 close_button = shiny::modalButton("Close"))
-    }
-    req(did_model_fit)
-
-    # store the results
-    # TODO: need way to test if actually have a good fit
-    store$model_fit_good <- TRUE
-
-    # # update select on moderators page
-    updateSelectInput(session = session,
-                      inputId = 'analysis_moderator_vars',
-                      choices = input$analysis_model_moderator_vars,
-                      selected = input$analysis_model_moderator_vars[1])
-
-    # add to log
-    log_event <- paste0(
-      'Ran BART model with following specification: \n',
-      '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
-      '\t', 'Causal estimand: ', input$analysis_model_estimand, '\n',
-      '\t', 'Common support rule: ', common_support_rule, '\n',
-      '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
-      '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
-      '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
-      '\t', 'Good model fit: ', store$model_fit_good
-    )
-    store$log <- append(store$log, log_event)
-
-    # common support warning
-    common_support_check <- check_common_support(store$model_results)
-
-    # display popup if any observations would be removed
-    any_points_removed <- common_support_check$proportion_removed_sd > 0 | common_support_check$proportion_removed_chi > 0
-    if(any_points_removed & input$analysis_model_support == 'No'){
-      show_popup_common_support_warning(session = session, common_support_check = common_support_check)
-    }
-
-    # nav buttons within the popup
-    # TODO: the 'see common support diagnostics doesn't go anywhere
-    observeEvent(input$common_support_new_rule, {
-      updateNavbarPage(session, inputId = "nav", selected = "Model")
-      close_popup(session = session)
-    })
-    observeEvent(input$common_support_continue, {
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
-      close_popup(session = session)
-    })
-
-    # move to next page based on model fit
-    no_points_removed <- common_support_check$proportion_removed_sd == 0 | common_support_check$proportion_removed_chi == 0
-    if(no_points_removed & input$analysis_model_support == 'No'){
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
-    }
-
-    if( input$analysis_model_support != 'No'){
-      updateNavbarPage(session, inputId = "nav", selected = "Results")
-    }
-
-  })
-
+  store <- server_model(store = store, id = isolate(store$module_ids$analysis$model), global_session = session)
 
   # diagnostics -------------------------------------------------------------
 
-  # render either both the back and next buttons or just the back if its a bad
-  # model fit
-  output$analysis_diagnosis_buttons_ui <- renderUI({
-    if (isTRUE(store$model_fit_good)){
-      tagList(
-        div(
-          class = 'backNextContainer',
-          actionButton(inputId = "analysis_diagnostics_button_back",
-                       label = "Back to specify model"),
-          actionButton(inputId = "analysis_diagnostics_button_next",
-                       label = "Model results")
-        )
-      )
-    } else {
-      # actionButton(inputId = "analysis_diagnostics_button_back",
-      #              label = "Back to specify model")
-      tagList(
-        div(
-          class = 'backNextContainer',
-          actionButton(inputId = "analysis_diagnostics_button_back",
-                       label = "Back to specify model"),
-          actionButton(inputId = "analysis_diagnostics_button_next",
-                       label = "Proceed to model results")
-        )
-      )
-
-
-    }
-  })
-
-  # trace plot
-  analysis_diagnostics_plot_trace <- reactive({
-
-    # stop here if model isn't fit yet
-    validate_model_fit(store)
-
-    # call function
-    p <- plotBart::plot_trace(.model = store$model_results)
-
-    # add theme
-    p <- p + theme_custom()
-
-    return(p)
-  })
-  output$analysis_diagnostics_plot_trace <- renderPlot(analysis_diagnostics_plot_trace())
-
-  # common support plot
-  analysis_diagnostics_plot_support <- reactive({
-
-    # stop here if model isn't fit yet
-    validate_model_fit(store)
-
-    # plot it
-    p <- plotBart::plot_common_support(
-      .model = store$model_results,
-      rule = 'both'
-    )
-
-    # add theme
-    p <- p +
-      theme_custom() +
-      theme(legend.position = 'bottom',
-            strip.text = element_text(hjust = 0))
-
-    return(p)
-  })
-  output$analysis_diagnostics_plot_support <- renderPlot(analysis_diagnostics_plot_support())
-
-  # download plot
-  output$download_diagnostic_plot <- downloadHandler(
-    filename = function() {
-      switch(
-        req(input$analysis_diagnostics_tabs),
-        "Trace plot" = 'diagnostic_trace_plot.png',
-        "Common support" = 'diagnostic_common_support_plot.png'
-      )
-    },
-    content = function(file) {
-
-      # get the plot that is on the active tab
-      active_plot <- switch(
-        req(input$analysis_diagnostics_tabs),
-        'Trace plot' = analysis_diagnostics_plot_trace(),
-        'Common support' = analysis_diagnostics_plot_support()
-      )
-
-      # write out plot
-      ggsave(file,
-             plot = active_plot,
-             height = input$settings_options_ggplotHeight,
-             width = input$settings_options_ggplotWidth,
-             units = 'in',
-             device = 'png')
-    }
-  )
-
+  store <- server_diagnostic(store = store, id = isolate(store$module_ids$analysis$diagnostic), global_session = session)
 
   # results -----------------------------------------------------------------
 
-  # render the summary table
-  output$analysis_results_table_summary <- DT::renderDataTable({
-
-    # stop here if model isn't fit yet
-    validate_model_fit(store)
-    
-    # extract estimates and format
-    # TODO: unclear if credible interval is 80 or 95
-    tab <- summary(store$model_results, ci.style = 'quant')$estimates %>%
-      as.data.frame() %>%
-      mutate(rownames = rownames(.)) %>%
-      dplyr::select(' ' = rownames, 1:4) %>%
-      rename_all(tools::toTitleCase) %>%
-      create_datatable(paging = FALSE, info = FALSE, selection = "none")
-
-    return(tab)
-  })
-
-  # TODO: render the interpretation text
-  output$results_text <- renderText({
-    # stop here if model isn't fit yet
-    validate_model_fit(store)
-
-    text_out <- create_interpretation(.model = store$model_results,
-                                      type = input$interpretation,
-                                      treatment = store$analysis$design$treatment_name,
-                                      units = store$analysis$design$treatment_units,
-                                      participants = store$analysis$design$treatment_participants)
-
-    return(text_out)
-  })
-
-
-
-  # PATE plot
-  analysis_results_plot_PATE <- reactive({
-
-    # stop here if model isn't fit yet
-    validate_model_fit(store)
-
-    # get value for reference bar
-    reference_bar <- NULL
-    if (input$show_reference == 'Yes') reference_bar <- req(input$reference_bar)
-
-    # add overlay
-    div_id <- 'analysis_results_plot_PATE'
-    show_message_updating(div_id)
-
-    # create plot
-    p <- plotBart::plot_PATE(
-      .model = store$model_results,
-      type = input$plot_result_style,
-      ci_80 = sum(input$show_interval == 0.80) > 0,
-      ci_95 = sum(input$show_interval == 0.95) > 0,
-      .mean = sum(input$central_tendency == 'Mean') > 0,
-      .median = sum(input$central_tendency == 'Median') > 0,
-      reference = reference_bar
-    )
-
-    # add theme
-    p <- p +
-      theme_custom() +
-      theme(legend.position = c(0.1, 0.9),
-            legend.title = element_blank())
-
-    # remove overlay
-    close_message_updating(div_id)
-
-    return(p)
-  })
-  output$analysis_results_plot_PATE <- renderPlot(analysis_results_plot_PATE())
-  output$download_PATE_plot <- downloadHandler(
-    filename = "PATE_plot.png",
-    content = function(file) {
-      ggsave(file,
-             plot = analysis_results_plot_PATE(),
-             height = input$settings_options_ggplotHeight,
-             width = input$settings_options_ggplotWidth,
-             units = 'in',
-             device = 'png')
-    }
-  )
-
+  store <- server_results(store = store, id = isolate(store$module_ids$analysis$results), global_session = session)
 
   # moderators  -------------------------------------------------------------
 
@@ -839,22 +482,22 @@ shinyServer(function(input, output, session) {
       }
     
     # model
-    common_support_rule <- input$analysis_over_ride_common_support
-    if (input$analysis_model_support == 'No') common_support_rule <- 'none'
+    common_support_rule <- store$analysis$model$analysis_over_ride_common_support
+    if (store$analysis$model$analysis_model_support == 'No') common_support_rule <- 'none'
     
     BART_model <- 
       if(isTRUE(store$model_fit_good)){ # if a model successfully fitted
         
-        if(!is.null(input$analysis_model_moderator_vars)){ # if moderators are specified
+        if(!is.null(store$analysis$model$analysis_model_moderator_vars)){ # if moderators are specified
           data.frame(support = common_support_rule,
-                     ran.eff = input$analysis_random_intercept,
-                     estimand = base::tolower(input$analysis_model_estimand),
-                     moderators = input$analysis_model_moderator_vars
+                     ran.eff = store$analysis$model$analysis_random_intercept,
+                     estimand = base::tolower(store$analysis$model$analysis_model_estimand),
+                     moderators = store$analysis$model$analysis_model_moderator_vars
           )
         }else{
           data.frame(support = common_support_rule,
-                     ran.eff = input$analysis_random_intercept,
-                     estimand = base::tolower(input$analysis_model_estimand),
+                     ran.eff = store$analysis$model$analysis_random_intercept,
+                     estimand = base::tolower(store$analysis$model$analysis_model_estimand),
                      moderators = NA
           )
         }

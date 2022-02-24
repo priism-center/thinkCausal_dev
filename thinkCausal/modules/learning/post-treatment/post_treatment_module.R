@@ -39,8 +39,8 @@ store_l_post_treatment$plants_df <- store_l_post_treatment$plants_df %>%
 
 # read in timeline df
 store_l_post_treatment$timeline_df <- readr::read_csv(
-  file.path(store_l_post_treatment$path_to_here, 'data', 'timeline.csv'), 
-  show_col_types = FALSE)
+  file.path(store_l_post_treatment$path_to_here, 'data', 'timeline.csv')) 
+  # show_col_types = FALSE)
 
 store_l_post_treatment$timeline_df$status <- # set factor order of status for colors
   factor(

@@ -23,7 +23,7 @@ show_popup_waiting <- function(session){
   show_popup(session = session, content)
 }
 
-show_popup_common_support_warning <- function(session, common_support_check){
+show_popup_common_support_warning <- function(session, common_support_check, ns){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
     h3('Common Support Warning'),
@@ -34,16 +34,16 @@ show_popup_common_support_warning <- function(session, common_support_check){
     div(
       class = 'backNextContainer',
       style = "width:60%;display:inline-block;horizontal-align:center;",
-      actionButton(inputId = 'common_support_opt3',
+      actionButton(inputId = ns('common_support_opt3'),
                    label = 'See common support diagnostics'),
       br(), br(),
-      actionButton(inputId = 'common_support_new_rule',
+      actionButton(inputId = ns('common_support_new_rule'),
                    label = 'Change common support rule'),
       br(), br(),
-      actionButton(inputId = 'common_support_opt2',
+      actionButton(inputId = ns('common_support_opt2'),
                    label = 'Learn more about common support rules'),
       br(), br(),
-      actionButton(inputId = 'common_support_continue',
+      actionButton(inputId = ns('common_support_continue'),
                    label = 'Continue to results')
     ),
     br(), br()
@@ -108,7 +108,7 @@ show_popup_learn_common_support <- function(session){
   show_popup(session = session, content)
 }
 
-show_popup_model_no_data_warning <- function(session){
+show_popup_model_no_data_warning <- function(session, ns){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
     h3('Data must be first uploaded and columns selected'),
@@ -116,7 +116,7 @@ show_popup_model_no_data_warning <- function(session){
     div(
       class = 'backNextContainer',
       style = "width:60%;display:inline-block;horizontal-align:center;",
-      actionButton(inputId = 'analysis_model_button_popup',
+      actionButton(inputId = ns('analysis_model_button_popup'),
                    label = 'Take me to the Data tab')
     )
   )
