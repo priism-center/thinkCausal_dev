@@ -87,7 +87,8 @@ store_l_potential_outcomes$quiz <- function(){
     question_prompts = list(question_prompt_1, question_prompt_2),
     correct_answers = list(correct_answer_1, correct_answer_2),
     message_correct = "Well done! You got all of them correct. Please read on to learn about the next topic.",
-    message_wrong = "Hmmm, bummer! You got at least one wrong. Please take a minute to review the above content."
+    message_wrong = "Hmmm, bummer! You got at least one wrong. Please take a minute to review the above content.",
+    message_skipped = "Quiz skipped. You can restart it using the button below."
   )
 
   return(quiz)

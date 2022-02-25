@@ -71,7 +71,7 @@ ui_learning_potential_outcomes <- function(id) {
       
       # the quiz UI
       # can be moved within the UI; recommended to place at top of UI if not embedding
-      # ui_quiz(id = ns('quiz')), # comment out this line if quiz is not required
+      ui_quiz(id = ns('quiz')), # comment out this line if quiz is not required
       
       div(
         class = ns('learning-content'), # required
@@ -106,6 +106,7 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
         correct_answers = store_l_potential_outcomes$quiz()$correct_answers,
         message_correct = store_l_potential_outcomes$quiz()$message_correct,
         message_wrong = store_l_potential_outcomes$quiz()$message_wrong,
+        message_skipped = store_l_potential_outcomes$quiz()$message_skipped,
         embed_quiz = TRUE
       )
       

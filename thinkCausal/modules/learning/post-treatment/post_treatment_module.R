@@ -72,6 +72,7 @@ store_l_post_treatment$question_prompts <- list(question_prompt_1, question_prom
 store_l_post_treatment$correct_answers <- list(correct_answer_1, correct_answer_2)
 store_l_post_treatment$message_correct <- "Well done! You got all of them correct. Please read on below if you'd like to learn more about post-treatment variables."
 store_l_post_treatment$message_wrong <- "Hmmm, bummer! You got at least one wrong. Please take a minute to learn more about post-treatment variables below."
+store_l_post_treatment$message_skipped <- "Quiz skipped. You can restart it using the button below."
 
 # clean up otherwise may have conflicts with other learning modules
 rm(question_1, question_2, question_prompt_1, question_prompt_2, correct_answer_1, correct_answer_2)
@@ -146,6 +147,7 @@ server_learning_post_treatment <- function(id, plot_theme = ggplot2::theme_get) 
         correct_answers = store_l_post_treatment$correct_answers,
         message_correct = store_l_post_treatment$message_correct,
         message_wrong = store_l_post_treatment$message_wrong,
+        message_skipped = store_l_post_treatment$message_skipped,
         embed_quiz = FALSE
       )
       

@@ -19,7 +19,7 @@ ui_quiz <- function(id) {
   )
 }
 
-server_quiz <- function(id, id_parent = character(0), question_texts, question_prompts, correct_answers, message_correct, message_wrong, embed_quiz = TRUE) {
+server_quiz <- function(id, id_parent = character(0), question_texts, question_prompts, correct_answers, message_correct, message_wrong, message_skipped, embed_quiz = TRUE) {
   ns <- NS(NS(id_parent)(id))
   moduleServer(
     id,
@@ -40,7 +40,8 @@ server_quiz <- function(id, id_parent = character(0), question_texts, question_p
         question_prompts = question_prompts,
         correct_answers = correct_answers,
         responses = rep(NA, length(question_texts) + 1),
-        ui_html = NULL
+        ui_html = NULL,
+        skipped = FALSE
       )
       
       # reset quiz
@@ -50,11 +51,13 @@ server_quiz <- function(id, id_parent = character(0), question_texts, question_p
         
         # remove any responses
         store$responses <- rep(NA, length(question_texts) + 1)
+        store <- quiz_set_state(store, variable = 'quiz-skipped', value = FALSE)
       })
       
       # skip quiz
       observeEvent(input$skip_button, {
         store <- quiz_set_state(store, variable = 'current-state', value = 'quiz-complete')
+        store <- quiz_set_state(store, variable = 'quiz-skipped', value = TRUE)
       })
       
       # control state behavior
@@ -63,7 +66,7 @@ server_quiz <- function(id, id_parent = character(0), question_texts, question_p
         # scroll to top of quiz container
         scroll_to_div(ns = ns, id = 'quiz-container')
         
-        # make non-quiz content visible
+        # make non-quiz content visible (may be re-hidden depending on final state)
         shinyjs::show(selector = paste0('.', NS(id_parent)('learning-content')), asis = TRUE)
         
         # state behavior
@@ -73,7 +76,8 @@ server_quiz <- function(id, id_parent = character(0), question_texts, question_p
             store,
             ns = ns,
             message_correct = message_correct,
-            message_wrong = message_wrong
+            message_wrong = message_wrong,
+            message_skipped = message_skipped
           )
           
           # unblur the text 
@@ -169,7 +173,8 @@ server_quiz <- function(id, id_parent = character(0), question_texts, question_p
 #'   question_texts = question_texts,
 #'   question_prompts = question_prompts,
 #'   correct_answers = correct_answers,
-#'   responses = c('yes', NA, NA)
+#'   responses = c('yes', NA, NA),
+#'   skipped = FALSE
 #' )
 #' quiz_get_state(store, 'current-question')
 #' }
@@ -194,6 +199,9 @@ quiz_get_state <- function(store, variable = NULL, state = NULL){
   if (variable == 'current-response'){
     return(store$responses[store$states == state][[1]])
   }
+  if (variable == 'quiz-skipped'){
+    return(store$skipped)
+  }
 }
 
 #' @describeIn quiz_get_state a setter function for the state machine
@@ -204,9 +212,12 @@ quiz_set_state <- function(store, variable, value, state = NULL){
   if (variable == 'current-state'){
     store$state <- value
   }
-  
   if (variable == 'current-response'){
     store$responses[store$states == state] <- list(value)
+  }
+  if (variable == 'quiz-skipped'){
+    if (!is.logical(value)) stop('value must logical for "quiz-skipped" variable')
+    store$skipped <- value
   }
   
   return(store)
@@ -249,11 +260,13 @@ quiz_is_all_correct <- function(store) {
 }
 
 #' @describeIn quiz_get_state UI to show once the quiz is completed
-quiz_ui_quiz_complete <- function(store, ns, message_correct, message_wrong){
+quiz_ui_quiz_complete <- function(store, ns, message_correct, message_wrong, message_skipped){
   
   # render ending message based on if answers are correct
   all_correct <- quiz_is_all_correct(store)
-  if (all_correct) {
+  if (quiz_get_state(store, variable = 'quiz-skipped')){
+    html_content <- tagList(br(), add_message_skipped(message_skipped))
+  } else if (all_correct) {
     html_content <- tagList(br(),
                             add_message_correct(message_correct),
                             add_confetti())
@@ -362,6 +375,14 @@ add_message_wrong <- function(text){
   # this relies on bootstrap css
   shiny::div(
     class = 'alert alert-danger',
+    p(text)
+  )
+}
+
+add_message_skipped <- function(text){
+  # this relies on bootstrap css
+  shiny::div(
+    class = 'alert alert-warning',
     p(text)
   )
 }
