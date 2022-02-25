@@ -53,12 +53,7 @@ ui_model <- function(store, id){
                actionButton(inputId = ns("analysis_model_button_next"),
                             label = "Fit model"),
                br(), br(),
-               tags$button(
-                 type = 'button',
-                 class = 'btn btn-default help',
-                 onclick = "openHelpPage('Concept2')",
-                 'Help'
-               ),
+               create_link_to_help('Model'),
                br(), br(),
                actionButton(inputId = ns("analysis_model_button_back"),
                             label = "Back to EDA"),
