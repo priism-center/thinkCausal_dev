@@ -9,13 +9,18 @@ store <- list(
   question_texts = question_texts,
   question_prompts = NULL,
   correct_answers = correct_answers,
-  responses = list(c('1a'), list(c('2c', '2b')), NA)
+  responses = list(c('1a'), list(c('2c', '2b')), NA),
+  skipped = FALSE
 )
 
 store2 <- list(
+  state = 'quiz-question-1',
+  states = c(paste0('quiz-question-', seq_along(question_texts)), 'quiz-complete'),
   correct_answers = c(correct_answers, c('3b')),
   responses = list(c('1a'), list(c('2c', '2b')), c('3a'), NA)
 )
+
+store2 <- quiz_set_state(store2, 'quiz-skipped', TRUE)
 
 
 test_that("quiz functions output are correct", {
@@ -29,4 +34,7 @@ test_that("quiz functions output are correct", {
   expect_true(quiz_is_current_correct(store))
   expect_true(quiz_is_all_correct(store))
   expect_false(quiz_is_all_correct(store2))
+  
+  expect_false(quiz_get_state(store, 'quiz-skipped'))
+  expect_true(quiz_get_state(store2, 'quiz-skipped'))
 })
