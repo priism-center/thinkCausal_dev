@@ -125,8 +125,3 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
     }
   )
 }
-
-
-# clean up ----------------------------------------------------------------
-
-

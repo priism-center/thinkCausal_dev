@@ -293,7 +293,7 @@ quiz_ui_question <- function(store, ns){
   html_content <- tagList(
     
     # question text
-    p(quiz_get_state(store, 'current-question')),
+    quiz_get_state(store, 'current-question'),
     
     # question answer UI (e.g. radiobuttons, sortable divs, etc.)
     quiz_get_state(store, 'current-answers'),

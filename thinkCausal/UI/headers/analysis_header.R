@@ -1,10 +1,10 @@
 analysis_header <- navbarMenu(
   title = 'Analyze',
-  ui_design(id = 'analysis_design'),
-  ui_data(id = 'analysis_data'),
-  ui_eda(id = 'analysis_eda'),
-  ui_model(id = 'analysis_model'),
-  ui_diagnostic(id = 'analysis_diagnostic'),
-  ui_results(id = 'analysis_results'),
+  ui_design(id = module_ids$analysis$design),
+  ui_data(id = module_ids$analysis$data),
+  ui_eda(id = module_ids$analysis$eda),
+  ui_model(id = module_ids$analysis$model),
+  ui_diagnostic(id = module_ids$analysis$diagnostic),
+  ui_results(id = module_ids$analysis$results),
   moderator_page
 )

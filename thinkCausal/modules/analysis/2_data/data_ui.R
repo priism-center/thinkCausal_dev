@@ -10,8 +10,8 @@ ui_data <- function(store, id){
                sidebarLayout(
                  sidebarPanel(
                    h4("Upload your data"),
-                   HTML("<p>Data should be rectangular and in <a href='https://en.wikipedia.org/wiki/Wide_and_narrow_data' target='_blank' rel='noopener noreferrer'>wide format</a> where each column represents one variable.</p>
-                             <p> Files can be uploaded from .csv, .txt, Excel (.xlsx), SPSS (.sav) or STATA (.dta) formats.</p>"),
+                   HTML("<p>Data should be rectangular and in wide format where each column represents one variable.</p>
+                        <p> Files can be uploaded from .csv, .txt, Excel (.xlsx), SPSS (.sav) or STATA (.dta) formats.</p>"),
                    div(
                      id = "upload_file_div",
                      fileInput(inputId = ns("analysis_data_upload"),

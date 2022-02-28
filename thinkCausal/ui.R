@@ -52,7 +52,7 @@ shinyUI(
         tags$div(class = 'cornerRibbon', 'BETA'),
         
         # add header and footer elements
-        tags$header(tags$title('thinkCausal')),
+        tags$head(tags$title('thinkCausal')),
         tags$footer(
             # link to priism
             HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>'),
