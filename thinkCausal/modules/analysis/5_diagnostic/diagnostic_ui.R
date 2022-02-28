@@ -2,7 +2,8 @@
 ui_diagnostic <- function(store, id){
   ns <- NS(id)
   tabPanel(
-    title = "Model diagnostics", #htmlOutput("exploration_tab_name"),
+    title = "Model diagnostics",
+    value = module_ids$analysis$diagnostic,
     tabPanel(
       title = "Model diagnostics",
       sidebarLayout(

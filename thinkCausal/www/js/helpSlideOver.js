@@ -55,11 +55,3 @@ function resize_container(){
 }
 resize_container()
 $(window).resize(resize_container)
-
-// make {page} active
-function go_to_shiny_page(page) {
-  closeHelp()
-  document.body.scrollTop = document.documentElement.scrollTop = 0
-  
-  setTimeout(function(){Shiny.setInputValue("js_open_page", page, {priority: "event"}); }, 400);
-}

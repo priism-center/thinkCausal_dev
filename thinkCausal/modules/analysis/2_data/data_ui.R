@@ -3,6 +3,7 @@ ui_data <- function(store, id){
   ns <- NS(id)
   tabPanel(
     title = 'Data',
+    value = module_ids$analysis$data,
     tabsetPanel(
       id = "analysis_data_tabs",
       tabPanel(title = "Upload",

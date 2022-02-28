@@ -47,6 +47,12 @@ shinyUI(
                  '_blank')",
                  'Feedback'
         ),
+        
+        # add 'back to analysis' button
+        tags$div(class = 'back-to-analysis-button',
+                 actionButton(inputId = 'back_to_analysis_button',
+                              label = 'Back')
+                 ),
 
         # add beta ribbon
         tags$div(class = 'cornerRibbon', 'BETA'),
@@ -59,6 +65,6 @@ shinyUI(
             
             # load custom JavaScript files
             map(list.files('www/js', pattern = "*.js"), function(file) tags$script(src = file.path('js', file)))
-        ) 
+        )
     )
 )

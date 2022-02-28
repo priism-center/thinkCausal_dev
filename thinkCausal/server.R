@@ -6,8 +6,32 @@ shinyServer(function(input, output, session) {
     uploaded_df = data.frame(), 
     log = list(as.character(Sys.time())),
     module_ids = module_ids,
+    page_history = NULL,
     js = NULL
   )
+  
+  # store the page history
+  # show/hide back button
+  observeEvent(input$nav, {
+
+    # store history
+    store$page_history <- append(store$page_history, input$nav)
+
+    # trigger icon if leaving analysis page
+    if (!stringr::str_detect(input$nav, "^analysis") && 
+        isTRUE(stringr::str_detect(get_nav_previous_page(store), '^analysis'))){
+     shinyjs::show(selector = '.back-to-analysis-button')
+    } else if (stringr::str_detect(input$nav, "^analysis") && 
+        !isTRUE(stringr::str_detect(get_nav_previous_page(store), '^analysis'))){
+      shinyjs::hide(selector = '.back-to-analysis-button')
+    }
+  })
+  
+  # move to new page when button is clicked
+  observeEvent(input$back_to_analysis_button, {
+    new_page <- get_nav_previous_page(store)
+    updateNavbarPage(session, inputId = "nav", selected = new_page)
+  })
 
 
   # javascript initiated actions --------------------------------------------
@@ -64,28 +88,16 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # run the design module server
+
+  # analysis modules --------------------------------------------------------
+
   store <- server_design(store = store, id = isolate(store$module_ids$analysis$design), global_session = session)
-
-  # upload data -------------------------------------------------------------
-
   store <- server_data(store = store, id = isolate(store$module_ids$analysis$data), global_session = session)
-
-  # EDA ---------------------------------------------------------------------
-  
   store <- server_eda(store = store, id = isolate(store$module_ids$analysis$eda), global_session = session)
-
-  # model -------------------------------------------------------------------
-
   store <- server_model(store = store, id = isolate(store$module_ids$analysis$model), global_session = session)
-
-  # diagnostics -------------------------------------------------------------
-
   store <- server_diagnostic(store = store, id = isolate(store$module_ids$analysis$diagnostic), global_session = session)
-
-  # results -----------------------------------------------------------------
-
   store <- server_results(store = store, id = isolate(store$module_ids$analysis$results), global_session = session)
+  
 
   # moderators  -------------------------------------------------------------
 

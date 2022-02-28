@@ -1,0 +1,38 @@
+.back-to-analysis-button {
+  display: none;
+  position: fixed;
+  bottom: 16rem;
+  right: 1rem;
+  width: 5rem;
+  height: 5rem;
+  line-height: 2.5rem;
+  z-index: 99997;
+  text-align: center;
+  vertical-align: middle;
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 500;
+  padding: 1rem 0;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: #757391;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.back-to-analysis-button:hover {
+  opacity: 1;
+  transition-duration: 400ms;
+}
+
+.back-to-analysis-button > button {
+  background: none !important;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  font-weight: 500;
+}
+
+.back-to-analysis-button > button:hover {
+  background: none !important;
+}

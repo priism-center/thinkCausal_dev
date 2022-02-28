@@ -3,6 +3,7 @@ ui_design <- function(store, id){
   ns <- NS(id)
   tabPanel(
     title = 'Design',
+    value = module_ids$analysis$design,
     fluidRow(
       column(4,
              wellPanel(

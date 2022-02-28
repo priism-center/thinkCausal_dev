@@ -60,6 +60,10 @@
   font-size: 3em;
 }
 
+.closebtn {
+  padding: 0 0.2em 0 0;
+}
+
 .markdownContainer > p, .markdownContainer > h4, .helpSubHeader > h3 {
   padding: 0.2rem 3rem 0.3rem 3rem;
   margin: 0rem;

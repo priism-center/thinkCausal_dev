@@ -3,9 +3,10 @@ function showHideMobile(){
   let window_width = $(window).width();
   let logo = $(".logo")
   let feedback = $(".feedback-button")
+  let back = $(".back-to-analysis-button")
   let header = $("header")
   let footer = $("footer")
-  let elements = [logo, feedback, header, footer]
+  let elements = [logo, feedback, back, header, footer]
   
   if (window_width < 768) {
     elements.forEach(el => el.hide())
