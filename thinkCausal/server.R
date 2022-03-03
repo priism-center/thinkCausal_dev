@@ -10,30 +10,7 @@ shinyServer(function(input, output, session) {
     js = NULL
   )
   
-  # store the page history
-  # show/hide back button
-  observeEvent(input$nav, {
-
-    # store history
-    store$page_history <- append(store$page_history, input$nav)
-
-    # trigger icon if leaving analysis page
-    if (!stringr::str_detect(input$nav, "^analysis") && 
-        isTRUE(stringr::str_detect(get_nav_previous_page(store), '^analysis'))){
-     shinyjs::show(selector = '.back-to-analysis-button')
-    } else if (stringr::str_detect(input$nav, "^analysis") && 
-        !isTRUE(stringr::str_detect(get_nav_previous_page(store), '^analysis'))){
-      shinyjs::hide(selector = '.back-to-analysis-button')
-    }
-  })
   
-  # move to new page when button is clicked
-  observeEvent(input$back_to_analysis_button, {
-    new_page <- get_nav_previous_page(store)
-    updateNavbarPage(session, inputId = "nav", selected = new_page)
-  })
-
-
   # javascript initiated actions --------------------------------------------
 
   # move page when JS says so
@@ -74,6 +51,28 @@ shinyServer(function(input, output, session) {
   })
   observeEvent(input$analysis_moderator_analyses_button_reproduce, {
     updateNavbarPage(session, inputId = "nav", selected = "Reproduce")
+  })
+  
+  # store the page history
+  # show/hide back button
+  observeEvent(input$nav, {
+    
+    # store history
+    store$page_history <- append(store$page_history, input$nav)
+    
+    # trigger icon if leaving analysis page
+    if (!stringr::str_detect(input$nav, "^analysis") && 
+        !identical(get_nav_previous_analysis_page(store), character(0))){
+      shinyjs::show(selector = '.back-to-analysis-button')
+    } else {
+      shinyjs::hide(selector = '.back-to-analysis-button')
+    }
+  })
+  
+  # move to new page when button is clicked
+  observeEvent(input$back_to_analysis_button, {
+    new_page <- get_nav_previous_analysis_page(store)
+    updateNavbarPage(session, inputId = "nav", selected = new_page)
   })
 
 

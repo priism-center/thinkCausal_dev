@@ -1,5 +1,6 @@
 ##### BETA -- work-in-progress #####
 
+# install the required packages
 # install.packages('renv')
 renv::restore()
 
@@ -27,32 +28,30 @@ treatment_v <- X[, 1]
 response_v <- X[, 2]
 confounders_mat <- clean_confounders_for_bart(X[, 3:ncol(X)])
 model_results <- bartCause::bartc(
-response = response_v,
-treatment = treatment_v,
-confounders = confounders_mat,
-estimand = 'ate',
-commonSup.rule = 'sd',
-keepTrees = T,
-seed = 2
+  response = response_v,
+  treatment = treatment_v,
+  confounders = confounders_mat,
+  estimand = 'ate',
+  commonSup.rule = 'sd',
+  keepTrees = T,
+  seed = 2
 )
 
 # plot results and diagnostics
 plotBart::plot_PATE(
-.model = model_results,
-type = 'Density',
-ci_80 = 'none',
-ci_95 = 'none',
-.mean = T,
-.median = F,
-reference = NULL
+  .model = model_results,
+  type = 'Density',
+  ci_80 = 'none',
+  ci_95 = 'none',
+  .mean = T,
+  .median = F,
+  reference = NULL
 )
 
 plotBart::plot_trace(model_results)
 
-plotBart::plot_common_support(
-.model = model_results,
-rule = 'both'
-)
+plotBart::plot_common_support(.model = model_results,
+                              rule = 'both')
 
 ### examples
 # how to save a plot

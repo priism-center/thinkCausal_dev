@@ -9,5 +9,5 @@ get_nav_previous_page <- function(store){
 
 get_nav_previous_analysis_page <- function(store){
   pages <- store$page_history[stringr::str_detect(store$page_history, "^analysis")]
-  pages[length(pages)-1]
+  pages[length(pages)]
 }

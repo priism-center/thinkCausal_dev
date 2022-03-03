@@ -33,6 +33,8 @@
   font-weight: 500;
 }
 
-.back-to-analysis-button > button:hover {
+.back-to-analysis-button > button:hover,
+.back-to-analysis-button > button:active {
   background: none !important;
+  box-shadow: none !important;
 }
