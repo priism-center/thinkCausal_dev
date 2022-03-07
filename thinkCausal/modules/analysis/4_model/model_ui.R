@@ -3,7 +3,7 @@ ui_model <- function(store, id){
   ns <- NS(id)
   tabPanel(
     title = 'Model',
-    value = module_ids$analysis$model,
+    value = id,
     fluidRow(
       column(4,
              wellPanel(

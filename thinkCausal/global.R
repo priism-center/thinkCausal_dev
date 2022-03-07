@@ -47,7 +47,8 @@ module_ids <- list(
     eda = 'analysis_eda',
     model = 'analysis_model',
     diagnostic = 'analysis_diagnostic',
-    results = 'analysis_results'
+    results = 'analysis_results',
+    subgroup = 'Subgroup results' # TODO: change this after modularizing
   )
 )
 

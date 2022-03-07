@@ -7,7 +7,7 @@ server_eda <- function(store, id, global_session){
       
       # back next buttons
       observeEvent(input[['analysis_plots_descriptive_button_back']], {
-        updateNavbarPage(global_session, inputId = "nav", selected = "Data")
+        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$data)
         updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Verify")
       })
       observeEvent(input[['analysis_plots_descriptive_button_next']], {
@@ -23,7 +23,7 @@ server_eda <- function(store, id, global_session){
         updateTabsetPanel(global_session, inputId = "analysis_plot_tabs", selected = "Common Support Plots")
       })
       observeEvent(input$analysis_plots_balance_button_next, {
-        updateNavbarPage(global_session, inputId = "nav", selected = "Model")
+        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$model)
       })
       
       # update variables on the eda page once the save button on the verify data page is clicked

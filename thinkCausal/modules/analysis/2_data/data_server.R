@@ -6,7 +6,7 @@ server_data <- function(store, id, global_session){
     function(input, output, session) {
       
       observeEvent(input$analysis_data_button_back, {
-        updateNavbarPage(global_session, inputId = "nav", selected = "Design")
+        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$design)
       })
       observeEvent(input$analysis_data_select_button_back, {
         updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Group")
@@ -623,7 +623,7 @@ server_data <- function(store, id, global_session){
         
         
         # move to next page
-        updateNavbarPage(global_session, inputId = "nav", selected = "Exploratory plots")
+        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$eda)
         updateTabsetPanel(global_session, inputId = "analysis_plot_tabs", selected = "Descriptive Plots")
       })
 

@@ -38,7 +38,7 @@ shinyServer(function(input, output, session) {
 
   # subgroup/moderators page
   observeEvent(input$analysis_moderator_icate_button_back, {
-    updateNavbarPage(session, inputId = "nav", selected = "Results")
+    updateNavbarPage(session, inputId = "nav", selected = store$module_ids$analysis$results)
   })
   observeEvent(input$analysis_moderator_icate_button_next, {
     updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "Exploratory Subgroup Analyses")
@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, inputId = "analysis_moderator_tabs", selected = "ICATE")
   })
   observeEvent(input$analysis_moderator_analyses_button_results, {
-    updateNavbarPage(session, inputId = "nav", selected = "Results")
+    updateNavbarPage(session, inputId = "nav", selected = store$module_ids$analysis$results)
   })
   observeEvent(input$analysis_moderator_analyses_button_reproduce, {
     updateNavbarPage(session, inputId = "nav", selected = "Reproduce")
@@ -81,7 +81,8 @@ shinyServer(function(input, output, session) {
   # launch pop up if first time
   isolate({store$analysis$design$launched_first_time_popup <- FALSE})
   observeEvent(input$nav, {
-    if (input$nav == 'Design' & isFALSE(store$analysis$design$launched_first_time_popup)){
+    if (input$nav == store$module_ids$analysis$design & 
+        isFALSE(store$analysis$design$launched_first_time_popup)){
       store$analysis$design$launched_first_time_popup <- TRUE
       show_popup_welcome(session = session)
     }
@@ -395,7 +396,7 @@ shinyServer(function(input, output, session) {
     updateNavbarPage(session, inputId = "nav", selected = "All concepts")
   })
   observeEvent(input$welcome_link_Analysis, {
-    updateNavbarPage(session, inputId = "nav", selected = "Design")
+    updateNavbarPage(session, inputId = "nav", selected = store$module_ids$analysis$design)
   })
 
 

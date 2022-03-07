@@ -7,10 +7,10 @@ server_results <- function(store, id, global_session){
       
       # results page
       observeEvent(input$analysis_results_button_back, {
-        updateNavbarPage(global_session, inputId = "nav", selected = "Model diagnostics")
+        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$diagnostic)
       })
       observeEvent(input$analysis_results_button_subgroup, {
-        updateNavbarPage(global_session, inputId = "nav", selected = "Subgroup results")
+        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$subgroup)
       })
       
       # render the summary table

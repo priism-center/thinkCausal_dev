@@ -7,7 +7,7 @@ server_model <- function(store, id, global_session){
       
       # back next button
       observeEvent(input$analysis_model_button_back, {
-        updateNavbarPage(global_session, inputId = "nav", selected = "Exploratory plots")
+        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$eda)
         updateTabsetPanel(global_session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
       })
       
@@ -58,7 +58,7 @@ server_model <- function(store, id, global_session){
           
           observeEvent(input$analysis_model_button_popup, {
             close_popup(session = session)
-            updateNavbarPage(global_session, inputId = "nav", selected = "Data")
+            updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$data)
             updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Upload")
           })
         }
@@ -163,22 +163,22 @@ server_model <- function(store, id, global_session){
         # nav buttons within the popup
         # TODO: the 'see common support diagnostics doesn't go anywhere
         observeEvent(input$common_support_new_rule, {
-          updateNavbarPage(global_session, inputId = "nav", selected = "Model")
+          updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$model)
           close_popup(session = session)
         })
         observeEvent(input$common_support_continue, {
-          updateNavbarPage(global_session, inputId = "nav", selected = "Results")
+          updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$results)
           close_popup(session = session)
         })
         
         # move to next page based on model fit
         no_points_removed <- common_support_check$proportion_removed_sd == 0 | common_support_check$proportion_removed_chi == 0
         if(no_points_removed & input$analysis_model_support == 'No'){
-          updateNavbarPage(global_session, inputId = "nav", selected = "Results")
+          updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$results)
         }
         
         if( input$analysis_model_support != 'No'){
-          updateNavbarPage(global_session, inputId = "nav", selected = "Results")
+          updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$results)
         }
         
       })

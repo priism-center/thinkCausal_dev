@@ -7,10 +7,10 @@ server_diagnostic <- function(store, id, global_session){
       
       # back next buttons
       observeEvent(input$analysis_diagnostics_button_back, {
-        updateNavbarPage(global_session, inputId = "nav", selected = "Model")
+        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$model)
       })
       observeEvent(input$analysis_diagnostics_button_next, {
-        updateNavbarPage(global_session, inputId = "nav", selected = "Results")
+        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$results)
       })
       
       # render either both the back and next buttons or just the back if its a bad

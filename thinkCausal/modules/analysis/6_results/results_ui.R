@@ -3,7 +3,7 @@ ui_results <- function(store, id){
   ns <- NS(id)
   tabPanel(
     title = "Results",
-    value = module_ids$analysis$results,
+    value = id,
     tabPanel("Model Results",
              sidebarLayout(
                sidebarPanel(

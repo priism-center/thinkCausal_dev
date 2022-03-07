@@ -3,7 +3,7 @@ ui_diagnostic <- function(store, id){
   ns <- NS(id)
   tabPanel(
     title = "Model diagnostics",
-    value = module_ids$analysis$diagnostic,
+    value = id,
     tabPanel(
       title = "Model diagnostics",
       sidebarLayout(

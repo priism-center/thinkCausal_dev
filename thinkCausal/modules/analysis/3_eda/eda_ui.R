@@ -3,7 +3,7 @@ ui_eda <- function(store, id){
   ns <- NS(id)
   tabPanel(
     title = "Exploratory plots",
-    value = module_ids$analysis$eda,
+    value = id,
     tabsetPanel(
       id = "analysis_plot_tabs", 
       tabPanel(
