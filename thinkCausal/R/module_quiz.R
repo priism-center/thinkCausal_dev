@@ -390,7 +390,7 @@ add_message_skipped <- function(text){
 add_confetti <- function(){
   # https://codepen.io/zer0kool/pen/KjZWRW
   # requires confetti.css to be in the www/css folder
-  div(
+  confetti_pieces <- div(
     class = 'confetti',
     div(class = 'confetti-piece'),
     div(class = 'confetti-piece'),
@@ -403,5 +403,13 @@ add_confetti <- function(){
     div(class = 'confetti-piece'),
     div(class = 'confetti-piece')
   )
+  
+  # remove after 10 seconds to prevent re-animations when coming back to the page
+  shinyjs::delay(
+    10*1000,
+    shinyjs::hide(selector = '.confetti')
+  )
+  
+  return(confetti_pieces)
 }
 
