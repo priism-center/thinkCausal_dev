@@ -1,4 +1,6 @@
-// https://www.d3-graph-gallery.com/graph/interactivity_transition.html
+// https://setosa.io/ev/principal-component-analysis/
+// https://setosa.io/ev/principal-component-analysis/script.js
+// https://octoperf.com/blog/2018/04/18/d3-js-drag-and-drop-tutorial/#the-d3-drag-library
 
 function getConfig(){
   let width = 600;
@@ -108,24 +110,6 @@ function drawData(data, config, scales){
       .on('mousemove', mousemove)
       .on('mouseleave', mouseleave)
       .attr('class', 'currentPoints')
-
-  // draw fitted lines
-  container.append('path')
-    .datum(dataLine)
-    .attr('class', 'line')
-    .style('stroke', '#183b32')
-    .attr('d', d3.line()
-      .x(d => xScale(d.x0Name))
-      .y(d => yScale(d.y0Name))
-    )
-    container.append('path')
-      .datum(dataLine)
-      .attr('class', 'line')
-      .style('stroke', '#D7837F')
-      .attr('d', d3.line()
-        .x(d => xScale(d.x1Name))
-        .y(d => yScale(d.y1Name))
-      )
 
     // histogram
     // add X axis
