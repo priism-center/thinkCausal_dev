@@ -85,7 +85,7 @@ function drawData(data, config, scales){
     .attr("x", xScale(meanX))
     .attr('y', bodyHeight + margin.bottom/2)
     .attr('text-anchor', 'middle')
-    .text("Rating trend over last 10 games")
+    .text("My x axis label")
 
   // Add Y axis
   container.append("g")
@@ -97,11 +97,11 @@ function drawData(data, config, scales){
     .attr('y', yScale(meanY))
     .attr('text-anchor', 'middle')
     .attr("transform", "rotate(-90,-" + (margin.left-10) + "," + yScale(meanY) + ")")
-    .text("Current rating")
+    .text("My y axis label")
 
   // draw scatter
   container.append('g')
-    .selectAll("dot")
+    .selectAll("myCircles")
     .data(data)
     .enter()
     .append("circle")
@@ -116,29 +116,22 @@ function drawData(data, config, scales){
       // .attr('team', d => d.team)
       // .attr('teamShape', d => d.team + "_currentCircle")
 
-  let line = d3.line()
-      .x(function(d) {return xScale(d.x0Name);})
-      .y(function(d) {return yScale(d.y0Name);})
-      .curve(d3.curveMonotoneX)
-
   // draw fitted lines
   container.append('path')
     .datum(dataLine)
     .attr('class', 'line')
     .style('stroke', '#183b32')
     .attr('d', d3.line()
-      .x(function(d) {return xScale(d.x0Name);})
-      .y(function(d) {return yScale(d.y0Name);})
-      .curve(d3.curveMonotoneX)
+      .x(d => xScale(d.x0Name))
+      .y(d => yScale(d.y0Name))
     )
     container.append('path')
       .datum(dataLine)
       .attr('class', 'line')
       .style('stroke', '#80b0a4')
       .attr('d', d3.line()
-        .x(function(d) {return xScale(d.x1Name);})
-        .y(function(d) {return yScale(d.y1Name);})
-        .curve(d3.curveMonotoneX)
+        .x(d => xScale(d.x1Name))
+        .y(d => yScale(d.y1Name))
       )
 
 
@@ -266,8 +259,43 @@ function drawData(data, config, scales){
   // legend.append("text").attr("x", 115).attr("y", 30).text("Western Conference").attr("alignment-baseline","middle")
 }
 
+function triggerAnimation(data, scales){
+  let {xScale, yScale, colorScale} = scales;
+  binData(data)
+
+  d3.selectAll('circle')
+    .transition()
+    .duration(1000)
+    .attr("cx", d => xScale(d.xBin))
+    .attr("cy", d => yScale(d.yCount))
+    .delay(d => d.xName * 150)
+    .ease(d3.easeCubicIn) //https://github.com/d3/d3-ease
+    // .ease(d3.easeCubicOut)
+    // .ease(d3.easeBackIn)
+}
+
+function binData(data){
+  // calculate new x values
+  d3.map(data, d => d.xBin = Math.round(d.xName))
+
+  // calculate new y values
+  // for each bin, add sequential count for each obsevation in a bin
+  let bins = d3.nest().key(d => d.xBin).entries(store.scatter)
+  d3.map(bins, function(d) {
+    d.values.forEach(function(dv, i){ dv.yCount = i + 1})
+  })
+
+  return(data)
+}
+
+
 function buildPlot(data){
   config = getConfig()
   scales = getScales(data, config)
   drawData(data, config, scales)
+}
+
+function resetPlot(){
+  $('#plot-scatter > svg').remove()
+  buildPlot(store)
 }

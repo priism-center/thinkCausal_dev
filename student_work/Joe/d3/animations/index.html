@@ -10,6 +10,8 @@
 <body>
   <main>
     <div id="plot-container">
+      <button onclick="triggerAnimation(store.scatter, scales)">Trigger animation</button>
+      <button onclick="resetPlot()">Reset animation</button>
       <div id='plot-scatter'></div>
     </div>
   </main>
@@ -17,8 +19,6 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://d3js.org/d3.v5.js"></script>
 <script src="https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"></script>
-<!-- <script src="/Frontend/js/buildGrid.js"></script> -->
-<!-- <script src="/Frontend/js/buildTable.js"></script> -->
 <script src="/js/buildPlot.js"></script>
 <script src="/js/showData.js"></script>
 </html>
