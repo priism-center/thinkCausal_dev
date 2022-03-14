@@ -1,7 +1,11 @@
 body {
     font-family: "Roboto", Helvetica, Arial, sans-serif;
     margin: 2em;
-    background-color: #fff;
+    /* background-color: #fff; */
+}
+
+#plot-container {
+  max-width: 800px;
 }
 
 .tooltip {
@@ -31,6 +35,11 @@ body {
 .axisLabel {
   fill: #666666;
   font-size: 0.6em;
+}
+
+.subtitle {
+  font-size: 1em;
+  fill: #666666;
 }
 
 .legend > text {
