@@ -4,6 +4,10 @@ body {
     background-color: #fff;
 }
 
+#plot-container {
+  max-width: 800px;
+}
+
 .tooltip {
   font-size: 0.8em;
   background-color: white;

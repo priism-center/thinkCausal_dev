@@ -91,7 +91,7 @@ function drawData(data, config, scales){
     .text("My y axis label")
 
   // draw scatter
-  let pointOpacity = 0.6
+  let pointOpacity = 0.8
   container.append('g')
     .selectAll("myCircles")
     .data(data)
@@ -103,7 +103,7 @@ function drawData(data, config, scales){
       .style('opacity', pointOpacity)
       .style('fill', d => colorScale(d.treatment))
       .style('stroke', '#fff')
-      .style('stroke-width', 0.7)
+      .style('stroke-width', 0.5)
       .on('mouseover', mouseover)
       .on('mousemove', mousemove)
       .on('mouseleave', mouseleave)
@@ -167,7 +167,7 @@ function drawData(data, config, scales){
     let treatment = d3.select(this).attr('treatment')
     let other_treatment = Math.abs(+treatment - 1)
     d3.selectAll("circle[treatment='" + other_treatment + "'], path[treatment='" + other_treatment + "']")
-      .style('opacity', 0.3)
+      .style('opacity', 0.2)
     d3.selectAll("circle[treatment='" + treatment + "'], path[treatment='" + treatment + "']")
       .style('opacity', 1)
 
@@ -203,13 +203,13 @@ function drawData(data, config, scales){
       .style('filter', null)
   }
 
-  // // add subtitle
-  // container
-  //   .append('text')
-  //   .attr('class', 'subtitle')
-  //   .attr('x', -55)
-  //   .attr('y', -20)
-  //   .text('Hover over points to see team history')
+  // add subtitle
+  container
+    .append('text')
+    .attr('class', 'subtitle')
+    .attr('x', 0)
+    .attr('y', -10)
+    .text('My title')
 
   // add legend
   let legend = container
@@ -218,8 +218,8 @@ function drawData(data, config, scales){
     .attr("transform",
             "translate(" + bodyWidth*2.5/9 + " ," + (0 - (margin.bottom*3/5)) + ")")
   legend.append("circle")
-    .attr("cx", 10)
-    .attr("cy", 25)
+    .attr("cx", width*0.48)
+    .attr("cy", 35)
     .attr("r", 5)
     .style("fill", colorScale('0'))
     .attr('treatment', '0')
@@ -227,8 +227,8 @@ function drawData(data, config, scales){
     .on('mousemove', d => tooltip.style('display', 'none'))
     .on('mouseleave', mouseleave)
   legend.append("circle")
-    .attr("cx", 100)
-    .attr("cy", 25)
+    .attr("cx", width*0.48)
+    .attr("cy", 55)
     .attr("r", 5)
     .style("fill", colorScale('1'))
     .attr('treatment', '1')
@@ -236,8 +236,8 @@ function drawData(data, config, scales){
     .on('mousemove', d => tooltip.style('display', 'none'))
     .on('mouseleave', mouseleave)
   legend.append("text")
-    .attr("x", 25)
-    .attr("y", 30)
+    .attr("x", width*0.5)
+    .attr("y", 40)
     .text("Control")
     .attr("alignment-baseline","middle")
     .attr('treatment', '0')
@@ -245,8 +245,8 @@ function drawData(data, config, scales){
     .on('mousemove', d => tooltip.style('display', 'none'))
     .on('mouseleave', mouseleave)
   legend.append("text")
-    .attr("x", 115)
-    .attr("y", 30)
+    .attr("x", width*0.5)
+    .attr("y", 60)
     .text("Treatment")
     .attr("alignment-baseline","middle")
     .attr('treatment', '1')
