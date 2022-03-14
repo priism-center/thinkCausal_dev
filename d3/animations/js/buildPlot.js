@@ -46,7 +46,7 @@ function getScales(data, config) {
 
  let colorScale = d3.scaleOrdinal()
       .domain(["0", "1"])
-      .range(["#183b32", "#D7837F"])
+      .range(["#21918c", "#440154"])
 
  return {xScale, yScale, colorScale}
 }
@@ -107,8 +107,27 @@ function drawData(data, config, scales){
       .on('mouseover', mouseover)
       .on('mousemove', mousemove)
       .on('mouseleave', mouseleave)
-      .attr('class', 'scatterPoints')
+      .attr('class', 'scatter scatterPoints')
       .attr('treatment', d => d.treatment)
+  // add same points again that will not fall
+  container.append('g')
+    .selectAll("myCircles")
+    .data(data)
+    .enter()
+    .append("circle")
+      .attr("cx", d => xScale(d.xName))
+      .attr("cy", d => yScale(d.yName))
+      .attr("r", 4)
+      .style('opacity', pointOpacity)
+      .style('fill', d => colorScale(d.treatment))
+      .style('stroke', '#fff')
+      .style('stroke-width', 0.5)
+      .on('mouseover', mouseover)
+      .on('mousemove', mousemove)
+      .on('mouseleave', mouseleave)
+      .attr('class', 'scatterPoints-fixed')
+      .attr('treatment', d => d.treatment)
+      .style('display', 'none')
 
   // draw fitted lines
   container.append('path')
@@ -135,13 +154,15 @@ function drawData(data, config, scales){
     container.append("g")
       .attr('class', "axis xAxis")
       .attr("transform", "translate(0," + bodyHeight + ")")
-      .call(d3.axisBottom(xScale));
+      .call(d3.axisBottom(xScale))
+      .style('display', 'none')
     container.append('text')
       .attr('class', 'axisLabel')
       .attr("x", xScale(meanX))
       .attr('y', bodyHeight + margin.bottom/2)
       .attr('text-anchor', 'middle')
       .text("Histogram: My x axis label")
+      .style('display', 'none')
 
     // Add Y axis
     container.append('text')
@@ -151,6 +172,7 @@ function drawData(data, config, scales){
       .attr('text-anchor', 'middle')
       .attr("transform", "rotate(-90,-" + (margin.left-10) + "," + yScale(meanY) + ")")
       .text("Count")
+      .style('display', 'none')
 
   // create a tooltip
   let tooltip = d3.select("#plot-scatter")
@@ -174,6 +196,8 @@ function drawData(data, config, scales){
     // emphasize legend
     d3.selectAll("text[treatment='" + treatment + "']")
       .style('font-weight', 700)
+    d3.selectAll("text[treatment='" + other_treatment + "']")
+      .style('fill', '#d9d9d9')
 
     // emphasize this current point tho
     d3.select(this)
@@ -196,6 +220,7 @@ function drawData(data, config, scales){
     // remove font weight from legend
     d3.selectAll("text")
       .style('font-weight', null)
+      .style('fill', null)
 
     // re-emphasize other points
     d3.selectAll('circle, path')
@@ -262,6 +287,13 @@ function triggerAnimation(data, scales){
   let xOffset = 0.3
   let ySqueeze = 0.6
 
+  // show axis and labels
+  d3.selectAll('.axis, .axisLabel')
+    .transition()
+    .delay(900)
+    .style('display', null)
+
+  // make points fall
   d3.selectAll('.scatterPoints')
     .transition()
     .duration(2500)
@@ -272,6 +304,15 @@ function triggerAnimation(data, scales){
     .ease(d3.easeBounceOut) //https://github.com/d3/d3-ease
     // .ease(d3.easeCubicOut)
     // .ease(d3.easeBackIn)
+
+  // add points back
+  d3.selectAll('.scatterPoints-fixed')
+    .style('opacity', 0)
+    .transition()
+    .duration(2000)
+    .delay(4000)
+    .style('display', null)
+    .style('opacity', null)
 }
 
 function binData(data){
