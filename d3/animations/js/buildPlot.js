@@ -99,7 +99,7 @@ function drawData(data, config, scales){
     .append("circle")
       .attr("cx", d => xScale(d.xName))
       .attr("cy", d => yScale(d.yName))
-      .attr("r", 3.5)
+      .attr("r", 4)
       .style('opacity', pointOpacity)
       .style('fill', d => colorScale(d.treatment))
       .style('stroke', '#fff')
@@ -114,6 +114,7 @@ function drawData(data, config, scales){
   container.append('path')
     .datum(dataLine)
     .attr('class', 'line')
+    .attr('treatment', '0')
     .style('stroke', '#183b32')
     .attr('d', d3.line()
       .x(d => xScale(d.x0Name))
@@ -122,6 +123,7 @@ function drawData(data, config, scales){
     container.append('path')
       .datum(dataLine)
       .attr('class', 'line')
+      .attr('treatment', '1')
       .style('stroke', '#D7837F')
       .attr('d', d3.line()
         .x(d => xScale(d.x1Name))
@@ -159,15 +161,19 @@ function drawData(data, config, scales){
   function mouseover(d){
     tooltip
       .style('opacity', 1)
-      .style('display', 'block')
+      .style('display', null)
 
     // de-emphasize points not in treatment gorup
-    // d3.selectAll('.scatterPoints')
-    d3.selectAll('circle')
-      .style('opacity', 0.3)
     let treatment = d3.select(this).attr('treatment')
-    d3.selectAll("circle[treatment='" + treatment + "']")
+    let other_treatment = Math.abs(+treatment - 1)
+    d3.selectAll("circle[treatment='" + other_treatment + "'], path[treatment='" + other_treatment + "']")
+      .style('opacity', 0.3)
+    d3.selectAll("circle[treatment='" + treatment + "'], path[treatment='" + treatment + "']")
       .style('opacity', 1)
+
+    // emphasize legend
+    d3.selectAll("text[treatment='" + treatment + "']")
+      .style('font-weight', 700)
 
     // emphasize this current point tho
     d3.select(this)
@@ -187,12 +193,14 @@ function drawData(data, config, scales){
       .style('opacity', 0)
       .style('display', 'none')
 
+    // remove font weight from legend
+    d3.selectAll("text")
+      .style('font-weight', null)
+
     // re-emphasize other points
-    // d3.selectAll('.scatterPoints')
-    d3.selectAll('circle')
+    d3.selectAll('circle, path')
       .style('opacity', pointOpacity)
-      .style('fill', d => colorScale(d.treatment))
-      .style('filter', 'brightness(1)')
+      .style('filter', null)
   }
 
   // // add subtitle
@@ -202,28 +210,63 @@ function drawData(data, config, scales){
   //   .attr('x', -55)
   //   .attr('y', -20)
   //   .text('Hover over points to see team history')
-  //
+
   // add legend
   let legend = container
     .append('g')
     .attr("class", "legend")
     .attr("transform",
             "translate(" + bodyWidth*2.5/9 + " ," + (0 - (margin.bottom*3/5)) + ")")
-  legend.append("circle").attr("cx",10).attr("cy",25).attr("r", 5).style("fill", "#183b32").attr('treatment', '0')
-  legend.append("circle").attr("cx",100).attr("cy",25).attr("r", 5).style("fill", "#D7837F").attr('treatment', '1')
-  legend.append("text").attr("x", 25).attr("y", 30).text("Control").attr("alignment-baseline","middle").attr('treatment', '0')
-  legend.append("text").attr("x", 115).attr("y", 30).text("Treatment").attr("alignment-baseline","middle").attr('treatment', '1')
+  legend.append("circle")
+    .attr("cx", 10)
+    .attr("cy", 25)
+    .attr("r", 5)
+    .style("fill", colorScale('0'))
+    .attr('treatment', '0')
+    .on('mouseover', mouseover)
+    .on('mousemove', d => tooltip.style('display', 'none'))
+    .on('mouseleave', mouseleave)
+  legend.append("circle")
+    .attr("cx", 100)
+    .attr("cy", 25)
+    .attr("r", 5)
+    .style("fill", colorScale('1'))
+    .attr('treatment', '1')
+    .on('mouseover', mouseover)
+    .on('mousemove', d => tooltip.style('display', 'none'))
+    .on('mouseleave', mouseleave)
+  legend.append("text")
+    .attr("x", 25)
+    .attr("y", 30)
+    .text("Control")
+    .attr("alignment-baseline","middle")
+    .attr('treatment', '0')
+    .on('mouseover', mouseover)
+    .on('mousemove', d => tooltip.style('display', 'none'))
+    .on('mouseleave', mouseleave)
+  legend.append("text")
+    .attr("x", 115)
+    .attr("y", 30)
+    .text("Treatment")
+    .attr("alignment-baseline","middle")
+    .attr('treatment', '1')
+    .on('mouseover', mouseover)
+    .on('mousemove', d => tooltip.style('display', 'none'))
+    .on('mouseleave', mouseleave)
 }
 
 function triggerAnimation(data, scales){
   let {xScale, yScale, colorScale} = scales;
   binData(data)
 
+  let xOffset = 0.3
+  let ySqueeze = 0.6
+
   d3.selectAll('.scatterPoints')
     .transition()
     .duration(2500)
-    .attr("cx", d => xScale(d.xBin))
-    .attr("cy", d => yScale(d.yCount)*2)
+    .attr("cx", d => xScale(d.xBin + ((d.treatment == 1) * xOffset/2) - ((d.treatment == 0) * xOffset/2)))
+    .attr("cy", d => yScale(d.yCount * ySqueeze) * 2)
     .delay(d => Math.random() * 400)
     // .delay(d => d.xName * 200) // controls left-to-right delay
     .ease(d3.easeBounceOut) //https://github.com/d3/d3-ease
@@ -233,11 +276,12 @@ function triggerAnimation(data, scales){
 
 function binData(data){
   // calculate new x values
-  d3.map(data, d => d.xBin = Math.round(d.xName * 3) / 3) // modify bin count here
+  let binsPerInteger = 1
+  d3.map(data, d => d.xBin = Math.round(d.xName * binsPerInteger) / binsPerInteger) // modify bin count here
 
   // calculate new y values
   // for each bin, add sequential count for each obsevation in a bin
-  let bins = d3.nest().key(d => d.xBin).entries(store.scatter)
+  let bins = d3.nest().key(d => [d.xBin, d.treatment]).entries(store.scatter)
   d3.map(bins, function(d) {
     d.values.forEach(function(dv, i){ dv.yCount = i + 1})
   })
