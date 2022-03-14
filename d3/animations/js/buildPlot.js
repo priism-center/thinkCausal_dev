@@ -45,7 +45,7 @@ function getScales(data, config) {
      .range([bodyHeight/2, 0])
 
  let colorScale = d3.scaleOrdinal()
-      .domain(["Eastern", "Western"])
+      .domain(["0", "1"])
       .range(["#183b32", "#D7837F"])
 
  return {xScale, yScale, colorScale}
@@ -91,7 +91,7 @@ function drawData(data, config, scales){
     .text("My y axis label")
 
   // draw scatter
-  let pointOpacity = 0.8
+  let pointOpacity = 0.6
   container.append('g')
     .selectAll("myCircles")
     .data(data)
@@ -99,7 +99,7 @@ function drawData(data, config, scales){
     .append("circle")
       .attr("cx", d => xScale(d.xName))
       .attr("cy", d => yScale(d.yName))
-      .attr("r", 4)
+      .attr("r", 3.5)
       .style('opacity', pointOpacity)
       .style('fill', d => colorScale(d.treatment))
       .style('stroke', '#fff')
@@ -107,7 +107,8 @@ function drawData(data, config, scales){
       .on('mouseover', mouseover)
       .on('mousemove', mousemove)
       .on('mouseleave', mouseleave)
-      .attr('class', 'currentPoints')
+      .attr('class', 'scatterPoints')
+      .attr('treatment', d => d.treatment)
 
   // draw fitted lines
   container.append('path')
@@ -160,14 +161,18 @@ function drawData(data, config, scales){
       .style('opacity', 1)
       .style('display', 'block')
 
-    // de-emphasize other points
-    d3.selectAll('.currentPoints')
-      .style('opacity', 0.4)
+    // de-emphasize points not in treatment gorup
+    // d3.selectAll('.scatterPoints')
+    d3.selectAll('circle')
+      .style('opacity', 0.3)
+    let treatment = d3.select(this).attr('treatment')
+    d3.selectAll("circle[treatment='" + treatment + "']")
+      .style('opacity', 1)
 
     // emphasize this current point tho
     d3.select(this)
       .style('opacity', 1)
-      .style('fill', '#394E48')
+      .style('filter', 'brightness(0.8)')
   }
 
   function mousemove(d){
@@ -183,9 +188,11 @@ function drawData(data, config, scales){
       .style('display', 'none')
 
     // re-emphasize other points
-    d3.selectAll('.currentPoints')
+    // d3.selectAll('.scatterPoints')
+    d3.selectAll('circle')
       .style('opacity', pointOpacity)
       .style('fill', d => colorScale(d.treatment))
+      .style('filter', 'brightness(1)')
   }
 
   // // add subtitle
@@ -196,28 +203,28 @@ function drawData(data, config, scales){
   //   .attr('y', -20)
   //   .text('Hover over points to see team history')
   //
-  // // add legend
-  // let legend = container
-  //   .append('g')
-  //   .attr("class", "legend")
-  //   .attr("transform",
-  //           "translate(" + bodyWidth*2.5/9 + " ," + (bodyHeight + (margin.bottom*2.5/5)) + ")")
-  // legend.append("circle").attr("cx",10).attr("cy",25).attr("r", 6).style("fill", "#183b32")
-  // legend.append("circle").attr("cx",100).attr("cy",25).attr("r", 6).style("fill", "#80b0a4")
-  // legend.append("text").attr("x", 25).attr("y", 30).text("Eastern").attr("alignment-baseline","middle")
-  // legend.append("text").attr("x", 115).attr("y", 30).text("Western Conference").attr("alignment-baseline","middle")
+  // add legend
+  let legend = container
+    .append('g')
+    .attr("class", "legend")
+    .attr("transform",
+            "translate(" + bodyWidth*2.5/9 + " ," + (0 - (margin.bottom*3/5)) + ")")
+  legend.append("circle").attr("cx",10).attr("cy",25).attr("r", 5).style("fill", "#183b32").attr('treatment', '0')
+  legend.append("circle").attr("cx",100).attr("cy",25).attr("r", 5).style("fill", "#D7837F").attr('treatment', '1')
+  legend.append("text").attr("x", 25).attr("y", 30).text("Control").attr("alignment-baseline","middle").attr('treatment', '0')
+  legend.append("text").attr("x", 115).attr("y", 30).text("Treatment").attr("alignment-baseline","middle").attr('treatment', '1')
 }
 
 function triggerAnimation(data, scales){
   let {xScale, yScale, colorScale} = scales;
   binData(data)
 
-  d3.selectAll('circle')
+  d3.selectAll('.scatterPoints')
     .transition()
     .duration(2500)
     .attr("cx", d => xScale(d.xBin))
     .attr("cy", d => yScale(d.yCount)*2)
-    .delay(d => Math.random() * 300)
+    .delay(d => Math.random() * 400)
     // .delay(d => d.xName * 200) // controls left-to-right delay
     .ease(d3.easeBounceOut) //https://github.com/d3/d3-ease
     // .ease(d3.easeCubicOut)
@@ -249,3 +256,4 @@ function resetPlot(){
   d3.select('#plot-scatter svg').remove()
   buildPlot(store)
 }
+
