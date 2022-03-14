@@ -6,7 +6,7 @@ function showData(data){
 // read in the data
 function loadData() {
     return Promise.all([
-        d3.csv("/data/point-data.csv")
+        d3.csv("/thinkCausal/d3/interaction/data/point-data.csv")
     ]).then(datasets => {
         store = {},
         store.scatter = datasets[0];
