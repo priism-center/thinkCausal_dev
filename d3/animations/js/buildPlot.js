@@ -363,4 +363,3 @@ function resetPlot(){
   d3.select('#plot-scatter svg').remove()
   buildPlot(store)
 }
-

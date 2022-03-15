@@ -1,11 +1,11 @@
 body {
     font-family: "Roboto", Helvetica, Arial, sans-serif;
     margin: 2em;
-    background-color: #fff;
+    /* background-color: #fff; */
 }
 
 #plot-container {
-  max-width: 800px;
+  max-width: 700px;
 }
 
 .tooltip {
@@ -37,12 +37,19 @@ body {
   font-size: 0.6em;
 }
 
+.subtitle {
+  font-size: 1em;
+  fill: #666666;
+}
+
 .legend > text {
   fill: #666666;
   font-size: 0.8em;
 }
 
 button {
+  width: 150px;
+  max-width: 100%;
   background-color: #726078;
   padding: 0.8em;
   margin: 0.5em;
