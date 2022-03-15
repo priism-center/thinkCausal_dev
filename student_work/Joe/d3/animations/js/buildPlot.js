@@ -73,7 +73,7 @@ function drawData(data, config, scales){
     .call(d3.axisBottom(xScale));
   container.append('text')
     .attr('class', 'axisLabel')
-    .attr("x", xScale(meanX))
+    .attr("x", bodyWidth/2)
     .attr('y', bodyHeight/2 + margin.bottom/2)
     .attr('text-anchor', 'middle')
     .text("My x axis label")
@@ -92,6 +92,9 @@ function drawData(data, config, scales){
 
   // draw scatter
   let pointOpacity = 0.8
+  let pointRadius = 4
+  let strokeColor = '#fff'
+  let strokeWidth = 0.8
   container.append('g')
     .selectAll("myCircles")
     .data(data)
@@ -99,11 +102,11 @@ function drawData(data, config, scales){
     .append("circle")
       .attr("cx", d => xScale(d.xName))
       .attr("cy", d => yScale(d.yName))
-      .attr("r", 4)
+      .attr("r", pointRadius)
       .style('opacity', pointOpacity)
       .style('fill', d => colorScale(d.treatment))
-      .style('stroke', '#fff')
-      .style('stroke-width', 0.5)
+      .style('stroke', strokeColor)
+      .style('stroke-width', strokeWidth)
       .on('mouseover', mouseover)
       .on('mousemove', mousemove)
       .on('mouseleave', mouseleave)
@@ -117,11 +120,11 @@ function drawData(data, config, scales){
     .append("circle")
       .attr("cx", d => xScale(d.xName))
       .attr("cy", d => yScale(d.yName))
-      .attr("r", 4)
+      .attr("r", pointRadius)
       .style('opacity', pointOpacity)
       .style('fill', d => colorScale(d.treatment))
-      .style('stroke', '#fff')
-      .style('stroke-width', 0.5)
+      .style('stroke', strokeColor)
+      .style('stroke-width', strokeWidth)
       .on('mouseover', mouseover)
       .on('mousemove', mousemove)
       .on('mouseleave', mouseleave)
@@ -134,7 +137,7 @@ function drawData(data, config, scales){
     .datum(dataLine)
     .attr('class', 'line')
     .attr('treatment', '0')
-    .style('stroke', '#183b32')
+    .style("stroke", colorScale('0'))
     .attr('d', d3.line()
       .x(d => xScale(d.x0Name))
       .y(d => yScale(d.y0Name))
@@ -143,7 +146,7 @@ function drawData(data, config, scales){
       .datum(dataLine)
       .attr('class', 'line')
       .attr('treatment', '1')
-      .style('stroke', '#D7837F')
+      .style("stroke", colorScale('1'))
       .attr('d', d3.line()
         .x(d => xScale(d.x1Name))
         .y(d => yScale(d.y1Name))
@@ -158,7 +161,7 @@ function drawData(data, config, scales){
       .style('display', 'none')
     container.append('text')
       .attr('class', 'axisLabel')
-      .attr("x", xScale(meanX))
+      .attr("x", bodyWidth / 2)
       .attr('y', bodyHeight + margin.bottom/2)
       .attr('text-anchor', 'middle')
       .text("Histogram: My x axis label")
@@ -181,9 +184,9 @@ function drawData(data, config, scales){
     .attr("class", "tooltip")
 
   function mouseover(d){
-    tooltip
-      .style('opacity', 1)
-      .style('display', null)
+    // tooltip
+    //   .style('opacity', 1)
+    //   .style('display', null)
 
     // de-emphasize points not in treatment gorup
     let treatment = d3.select(this).attr('treatment')
@@ -206,16 +209,16 @@ function drawData(data, config, scales){
   }
 
   function mousemove(d){
-    tooltip
-      .html("<p style='font-weight: 700'>Treatment: " + d.treatment)
-      .style("left", (d3.event.pageX + 20) + "px")
-      .style("top", (d3.event.pageY + 20) + "px")
+    // tooltip
+    //   .html("<p style='font-weight: 700'>Treatment: " + d.treatment)
+    //   .style("left", (d3.event.pageX + 20) + "px")
+    //   .style("top", (d3.event.pageY + 20) + "px")
   }
 
   function mouseleave(d){
-    tooltip
-      .style('opacity', 0)
-      .style('display', 'none')
+    // tooltip
+    //   .style('opacity', 0)
+    //   .style('display', 'none')
 
     // remove font weight from legend
     d3.selectAll("text")
@@ -283,9 +286,23 @@ function drawData(data, config, scales){
 function triggerAnimation(data, scales){
   let {xScale, yScale, colorScale} = scales;
   binData(data)
-
   let xOffset = 0.3
   let ySqueeze = 0.6
+
+  // replace button
+  let newButton = $('<button id="reset" onclick="resetPlot()">Reset animation</button>')
+  $('#trigger').after(newButton)
+  $('#trigger').remove()
+
+  // disable mouse events
+  d3.selectAll('.scatterPoints .scatterPoints-fixed')
+    .attr('pointer-events', 'none')
+
+  // reenable mouse events
+  d3.selectAll('.scatterPoints .scatterPoints-fixed')
+    .transition()
+    .delay(4000)
+    .attr('pointer-events', null)
 
   // show axis and labels
   d3.selectAll('.axis, .axisLabel')
@@ -338,6 +355,11 @@ function buildPlot(data){
 }
 
 function resetPlot(){
+  // replace button
+  let newButton = $('<button id="trigger" onclick="triggerAnimation(store.scatter, scales)">Build histogram</button>')
+  $('#reset').after(newButton)
+  $('#reset').remove()
+
   d3.select('#plot-scatter svg').remove()
   buildPlot(store)
 }
