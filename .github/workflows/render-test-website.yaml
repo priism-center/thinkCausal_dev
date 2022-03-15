@@ -1,0 +1,21 @@
+name: Build Site to GitHub Pages branch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-site:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Deploy site to GitHub pages branch
+        uses: s0/git-publish-subdir-action@v2.5.1
+        env:
+          REPO: self
+          BRANCH: gh-pages
+          FOLDER: _site
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
