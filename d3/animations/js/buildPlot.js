@@ -195,6 +195,7 @@ function drawData(data, config, scales){
       .style('opacity', 0.2)
     d3.selectAll("circle[treatment='" + treatment + "'], path[treatment='" + treatment + "']")
       .style('opacity', 1)
+      .attr('r', pointRadius*1.2)
 
     // emphasize legend
     d3.selectAll("text[treatment='" + treatment + "']")
@@ -205,7 +206,7 @@ function drawData(data, config, scales){
     // emphasize this current point tho
     d3.select(this)
       .style('opacity', 1)
-      .style('filter', 'brightness(0.8)')
+      .style('filter', 'brightness(0.7)')
   }
 
   function mousemove(d){
@@ -229,6 +230,7 @@ function drawData(data, config, scales){
     d3.selectAll('circle, path')
       .style('opacity', pointOpacity)
       .style('filter', null)
+      .attr('r', pointRadius)
   }
 
   // add subtitle
@@ -265,7 +267,7 @@ function drawData(data, config, scales){
     .on('mouseleave', mouseleave)
   legend.append("text")
     .attr("x", width*0.5)
-    .attr("y", 40)
+    .attr("y", 37)
     .text("Control")
     .attr("alignment-baseline","middle")
     .attr('treatment', '0')
@@ -274,7 +276,7 @@ function drawData(data, config, scales){
     .on('mouseleave', mouseleave)
   legend.append("text")
     .attr("x", width*0.5)
-    .attr("y", 60)
+    .attr("y", 57)
     .text("Treatment")
     .attr("alignment-baseline","middle")
     .attr('treatment', '1')
@@ -301,7 +303,7 @@ function triggerAnimation(data, scales){
   // reenable mouse events
   d3.selectAll('.scatterPoints .scatterPoints-fixed')
     .transition()
-    .delay(4000)
+    .delay(5000)
     .attr('pointer-events', null)
 
   // show axis and labels

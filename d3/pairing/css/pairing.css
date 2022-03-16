@@ -8,6 +8,17 @@ body {
   max-width: 900px; /*700*/
 }
 
+.ITTlabel {
+  fill: #6e6e6e;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.line-dashed {
+  stroke-dasharray: 4, 8;
+  stroke-width: 1em;
+}
+
 .tooltip {
   font-size: 0.8em;
   background-color: white;
