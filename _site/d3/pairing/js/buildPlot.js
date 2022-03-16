@@ -116,7 +116,7 @@ function drawData(data, config, scales){
       .attr('y1', d => yScale(d.yName_y0))
       .attr('x2', d => xScale(meanX))
       .attr('y2', d => yScale((d.yName_y0)))
-      .style('stroke', strokeColor)
+      .style('stroke', "#21918c")
       .style('stroke-width', strokeWidth * 2/3)
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
@@ -144,7 +144,7 @@ function drawData(data, config, scales){
       .attr('y1', d => yScale(d.yName_y1))
       .attr('x2', d => xScale(d.xName_y1))
       .attr('y2', d => yScale((d.yName_y1)))
-      .style('stroke', strokeColor)
+      .style('stroke', '#440154')
       .style('stroke-width', strokeWidth * 2/3)
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
@@ -159,7 +159,7 @@ function drawData(data, config, scales){
       .attr("cx", d => xScale(meanX))
       .attr("cy", d => yScale(d.yName_y0))
       .attr("r", pointRadius * 0.7)
-      .attr('fill', strokeColor)
+      .attr('fill', '#21918c')
       .style('display', 'none')
       .attr('class', 'endCircle showOnHover')
       .attr('pairID', d => d.pair_id)
@@ -171,7 +171,7 @@ function drawData(data, config, scales){
       .attr("cx", d => xScale(meanX))
       .attr("cy", d => yScale(d.yName_y1))
       .attr("r", pointRadius * 0.7)
-      .attr('fill', strokeColor)
+      .attr('fill', "#440154")
       .style('display', 'none')
       .attr('class', 'endCircle showOnHover')
       .attr('pairID', d => d.pair_id)
@@ -220,7 +220,11 @@ function drawData(data, config, scales){
     .attr("cy", d => yScale(d.yName))
     .attr("r", pointRadius)
     .style('opacity', pointOpacity)
-    .style('fill', d => colorScale(d.factual))
+    .style('fill', function(d) {
+      if (d.factual === '0') return '#fff'
+      if (d.treatment === '0') return "#21918c"
+      return "#440154"
+    })
     .style('stroke', d => strokeScale(d.y))
     .style('stroke-width', strokeWidth)
     .on('mouseover', mouseover)
