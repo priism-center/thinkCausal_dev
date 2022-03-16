@@ -1,4 +1,4 @@
-name: Build Site to GitHub Pages branch
+name: Build test site to GitHub Pages branch
 on:
   workflow_dispatch:
   push:
@@ -12,6 +12,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - uses: actions/checkout@master
+
       - name: Deploy site to GitHub pages branch
         uses: s0/git-publish-subdir-action@v2.5.1
         env:
