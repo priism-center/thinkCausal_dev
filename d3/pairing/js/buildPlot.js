@@ -28,31 +28,34 @@ function getConfig(){
 }
 
 function getScales(data, config) {
- data = data.scatter
- let { bodyWidth, bodyHeight } = config;
- let maxX = d3.max(data, d => +d.xName);
- let minX = d3.min(data, d => +d.xName);
- let maxY = d3.max(data, d => +d.yName);
- let minY = d3.min(data, d => +d.yName);
+  data = data.scatter
+  let { bodyWidth, bodyHeight } = config;
+  let maxX = d3.max(data, d => +d.xName);
+  let minX = d3.min(data, d => +d.xName);
+  let maxY = d3.max(data, d => +d.yName);
+  let minY = d3.min(data, d => +d.yName);
 
- let xScale = d3.scaleLinear()
-     .domain([minX, maxX])
+  let xAxisBuffer = 0.2
+  let yAxisBuffer = 0.5
+
+  let xScale = d3.scaleLinear()
+     .domain([minX - xAxisBuffer, maxX + xAxisBuffer])
      .range([0, bodyWidth])
 
- let yScale = d3.scaleLinear()
-     // .domain([minY, maxY])
-     .domain([0, maxY])
+  let yScale = d3.scaleLinear()
+    //  .domain([minY, maxY])
+     .domain([0, maxY + yAxisBuffer])
      .range([bodyHeight, 0])
 
- let colorScale = d3.scaleOrdinal()
+  let colorScale = d3.scaleOrdinal()
       .domain(["0", "1"])
       .range(["#fff", "grey"])
 
- let strokeScale = d3.scaleOrdinal()
+  let strokeScale = d3.scaleOrdinal()
       .domain(["0", "1"])
       .range(["#21918c", "#440154"])
 
- return {xScale, yScale, colorScale, strokeScale}
+  return {xScale, yScale, colorScale, strokeScale}
 }
 
 function drawData(data, config, scales){
@@ -75,6 +78,8 @@ function drawData(data, config, scales){
   let pointOpacity = 0.8
   let pointRadius = 7
 
+
+
   // add X axis
   let xAxis = d3.axisBottom(xScale)
   xAxis.ticks(3);
@@ -85,12 +90,6 @@ function drawData(data, config, scales){
     .attr('class', "axis xAxis")
     .attr("transform", "translate(0," + bodyHeight + ")")
     .call(xAxis);
-  // container.append('text')
-  //   .attr('class', 'axisLabel')
-  //   .attr("x", bodyWidth/2)
-  //   .attr('y', bodyHeight + margin.bottom/2)
-  //   .attr('text-anchor', 'middle')
-  //   .text("My x axis label")
 
   // add Y axis
   container.append("g")
@@ -102,7 +101,7 @@ function drawData(data, config, scales){
     .attr('y', yScale(meanY))
     .attr('text-anchor', 'middle')
     .attr("transform", "rotate(-90,-" + (margin.left-10) + "," + yScale(meanY) + ")")
-    .text("My y axis label")
+    .text("Running time")
 
 
 
@@ -149,7 +148,7 @@ function drawData(data, config, scales){
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
       .attr('class', 'showOnHover')
-  
+
   // add endpoints
   container.append('g')
     .selectAll('endCircles')
@@ -159,7 +158,12 @@ function drawData(data, config, scales){
       .attr("cx", d => xScale(meanX))
       .attr("cy", d => yScale(d.yName_y0))
       .attr("r", pointRadius * 0.7)
-      .attr('fill', '#21918c')
+      .attr('fill', function(d) {
+        if (d.treatment == "0") return '#21918c'
+        return "#fff"
+      })
+      .attr('stroke', "#21918c")
+      .attr('stroke-width', 2)
       .style('display', 'none')
       .attr('class', 'endCircle showOnHover')
       .attr('pairID', d => d.pair_id)
@@ -171,12 +175,17 @@ function drawData(data, config, scales){
       .attr("cx", d => xScale(meanX))
       .attr("cy", d => yScale(d.yName_y1))
       .attr("r", pointRadius * 0.7)
-      .attr('fill', "#440154")
+      .attr('fill', function(d) {
+        if (d.treatment == "1") return '#440154'
+        return "#fff"
+      })
+      .attr('stroke', "#440154")
+      .attr('stroke-width', 2)
       .style('display', 'none')
       .attr('class', 'endCircle showOnHover')
       .attr('pairID', d => d.pair_id)
-  
-  // add ITT label
+
+  // add ICE label
   container.append('g')
     .selectAll('rect')
     .data(dataLine)
@@ -189,7 +198,7 @@ function drawData(data, config, scales){
       .style('fill', '#fff')
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
-      .attr('class', 'ITTlabel showOnHover')
+      .attr('class', 'ICElabel showOnHover')
   container.append('g')
     .selectAll('text')
     .data(dataLine)
@@ -197,16 +206,14 @@ function drawData(data, config, scales){
     .append('text')
       .attr('x', d => xScale(meanX * 0.75))
       .attr('y', d => yScale((+d.yName_y0 + +d.yName_y1) / 2))
-      // .style('fill', 'black')
       .text(function(d) {
         let diff = d.yName_y1 - d.yName_y0
-        diff = "Runner " + d.pair_id + " ITT: " + Math.round(diff * 100) / 100
-        return diff
+        let label = "Runner " + d.pair_id + " ICE: " + Math.round(diff * 100) / 100
+        return label
       })
-      // .html('askldj')
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
-      .attr('class', 'ITTlabel showOnHover')
+      .attr('class', 'ICElabel showOnHover')
 
 
 

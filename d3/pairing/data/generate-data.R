@@ -11,7 +11,7 @@ z <- rep(0:1, n)
 pair_id <- rep(seq_len(n), 2)
 
 .data <- data.frame(
-    xName = jitter(sort(rep(0:1, n))),
+    xName = sort(rep(0:1, n)), #jitter(sort(rep(0:1, n))),
     yName = c(y0, y1),
     y = c(rep("y0", n), rep("y1", n)),
     treatment = z,
@@ -24,12 +24,12 @@ ggplot2::ggplot(
                shape = as.factor(factual), group = factual)) + 
   ggplot2::geom_point()
 
-# readr::write_csv(.data, '../student_work/Joe/d3/pairing/data/point-data.csv')
+# readr::write_csv(.data, '../_site/d3/pairing/data/point-data.csv')
 
 library(dplyr)
 
 .dataLines <- .data %>%
-  select(xName, yName, y, pair_id) %>% 
+  select(xName, yName, y, pair_id, treatment) %>% 
   tidyr::pivot_wider(names_from = y, values_from = c(xName, yName))
 
-# readr::write_csv(.dataLines, '../student_work/Joe/d3/pairing/data/line-data.csv')
+# readr::write_csv(.dataLines, '../_site/d3/pairing/data/line-data.csv')
