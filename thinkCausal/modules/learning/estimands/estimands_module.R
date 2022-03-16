@@ -150,6 +150,10 @@ ui_learning_estimands <- function(id) {
         plotOutput(outputId = ns('posttreatment_plot'), 
                    height = 500),
         br()
+        # div(
+        #   class = 'scrollytell',
+        #   htmltools::includeHTML('www/learning/estimands/content.html')
+        # )
       ),
       
       # the quiz UI

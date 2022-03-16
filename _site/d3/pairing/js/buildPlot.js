@@ -56,7 +56,7 @@ function getScales(data, config) {
 }
 
 function drawData(data, config, scales){
-  let {margin, container, bodyHeight, bodyWidth, width, height} = config;
+  var {margin, container, bodyHeight, bodyWidth, width, height} = config;
   let {xScale, yScale, colorScale, strokeScale} = scales;
   console.log('Data into drawData():', data)
 
@@ -69,6 +69,11 @@ function drawData(data, config, scales){
   let maxY = d3.max(data, d => +d.yName);
   let minX = d3.min(data, d => +d.xName);
   let maxX = d3.max(data, d => +d.xName);
+
+  let strokeColor = '#6e6e6e'
+  let strokeWidth = 2.5
+  let pointOpacity = 0.8
+  let pointRadius = 7
 
   // add X axis
   let xAxis = d3.axisBottom(xScale)
@@ -87,7 +92,7 @@ function drawData(data, config, scales){
     .attr('text-anchor', 'middle')
     .text("My x axis label")
 
-  // Add Y axis
+  // add Y axis
   container.append("g")
     .attr('class', "axis yAxis")
     .call(d3.axisLeft(yScale));
@@ -99,6 +104,8 @@ function drawData(data, config, scales){
     .attr("transform", "rotate(-90,-" + (margin.left-10) + "," + yScale(meanY) + ")")
     .text("My y axis label")
 
+
+
   // draw lines connecting the points
   container.append('g')
     .selectAll('line')
@@ -107,35 +114,123 @@ function drawData(data, config, scales){
     .append('line')
       .attr('x1', d => xScale(d.xName_y0))
       .attr('y1', d => yScale(d.yName_y0))
-      .attr('x2', d => xScale(d.xName_y1))
-      .attr('y2', d => yScale(d.yName_y1))
-      .style('stroke', 'grey')
-      .style('stroke-width', 2)
+      .attr('x2', d => xScale(meanX))
+      .attr('y2', d => yScale((d.yName_y0)))
+      .style('stroke', strokeColor)
+      .style('stroke-width', strokeWidth * 2/3)
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
+      .attr('class', 'showOnHover')
+  container.append('g')
+    .selectAll('line')
+    .data(dataLine)
+    .enter()
+    .append('line')
+      .attr('x1', d => xScale(meanX))
+      .attr('y1', d => yScale(d.yName_y0))
+      .attr('x2', d => xScale(meanX))
+      .attr('y2', d => yScale((d.yName_y1)))
+      .style('stroke', strokeColor)
+      .style('stroke-width', strokeWidth * 2/3)
+      .style('display', 'none')
+      .attr('pairID', d => d.pair_id)
+      .attr('class', 'line-dashed showOnHover')
+  container.append('g')
+    .selectAll('line')
+    .data(dataLine)
+    .enter()
+    .append('line')
+      .attr('x1', d => xScale(meanX))
+      .attr('y1', d => yScale(d.yName_y1))
+      .attr('x2', d => xScale(d.xName_y1))
+      .attr('y2', d => yScale((d.yName_y1)))
+      .style('stroke', strokeColor)
+      .style('stroke-width', strokeWidth * 2/3)
+      .style('display', 'none')
+      .attr('pairID', d => d.pair_id)
+      .attr('class', 'showOnHover')
+  
+  // add endpoints
+  container.append('g')
+    .selectAll('endCircles')
+    .data(dataLine)
+    .enter()
+    .append('circle')
+      .attr("cx", d => xScale(meanX))
+      .attr("cy", d => yScale(d.yName_y0))
+      .attr("r", pointRadius * 0.7)
+      .attr('fill', strokeColor)
+      .style('display', 'none')
+      .attr('class', 'endCircle showOnHover')
+      .attr('pairID', d => d.pair_id)
+  container.append('g')
+    .selectAll('endCircle')
+    .data(dataLine)
+    .enter()
+    .append('circle')
+      .attr("cx", d => xScale(meanX))
+      .attr("cy", d => yScale(d.yName_y1))
+      .attr("r", pointRadius * 0.7)
+      .attr('fill', strokeColor)
+      .style('display', 'none')
+      .attr('class', 'endCircle showOnHover')
+      .attr('pairID', d => d.pair_id)
+  
+  // add ITT label
+  container.append('g')
+    .selectAll('rect')
+    .data(dataLine)
+    .enter()
+    .append('rect')
+      .attr('width', 50)
+      .attr('height', 27)
+      .attr('x', d => xScale(meanX * 0.97))
+      .attr('y', d => yScale(((+d.yName_y0 + +d.yName_y1) / 2) + 0.2))
+      .style('fill', '#fff')
+      .style('display', 'none')
+      .attr('pairID', d => d.pair_id)
+      .attr('class', 'ITTlabel showOnHover')
+  container.append('g')
+    .selectAll('text')
+    .data(dataLine)
+    .enter()
+    .append('text')
+      .attr('x', d => xScale(meanX * 0.88))
+      .attr('y', d => yScale((+d.yName_y0 + +d.yName_y1) / 2))
+      // .style('fill', 'black')
+      .text(function(d) {
+        let diff = d.yName_y1 - d.yName_y0
+        diff = "ITT: " + Math.round(diff * 100) / 100
+        return diff
+      })
+      // .html('askldj')
+      .style('display', 'none')
+      .attr('pairID', d => d.pair_id)
+      .attr('class', 'ITTlabel showOnHover')
+
+
 
   // draw scatter
-  let pointOpacity = 0.8
-  let pointRadius = 7
-  let strokeWidth = 2.5
   container.append('g')
-    .selectAll("myCircles")
-    .data(data)
-    .enter()
-    .append("circle")
-      .attr("cx", d => xScale(d.xName))
-      .attr("cy", d => yScale(d.yName))
-      .attr("r", pointRadius)
-      .style('opacity', pointOpacity)
-      .style('fill', d => colorScale(d.factual))
-      .style('stroke', d => strokeScale(d.y))
-      .style('stroke-width', strokeWidth)
-      .on('mouseover', mouseover)
-      .on('mousemove', mousemove)
-      .on('mouseleave', mouseleave)
-      .attr('class', d => 'scatter scatterPoints')
-      .attr('pairID', d => d.pair_id)
-      // .attr('treatment', d => d.treatment)
+  .selectAll("myCircles")
+  .data(data)
+  .enter()
+  .append("circle")
+    .attr("cx", d => xScale(d.xName))
+    .attr("cy", d => yScale(d.yName))
+    .attr("r", pointRadius)
+    .style('opacity', pointOpacity)
+    .style('fill', d => colorScale(d.factual))
+    .style('stroke', d => strokeScale(d.y))
+    .style('stroke-width', strokeWidth)
+    .on('mouseover', mouseover)
+    .on('mousemove', mousemove)
+    .on('mouseleave', mouseleave)
+    .attr('class', 'scatter scatterPoints')
+    .attr('pairID', d => d.pair_id)
+    // .attr('treatment', d => d.treatment)
+
+
 
   // create a tooltip
   let tooltip = d3.select("#plot-scatter")
@@ -148,18 +243,19 @@ function drawData(data, config, scales){
     //   .style('opacity', 1)
     //   .style('display', null)
 
-    // de-emphasize points not in pairing
+    // get the pair ID for this highlighted point
     let pairID = d3.select(this).attr('pairID')
-    // let other_treatment = Math.abs(+treatment - 1)
-    d3.selectAll("circle")
+
+    // de-emphasize points not in pairing
+    d3.selectAll(".scatterPoints")
       .style('opacity', 0.2)
-    d3.selectAll("circle[pairID='" + pairID + "']")
+    d3.selectAll(".scatterPoints[pairID='" + pairID + "']")
       .style('opacity', 1)
       .attr('r', pointRadius*1.2)
       .style('filter', 'brightness(0.9)')
 
     // emphasize lines
-    d3.selectAll("line[pairID='" + pairID + "']")
+    d3.selectAll(".showOnHover[pairID='" + pairID + "']")
       .style('display', null)
 
     // emphasize legend
@@ -182,17 +278,17 @@ function drawData(data, config, scales){
     //   .style('display', 'none')
 
     // remove font weight from legend
-    d3.selectAll("text")
-      .style('font-weight', null)
-      .style('fill', null)
+    // d3.selectAll("text")
+    //   .style('font-weight', null)
+    //   .style('fill', null)
 
     // re-emphasize other points
-    d3.selectAll('circle, path')
+    d3.selectAll('.scatterPoints')
       .style('opacity', pointOpacity)
       .style('filter', null)
       .attr('r', pointRadius)
 
-    d3.selectAll("line")
+    d3.selectAll('.showOnHover')
       .style('display', 'none')
   }
 
