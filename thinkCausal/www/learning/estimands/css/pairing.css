@@ -8,10 +8,10 @@ body {
   max-width: 900px; /*700*/
 }
 
-.ITTlabel {
+.ICElabel {
   fill: #6e6e6e;
   font-style: italic;
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 
 .line-dashed {
@@ -58,7 +58,7 @@ body {
   font-size: 0.8em;
 }
 
-button {
+/* button {
   width: 150px;
   max-width: 100%;
   background-color: #726078;
@@ -75,4 +75,4 @@ button:hover {
 }
 button:active {
   filter: brightness(0.7);
-}
+} */

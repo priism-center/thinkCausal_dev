@@ -7,9 +7,6 @@ shinyUI(
         # download roboto font
         tags$link(rel = "stylesheet", type = "text/css", href = "//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic"),
         
-        # make all links open in a new tab
-        tags$head(tags$base(target = "_blank")),
-        
         # load custom CSS files
         map(list.files('www/css', pattern = "*.css"), function(file) includeCSS(file.path('www', 'css', file))),
 
@@ -58,13 +55,25 @@ shinyUI(
         tags$div(class = 'cornerRibbon', 'BETA'),
         
         # add header and footer elements
-        tags$head(tags$title('thinkCausal')),
+        htmltools::singleton(tags$head(
+          
+          # add title to browser tab
+          tags$title('thinkCausal'),
+          
+          # make all links open in a new tab
+          tags$base(target = "_blank"),
+          
+          # load d3.js
+          # TODO: this does not work because shiny appends a port to the url
+          # tags$script(src = c(href = "https://d3js.org/d3.v5.js")),
+          # tags$script(src = c(href = "https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"))
+        )),
         tags$footer(
             # link to priism
             HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>'),
             
             # load custom JavaScript files
             map(list.files('www/js', pattern = "*.js"), function(file) tags$script(src = file.path('js', file)))
-        )
+          )
     )
 )

@@ -32,6 +32,26 @@ welcome_header <- tabPanel(
                    h3("Analyze"),
                    p("Unlock modern causal inference methods. Easily implement Bayesian Additive Regression Trees")
                  )
+          ),
+          column(12,
+                 # load custom css
+                 includeCSS(file.path('www', 'learning', 'estimands', 'css', 'pairing.css')),
+                 
+                 # load d3
+                 # tags$script(src = "https://code.jquery.com/jquery-3.3.1.slim.min.js",
+                 #             integrity = "sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo",
+                 #             crossorigin = "anonymous"),
+                 # tags$script(src = "https://d3js.org/d3.v5.js"),
+                 # tags$script(src = "https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"),
+                 
+                 # load custom javascript
+                 tags$script(src = file.path('learning', 'estimands', 'js', 'buildPlot.js')),
+                 tags$script(src = file.path('learning', 'estimands', 'js', 'showData.js')),
+                 div(
+                   class = 'estimands-d3-container',
+                   div(id = 'plot-container',
+                       div(id = 'plot-scatter'))
+                 )
           )
         )
         ),
