@@ -28,6 +28,7 @@ function d3State1(){
     // trigger plot change
     d3.selectAll(".scatterPoints")
         .attr("pointer-events", "none")
+        .transition() //this kills currently running transitions
         .style('opacity', 0.8)
     d3.selectAll(".scatterPoints[factual='counterfactual']")
         .style('display', 'none')
@@ -37,43 +38,43 @@ function d3State1(){
 
     // emphasize this text
     d3.selectAll("#trigger-1, #trigger-1 + p")
-        .style('color', null)
+        .style('filter', null)
     
     // dephasize other text
     d3.selectAll("#trigger-2, #trigger-2 + p, #trigger-2 + p + p, #trigger-3, #trigger-3 + p")
-        .style('color', '#b8b8b8')
+        .style('filter', 'opacity(0.2)')
 }
 function d3State2(){
     console.log('state2')
 
     // trigger plot change
+    // TODO: scaffold factual / CF points
     d3.selectAll(".scatterPoints")
         .style('display', null)
         .transition()
         .duration(1200)
         .style('opacity', 0.2)
         .attr("pointer-events", "all")
-    // d3.selectAll(".scatterPoints[factual='factual']")
-    //     .attr("pointer-events", "all")
-    //     .style('opacity', 0.2)
     d3.selectAll(".meanLines")
         .style('display', 'none')
     
     // show example lines
+    // TODO: issue here with animation timing
     d3.selectAll(".showOnHover[pairID='" + 10 + "'], .scatterPoints[pairID='" + 10 + "']")
         .style('display', null)
         .style('opacity', 0)
         .transition()
-        .delay(1200)
+        .duration(1400)
+        .delay(3500)
         .style('opacity', 1)
 
     // emphasize this text
     d3.selectAll("#trigger-2, #trigger-2 + p, #trigger-2 + p + p")
-        .style('color', null)
+        .style('filter', null)
     
     // dephasize other text
     d3.selectAll("#trigger-1, #trigger-1 + p, #trigger-3, #trigger-3 + p")
-        .style('color', '#b8b8b8')
+        .style('filter', 'opacity(0.2)')
 }
 
 function d3State3(){
@@ -84,22 +85,24 @@ function d3State3(){
         .style('display', null)
     d3.selectAll(".scatterPoints")
         .attr("pointer-events", "none")
+        .transition() //this kills currently running transitions
         .style('opacity', 0.2)
     d3.selectAll(".showOnHover")
         .style('display', 'none')
 
     // emphasize this text
     d3.selectAll("#trigger-3, #trigger-3 + p")
-        .style('color', null)
+        .style('filter', null)
     
     // dephasize other text
     d3.selectAll("#trigger-1, #trigger-1 + p, #trigger-2, #trigger-2 + p, #trigger-2 + p + p")
-        .style('color', '#b8b8b8')
+        .style('filter', 'opacity(0.2)')
 }
 
 function triggerD3Animation(){
-    // trigger the closest animation that is not above the view window
+    // trigger the closest animation 
 
+    // get the positions of divs relative to the top of the viewport
     let trigger1Pos = $('#trigger-1')[0].getBoundingClientRect().top
     let trigger2Pos = $('#trigger-2')[0].getBoundingClientRect().top
     let trigger3Pos = $('#trigger-3')[0].getBoundingClientRect().top
