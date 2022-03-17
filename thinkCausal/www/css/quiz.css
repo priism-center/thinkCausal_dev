@@ -45,7 +45,7 @@
 /* this lives outside of the .quiz-container */
 .learning-content {
   display: none;
-  max-width: 800px;
+  max-width: 900px;
 }
 /* can also hide the entire quiz
 .quiz-container {

@@ -16,14 +16,26 @@
 
 .estimands-d3-container {
   width: 65%;
-  height: 450px; /* should match height of d3 plot */
+  height: 400px; /* should match height of d3 plot */
   position: -webkit-sticky;
   position: sticky;
-  top: 50px;
+  top: 30px;
+  padding: 20px 0 0 0;
 }
 
 
 
+/*delete body and #plot-container chunks when moving to shiny */
+body {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  color: #404040;
+  margin: 2em;
+  /* background-color: #fff; */
+  max-width: 900px; /*same as learning container*/
+}
+/* #plot-container {
+  max-width: 540px;
+} */
 
 /*### specific to d3 ###*/
 .ICElabel {
@@ -63,7 +75,7 @@
 
 .axisLabel {
   fill: #666666;
-  font-size: 0.6em;
+  font-size: 0.65em;
 }
 
 .subtitle {
@@ -73,7 +85,7 @@
 
 .legend > text {
   fill: #666666;
-  font-size: 0.8em;
+  font-size: 0.65em;
 }
 
 /* button {

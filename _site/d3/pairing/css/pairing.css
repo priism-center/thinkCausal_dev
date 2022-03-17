@@ -1,29 +1,13 @@
-/*### scrollytell ###*/
-.scrollytell-container {
-  display: flex;
-  justify-content: space-between;
+
+/*delete body and #plot-container chunks when moving to shiny */
+body {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  margin: 2em;
+  /* background-color: #fff; */
 }
-
-.estimands-text-along-d3,
-.estimands-d3-container {
-  background-color: #fff;
+#plot-container {
+  max-width: 540px;
 }
-
-.estimands-text-along-d3 {
-  padding: 0px 50px 0 0;
-  width: 35%;
-}
-
-.estimands-d3-container {
-  width: 65%;
-  height: 450px; /* should match height of d3 plot */
-  position: -webkit-sticky;
-  position: sticky;
-  top: 50px;
-}
-
-
-
 
 /*### specific to d3 ###*/
 .ICElabel {

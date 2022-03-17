@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/pairing.css">
+</head>
+<body>
+  <main>
+    <div><h1>Section before scrollytell</h2>
+
+      <p>Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable <code>bugs</code> is very close to the true treatment effect. The analysis that includes the post-treatment variable <code>bugs</code> is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!</p>
+            
+      <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
+      
+      <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
+
+      <br><br><br>
+    </div>
+    <div class="scrollytell-container">
+      <div class="estimands-text-along-d3">
+        
+        <h1>Average treatment effects</h2>
+        <h2 id="trigger-1">Initial state</h2>
+
+        <p>Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable <code>bugs</code> is very close to the true treatment effect. The analysis that includes the post-treatment variable <code>bugs</code> is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!</p>
+        
+        <p><br></p>
+        
+        <h2 id="trigger-2">Second state</h2>
+        
+        <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
+        
+        <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
+        
+        <h2 id="trigger-3">Final state</h2>
+
+        <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? </p>
+
+        </div>
+      <div id="plot-container" class="estimands-d3-container">
+        <!-- <button id="trigger" onclick="triggerAnimation(store.scatter, scales)">Build histogram</button> -->
+        <div id='plot-scatter'></div>
+      </div>
+    </div>
+    <br><br><br><br><br>
+    <div><h2>Next section after scrollytell</h2>
+
+      <p>Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable <code>bugs</code> is very close to the true treatment effect. The analysis that includes the post-treatment variable <code>bugs</code> is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!</p>
+      
+      <p><br></p>
+      
+      <h2>Why are analyses with post-treatment variables biased?</h2>
+      
+      <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
+      
+      <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
+      
+      <p>&lt; INSERT DATA TABLE &gt;</p>
+    </div>
+    <div><h2>Average treatment effects</h2>
+
+      <p>Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable <code>bugs</code> is very close to the true treatment effect. The analysis that includes the post-treatment variable <code>bugs</code> is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!</p>
+      
+      <p><br></p>
+      
+      <h2>Why are analyses with post-treatment variables biased?</h2>
+      
+      <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
+      
+      <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
+      
+      <p>&lt; INSERT DATA TABLE &gt;</p>
+    </div>
+  </main>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"></script>
+<script src="js/buildPlot.js"></script>
+<script src="js/showData.js"></script>
+</html>

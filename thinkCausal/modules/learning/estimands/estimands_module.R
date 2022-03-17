@@ -5,6 +5,8 @@ require(tidyr)
 require(tibble)
 require(ggplot2)
 
+### requires d3 to be loaded in the main UI ###
+
 
 # objects -----------------------------------------------------------------
 
@@ -125,6 +127,7 @@ store_l_estimands$question_prompts <- list(question_prompt_1, question_prompt_2)
 store_l_estimands$correct_answers <- list(correct_answer_1, correct_answer_2)
 store_l_estimands$message_correct <- "Well done! You got all of them correct. Please read on to learn about the next topic."
 store_l_estimands$message_wrong <- "Hmmm, bummer! You got at least one wrong. Please take a minute to review the above content."
+store_l_estimands$message_skipped <- 'Quiz skipped. You can restart it using the button below.'
 
 # clean up otherwise may have conflicts with other learning modules
 rm(question_1, question_2, question_prompt_1, question_prompt_2, correct_answer_1, correct_answer_2)
@@ -139,13 +142,6 @@ ui_learning_estimands <- function(id) {
       
       # load custom css
       includeCSS(file.path('www', 'learning', 'estimands', 'css', 'pairing.css')),
-      
-      # load d3
-      # tags$script(src = "https://code.jquery.com/jquery-3.3.1.slim.min.js",
-      #             integrity = "sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo",
-      #             crossorigin = "anonymous"),
-      # tags$script(src = "https://d3js.org/d3.v5.js"),
-      # tags$script(src = "https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"),
       
       # load custom javascript
       tags$script(src = file.path('learning', 'estimands', 'js', 'buildPlot.js')),
@@ -163,13 +159,22 @@ ui_learning_estimands <- function(id) {
                      selected = 'Do not include bugs'),
         plotOutput(outputId = ns('posttreatment_plot'), 
                    height = 500),
-        br(),
+        br(),br(),br(),
         
-        # d3js content
         div(
-          class = 'estimands-d3-container',
-          div(id = 'plot-container',
-              div(id = 'plot-scatter'))
+          class = 'scrollytell-container',
+          
+          # text content
+          div(
+            class = 'estimands-text-along-d3',
+            includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_ate.md'))
+          ),
+          
+          # d3js content
+          div(id = 'plot-container', # TODO: should prefix the div ids
+              class = 'estimands-d3-container',
+              div(id = 'plot-scatter')
+          )
         )
       ),
       
@@ -206,6 +211,7 @@ server_learning_estimands <- function(id, plot_theme = ggplot2::theme_get) {
         correct_answers = store_l_estimands$correct_answers,
         message_correct = store_l_estimands$message_correct,
         message_wrong = store_l_estimands$message_wrong,
+        message_skipped = store_l_estimands$message_skipped,
         embed_quiz = TRUE
       )
       

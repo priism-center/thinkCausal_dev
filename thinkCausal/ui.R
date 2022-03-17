@@ -1,6 +1,6 @@
 shinyUI(
     fluidPage(
-        
+      
         # use shinyjs
         shinyjs::useShinyjs(),
         
@@ -54,7 +54,7 @@ shinyUI(
         # add beta ribbon
         tags$div(class = 'cornerRibbon', 'BETA'),
         
-        # add header and footer elements
+        # add header elements
         htmltools::singleton(tags$head(
           
           # add title to browser tab
@@ -64,10 +64,11 @@ shinyUI(
           tags$base(target = "_blank"),
           
           # load d3.js
-          # TODO: this does not work because shiny appends a port to the url
-          # tags$script(src = c(href = "https://d3js.org/d3.v5.js")),
-          # tags$script(src = c(href = "https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"))
+          tags$script(src = c(href = "https://d3js.org/d3.v5.js")),
+          tags$script(src = c(href = "https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"))
         )),
+        
+        # add footer elements
         tags$footer(
             # link to priism
             HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>'),
