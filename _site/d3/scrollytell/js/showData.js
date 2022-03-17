@@ -65,7 +65,7 @@ function d3State2(){
         .style('opacity', 0)
         .transition()
         .duration(1400)
-        .delay(3500)
+        .delay(1000)
         .style('opacity', 1)
 
     // emphasize this text
@@ -99,6 +99,7 @@ function d3State3(){
         .style('filter', 'opacity(0.2)')
 }
 
+let estimandsPlotState = 1
 function triggerD3Animation(){
     // trigger the closest animation 
 
@@ -115,16 +116,18 @@ function triggerD3Animation(){
             positions.splice(i, 1, Math.abs(positions[i])) //*10000
         }
     }
-    // console.log(positions)
 
     // get smallest value 
     const minVal = Math.min(...positions)
     const index = positions.indexOf(minVal)
 
-    // console.log(index)
-    if (index == 0) d3State1()
-    if (index == 1) d3State2()
-    if (index == 2) d3State3()
+    // update plot if state changed
+    if (index != estimandsPlotState){
+        if (index == 0) d3State1()
+        if (index == 1) d3State2()
+        if (index == 2) d3State3()
+        estimandsPlotState = index
+    }
 }
 
 // add listener 
