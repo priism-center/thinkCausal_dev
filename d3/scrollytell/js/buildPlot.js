@@ -63,15 +63,12 @@ function drawData(data, config, scales){
   let {xScale, yScale, colorScale, strokeScale} = scales;
   console.log('Data into drawData():', data)
 
-  let dataLine = data.line
-  data = data.scatter
-
-  let meanY = d3.mean(data, d => +d.yName);
-  let meanX = d3.mean(data, d => +d.xName);
-  let minY = d3.min(data, d => +d.yName);
-  let maxY = d3.max(data, d => +d.yName);
-  let minX = d3.min(data, d => +d.xName);
-  let maxX = d3.max(data, d => +d.xName);
+  let meanY = d3.mean(data.scatter, d => +d.yName);
+  let meanX = d3.mean(data.scatter, d => +d.xName);
+  let minY = d3.min(data.scatter, d => +d.yName);
+  let maxY = d3.max(data.scatter, d => +d.yName);
+  let minX = d3.min(data.scatter, d => +d.xName);
+  let maxX = d3.max(data.scatter, d => +d.xName);
 
   let strokeColor = '#6e6e6e'
   let strokeWidth = 2.5
@@ -108,7 +105,7 @@ function drawData(data, config, scales){
   // draw lines connecting the points
   container.append('g')
     .selectAll('line')
-    .data(dataLine)
+    .data(data.line)
     .enter()
     .append('line')
       .attr('x1', d => xScale(d.xName_y0))
@@ -122,7 +119,7 @@ function drawData(data, config, scales){
       .attr('class', 'showOnHover')
   container.append('g')
     .selectAll('line')
-    .data(dataLine)
+    .data(data.line)
     .enter()
     .append('line')
       .attr('x1', d => xScale(meanX))
@@ -136,7 +133,7 @@ function drawData(data, config, scales){
       .attr('class', 'line-dashed showOnHover')
   container.append('g')
     .selectAll('line')
-    .data(dataLine)
+    .data(data.line)
     .enter()
     .append('line')
       .attr('x1', d => xScale(meanX))
@@ -152,7 +149,7 @@ function drawData(data, config, scales){
   // add endpoints
   container.append('g')
     .selectAll('endCircles')
-    .data(dataLine)
+    .data(data.line)
     .enter()
     .append('circle')
       .attr("cx", d => xScale(meanX))
@@ -169,7 +166,7 @@ function drawData(data, config, scales){
       .attr('pairID', d => d.pair_id)
   container.append('g')
     .selectAll('endCircle')
-    .data(dataLine)
+    .data(data.line)
     .enter()
     .append('circle')
       .attr("cx", d => xScale(meanX))
@@ -188,7 +185,7 @@ function drawData(data, config, scales){
   // add ICE label
   container.append('g')
     .selectAll('rect')
-    .data(dataLine)
+    .data(data.line)
     .enter()
     .append('rect')
       .attr('width', 50)
@@ -201,7 +198,7 @@ function drawData(data, config, scales){
       .attr('class', 'ICElabel showOnHover')
   container.append('g')
     .selectAll('text')
-    .data(dataLine)
+    .data(data.line)
     .enter()
     .append('text')
       .attr('x', d => xScale(meanX * 0.75))
@@ -219,28 +216,58 @@ function drawData(data, config, scales){
 
   // draw scatter
   container.append('g')
-  .selectAll("myCircles")
-  .data(data)
-  .enter()
-  .append("circle")
-    .attr("cx", d => xScale(d.xName))
-    .attr("cy", d => yScale(d.yName))
-    .attr("r", pointRadius)
-    .style('opacity', pointOpacity)
-    .style('fill', function(d) {
-      if (d.factual === '0') return '#fff'
-      if (d.treatment === '0') return "#21918c"
-      return "#440154"
-    })
-    .style('stroke', d => strokeScale(d.y))
-    .style('stroke-width', strokeWidth)
-    .on('mouseover', mouseover)
-    .on('mousemove', mousemove)
-    .on('mouseleave', mouseleave)
-    .attr('class', 'scatter scatterPoints')
-    .attr('pairID', d => d.pair_id)
-    // .attr('treatment', d => d.treatment)
+    .selectAll("myCircles")
+    .data(data.scatter)
+    .enter()
+    .append("circle")
+      .attr("cx", d => xScale(d.xName))
+      .attr("cy", d => yScale(d.yName))
+      .attr("r", pointRadius)
+      .style('opacity', pointOpacity)
+      .style('fill', function(d) {
+        if (d.factual === '0') return '#fff'
+        if (d.treatment === '0') return "#21918c"
+        return "#440154"
+      })
+      .style('stroke', d => strokeScale(d.y))
+      .style('stroke-width', strokeWidth)
+      .on('mouseover', mouseover)
+      .on('mousemove', mousemove)
+      .on('mouseleave', mouseleave)
+      .attr('class', 'scatter scatterPoints')
+      .attr('factual', function(d) {
+        if (d.factual === '1') return 'factual'
+        return 'counterfactual'
+      })
+      .attr('pairID', d => d.pair_id)
+      .attr("pointer-events", "none")
+  // hide counterfactual points
+  d3.selectAll(".scatterPoints[factual='counterfactual']")
+    .style('display', 'none')
 
+  // show mean lines
+  let meanYy0 = d3.mean(data.line, d => +d.yName_y0);
+  let meanYy1 = d3.mean(data.line, d => +d.yName_y1);
+  container.append('g')
+    .append('line')
+      .attr('x1', xScale(-0.1))
+      .attr('y1', yScale(meanYy0))
+      .attr('x2', xScale(0.1))
+      .attr('y2', yScale(meanYy0))
+      .style('stroke', "#333333")
+      .style('stroke-width', 5)
+      .style('display', 'none')
+      .attr('class', 'meanLines')
+  container.append('g')
+    .append('line')
+      .attr('x1', xScale(0.9))
+      .attr('y1', yScale(meanYy1))
+      .attr('x2', xScale(1.1))
+      .attr('y2', yScale(meanYy1))
+      .style('stroke', '#333333')
+      .style('stroke-width', 5)
+      .style('display', 'none')
+      .attr('class', 'meanLines')
 
 
   // create a tooltip
@@ -253,6 +280,10 @@ function drawData(data, config, scales){
     // tooltip
     //   .style('opacity', 1)
     //   .style('display', null)
+
+    // make sure all other points are not shown
+    d3.selectAll('.showOnHover')
+      .style('display', 'none')
 
     // get the pair ID for this highlighted point
     let pairID = d3.select(this).attr('pairID')
@@ -370,12 +401,12 @@ function buildPlot(data){
   drawData(data, config, scales)
 }
 
-function resetPlot(){
-  // replace button
-  let newButton = $('<button id="trigger" onclick="triggerAnimation(store.scatter, scales)">Build histogram</button>')
-  $('#reset').after(newButton)
-  $('#reset').remove()
+// function resetPlot(){
+//   // replace button
+//   let newButton = $('<button id="trigger" onclick="triggerAnimation(store.scatter, scales)">Build histogram</button>')
+//   $('#reset').after(newButton)
+//   $('#reset').remove()
 
-  d3.select('#plot-scatter svg').remove()
-  buildPlot(store)
-}
+//   d3.select('#plot-scatter svg').remove()
+//   buildPlot(store)
+// }
