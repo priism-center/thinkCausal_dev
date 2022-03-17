@@ -1,6 +1,6 @@
 // https://www.d3-graph-gallery.com/graph/interactivity_transition.html
 
-function getConfig(){
+function estimands_getConfig(){
   let width = 540; //900px is width of learning article * 0.6
   let height = 400;
   let margin = {
@@ -27,7 +27,7 @@ function getConfig(){
   return {width, height, margin, bodyHeight, bodyWidth, container}
 }
 
-function getScales(data, config) {
+function estimands_getScales(data, config) {
   data = data.scatter
   let { bodyWidth, bodyHeight } = config;
   let maxX = d3.max(data, d => +d.xName);
@@ -58,7 +58,7 @@ function getScales(data, config) {
   return {xScale, yScale, colorScale, strokeScale}
 }
 
-function drawData(data, config, scales){
+function estimands_drawData(data, config, scales){
   var {margin, container, bodyHeight, bodyWidth, width, height} = config;
   let {xScale, yScale, colorScale, strokeScale} = scales;
   console.log('Data into drawData():', data)
@@ -395,10 +395,10 @@ function drawData(data, config, scales){
     .attr('treatment', '1')
 }
 
-function buildPlot(data){
-  config = getConfig()
-  scales = getScales(data, config)
-  drawData(data, config, scales)
+function estimands_buildPlot(data){
+  config = estimands_getConfig()
+  scales = estimands_getScales(data, config)
+  estimands_drawData(data, config, scales)
 }
 
 // function resetPlot(){
