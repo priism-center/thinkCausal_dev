@@ -1,6 +1,6 @@
 // https://www.d3-graph-gallery.com/graph/interactivity_transition.html
 
-function estimands_getConfig(){
+estimands.getConfig = function(){
   let width = 540; //900px is width of learning article * 0.6
   let height = 400;
   let margin = {
@@ -27,7 +27,7 @@ function estimands_getConfig(){
   return {width, height, margin, bodyHeight, bodyWidth, container}
 }
 
-function estimands_getScales(data, config) {
+estimands.getScales = function(data, config) {
   data = data.scatter
   let { bodyWidth, bodyHeight } = config;
   let maxX = d3.max(data, d => +d.xName);
@@ -58,7 +58,7 @@ function estimands_getScales(data, config) {
   return {xScale, yScale, colorScale, strokeScale}
 }
 
-function estimands_drawData(data, config, scales){
+estimands.drawData = function(data, config, scales){
   var {margin, container, bodyHeight, bodyWidth, width, height} = config;
   let {xScale, yScale, colorScale, strokeScale} = scales;
   console.log('Data into drawData():', data)
@@ -102,7 +102,7 @@ function estimands_drawData(data, config, scales){
 
 
 
-  // draw lines connecting the points
+  // draw ICE lines connecting the points
   container.append('g')
     .selectAll('line')
     .data(data.line)
@@ -146,7 +146,7 @@ function estimands_drawData(data, config, scales){
       .attr('pairID', d => d.pair_id)
       .attr('class', 'showOnHover')
 
-  // add endpoints
+  // add endpoints to ICE lines
   container.append('g')
     .selectAll('endCircles')
     .data(data.line)
@@ -395,10 +395,10 @@ function estimands_drawData(data, config, scales){
     .attr('treatment', '1')
 }
 
-function estimands_buildPlot(data){
-  config = estimands_getConfig()
-  scales = estimands_getScales(data, config)
-  estimands_drawData(data, config, scales)
+estimands.buildPlot = function(data){
+  config = estimands.getConfig()
+  scales = estimands.getScales(data, config)
+  estimands.drawData(data, config, scales)
 }
 
 // function resetPlot(){

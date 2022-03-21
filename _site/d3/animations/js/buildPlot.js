@@ -324,7 +324,7 @@ function triggerAnimation(data, scales){
     // .ease(d3.easeCubicOut)
     // .ease(d3.easeBackIn)
 
-  // add points back
+  // add points back to top plot
   d3.selectAll('.scatterPoints-fixed')
     .style('opacity', 0)
     .transition()
