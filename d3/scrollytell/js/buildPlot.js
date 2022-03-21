@@ -268,6 +268,21 @@ estimands.drawData = function(data, config, scales){
       .style('stroke-width', 5)
       .style('display', 'none')
       .attr('class', 'meanLines')
+  
+  // add ICE ATE line
+  let ATE = d3.mean(data.line, d => d.yName_y0 - d.yName_y1)
+  console.log(ATE)
+  container.append('g')
+    .append('line')
+      .attr('x1', xScale(-0.1))
+      .attr('y1', yScale(ATE))
+      .attr('x2', xScale(1.1))
+      .attr('y2', yScale(ATE))
+      .style('stroke', "#333333")
+      .style('stroke-width', 5)
+      .style('display', 'none')
+      .attr('class', 'ICEATEline')
+    
 
 
   // create a tooltip
@@ -403,10 +418,10 @@ estimands.buildPlot = function(data){
 
 // function resetPlot(){
 //   // replace button
-//   let newButton = $('<button id="trigger" onclick="triggerAnimation(store.scatter, scales)">Build histogram</button>')
+//   let newButton = $('<button id="trigger" onclick="triggerAnimation(estimands.data.scatter, scales)">Build histogram</button>')
 //   $('#reset').after(newButton)
 //   $('#reset').remove()
 
 //   d3.select('#plot-scatter svg').remove()
-//   buildPlot(store)
+//   buildPlot(estimands.data)
 // }
