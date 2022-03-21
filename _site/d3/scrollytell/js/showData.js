@@ -9,11 +9,11 @@ estimands.loadData = function() {
         d3.csv("data/point-data.csv"),
         d3.csv("data/line-data.csv"),
     ]).then(datasets => {
-        store = {},
-        store.scatter = datasets[0];
-        store.line = datasets[1];
-        console.log("Loaded data:", store)
-        return store;
+        estimands.data = {},
+        estimands.data.scatter = datasets[0];
+        estimands.data.line = datasets[1];
+        console.log("Loaded data:", estimands.data)
+        return estimands.data;
     })
 }
 

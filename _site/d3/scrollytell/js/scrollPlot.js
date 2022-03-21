@@ -15,7 +15,7 @@ estimands.d3State1 = function(){
     d3.selectAll(".showOnHover")
         .style('display', 'none')
 
-    estimands.emphasizeText("#trigger-1, #trigger-1 + p")
+    estimands.emphasizeText("#estimands-trigger-1, #estimands-trigger-1 + p")
 }
 
 estimands.d3State2 = function(){
@@ -39,14 +39,14 @@ estimands.d3State2 = function(){
     d3.selectAll(".showOnHover")
         .style('display', 'none')
 
-    estimands.emphasizeText("#trigger-2, #trigger-2 + p")
+    estimands.emphasizeText("#estimands-trigger-2, #estimands-trigger-2 + p")
 }
 
 estimands.d3State3 = function(){
     console.log('estimandsState3')
 
-    let {xScale, yScale, colorScale} = estimands.getScales(store, estimands.getConfig());
-    let meanX = d3.mean(store.scatter, d => +d.xName);
+    let {xScale, yScale, colorScale} = estimands.getScales(estimands.data, estimands.getConfig());
+    let meanX = d3.mean(estimands.data.scatter, d => +d.xName);
 
 
     // resets
@@ -61,11 +61,15 @@ estimands.d3State3 = function(){
         .transition() //this kills currently running transitions
         // .style('display', 'none')
     d3.selectAll('.line-dashed')
+        .transition()
         .style('stroke-dasharray', null)
         .attr('x1', d => xScale(meanX))
         .attr('y1', d => yScale(d.yName_y0))
         .attr('x2', d => xScale(meanX))
         .attr('y2', d => yScale((d.yName_y1)))
+    d3.selectAll('.ICEATEline')
+        .transition()
+        .style('display', 'none')
 
     // trigger plot change
     d3.selectAll(".scatterPoints")
@@ -84,11 +88,14 @@ estimands.d3State3 = function(){
         .delay(1000)
         .style('opacity', 1)
 
-    estimands.emphasizeText("#trigger-3, #trigger-3 + p, #trigger-3 + p + p")
+    estimands.emphasizeText("#estimands-trigger-3, #estimands-trigger-3 + p, #estimands-trigger-3 + p + p")
 }
 
 estimands.d3State4 = function(){
     console.log('estimandsState4')
+
+    let {xScale, yScale, colorScale} = estimands.getScales(estimands.data, estimands.getConfig());
+    let meanX = d3.mean(estimands.data.scatter, d => +d.xName);
 
     // resets
     d3.selectAll(".showOnHover")
@@ -105,9 +112,11 @@ estimands.d3State4 = function(){
     // animations
     // highlight each ICE
     delayFn = function(x){ return ((x**0.001)-1) * 5000000 } // accelerating curve
-    d3.selectAll(".showOnHover") //.scatterPoints"
+    d3.selectAll('.showOnHover')
+        .transition()
         .style('display', null)
         .style('opacity', 0)
+    d3.selectAll(".showOnHover, .scatterPoints") //.scatterPoints"
         .transition()
         .duration(300)
         .delay(d => delayFn(d.pair_id))
@@ -127,10 +136,8 @@ estimands.d3State4 = function(){
     //     .style('opacity', 0.1)
 
     // make the ICE bars fall
-    estimands.dropICE(store.line)
-    let {xScale, yScale, colorScale} = estimands.getScales(store, estimands.getConfig());
+    estimands.dropICE(estimands.data.line)
     d3.selectAll('.line-dashed')
-      .style('stroke-dasharray', 0)
       .transition()
       .duration(2500)
       .attr('x1', d => xScale(d.drop_x1))
@@ -146,12 +153,25 @@ estimands.d3State4 = function(){
       .duration(1000)
       .style('opacity', 0)
       .delay(2000)
+    
+    // add average line and label TODO
+    d3.selectAll('.ICEATEline')
+        .style('opacity', 0)
+        .transition()
+        .duration(1000)
+        .style('display', null)
+        .style('opacity', 1)
+        .delay(delayFn(11) + 3000)
+    
 
-    estimands.emphasizeText("#trigger-4, #trigger-4 + p")
+    estimands.emphasizeText("#estimands-trigger-4, #estimands-trigger-4 + p")
 }
 
 estimands.d3State5 = function(){
     console.log('estimandsState5')
+
+    let {xScale, yScale, colorScale} = estimands.getScales(estimands.data, estimands.getConfig());
+    let meanX = d3.mean(estimands.data.scatter, d => +d.xName);
 
     // resets
     d3.selectAll(".xAxis text, .xAxis line")
@@ -161,14 +181,25 @@ estimands.d3State5 = function(){
         .attr("pointer-events", "none")
         .transition()
         .style('opacity', 0.2)
+        .style('display', null)
     d3.selectAll(".showOnHover")
         .style('display', 'none')
+    d3.selectAll('.ICEATEline')
+        .transition() //this kills currently running transitions
+        .style('display', 'none')
+    d3.selectAll('.line-dashed')
+        .transition()
+        .style('stroke-dasharray', null)
+        .attr('x1', d => xScale(meanX))
+        .attr('y1', d => yScale(d.yName_y0))
+        .attr('x2', d => xScale(meanX))
+        .attr('y2', d => yScale((d.yName_y1)))
 
     // show mean lines
     d3.selectAll(".meanLines")
         .style('display', null)
 
-    estimands.emphasizeText("#trigger-5, #trigger-5 + p")
+    estimands.emphasizeText("#estimands-trigger-5, #estimands-trigger-5 + p")
 }
 
 estimands.d3State6 = function(){
@@ -184,7 +215,7 @@ estimands.d3State6 = function(){
     // d3.selectAll(".showOnHover")
     //     .style('display', 'none')
 
-    estimands.emphasizeText("#trigger-6, #trigger-6 + p")
+    estimands.emphasizeText("#estimands-trigger-6, #estimands-trigger-6 + p")
 }
 
 estimands.plotState = 1
@@ -192,12 +223,12 @@ estimands.triggerD3Animation = function(){
     // trigger the closest animation
 
     // get the positions of divs relative to the top of the viewport
-    let trigger1Pos = $('#trigger-1')[0].getBoundingClientRect().top
-    let trigger2Pos = $('#trigger-2')[0].getBoundingClientRect().top
-    let trigger3Pos = $('#trigger-3')[0].getBoundingClientRect().top
-    let trigger4Pos = $('#trigger-4')[0].getBoundingClientRect().top
-    let trigger5Pos = $('#trigger-5')[0].getBoundingClientRect().top
-    let trigger6Pos = $('#trigger-6')[0].getBoundingClientRect().top
+    let trigger1Pos = $('#estimands-trigger-1')[0].getBoundingClientRect().top
+    let trigger2Pos = $('#estimands-trigger-2')[0].getBoundingClientRect().top
+    let trigger3Pos = $('#estimands-trigger-3')[0].getBoundingClientRect().top
+    let trigger4Pos = $('#estimands-trigger-4')[0].getBoundingClientRect().top
+    let trigger5Pos = $('#estimands-trigger-5')[0].getBoundingClientRect().top
+    let trigger6Pos = $('#estimands-trigger-6')[0].getBoundingClientRect().top
     let positions = [trigger1Pos, trigger2Pos, trigger3Pos, trigger4Pos, trigger5Pos, trigger6Pos]
 
     //// for elements that are off the page, replace with really large number
