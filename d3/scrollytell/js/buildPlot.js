@@ -15,7 +15,7 @@ estimands.getConfig = function(){
   let bodyWidth = width - margin.left - margin.right;
 
   // the container is the SVG where we will draw the plot
-  let container = d3.select("#plot-scatter")
+  let container = d3.select("#estimands-plot-ATE")
     .append("svg")
       .attr("class", "plot")
       .attr("preserveAspectRatio", "xMinYMin meet")
@@ -93,7 +93,7 @@ estimands.drawData = function(data, config, scales){
     .attr('class', "axis yAxis")
     .call(d3.axisLeft(yScale));
   container.append('text')
-    .attr('class', 'axisLabel')
+    .attr('class', 'axisLabel yAxisLabel')
     .attr('x', -margin.left-10)
     .attr('y', yScale(meanY))
     .attr('text-anchor', 'middle')
@@ -286,7 +286,7 @@ estimands.drawData = function(data, config, scales){
 
 
   // create a tooltip
-  let tooltip = d3.select("#plot-scatter")
+  let tooltip = d3.select("#estimands-plot-ATE")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
@@ -422,6 +422,6 @@ estimands.buildPlot = function(data){
 //   $('#reset').after(newButton)
 //   $('#reset').remove()
 
-//   d3.select('#plot-scatter svg').remove()
+//   d3.select('#estimands-plot-ATE svg').remove()
 //   buildPlot(estimands.data)
 // }

@@ -25,7 +25,7 @@
 
 
 
-/*delete body and #plot-container chunks when moving to shiny */
+/*delete body and #estimands-plot-container chunks when moving to shiny */
 body {
   font-family: "Roboto", Helvetica, Arial, sans-serif;
   color: #404040;
@@ -33,7 +33,7 @@ body {
   /* background-color: #fff; */
   max-width: 900px; /*same as learning container*/
 }
-/* #plot-container {
+/* #estimands-plot-container {
   max-width: 540px;
 } */
 
