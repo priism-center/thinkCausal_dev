@@ -3,6 +3,9 @@
 .ds_store
 thinkCausal/rsconnect
 
+# vscode workspaces
+*.code-workspace
+
 # History files
 .Rhistory
 .Rapp.history
