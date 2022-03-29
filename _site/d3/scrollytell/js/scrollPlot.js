@@ -88,7 +88,7 @@ estimands.d3State3 = function(){
         .attr("pointer-events", "all")
 
     // show example lines
-    d3.selectAll(".showOnHover[pairID='" + 10 + "'], .scatterPoints[pairID='" + 10 + "']")
+    d3.selectAll(".showOnHover[pairID='" + 1 + "'], .scatterPoints[pairID='" + 1 + "']")
         .style('display', null)
         .style('opacity', 0)
         .transition()
@@ -110,22 +110,21 @@ estimands.d3State4 = function(){
     // resets
     d3.selectAll(".showOnHover")
         .style('display', 'none')
-        // .transition() //this kills currently running transitions
+        .transition() //this kills currently running transitions
     d3.selectAll(".scatterPoints")
         .attr("pointer-events", "none")
         .style('opacity', 0.2)
         // .transition() //this kills currently running transitions
-    d3.selectAll(".meanLines")
+    d3.selectAll(".meanLines, .meanLinesConnector")
         .style('display', 'none')
         // .transition() //this kills currently running transitions
 
     // animations
     // highlight each ICE
-    delayFn = function(index){ return (((index**0.001)-1) * 5000000) - 500 } // accelerating curve
+    delayFn = function(index){ return (((index**0.001)-1) * 5000000) - 1000 } // accelerating curve
     d3.selectAll('.showOnHover')
-        .transition()
-        .style('display', null)
         .style('opacity', 0)
+        .style('display', null)
     d3.selectAll(".showOnHover, .scatterPoints") //.scatterPoints"
         .transition()
         .duration(300)
@@ -164,7 +163,7 @@ estimands.d3State4 = function(){
         .duration(1000)
         .style('opacity', 0)
         .delay(2000)
-    
+
     // change yaxis label
     d3.selectAll('.yAxisLabel')
         .transition()
@@ -172,16 +171,18 @@ estimands.d3State4 = function(){
         .text("Difference in running time")
         .delay(delayFn(11) + 3000)
     estimands.highlightText(".yAxisLabel", delayFn(11) + 2750)
-        
-    // add average line and label TODO
-    d3.selectAll('.ICEATEline')
+
+    // add average line and label
+    d3.selectAll('.ICEATEline, .ICEATElabel')
         .style('opacity', 0)
+        .attr('x', xScale(0.95))
+        .attr('y', yScale(estimands.ATE * 1.1))
+        .text('ATE: ' + Math.round(estimands.ATE*100) / 100)
         .transition()
         .duration(1000)
         .style('display', null)
         .style('opacity', 1)
         .delay(delayFn(11) + 3000)
-    
 
     estimands.emphasizeText("#estimands-trigger-4, #estimands-trigger-4 + p")
 }
@@ -219,8 +220,19 @@ estimands.d3State5 = function(){
         .transition()
         .text("Running time")
 
-    // show mean lines
-    d3.selectAll(".meanLines")
+    // move ATE label to top right
+    d3.selectAll('.ICEATElabel')
+        .style('display', null)
+        .style('opacity', 1)
+        .transition()
+        .duration(1000)
+        .attr('x', xScale(0))
+        .attr('y', yScale(0.5))
+        .delay(500)
+        .text('MoD ATE: ' + Math.round(estimands.ATE*100) / 100)
+
+    // show mean lines and difference lines
+    d3.selectAll(".meanLines, .meanLinesConnector")
         .style('display', null)
 
     estimands.emphasizeText("#estimands-trigger-5, #estimands-trigger-5 + p")
@@ -317,7 +329,7 @@ estimands.highlightText = function(selector, delay){
         .style("fill", '#f0d000')
         .style('font-size', bigFontSize)
         .delay(delay)
-    
+
     d3.selectAll(selector)
         .transition('highlightText')
         .duration(500)
@@ -326,7 +338,7 @@ estimands.highlightText = function(selector, delay){
         .delay(500 + delay)
 }
 estimands.killAnimations = function(){
-    // calling a blank transition again will kill 
+    // calling a blank transition again will kill
     // any previous running ones with the same name
     d3.selectAll("#estimands-plot-ATE *")
         .transition()
