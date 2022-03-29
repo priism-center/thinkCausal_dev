@@ -245,6 +245,8 @@ estimands.drawData = function(data, config, scales){
   d3.selectAll(".scatterPoints[factual='counterfactual']")
     .style('display', 'none')
 
+
+    
   // show mean lines
   let meanYy0 = d3.mean(data.line, d => +d.yName_y0);
   let meanYy1 = d3.mean(data.line, d => +d.yName_y1);
@@ -268,21 +270,38 @@ estimands.drawData = function(data, config, scales){
       .style('stroke-width', 5)
       .style('display', 'none')
       .attr('class', 'meanLines')
-  
-  // add ICE ATE line
-  let ATE = d3.mean(data.line, d => d.yName_y0 - d.yName_y1)
-  console.log(ATE)
+  // add connecting lines
   container.append('g')
     .append('line')
       .attr('x1', xScale(-0.1))
-      .attr('y1', yScale(ATE))
+      .attr('y1', yScale(meanYy0))
+      .attr('x2', xScale(meanX))
+      .attr('y2', yScale(meanYy0))
+      .style('stroke', "#333333")
+      .style('stroke-width', strokeWidth * 2/3)
+      .style('display', 'none')
+      .attr('class', 'meanLinesConnector')
+  // TODO: add rest of connectors
+ 
+  
+
+  // add ICE ATE line and label
+  estimands.ATE = d3.mean(data.line, d => d.yName_y0 - d.yName_y1)
+  container.append('g')
+    .append('line')
+      .attr('x1', xScale(-0.1))
+      .attr('y1', yScale(estimands.ATE))
       .attr('x2', xScale(1.1))
-      .attr('y2', yScale(ATE))
+      .attr('y2', yScale(estimands.ATE))
       .style('stroke', "#333333")
       .style('stroke-width', 5)
       .style('display', 'none')
       .attr('class', 'ICEATEline')
-    
+  container.append('g')
+    .append('text')
+      .style('display', 'none')
+      .attr('class', 'ICEATElabel')
+
 
 
   // create a tooltip
