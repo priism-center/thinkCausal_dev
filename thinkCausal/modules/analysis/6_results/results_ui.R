@@ -55,6 +55,7 @@ ui_results <- function(store, id){
                               label = "See diagnostics"),
                  br(),br(),
                  actionButton(inputId = ns("analysis_results_button_subgroup"),
+                              class = "nav-btn-focus",
                               label = "See results by subgroups"),
                  br(),br(),
                  create_progress_bar(7/7*100)

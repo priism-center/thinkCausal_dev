@@ -160,6 +160,7 @@ ui_eda <- function(store, id){
               actionButton(inputId = ns("analysis_plots_descriptive_button_back"),
                            label = "Back"),
               actionButton(inputId = ns("analysis_plots_descriptive_button_next"),
+                           class = "nav-btn-focus",
                            label = "Next")
             ), 
             br(),
@@ -219,6 +220,7 @@ ui_eda <- function(store, id){
               actionButton(inputId = ns("analysis_plots_support_button_back"),
                            label = "Back"),
               actionButton(inputId = ns("analysis_plots_support_button_next"),
+                           class = "nav-btn-focus",
                            label = "Next")
             ),
             br(),
@@ -256,6 +258,7 @@ ui_eda <- function(store, id){
                      actionButton(inputId = ns("analysis_plots_balance_button_back"),
                                   label = "Back"),
                      actionButton(inputId = ns("analysis_plots_balance_button_next"),
+                                  class = "nav-btn-focus",
                                   label = "Next")
                    ),
                    br(),

@@ -124,7 +124,13 @@ server_model <- function(store, id, global_session){
           store$model_fit_good <- FALSE
           show_popup(session = session,
                      'Model did not fit',
-                     close_button = shiny::modalButton("Close"))
+                     close_button = shiny::actionButton(
+                       inputId = 'analysis_model-analysis_model_button_closeModal', 
+                       class = 'nav-btn-focus', 
+                       `data-dismiss` = "modal",
+                       `data-bs-dismiss` = "modal",
+                       label = "Close"
+                     )) #shiny::modalButton("Close"))
         }
         req(did_model_fit)
         

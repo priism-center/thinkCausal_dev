@@ -43,6 +43,7 @@ ui_data <- function(store, id){
                      actionButton(inputId = ns("analysis_data_button_back"),
                                   label = "Back"),
                      actionButton(inputId = ns('analysis_data_button_columnAssignSave'),
+                                  class = 'nav-btn-focus',
                                   label = 'Save role assignments')
                    ),
                    br(),
@@ -76,6 +77,7 @@ ui_data <- function(store, id){
                      actionButton(inputId = ns("analysis_data_pivot_button_back"),
                                   label = "Back"),
                      actionButton(inputId = ns('analysis_data_save_groupings'),
+                                  class = "nav-btn-focus",
                                   label = 'Save groupings')
                    ),
                    br(),
@@ -105,6 +107,7 @@ ui_data <- function(store, id){
                      actionButton(inputId = ns("analysis_data_select_button_back"),
                                   label = "Back"),
                      actionButton(inputId = ns('analysis_data_save'),
+                                  class = "nav-btn-focus",
                                   label = 'Save changes')
                    ),
                    br(),

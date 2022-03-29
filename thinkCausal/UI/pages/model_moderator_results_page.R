@@ -72,6 +72,7 @@ moderator_page <- tabPanel(
               actionButton(inputId = 'analysis_moderator_icate_button_back',
                            label = 'Back'),
               actionButton(inputId = 'analysis_moderator_icate_button_next',
+                           class = "nav-btn-focus",
                            label = 'Next'))
         ),
         mainPanel(
@@ -97,6 +98,7 @@ moderator_page <- tabPanel(
          # uiOutput(outputId = "sub_group_pannel"), 
           br(),
           actionButton(inputId = 'analysis_moderator_fit',
+                       class = "nav-btn-focus",
                        label = 'Analyze subgroup'),
           br(), br(),
           tags$button(type = 'button',

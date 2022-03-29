@@ -52,6 +52,7 @@ ui_model <- function(store, id){
                h4('3. Fit model'),
                br(),
                actionButton(inputId = ns("analysis_model_button_next"),
+                            class = "nav-btn-focus",
                             label = "Fit model"),
                br(), br(),
                create_link_to_help('Model'),

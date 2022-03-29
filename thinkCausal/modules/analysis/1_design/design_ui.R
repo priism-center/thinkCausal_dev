@@ -43,6 +43,7 @@ ui_design <- function(store, id){
                h4('3. Upload data'),
                br(),
                actionButton(inputId = ns("analysis_design_button_next"),
+                            class = "nav-btn-focus",
                             label = "Go to data"),
                br(), br(),
                create_link_to_help('Study design')

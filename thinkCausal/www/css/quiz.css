@@ -34,6 +34,13 @@
 .quiz-container .submit-button {
   max-width: 150px;
   float: right;
+  background-color: #302f42 !important;
+}
+.quiz-container .submit-button:hover {
+  background-color: #424159 !important;
+}
+.quiz-container .submit-button:active {
+  background-color: #54536e !important;
 }
 
 .quiz-embedded {

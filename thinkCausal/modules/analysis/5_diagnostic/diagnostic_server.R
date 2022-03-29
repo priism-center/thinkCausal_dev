@@ -23,6 +23,7 @@ server_diagnostic <- function(store, id, global_session){
               actionButton(inputId = ns("analysis_diagnostics_button_back"),
                            label = "Back to specify model"),
               actionButton(inputId = ns("analysis_diagnostics_button_next"),
+                           class = "nav-btn-focus",
                            label = "Model results")
             )
           )
@@ -35,6 +36,7 @@ server_diagnostic <- function(store, id, global_session){
               actionButton(inputId = ns("analysis_diagnostics_button_back"),
                            label = "Back to specify model"),
               actionButton(inputId = ns("analysis_diagnostics_button_next"),
+                           class = "nav-btn-focus",
                            label = "Proceed to model results")
             )
           )

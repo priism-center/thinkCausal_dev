@@ -166,8 +166,9 @@ within the selectize dropdowns */
 }
 
 /* buttons .btn:hover, .btn:active, .btn:visited */
+/* buttons .btn:hover, .btn:active, .btn:visited */
 .btn {
-    background-color: #302f42 !important;
+    background-color: #9e9cb5 !important;
     border-radius: 0;
     box-shadow: none;
     border: none;
@@ -181,12 +182,21 @@ within the selectize dropdowns */
     padding: 10px;
     width: 100%;
 }
-
 .btn:hover {
-  background-color: #424159 !important;
+  filter: brightness(1.15);
+}
+.btn:active {
+  filter: brightness(1.3);
 }
 
-.btn:active {
+/* nav buttons to emphasize */
+.btn.btn-default.nav-btn-focus {
+  background-color: #302f42 !important;
+}
+.btn.btn-default.nav-btn-focus:hover {
+  background-color: #424159 !important;
+}
+.btn.btn-default.nav-btn-focus:active {
   background-color: #54536e !important;
 }
 

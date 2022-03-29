@@ -35,6 +35,7 @@ show_popup_common_support_warning <- function(session, common_support_check, ns)
       class = 'backNextContainer',
       style = "width:60%;display:inline-block;horizontal-align:center;",
       actionButton(inputId = ns('common_support_opt3'),
+                   class = 'nav-btn-focus',
                    label = 'See common support diagnostics'),
       br(), br(),
       actionButton(inputId = ns('common_support_new_rule'),
@@ -81,6 +82,7 @@ show_popup_learn_estimand <- function(session){
       class = 'backNextContainer',
       style = "width:60%;display:inline-block;horizontal-align:center;",
       actionButton(inputId = 'learn_estimand_yes',
+                   class = 'nav-btn-focus',
                    label = 'Yes'),
       br(), br(),
       actionButton(inputId = 'learn_estimand_no',
@@ -99,6 +101,7 @@ show_popup_learn_common_support <- function(session){
       class = 'backNextContainer',
       style = "width:60%;display:inline-block;horizontal-align:center;",
       actionButton(inputId = 'learn_common_support_yes',
+                   class = 'nav-btn-focus',
                    label = 'Yes'),
       br(), br(),
       actionButton(inputId = 'learn_common_support_no',
@@ -117,6 +120,7 @@ show_popup_model_no_data_warning <- function(session, ns){
       class = 'backNextContainer',
       style = "width:60%;display:inline-block;horizontal-align:center;",
       actionButton(inputId = ns('analysis_model_button_popup'),
+                   class = 'nav-btn-focus',
                    label = 'Take me to the Data tab')
     )
   )
@@ -156,7 +160,13 @@ show_popup_welcome <- function(session){
   show_popup(session = session,
              content,
              size = 'm',
-             close_button = shiny::modalButton("Get started"),
+             close_button = shiny::actionButton(
+               inputId = 'analysis_design-analysis_design_button_closeModal', 
+               class = 'nav-btn-focus', 
+               `data-dismiss` = "modal",
+               `data-bs-dismiss` = "modal",
+               label = "Get started"
+              ), #shiny::modalButton("Get started"),
              easyClose = TRUE)
 }
 

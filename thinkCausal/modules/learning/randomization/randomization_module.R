@@ -58,6 +58,7 @@ ui_learning_randomization <- function(id) {
         "Now randomize the selections using the below button. How do the densities compare now?",
         br(), br(),
         actionButton(inputId = ns('randomize_button'),
+                     class = 'nav-btn-focus',
                      label = "Randomize the treatment assignment"),
         br(), br(),
         actionButton(inputId = ns('randomize_reset_button'),
