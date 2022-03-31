@@ -224,6 +224,10 @@ d3.select("#input-distribution-mean").on('input', function() {
   newMean = +$("#input-distribution-mean")[0].value
   fundamental.data.trueMean = newMean
 
+  // generate new distribution and study based on input
+  fundamental.data.distribution = fundamental.generateData(newMean);
+  fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
+
   // remove plot and redraw
   d3.select('#fundamental-plot svg').remove()
   fundamental.drawData()
@@ -261,10 +265,10 @@ d3.select("#input-distribution-mean").on('input', function() {
 // intialize plot
 fundamental.showData = function() {
     // initialize values
-    let newMean = 100
-
-    // simulate initial data
-    fundamental.data.distribution = fundamental.generateData(newMean)
+    fundamental.data = {}
+    fundamental.data.trueMean = 0;
+    fundamental.data.distribution = fundamental.generateData(fundamental.data.trueMean);
+    fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
 
     // initialize plot
     fundamental.drawData();

@@ -31,10 +31,7 @@ fundamental.sampleFrom = function(array){
   return array[Math.floor(Math.random() * array.length)];
 }
 
-// initalize
-fundamental.data = {}
-// fundamental.data.studyLine = 0; //+$("#input-study-result")[0].value
-fundamental.data.trueMean = 0;
+// show plot
 fundamental.showData()
 
 //

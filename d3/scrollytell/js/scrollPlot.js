@@ -49,7 +49,7 @@ estimands.d3State2 = function(){
 estimands.d3State3 = function(){
     console.log('estimandsState3')
 
-    let {xScale, yScale, colorScale} = estimands.getScales(estimands.data, estimands.getConfig());
+    let {xScale, yScale} = estimands.scales;
     let meanX = d3.mean(estimands.data.scatter, d => +d.xName);
 
     estimands.killAnimations()
@@ -102,8 +102,9 @@ estimands.d3State3 = function(){
 estimands.d3State4 = function(){
     console.log('estimandsState4')
 
-    let {xScale, yScale, colorScale} = estimands.getScales(estimands.data, estimands.getConfig());
+    let {xScale, yScale} = estimands.scales;
     let meanX = d3.mean(estimands.data.scatter, d => +d.xName);
+    let meanY = d3.mean(estimands.data.scatter, d => +d.yName);
 
     estimands.killAnimations()
 
@@ -118,6 +119,10 @@ estimands.d3State4 = function(){
     d3.selectAll(".meanLines, .meanLinesConnector")
         .style('display', 'none')
         // .transition() //this kills currently running transitions
+    d3.selectAll('.DoMATELabel')
+        .style('display', 'none')
+        .attr('x', xScale(meanX * 0.75))
+        .attr('y', yScale(meanY))
 
     // animations
     // highlight each ICE
@@ -176,8 +181,8 @@ estimands.d3State4 = function(){
     d3.selectAll('.ICEATEline, .ICEATElabel')
         .style('opacity', 0)
         .attr('x', xScale(0.95))
-        .attr('y', yScale(estimands.ATE * 1.1))
-        .text('ATE: ' + Math.round(estimands.ATE*100) / 100)
+        .attr('y', yScale(Math.abs(estimands.ATE) * 1.1))
+        .text('ATE: ' + Math.round(Math.abs(estimands.ATE)*100) / 100)
         .transition()
         .duration(1000)
         .style('display', null)
@@ -190,7 +195,7 @@ estimands.d3State4 = function(){
 estimands.d3State5 = function(){
     console.log('estimandsState5')
 
-    let {xScale, yScale, colorScale} = estimands.getScales(estimands.data, estimands.getConfig());
+    let {xScale, yScale} = estimands.scales;
     let meanX = d3.mean(estimands.data.scatter, d => +d.xName);
 
     estimands.killAnimations()
@@ -219,8 +224,9 @@ estimands.d3State5 = function(){
     d3.selectAll('.yAxisLabel')
         .transition()
         .text("Running time")
+    d3.selectAll('#estimands-plot-ATE > table').remove()
 
-    // move ATE label to top right
+    // move ATE label to bottom left
     d3.selectAll('.ICEATElabel')
         .style('display', null)
         .style('opacity', 1)
@@ -232,8 +238,29 @@ estimands.d3State5 = function(){
         .text('MoD ATE: ' + Math.round(estimands.ATE*100) / 100)
 
     // show mean lines and difference lines
-    d3.selectAll(".meanLines, .meanLinesConnector")
+    d3.selectAll(".meanLines, .meanLinesConnector, .DoMATELabel")
         .style('display', null)
+        .style('opacity', 0)
+        .transition()
+        .duration(1000)
+        .delay(1000)
+        .style('opacity', 1)
+    
+    // move ATE label to bottom left
+    d3.selectAll('.DoMATELabel')
+        // .style('display', null)
+        // .style('opacity', 1)
+        .transition()
+        .duration(1000)
+        .delay(2000)
+        .attr('x', xScale(0.35))
+        .attr('y', yScale(0.5))
+        .text('= DoM ATE: ' + Math.round(estimands.data.DoMATE*100) / 100)
+        .delay(4000)
+    d3.selectAll('.meanLinesConnector.label.background')
+        .transition()
+        .delay(4000)
+        .style('display', 'none')
 
     estimands.emphasizeText("#estimands-trigger-5, #estimands-trigger-5 + p")
 }
@@ -243,16 +270,38 @@ estimands.d3State6 = function(){
 
     estimands.killAnimations()
 
-    // // trigger plot change
-    // d3.selectAll(".meanLines")
-    //     .style('display', null)
-    // d3.selectAll(".scatterPoints")
-    //     .attr("pointer-events", "none")
-    //     .transition() //this kills currently running transitions
-    //     .style('opacity', 0.2)
-    // d3.selectAll(".showOnHover")
-    //     .style('display', 'none')
+    // resets
+    d3.selectAll(".meanLines, .meanLinesConnector, .ICEATElabel")
+        .style('display', 'none')
+    d3.selectAll(".scatterPoints")
+        .attr("pointer-events", null)
 
+    // show example lines
+    d3.selectAll(".showOnHover[pairID='" + 1 + "'], .scatterPoints[pairID='" + 1 + "']")
+        .style('display', null)
+        .style('opacity', 0)
+        .transition()
+        .duration(1400)
+        .delay(100)
+        .style('opacity', 1)
+
+    // add table
+    estimands.buildTable(estimands.data.line)
+    d3.selectAll('#estimands-table')
+        .style('opacity', 0)
+        .transition()
+        .duration(1400)
+        .delay(1500)
+        .style('opacity', 1)
+
+    // emphasize starting table row
+    d3.selectAll("#estimands-table tr[pairID='" + 1 + "']")
+        .transition()
+        .duration(1400)
+        .delay(1100)
+        .style('font-weight', 700)
+        .style('background-color', '#ebebeb')
+    
     estimands.emphasizeText("#estimands-trigger-6, #estimands-trigger-6 + p")
 }
 
@@ -308,7 +357,7 @@ estimands.emphasizeText = function(selectors){
         .style('filter', null)
 }
 estimands.dropICE = function(data){
-// calculates the end position for each ICE segment
+    // calculates the end position for each ICE segment
     d3.map(data, function(d) {
         d.drop_x1 = (d.pair_id - 1) / 10
         d.drop_y1 = d.yName_y0 - d.yName_y1 // reverse?
@@ -317,6 +366,7 @@ estimands.dropICE = function(data){
     })
 }
 estimands.highlightText = function(selector, delay){
+    // flashes the text color yellow and temporarily enlarges
 
     let currentFontSize = d3.selectAll(selector).style('font-size')
     currentFontSize = currentFontSize.replace('px', '')
@@ -344,6 +394,11 @@ estimands.killAnimations = function(){
         .transition()
     d3.selectAll("#estimands-plot-ATE *")
         .transition('highlightText')
+}
+estimands.roundNumber = function(num, dec){
+    // rounds a number to a certain decimal place and always maintains a decimal point
+    rounded = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec)
+    return rounded.toFixed(dec)
 }
 
 
