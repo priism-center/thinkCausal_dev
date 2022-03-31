@@ -42,6 +42,7 @@ estimands.getScales = function(data, config) {
      .domain([minX - xAxisBuffer, maxX + xAxisBuffer])
      .range([0, bodyWidth])
 
+  // TODO pick up here and store scales in the estimands object so can access in animations
   let yScale = d3.scaleLinear()
     //  .domain([minY, maxY])
      .domain([0, maxY + yAxisBuffer])
@@ -54,6 +55,9 @@ estimands.getScales = function(data, config) {
   let strokeScale = d3.scaleOrdinal()
       .domain(["0", "1"])
       .range(["#21918c", "#440154"])
+  
+  // store the scales
+  estimands.scales = {xScale, yScale, colorScale, strokeScale}
 
   return {xScale, yScale, colorScale, strokeScale}
 }
@@ -99,6 +103,82 @@ estimands.drawData = function(data, config, scales){
     .attr('text-anchor', 'middle')
     .attr("transform", "rotate(-90,-" + (margin.left-10) + "," + yScale(meanY) + ")")
     .text("Running time")
+
+
+  // create a tooltip
+  // let tooltip = d3.select("#estimands-plot-ATE")
+  //   .append("div")
+  //   .style("opacity", 0)
+  //   .attr("class", "tooltip")
+  // add mouse events
+  estimands.mouseover = function(d){
+    // tooltip
+    //   .style('opacity', 1)
+    //   .style('display', null)
+
+    // make sure all other points are not shown
+    d3.selectAll('.showOnHover')
+      .style('display', 'none')
+      .transition() // kill any transitions
+
+    // get the pair ID for this highlighted point
+    let pairID = d3.select(this).attr('pairID')
+
+    // de-emphasize points not in pairing
+    d3.selectAll(".scatterPoints")
+      .style('opacity', 0.2)
+    d3.selectAll(".scatterPoints[pairID='" + pairID + "']")
+      .style('opacity', 1)
+      .attr('r', pointRadius*1.2)
+      .style('filter', 'brightness(0.9)')
+
+    // emphasize lines
+    d3.selectAll(".showOnHover[pairID='" + pairID + "']")
+      .style('display', null)
+      .style('opacity', 1)
+    
+    // emphasize table row
+    d3.selectAll("#estimands-table tr[pairID='" + pairID + "']")
+      .style('font-weight', 700)
+      .style('background-color', '#ebebeb')
+    
+
+    // emphasize legend
+    // d3.selectAll("text[treatment='" + treatment + "']")
+    //   .style('font-weight', 700)
+    // d3.selectAll("text[treatment='" + other_treatment + "']")
+    //   .style('fill', '#d9d9d9')
+  }
+  estimands.mousemove = function(d){
+    // tooltip
+    //   .html("<p style='font-weight: 700'>Treatment: " + d.treatment)
+    //   .style("left", (d3.event.pageX + 20) + "px")
+    //   .style("top", (d3.event.pageY + 20) + "px")
+  }
+  estimands.mouseleave = function(d){
+    // tooltip
+    //   .style('opacity', 0)
+    //   .style('display', 'none')
+
+    // remove font weight from legend
+    // d3.selectAll("text")
+    //   .style('font-weight', null)
+    //   .style('fill', null)
+
+    // re-emphasize other points
+    d3.selectAll('.scatterPoints')
+      .style('opacity', pointOpacity)
+      .style('filter', null)
+      .attr('r', pointRadius)
+    
+    // emphasize table row
+    d3.selectAll("#estimands-table tr")
+      .style('font-weight', null)
+      .style('background-color', null)
+
+    d3.selectAll('.showOnHover')
+      .style('display', 'none')
+  }
 
 
 
@@ -231,9 +311,9 @@ estimands.drawData = function(data, config, scales){
       })
       .style('stroke', d => strokeScale(d.y))
       .style('stroke-width', strokeWidth)
-      .on('mouseover', mouseover)
-      .on('mousemove', mousemove)
-      .on('mouseleave', mouseleave)
+      .on('mouseover', estimands.mouseover)
+      .on('mousemove', estimands.mousemove)
+      .on('mouseleave', estimands.mouseleave)
       .attr('class', 'scatter scatterPoints')
       .attr('factual', function(d) {
         if (d.factual === '1') return 'factual'
@@ -277,22 +357,80 @@ estimands.drawData = function(data, config, scales){
       .attr('y1', yScale(meanYy0))
       .attr('x2', xScale(meanX))
       .attr('y2', yScale(meanYy0))
-      .style('stroke', "#333333")
+      .style('stroke', "#21918c")
       .style('stroke-width', strokeWidth * 2/3)
       .style('display', 'none')
       .attr('class', 'meanLinesConnector')
-  // TODO: add rest of connectors
+  container.append('g')
+    .append('line')
+      .attr('x1', xScale(meanX))
+      .attr('y1', yScale(meanYy0))
+      .attr('x2', xScale(meanX))
+      .attr('y2', yScale(meanYy1))
+      .style('stroke', strokeColor)
+      .style('stroke-width', strokeWidth * 2/3)
+      .style('display', 'none')
+      .attr('class', 'meanLinesConnector mean-dashed')
+  container.append('g')
+    .append('line')
+      .attr('x1', xScale(1.1))
+      .attr('y1', yScale(meanYy1))
+      .attr('x2', xScale(meanX))
+      .attr('y2', yScale(meanYy1))
+      .style('stroke', "#440154")
+      .style('stroke-width', strokeWidth * 2/3)
+      .style('display', 'none')
+      .attr('class', 'meanLinesConnector')
+  // add end points
+  container.append('g')
+    .append('circle')
+      .attr("cx", xScale(meanX))
+      .attr("cy", yScale(meanYy0))
+      .attr("r", pointRadius * 0.7)
+      .attr('fill', '#21918c')
+      .attr('stroke', "#21918c")
+      .attr('stroke-width', 2)
+      .style('display', 'none')
+      .attr('class', 'meanLinesConnector endCircle')
+  container.append('g')
+    .append('circle')
+      .attr("cx", xScale(meanX))
+      .attr("cy", yScale(meanYy1))
+      .attr("r", pointRadius * 0.7)
+      .attr('fill', '#440154')
+      .attr('stroke', "#440154")
+      .attr('stroke-width', 2)
+      .style('display', 'none')
+      .attr('class', 'meanLinesConnector endCircle')
+  // add label
+  container.append('g')
+    .append('rect')
+      .attr('width', 50)
+      .attr('height', 27)
+      .attr('x', xScale(meanX * 0.97))
+      .attr('y', yScale(meanY + 0.2))
+      .style('fill', '#fff')
+      .style('display', 'none')
+      .attr('class', 'meanLinesConnector label background')
+  estimands.data.DoMATE = meanYy1 - meanYy0
+  container.append('g')
+    .append('text')
+      .attr('x', xScale(meanX * 0.75))
+      .attr('y', yScale(meanY))
+      .text('DoM ATE: ' + Math.round(estimands.data.DoMATE * 100) / 100)
+      .style('display', 'none')
+      .attr('class', 'meanLinesConnector label DoMATELabel')
  
   
 
   // add ICE ATE line and label
-  estimands.ATE = d3.mean(data.line, d => d.yName_y0 - d.yName_y1)
+  estimands.ATE = d3.mean(data.line, d => d.yName_y1 - d.yName_y0)
   container.append('g')
     .append('line')
       .attr('x1', xScale(-0.1))
-      .attr('y1', yScale(estimands.ATE))
+      .attr('y1', yScale(Math.abs(estimands.ATE)))
       .attr('x2', xScale(1.1))
-      .attr('y2', yScale(estimands.ATE))
+      .attr('y2', yScale(Math.abs(estimands.ATE)))
       .style('stroke', "#333333")
       .style('stroke-width', 5)
       .style('display', 'none')
@@ -303,70 +441,6 @@ estimands.drawData = function(data, config, scales){
       .attr('class', 'ICEATElabel')
 
 
-
-  // create a tooltip
-  let tooltip = d3.select("#estimands-plot-ATE")
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-
-  function mouseover(d){
-    // tooltip
-    //   .style('opacity', 1)
-    //   .style('display', null)
-
-    // make sure all other points are not shown
-    d3.selectAll('.showOnHover')
-      .style('display', 'none')
-
-    // get the pair ID for this highlighted point
-    let pairID = d3.select(this).attr('pairID')
-
-    // de-emphasize points not in pairing
-    d3.selectAll(".scatterPoints")
-      .style('opacity', 0.2)
-    d3.selectAll(".scatterPoints[pairID='" + pairID + "']")
-      .style('opacity', 1)
-      .attr('r', pointRadius*1.2)
-      .style('filter', 'brightness(0.9)')
-
-    // emphasize lines
-    d3.selectAll(".showOnHover[pairID='" + pairID + "']")
-      .style('display', null)
-
-    // emphasize legend
-    // d3.selectAll("text[treatment='" + treatment + "']")
-    //   .style('font-weight', 700)
-    // d3.selectAll("text[treatment='" + other_treatment + "']")
-    //   .style('fill', '#d9d9d9')
-  }
-
-  function mousemove(d){
-    // tooltip
-    //   .html("<p style='font-weight: 700'>Treatment: " + d.treatment)
-    //   .style("left", (d3.event.pageX + 20) + "px")
-    //   .style("top", (d3.event.pageY + 20) + "px")
-  }
-
-  function mouseleave(d){
-    // tooltip
-    //   .style('opacity', 0)
-    //   .style('display', 'none')
-
-    // remove font weight from legend
-    // d3.selectAll("text")
-    //   .style('font-weight', null)
-    //   .style('fill', null)
-
-    // re-emphasize other points
-    d3.selectAll('.scatterPoints')
-      .style('opacity', pointOpacity)
-      .style('filter', null)
-      .attr('r', pointRadius)
-
-    d3.selectAll('.showOnHover')
-      .style('display', 'none')
-  }
 
   // add subtitle
   container

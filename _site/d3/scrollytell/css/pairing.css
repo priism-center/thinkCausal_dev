@@ -16,10 +16,10 @@
 
 .estimands-d3-container {
   width: 65%;
-  height: 400px; /* should match height of d3 plot */
+  height: 650px; /* should match height of d3 plot or d3 plot plus appended table */
   position: -webkit-sticky;
   position: sticky;
-  top: 30px;
+  top: 40px;
   padding: 20px 0 0 0;
 }
 
@@ -44,9 +44,51 @@ body {
   font-size: 0.8em;
 }
 
-.line-dashed {
+.line-dashed, .mean-dashed {
   stroke-dasharray: 4, 8;
   stroke-width: 1em;
+}
+
+#estimands-table {
+  table-layout: fixed;
+  width: auto;
+  max-width: auto;
+  padding: 0.5rem;
+  text-align: end;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#estimands-table td, #estimands-table th {
+  padding: 4px;
+}
+
+#estimands-table tr:nth-child(even){background-color: #fafafa;}
+
+/* #estimands-table tr:hover {background-color: #ebebeb;} */
+
+#estimands-table th {
+  font-weight: 700;
+  border-bottom: 2px solid grey;
+}
+
+.colWidth_Runner {
+  width: 10%;
+}
+.colWidth_y0 {
+  width: 10%;
+}
+.colWidth_y1 {
+  width: 10%;
+}
+.colWidth_y {
+  width: 10%;
+}
+.colWidth_Treatment {
+  width: 10%;
+}
+.colWidth_ICE {
+  width: 10%;
 }
 
 .tooltip {

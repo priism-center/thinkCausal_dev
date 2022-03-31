@@ -190,13 +190,13 @@ within the selectize dropdowns */
 }
 
 /* nav buttons to emphasize */
-.btn.btn-default.nav-btn-focus {
+.btn-file, .btn.btn-default.nav-btn-focus {
   background-color: #302f42 !important;
 }
-.btn.btn-default.nav-btn-focus:hover {
+.btn-file, .btn.btn-default.nav-btn-focus:hover {
   background-color: #424159 !important;
 }
-.btn.btn-default.nav-btn-focus:active {
+.btn-file, .btn.btn-default.nav-btn-focus:active {
   background-color: #54536e !important;
 }
 

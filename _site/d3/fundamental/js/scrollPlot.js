@@ -8,7 +8,7 @@ fundamental.d3State1 = function(){
 
     // resets
     d3.selectAll(".studyLine, .rugLines")
-    .style('display', 'none')
+        .style('display', 'none')
 
     fundamental.emphasizeText("#fundamental-trigger-1, #fundamental-trigger-1 + p")
 }
@@ -22,15 +22,15 @@ fundamental.d3State2 = function(){
     d3.selectAll(".rugLines")
         .style('display', 'none')
 
-    // generate new distribution and study based on input
-    newMean = +$("#input-distribution-mean")[0].value
-    fundamental.data.trueMean = newMean
-    fundamental.data.distribution = fundamental.generateData(newMean);
-    fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
+    // // generate new distribution and study based on input
+    // newMean = +$("#input-distribution-mean")[0].value
+    // fundamental.data.trueMean = newMean
+    // fundamental.data.distribution = fundamental.generateData(newMean);
+    // fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
 
     // remove plot and redraw
-    d3.select('#fundamental-plot svg').remove()
-    fundamental.drawData()
+    // d3.select('#fundamental-plot svg').remove()
+    // fundamental.drawData()
     
     // make sure trueMean and studyLine are displayed
     d3.selectAll(".trueMeanLine, .studyLine")
@@ -135,15 +135,15 @@ fundamental.emphasizeText = function(selectors){
     d3.selectAll(selectors)
         .style('filter', null)
 }
-fundamental.dropICE = function(data){
-// calculates the end position for each ICE segment
-    d3.map(data, function(d) {
-        d.drop_x1 = (d.pair_id - 1) / 10
-        d.drop_y1 = d.yName_y0 - d.yName_y1 // reverse?
-        d.drop_x2 = (d.pair_id - 1) / 10
-        d.drop_y2 = 0
-    })
-}
+// fundamental.dropICE = function(data){
+// // calculates the end position for each ICE segment
+//     d3.map(data, function(d) {
+//         d.drop_x1 = (d.pair_id - 1) / 10
+//         d.drop_y1 = d.yName_y0 - d.yName_y1 // reverse?
+//         d.drop_x2 = (d.pair_id - 1) / 10
+//         d.drop_y2 = 0
+//     })
+// }
 fundamental.highlightText = function(selector, delay){
 
     let currentFontSize = d3.selectAll(selector).style('font-size')
