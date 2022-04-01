@@ -182,7 +182,7 @@ estimands.d3State4 = function(){
         .style('opacity', 0)
         .attr('x', xScale(0.95))
         .attr('y', yScale(Math.abs(estimands.ATE) * 1.1))
-        .text('ATE: ' + Math.round(Math.abs(estimands.ATE)*100) / 100)
+        .text('ATE: ' + estimands.roundNumber(estimands.ATE, 2))
         .transition()
         .duration(1000)
         .style('display', null)
@@ -235,7 +235,7 @@ estimands.d3State5 = function(){
         .attr('x', xScale(0))
         .attr('y', yScale(0.5))
         .delay(500)
-        .text('MoD ATE: ' + Math.round(estimands.ATE*100) / 100)
+        .text('MoD ATE: ' + estimands.roundNumber(estimands.ATE, 2))
 
     // show mean lines and difference lines
     d3.selectAll(".meanLines, .meanLinesConnector, .DoMATELabel")
@@ -255,7 +255,7 @@ estimands.d3State5 = function(){
         .delay(2000)
         .attr('x', xScale(0.35))
         .attr('y', yScale(0.5))
-        .text('= DoM ATE: ' + Math.round(estimands.data.DoMATE*100) / 100)
+        .text('= DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
         .delay(4000)
     d3.selectAll('.meanLinesConnector.label.background')
         .transition()
