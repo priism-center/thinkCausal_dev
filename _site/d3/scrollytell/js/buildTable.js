@@ -21,7 +21,7 @@ estimands.buildTable = function(data){
   
     // columns to include in table
     columns = ['pair_id', 'yName_y0', 'yName_y1', 'y', 'treatment', 'ICE']
-    columnNames = ['Runner', 'y0', 'y1', 'y', 'Treatment', 'ICE']
+    columnNames = ['Runner', 'y0', 'y1', 'y', 'z', 'ICE']
 
     // add y and ICE column
     d3.map(data, function(d){

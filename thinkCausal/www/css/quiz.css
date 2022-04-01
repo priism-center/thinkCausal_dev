@@ -19,6 +19,7 @@
   background: none !important;
   color: grey !important;;
   float: right;
+  border: 0px;
 }
 
 .quiz-container .skip-button:hover, .quiz-container .restart-button:hover {
@@ -35,6 +36,7 @@
   max-width: 150px;
   float: right;
   background-color: #302f42 !important;
+  color: white !important;
 }
 .quiz-container .submit-button:hover {
   background-color: #424159 !important;
@@ -47,6 +49,7 @@
   padding: 4em;
   margin: 1em;
   border: 1em solid rgba(117, 115, 145, 0.6);
+  border-radius: 0.3em;
 }
 
 /* this lives outside of the .quiz-container */

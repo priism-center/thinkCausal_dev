@@ -51,7 +51,7 @@ summary{
 /*background squares for nav and main input sections*/
 .well {
   border: 0px solid #e3e3e3;
-  border-radius: 0px;
+  border-radius: 0 0 5px 5px;
   -webkit-box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.00);
   box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.00);
 }
@@ -91,7 +91,7 @@ summary{
 
 /* navigation pills on the left side */
 .nav-pills > li > a {
-    border-radius: 0 0 0 0;
+    border-radius: 4px;
 }
 
 .nav-pills > li.active > a,
@@ -106,7 +106,7 @@ summary{
   margin-right: 2px;
   line-height: 1.42857143;
   border: 1px solid transparent;
-  border-radius: 0 0 0 0;
+  border-radius: 4px 4px 0 0;
 }
 
 .nav-tabs > li:hover > a {
@@ -168,11 +168,11 @@ within the selectize dropdowns */
 /* buttons .btn:hover, .btn:active, .btn:visited */
 /* buttons .btn:hover, .btn:active, .btn:visited */
 .btn {
-    background-color: #9e9cb5 !important;
-    border-radius: 0;
+    background-color: rgba(48, 47, 66, 0) !important;
+    border-radius: 3;
     box-shadow: none;
-    border: none;
-    color: #f5f5f5 !important;
+    border: 1px solid gray;
+    color: rgba(48, 47, 66, 1) !important;
     font-weight: 300;
     font-family: "Roboto", Helvetica, Arial, sans-serif;
     max-width: 100%;
@@ -192,6 +192,8 @@ within the selectize dropdowns */
 /* nav buttons to emphasize */
 .btn-file, .btn.btn-default.nav-btn-focus {
   background-color: #302f42 !important;
+  color: white !important;
+  border: 0px
 }
 .btn-file, .btn.btn-default.nav-btn-focus:hover {
   background-color: #424159 !important;
@@ -441,10 +443,10 @@ html {
 /*controls the cards on the design and model pages*/
 .card {
   min-height: 450px;
-  -webkit-box-shadow: 3px 3px 12px rgba(74, 74, 74, 0.3);
-  -moz-box-shadow: 3px 3px 12px rgba(74, 74, 74, 0.3);
-  box-shadow: 3px 3px 12px rgba(74, 74, 74, 0.3);
-  border-radius: 3px;
+  -webkit-box-shadow: 6px 10px 16px  rgba(74, 74, 74, 0.3);
+  -moz-box-shadow: 6px 10px 16px  rgba(74, 74, 74, 0.3);
+  box-shadow: 6px 10px 16px rgba(74, 74, 74, 0.3);
+  border-radius: 6px;
 }
 
 header {
@@ -509,4 +511,14 @@ footer a, footer a:hover {
   height: auto;
   border-radius: 3px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* cards on home page */
+#conceptsGridHome .well {
+  min-height: 350px;
+}
+
+#back_to_analysis_button {
+  border: 0px;
+  color: white !important;
 }
