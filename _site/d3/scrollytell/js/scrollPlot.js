@@ -78,6 +78,9 @@ estimands.d3State3 = function(){
     d3.selectAll('.yAxisLabel')
         .transition()
         .text("Running time")
+    d3.selectAll("#estimands-plot-ATE > svg")
+        .attr('viewBox', '0 0 ' + 540 + ' ' + estimands.config.height)
+    d3.selectAll('.xAxisBottom, .YAxisLabelBottom').remove()
 
     // trigger plot change
     d3.selectAll(".scatterPoints")
@@ -123,6 +126,10 @@ estimands.d3State4 = function(){
         .style('display', 'none')
         .attr('x', xScale(meanX * 0.75))
         .attr('y', yScale(meanY))
+
+    // extend viewbox so there is space for new plot
+    d3.selectAll("#estimands-plot-ATE > svg")
+        .attr('viewBox', '0 0 ' + 540 + ' ' + estimands.config.heightTall)
 
     // animations
     // highlight each ICE
@@ -170,18 +177,38 @@ estimands.d3State4 = function(){
         .delay(2000)
 
     // change yaxis label
-    d3.selectAll('.yAxisLabel')
+    // d3.selectAll('.yAxisLabel')
+    //     .transition()
+    //     .duration(2500)
+    //     .text("Difference in running time")
+    //     .delay(delayFn(11) + 3000)
+    // estimands.highlightText(".yAxisLabel", delayFn(11) + 2750)
+
+    // add new axis
+    estimands.clone('.xAxis')
+        .attr('class', 'axis xAxisBottom')
+        .style('opacity', 0)
         .transition()
-        .duration(2500)
+        .duration(1000)
+        .delay(delayFn(1) + 2000)
+        .style('opacity', null)
+        .attr("transform", "translate(0," + (estimands.config.bodyHeight + 70) + ")") // not sure why 70 works
+    d3.selectAll('.xAxisBottom text, .xAxisBottom line').remove()
+    estimands.clone('.yAxisLabel')
+        .attr('class', 'axisLabel YAxisLabelBottom')
+        .attr('x', -400) // not sure why -400 works
         .text("Difference in running time")
-        .delay(delayFn(11) + 3000)
-    estimands.highlightText(".yAxisLabel", delayFn(11) + 2750)
+        .style('opacity', 0)
+        .transition()
+        .duration(1000)
+        .delay(delayFn(1) + 2500)
+        .style('opacity', null)
 
     // add average line and label
     d3.selectAll('.ICEATEline, .ICEATElabel')
         .style('opacity', 0)
         .attr('x', xScale(0.95))
-        .attr('y', yScale(Math.abs(estimands.ATE) * 1.1))
+        .attr('y', (yScale(estimands.ATE - estimands.bottomPlotOffset)) * 0.98) 
         .text('ATE: ' + estimands.roundNumber(estimands.ATE, 2))
         .transition()
         .duration(1000)
@@ -225,6 +252,9 @@ estimands.d3State5 = function(){
         .transition()
         .text("Running time")
     d3.selectAll('#estimands-plot-ATE > table').remove()
+    d3.selectAll("#estimands-plot-ATE > svg")
+        .attr('viewBox', '0 0 ' + 540 + ' ' + estimands.config.height)
+    d3.selectAll('.xAxisBottom, .YAxisLabelBottom').remove()
 
     // move ATE label to bottom left
     d3.selectAll('.ICEATElabel')
@@ -357,12 +387,13 @@ estimands.emphasizeText = function(selectors){
         .style('filter', null)
 }
 estimands.dropICE = function(data){
+
     // calculates the end position for each ICE segment
     d3.map(data, function(d) {
         d.drop_x1 = (d.pair_id - 1) / 10
-        d.drop_y1 = d.yName_y0 - d.yName_y1 // reverse?
+        d.drop_y1 = 0 - estimands.bottomPlotOffset
         d.drop_x2 = (d.pair_id - 1) / 10
-        d.drop_y2 = 0
+        d.drop_y2 = (d.yName_y1 - d.yName_y0) - estimands.bottomPlotOffset
     })
 }
 estimands.highlightText = function(selector, delay){
@@ -400,7 +431,10 @@ estimands.roundNumber = function(num, dec){
     rounded = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec)
     return rounded.toFixed(dec)
 }
-
+estimands.clone = function(selector) {
+    var node = d3.select(selector).node();
+    return d3.select(node.parentNode.insertBefore(node.cloneNode(true), node.nextSibling));
+}
 
 // initialize state
 estimands.d3State1()

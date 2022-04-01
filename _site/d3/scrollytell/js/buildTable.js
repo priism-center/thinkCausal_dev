@@ -2,23 +2,6 @@ estimands.buildTable = function(data){
 
     console.log("Data into buildTable():", data)
   
-    // // set color scale for conference
-    // let colorScale = d3.scaleOrdinal()
-    //     .domain(["Eastern", "Western"])
-    //     .range(["#183b32", "#80b0a4"])
-  
-    // // filter to latest date
-    // filteredData = data.filter(d => {return d.latest == 1})
-  
-    // // create rankings
-    // rankedData =  filteredData.sort((a, b) => d3.descending(a.rating, b.rating))
-  
-    // // add rank column and clean up rating
-    // for (var i=0; i<rankedData.length; i++){
-    //   rankedData[i]['rank'] = i+1
-    //   rankedData[i]['rating_string'] = parseFloat(rankedData[i]['rating']).toFixed(0)
-    // }
-  
     // columns to include in table
     columns = ['pair_id', 'yName_y0', 'yName_y1', 'y', 'treatment', 'ICE']
     columnNames = ['Runner', 'y0', 'y1', 'y', 'z', 'ICE']
@@ -43,7 +26,8 @@ estimands.buildTable = function(data){
         .data(columnNames)
         .enter()
         .append('col')
-        .attr('class', d => 'colWidth_' + d)
+        .style('width', 1/6 + "%") // column width
+        // .attr('class', d => 'colWidth_' + d)
   
     // create the table head
     thead.append('tr')
@@ -53,6 +37,7 @@ estimands.buildTable = function(data){
         .append('th')
             .text(d => d)
   
+    // create the table rows
     let rows = tbody.selectAll('tr')
         .data(data)
         .enter()
@@ -61,6 +46,7 @@ estimands.buildTable = function(data){
         .on('mouseover', estimands.mouseover) 
         .on('mouseleave', estimands.mouseleave)
   
+    // add the text to the cells
     let cells = rows.selectAll('td')
         .data(function(row){
             out = columns.map(function(column){

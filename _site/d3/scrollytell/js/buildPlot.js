@@ -2,7 +2,7 @@
 
 estimands.getConfig = function(){
   let width = 540; //900px is width of learning article * 0.6
-  let height = 400;
+  let height = 400; 
   let margin = {
       top: 30,
       bottom: 80,
@@ -23,7 +23,12 @@ estimands.getConfig = function(){
     .append("g")
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")")
-
+  
+  // store the config for later animation
+  estimands.config = {}
+  estimands.config = {width, height, margin, bodyHeight, bodyWidth, container}
+  estimands.config.heightTall = 700;
+  
   return {width, height, margin, bodyHeight, bodyWidth, container}
 }
 
@@ -330,26 +335,6 @@ estimands.drawData = function(data, config, scales){
   // show mean lines
   let meanYy0 = d3.mean(data.line, d => +d.yName_y0);
   let meanYy1 = d3.mean(data.line, d => +d.yName_y1);
-  container.append('g')
-    .append('line')
-      .attr('x1', xScale(-0.1))
-      .attr('y1', yScale(meanYy0))
-      .attr('x2', xScale(0.1))
-      .attr('y2', yScale(meanYy0))
-      .style('stroke', "#333333")
-      .style('stroke-width', 5)
-      .style('display', 'none')
-      .attr('class', 'meanLines')
-  container.append('g')
-    .append('line')
-      .attr('x1', xScale(0.9))
-      .attr('y1', yScale(meanYy1))
-      .attr('x2', xScale(1.1))
-      .attr('y2', yScale(meanYy1))
-      .style('stroke', '#333333')
-      .style('stroke-width', 5)
-      .style('display', 'none')
-      .attr('class', 'meanLines')
   // add connecting lines
   container.append('g')
     .append('line')
@@ -420,17 +405,39 @@ estimands.drawData = function(data, config, scales){
       .text('DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
       .style('display', 'none')
       .attr('class', 'meanLinesConnector label DoMATELabel')
+  // add the mean lines
+  container.append('g')
+    .append('line')
+      .attr('x1', xScale(-0.1))
+      .attr('y1', yScale(meanYy0))
+      .attr('x2', xScale(0.1))
+      .attr('y2', yScale(meanYy0))
+      .style('stroke', "#333333")
+      .style('stroke-width', 5)
+      .style('display', 'none')
+      .attr('class', 'meanLines')
+  container.append('g')
+    .append('line')
+      .attr('x1', xScale(0.9))
+      .attr('y1', yScale(meanYy1))
+      .attr('x2', xScale(1.1))
+      .attr('y2', yScale(meanYy1))
+      .style('stroke', '#333333')
+      .style('stroke-width', 5)
+      .style('display', 'none')
+      .attr('class', 'meanLines')
  
   
 
   // add ICE ATE line and label
   estimands.ATE = d3.mean(data.line, d => d.yName_y1 - d.yName_y0)
+  estimands.bottomPlotOffset = 1
   container.append('g')
     .append('line')
       .attr('x1', xScale(-0.1))
-      .attr('y1', yScale(Math.abs(estimands.ATE)))
+      .attr('y1', yScale(estimands.ATE - estimands.bottomPlotOffset))
       .attr('x2', xScale(1.1))
-      .attr('y2', yScale(Math.abs(estimands.ATE)))
+      .attr('y2', yScale(estimands.ATE - estimands.bottomPlotOffset))
       .style('stroke', "#333333")
       .style('stroke-width', 5)
       .style('display', 'none')
