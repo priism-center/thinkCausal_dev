@@ -45,8 +45,8 @@ ui_data <- function(store, id){
                      actionButton(inputId = ns('analysis_data_button_columnAssignSave'),
                                   class = 'nav-btn-focus',
                                   label = 'Save role assignments')
-                   ),
-                   br(),
+                   )
+                   # br(),
                  ),
                  mainPanel(
                    br(),
@@ -79,9 +79,9 @@ ui_data <- function(store, id){
                      actionButton(inputId = ns('analysis_data_save_groupings'),
                                   class = "nav-btn-focus",
                                   label = 'Save groupings')
-                   ),
-                   br(),
-                   create_progress_bar(1/9*100)
+                   )
+                   # br(),
+                   # create_progress_bar(1/9*100)
                  ),
                  mainPanel(
                    br(),
@@ -109,9 +109,9 @@ ui_data <- function(store, id){
                      actionButton(inputId = ns('analysis_data_save'),
                                   class = "nav-btn-focus",
                                   label = 'Save changes')
-                   ),
-                   br(),
-                   create_progress_bar(1/7*100)
+                   )
+                   # br(),
+                   # create_progress_bar(1/7*100)
                  ),
                  mainPanel(
                    wellPanel(

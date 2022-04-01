@@ -15,9 +15,9 @@ ui_diagnostic <- function(store, id){
           br(),br(),
           downloadButton(ns('download_diagnostic_plot'), label = "Download plot"),
           br(), br(),
-          uiOutput(outputId = ns('analysis_diagnosis_buttons_ui')),
-          br(),
-          create_progress_bar(6/7*100)
+          uiOutput(outputId = ns('analysis_diagnosis_buttons_ui'))
+          # br(),
+          # create_progress_bar(6/7*100)
         ),
         mainPanel(
           tabsetPanel(

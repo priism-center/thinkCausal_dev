@@ -56,9 +56,9 @@ ui_results <- function(store, id){
                  br(),br(),
                  actionButton(inputId = ns("analysis_results_button_subgroup"),
                               class = "nav-btn-focus",
-                              label = "See results by subgroups"),
-                 br(),br(),
-                 create_progress_bar(7/7*100)
+                              label = "See results by subgroups")
+                 # br(),br(),
+                 # create_progress_bar(7/7*100)
                ),
                mainPanel(
                  plotOutput(outputId = ns('analysis_results_plot_PATE'),

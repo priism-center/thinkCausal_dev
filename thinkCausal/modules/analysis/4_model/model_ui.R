@@ -58,9 +58,9 @@ ui_model <- function(store, id){
                create_link_to_help('Model'),
                br(), br(),
                actionButton(inputId = ns("analysis_model_button_back"),
-                            label = "Back to EDA"),
-               br(), br(),
-               create_progress_bar(5/7*100)
+                            label = "Back to EDA")
+               # br(), br(),
+               # create_progress_bar(5/7*100)
              )
       )
     )

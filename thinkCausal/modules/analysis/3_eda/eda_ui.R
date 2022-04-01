@@ -162,9 +162,9 @@ ui_eda <- function(store, id){
               actionButton(inputId = ns("analysis_plots_descriptive_button_next"),
                            class = "nav-btn-focus",
                            label = "Next")
-            ), 
-            br(),
-            create_progress_bar(3/8*100)
+            )
+            # br(),
+            # create_progress_bar(3/8*100)
           ),
           
           mainPanel(
@@ -222,9 +222,9 @@ ui_eda <- function(store, id){
               actionButton(inputId = ns("analysis_plots_support_button_next"),
                            class = "nav-btn-focus",
                            label = "Next")
-            ),
-            br(),
-            create_progress_bar(3/7*100)
+            )
+            # br(),
+            # create_progress_bar(3/7*100)
           ),
           mainPanel(
             width = 8,
@@ -260,9 +260,9 @@ ui_eda <- function(store, id){
                      actionButton(inputId = ns("analysis_plots_balance_button_next"),
                                   class = "nav-btn-focus",
                                   label = "Next")
-                   ),
-                   br(),
-                   create_progress_bar(4/7*100),
+                   )
+                   # br(),
+                   # create_progress_bar(4/7*100),
                    
                  ),
                  mainPanel(

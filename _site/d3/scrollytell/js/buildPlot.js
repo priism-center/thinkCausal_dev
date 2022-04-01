@@ -285,7 +285,7 @@ estimands.drawData = function(data, config, scales){
       .attr('y', d => yScale((+d.yName_y0 + +d.yName_y1) / 2))
       .text(function(d) {
         let diff = d.yName_y1 - d.yName_y0
-        let label = "Runner " + d.pair_id + " ICE: " + Math.round(diff * 100) / 100
+        let label = "Runner " + d.pair_id + " ICE: " + estimands.roundNumber(diff, 2)
         return label
       })
       .style('display', 'none')
@@ -417,7 +417,7 @@ estimands.drawData = function(data, config, scales){
     .append('text')
       .attr('x', xScale(meanX * 0.75))
       .attr('y', yScale(meanY))
-      .text('DoM ATE: ' + Math.round(estimands.data.DoMATE * 100) / 100)
+      .text('DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
       .style('display', 'none')
       .attr('class', 'meanLinesConnector label DoMATELabel')
  
