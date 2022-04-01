@@ -50,6 +50,7 @@ body {
 }
 
 #estimands-table {
+  font-size: 0.85em;
   table-layout: fixed;
   width: auto;
   max-width: auto;
@@ -84,14 +85,14 @@ body {
 .colWidth_y {
   width: 10%;
 }
-.colWidth_Treatment {
+.colWidth_z {
   width: 10%;
 }
 .colWidth_ICE {
   width: 10%;
 }
 
-.tooltip {
+/* .tooltip {
   font-size: 0.8em;
   background-color: white;
   border: solid #394E48;
@@ -101,7 +102,7 @@ body {
   text-align: left;
   position: absolute;
   color: #666666;
-}
+} */
 
 .axis > path {
   stroke: #b5b5b5;
@@ -113,21 +114,22 @@ body {
 
 .axis > g > text {
   fill: #666666;
+  font-size: 1.2em;
 }
 
 .axisLabel {
   fill: #666666;
-  font-size: 0.65em;
+  font-size: 0.85em;
 }
 
 .subtitle {
-  font-size: 1em;
+  font-size: 1.1em;
   fill: #666666;
 }
 
 .legend > text {
   fill: #666666;
-  font-size: 0.65em;
+  font-size: 0.85em;
 }
 
 /* button {
