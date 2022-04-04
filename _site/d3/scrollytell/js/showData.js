@@ -1,6 +1,7 @@
-estimands.showData = function(data){
+estimands.initializeData = function(data){
   //buildTable(data.ratings)
   estimands.buildPlot(data)
+  estimands.d3State1()
 }
 
 // read in the data
@@ -17,4 +18,4 @@ estimands.loadData = function() {
     })
 }
 
-estimands.loadData().then(estimands.showData)
+estimands.loadData().then(estimands.initializeData)

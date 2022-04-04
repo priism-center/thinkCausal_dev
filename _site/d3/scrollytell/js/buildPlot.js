@@ -47,11 +47,13 @@ estimands.getScales = function(data, config) {
      .domain([minX - xAxisBuffer, maxX + xAxisBuffer])
      .range([0, bodyWidth])
 
-  // TODO pick up here and store scales in the estimands object so can access in animations
   let yScale = d3.scaleLinear()
     //  .domain([minY, maxY])
      .domain([0, maxY + yAxisBuffer])
      .range([bodyHeight, 0])
+  let yScaleBottomPlot = d3.scaleLinear()
+    .domain([-(maxY - yAxisBuffer), 0])
+    .range([bodyHeight*2, bodyHeight+70])
 
   let colorScale = d3.scaleOrdinal()
       .domain(["0", "1"])
@@ -62,14 +64,14 @@ estimands.getScales = function(data, config) {
       .range(["#21918c", "#440154"])
   
   // store the scales
-  estimands.scales = {xScale, yScale, colorScale, strokeScale}
+  estimands.scales = {xScale, yScale, colorScale, strokeScale, yScaleBottomPlot}
 
-  return {xScale, yScale, colorScale, strokeScale}
+  return {xScale, yScale, colorScale, strokeScale, yScaleBottomPlot}
 }
 
 estimands.drawData = function(data, config, scales){
   var {margin, container, bodyHeight, bodyWidth, width, height} = config;
-  let {xScale, yScale, colorScale, strokeScale} = scales;
+  let {xScale, yScale, colorScale, strokeScale, yScaleBottomPlot} = scales;
   console.log('Data into drawData():', data)
 
   let meanY = d3.mean(data.scatter, d => +d.yName);
@@ -101,6 +103,11 @@ estimands.drawData = function(data, config, scales){
   container.append("g")
     .attr('class', "axis yAxis")
     .call(d3.axisLeft(yScale));
+  container.append('g')
+    .attr('class', 'axis yAxisBottom')
+    .call(d3.axisLeft(yScaleBottomPlot).ticks(6))
+
+    .style('display', 'none')
   container.append('text')
     .attr('class', 'axisLabel yAxisLabel')
     .attr('x', -margin.left-10)
@@ -446,6 +453,9 @@ estimands.drawData = function(data, config, scales){
     .append('text')
       .style('display', 'none')
       .attr('class', 'ICEATElabel')
+      .attr('x', xScale(0.95))
+      .attr('y', (yScale(estimands.ATE - estimands.bottomPlotOffset)) * 0.98)
+      .text('ATE: ' + estimands.roundNumber(estimands.ATE, 2))
 
 
 
@@ -516,12 +526,7 @@ estimands.buildPlot = function(data){
   estimands.drawData(data, config, scales)
 }
 
-// function resetPlot(){
-//   // replace button
-//   let newButton = $('<button id="trigger" onclick="triggerAnimation(estimands.data.scatter, scales)">Build histogram</button>')
-//   $('#reset').after(newButton)
-//   $('#reset').remove()
-
-//   d3.select('#estimands-plot-ATE svg').remove()
-//   buildPlot(estimands.data)
-// }
+estimands.resetPlot = function(){
+  d3.select('#estimands-plot-ATE svg').remove()
+  estimands.buildPlot(estimands.data)
+}
