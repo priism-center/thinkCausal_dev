@@ -76,6 +76,7 @@ estimands.drawData = function(data, config, scales){
 
   let meanY = d3.mean(data.scatter, d => +d.yName);
   let meanX = d3.mean(data.scatter, d => +d.xName);
+  estimands.data.meanX = meanX;
   let minY = d3.min(data.scatter, d => +d.yName);
   let maxY = d3.max(data.scatter, d => +d.yName);
   let minX = d3.min(data.scatter, d => +d.xName);
@@ -137,11 +138,15 @@ estimands.drawData = function(data, config, scales){
     let pairID = d3.select(this).attr('pairID')
 
     // de-emphasize points not in pairing
-    d3.selectAll(".scatterPoints")
+    d3.selectAll(".scatterPoints, .droppedPoints")
       .style('opacity', 0.2)
     d3.selectAll(".scatterPoints[pairID='" + pairID + "']")
       .style('opacity', 1)
       .attr('r', pointRadius*1.2)
+      .style('filter', 'brightness(0.9)')
+    d3.selectAll(".droppedPoints[pairID='" + pairID + "']")
+      .style('opacity', 1)
+      .attr('r', pointRadius*1.2*0.8)
       .style('filter', 'brightness(0.9)')
 
     // emphasize lines
@@ -154,6 +159,10 @@ estimands.drawData = function(data, config, scales){
       .style('font-weight', 700)
       .style('background-color', '#ebebeb')
     
+    // change text in paragraph
+    ICE = estimands.data.line.filter(d => d.pair_id == pairID)
+    ICE = estimands.roundNumber(ICE[0].yName_y1 - ICE[0].yName_y0, 2)
+    estimands.changeRunnerText(pairID, ICE)
 
     // emphasize legend
     // d3.selectAll("text[treatment='" + treatment + "']")
@@ -182,6 +191,10 @@ estimands.drawData = function(data, config, scales){
       .style('opacity', pointOpacity)
       .style('filter', null)
       .attr('r', pointRadius)
+    d3.selectAll('.droppedPoints')
+      .style('opacity', pointOpacity)
+      .style('filter', null)
+      .attr('r', pointRadius * 0.8)
     
     // emphasize table row
     d3.selectAll("#estimands-table tr")
@@ -446,7 +459,7 @@ estimands.drawData = function(data, config, scales){
       .attr('x2', xScale(1.1))
       .attr('y2', yScale(estimands.ATE - estimands.bottomPlotOffset))
       .style('stroke', "#333333")
-      .style('stroke-width', 5)
+      .style('stroke-width', 4)
       .style('display', 'none')
       .attr('class', 'ICEATEline')
   container.append('g')

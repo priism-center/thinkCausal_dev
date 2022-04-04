@@ -97,6 +97,9 @@ estimands.d3State4 = function(){
         .style('display', null)
         .style('opacity', 0.2)
 
+    // duplicate the dashed lines for animation
+    // estimands.clone('.line-dashed').attr('class', 'line-dashed-keep')
+
     // animations
     // highlight each ICE
     delayFn = function(index){ return (((index**0.001)-1) * 5000000) - 1000 } // accelerating curve
@@ -141,10 +144,10 @@ estimands.d3State4 = function(){
           .attr("cx", d => xScale(d.drop_x2))
           .attr("cy", d => yScale(d.drop_y2))
           .attr("r", 5)
-          .style('opacity', 0.9)
           .style('fill', "#6e6e6e")
           .style('stroke', 'white')
           .style('stroke-width', 1)
+          .style('radius', 7 * 0.8)
           .attr('class', 'droppedPoints')
           .attr('pairID', d => d.pair_id)
           .style('opacity', 0)
@@ -198,6 +201,23 @@ estimands.d3State4 = function(){
         .style('display', null)
         .style('opacity', 1)
         .delay(delayFn(11) + 6500)
+    
+    // add back points and move ICE bars back up
+    d3.selectAll(".scatterPoints")
+        .transition()
+        .duration(1000)
+        .style('display', null)
+        .style('opacity', 0.2)
+        .delay(delayFn(11) + 8000)
+        .attr("pointer-events", "all")
+    d3.selectAll(".line-dashed")
+        .transition()
+        .duration(1000)
+        .delay(delayFn(11) + 8000)
+        .attr('x1', d => xScale(estimands.data.meanX))
+        .attr('y1', d => yScale(d.yName_y0))
+        .attr('x2', d => xScale(estimands.data.meanX))
+        .attr('y2', d => yScale((d.yName_y1)))
 }
 
 estimands.d3State5 = function(){
@@ -391,4 +411,7 @@ estimands.clone = function(selector) {
     var node = d3.select(selector).node();
     return d3.select(node.parentNode.insertBefore(node.cloneNode(true), node.nextSibling));
 }
-
+estimands.changeRunnerText = function(runner, ICE){
+    newText = "Runner " + runner + " has an ICE of " + ICE
+    d3.select("#estimands-runner-text").text(newText)
+}

@@ -23,6 +23,18 @@
   padding: 20px 0 0 0;
 }
 
+/* @media (max-width: 768px) {
+  .estimands-text-along-d3 {
+    position: fixed;
+    width: 90%;
+    padding: 1em;
+    filter: opacity(0.8);
+    z-index: 999
+  }
+  .estimands-plot-container {
+    width: 100%;
+  }
+} */
 
 
 /*delete body and #estimands-plot-container chunks when moving to shiny */
@@ -150,3 +162,10 @@ button:hover {
 button:active {
   filter: brightness(0.7);
 } */
+
+#estimands-runner-text {
+  background: yellow;
+  padding: 0.2em 0.2em 0.1em 0.2em;
+  border-radius: 0.3em;
+  font-weight: 500;
+}
