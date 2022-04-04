@@ -151,10 +151,15 @@ estimands.d3State4 = function(){
           .attr('class', 'droppedPoints')
           .attr('pairID', d => d.pair_id)
           .style('opacity', 0)
+          .on('mouseover', estimands.mouseover)
+          .on('mousemove', estimands.mousemove)
+          .on('mouseleave', estimands.mouseleave)
+          .attr('pointer-events', 'none')
           .transition()
           .duration(750)
           .delay(delayFn(11) + 3500)
           .style('opacity', 1)
+          .attr('pointer-events', null)
 
     // remove x label and legend
     d3.selectAll(".xAxis text, .xAxis line, .legend")
@@ -202,14 +207,16 @@ estimands.d3State4 = function(){
         .style('opacity', 1)
         .delay(delayFn(11) + 6500)
     
-    // add back points and move ICE bars back up
+    // add back points
     d3.selectAll(".scatterPoints")
         .transition()
         .duration(1000)
         .style('display', null)
-        .style('opacity', 0.2)
+        .style('opacity', 0.8)
         .delay(delayFn(11) + 8000)
         .attr("pointer-events", "all")
+    
+    // move ICE bars back up
     d3.selectAll(".line-dashed")
         .transition()
         .duration(1000)
@@ -411,7 +418,9 @@ estimands.clone = function(selector) {
     var node = d3.select(selector).node();
     return d3.select(node.parentNode.insertBefore(node.cloneNode(true), node.nextSibling));
 }
-estimands.changeRunnerText = function(runner, ICE){
+estimands.changeRunnerText = function(runner){
+    ICE = estimands.data.line.filter(d => d.pair_id == +runner)
+    ICE = estimands.roundNumber(ICE[0].yName_y1 - ICE[0].yName_y0, 2)
     newText = "Runner " + runner + " has an ICE of " + ICE
     d3.select("#estimands-runner-text").text(newText)
 }
