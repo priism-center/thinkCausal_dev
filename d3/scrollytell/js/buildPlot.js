@@ -160,9 +160,7 @@ estimands.drawData = function(data, config, scales){
       .style('background-color', '#ebebeb')
     
     // change text in paragraph
-    ICE = estimands.data.line.filter(d => d.pair_id == pairID)
-    ICE = estimands.roundNumber(ICE[0].yName_y1 - ICE[0].yName_y0, 2)
-    estimands.changeRunnerText(pairID, ICE)
+    estimands.changeRunnerText(pairID)
 
     // emphasize legend
     // d3.selectAll("text[treatment='" + treatment + "']")
@@ -537,9 +535,11 @@ estimands.buildPlot = function(data){
   config = estimands.getConfig()
   scales = estimands.getScales(data, config)
   estimands.drawData(data, config, scales)
+  estimands.changeRunnerText(1)
 }
 
 estimands.resetPlot = function(){
   d3.select('#estimands-plot-ATE svg').remove()
   estimands.buildPlot(estimands.data)
+  estimands.changeRunnerText(1)
 }
