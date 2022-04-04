@@ -54,41 +54,41 @@ ui_data <- function(store, id){
                  )
                )
       ),
-      tabPanel(title = "Group",
-               fluid = TRUE,
-               sidebarLayout(
-                 sidebarPanel(
-                   h4("Are any of these variables part of a natural group?"),
-                   p("Variables that have been dummy coded should be grouped together for plotting, random effects and subgroup analyses.
-                          All categorical variables will automatically be dummy coded for model fitting.
-                          Please verify any pre-filled groups.
-                          Empty groups will be ignored."),
-                   br(),
-                   actionButton(inputId = ns('analysis_data_add_group'),
-                                label = 'Add group'),
-                   br(), br(),
-                   actionButton(inputId = ns('analysis_data_remove_group'),
-                                label = 'Remove group'),
-                   br(), br(),
-                   create_link_to_help('Data'),
-                   br(), br(),
-                   div(
-                     class = 'backNextContainer',
-                     actionButton(inputId = ns("analysis_data_pivot_button_back"),
-                                  label = "Back"),
-                     actionButton(inputId = ns('analysis_data_save_groupings'),
-                                  class = "nav-btn-focus",
-                                  label = 'Save groupings')
-                   )
-                   # br(),
-                   # create_progress_bar(1/9*100)
-                 ),
-                 mainPanel(
-                   br(),
-                   uiOutput(outputId = ns('analysis_data_UI_dragdrop_grouping'))
-                 )
-               )
-      ),
+      # tabPanel(title = "Group",
+      #          fluid = TRUE,
+      #          sidebarLayout(
+      #            sidebarPanel(
+      #              h4("Are any of these variables part of a natural group?"),
+      #              p("Variables that have been dummy coded should be grouped together for plotting, random effects and subgroup analyses.
+      #                     All categorical variables will automatically be dummy coded for model fitting.
+      #                     Please verify any pre-filled groups.
+      #                     Empty groups will be ignored."),
+      #              br(),
+      #              actionButton(inputId = ns('analysis_data_add_group'),
+      #                           label = 'Add group'),
+      #              br(), br(),
+      #              actionButton(inputId = ns('analysis_data_remove_group'),
+      #                           label = 'Remove group'),
+      #              br(), br(),
+      #              create_link_to_help('Data'),
+      #              br(), br(),
+      #              div(
+      #                class = 'backNextContainer',
+      #                actionButton(inputId = ns("analysis_data_pivot_button_back"),
+      #                             label = "Back"),
+      #                actionButton(inputId = ns('analysis_data_save_groupings'),
+      #                             class = "nav-btn-focus",
+      #                             label = 'Save groupings')
+      #              )
+      #              # br(),
+      #              # create_progress_bar(1/9*100)
+      #            ),
+      #            mainPanel(
+      #              br(),
+      #              uiOutput(outputId = ns('analysis_data_UI_dragdrop_grouping'))
+      #            )
+      #          )
+      # ),
       tabPanel(title = "Verify",
                fluid = TRUE,
                sidebarLayout(

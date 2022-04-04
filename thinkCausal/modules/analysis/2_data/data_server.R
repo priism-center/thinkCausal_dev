@@ -9,12 +9,9 @@ server_data <- function(store, id, global_session){
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$design)
       })
       observeEvent(input$analysis_data_select_button_back, {
-        updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Group")
-      })
-      observeEvent(input$analysis_data_pivot_button_back, {
         updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Upload")
       })
-      
+
       # read in the uploaded file
       uploaded_df <- reactive({
         # TODO: test all the file types (e.g. stata is only stata 15 or older)
@@ -217,184 +214,183 @@ server_data <- function(store, id, global_session){
         store$log <- append(store$log, log_event)
         
         # move to next page
-        updateTabsetPanel(session = global_session, inputId = "analysis_data_tabs", selected = "Group")
+        updateTabsetPanel(session = global_session, inputId = "analysis_data_tabs", selected = "Verify")
       })
       
       
-      # group data -------------------------------------------------------------
-      
-      # initiate counter of number of groups to un-dummy
-      store$n_dummy_groups <- 1
-      
-      # to save user's grouping results
-      group_list <- reactiveValues(data = list())
-      
-      # create UI for the groupings
-      output$analysis_data_UI_dragdrop_grouping <- renderUI({
-        
-        # stop here if data hasn't been uploaded and columns assigned
-        validate_columns_assigned(store)
-        
-        # stop here if no variables to group
-        df <- store$col_assignment_df[, -c(1:2)]
-        cat_var_names <- colnames(df)[sapply(df, clean_detect_logical)]
-        validate(
-          need(
-            length(cat_var_names) > 1,
-            "Your dataset has <= 1 logical variable. No need to group variables. Click 'Save groupings' to the next page."
-          )
-        )
-        
-        # add overlay
-        div_id <- 'analysis_data_UI_dragdrop_grouping'
-        show_message_updating(div_id)
-        
-        # create groupings: if 'add group' has not been clicked, show smart default grouping
-        # if 'add group' is clicked, show last grouping results before clicking the button
-        if (length(group_list$data) == 0) {
-          drag_drop_groupings <- create_drag_drop_groups(
-            ns = ns,
-            .data = store$col_assignment_df,
-            ns_prefix = 'analysis_data',
-            n_dummy_groups = store$n_dummy_groups
-          )
-        } else{
-          drag_drop_groupings <- create_drag_drop_groups(
-            ns = ns,
-            .data = store$col_assignment_df,
-            ns_prefix = 'analysis_data',
-            n_dummy_groups = store$n_dummy_groups,
-            grouped_varibles = group_list$data
-          )
-        }
-        
-        # remove overlay
-        close_message_updating(div_id)
-        
-        # update global var keeping track of the number of groups
-        if(store$n_dummy_groups < 1){
-          store$n_dummy_groups <- drag_drop_groupings$n_dummy_groups
-        }
-        
-        # return the HTML code for the UI
-        return(drag_drop_groupings$html)
-      })
-      
-      # save the current grouping results and the number of group increases one when observe 'add a group' clicked
-      observeEvent(input$analysis_data_add_group, {
-        
-        df <- store$col_assignment_df
-        groups <- list()
-        
-        for (i in 1:store$n_dummy_groups) {
-          # find the column indexes of dummy variables in the same group
-          input_id <- paste0("analysis_data_categorical_group_", i)
-          idx <- which(colnames(df) %in% input[[input_id]])
-          # save the user input group name and dummies' names of the group into a list for each group
-          groups <- c(groups, list(c(input[[paste0("rename_group_", i)]], colnames(df)[idx])))
-        }
-        group_list$data <- groups
-        store$n_dummy_groups <- store$n_dummy_groups + 1
-      })
-      
-      observeEvent(input$analysis_data_remove_group, {
-        # save the current results when observe 'remove group' clicked
-        df <- store$col_assignment_df
-        groups <- list()
-        
-        for (i in 1:store$n_dummy_groups) {
-          # find the column indexes of dummy variables in the same group
-          input_id <- paste0("analysis_data_categorical_group_", i)
-          idx <- which(colnames(df) %in% input[[input_id]])
-          # save the user input group name and dummies' names of the group into a list for each group
-          groups <- c(groups, list(c(input[[paste0("rename_group_", i)]], colnames(df)[idx])))
-        }
-        group_list$data <- groups
-        
-        # remove the last group from the results list and the number of group decreases one
-        group_list$data <- group_list$data[-store$n_dummy_groups]
-        store$n_dummy_groups <- store$n_dummy_groups - 1
-      })
+      # # group data -------------------------------------------------------------
+      # 
+      # # initiate counter of number of groups to un-dummy
+      # store$n_dummy_groups <- 1
+      # 
+      # # to save user's grouping results
+      # group_list <- reactiveValues(data = list())
+      # 
+      # # create UI for the groupings
+      # output$analysis_data_UI_dragdrop_grouping <- renderUI({
+      #   
+      #   # stop here if data hasn't been uploaded and columns assigned
+      #   validate_columns_assigned(store)
+      #   
+      #   # stop here if no variables to group
+      #   df <- store$col_assignment_df[, -c(1:2)]
+      #   cat_var_names <- colnames(df)[sapply(df, clean_detect_logical)]
+      #   validate(
+      #     need(
+      #       length(cat_var_names) > 1,
+      #       "Your dataset has <= 1 logical variable. No need to group variables. Click 'Save groupings' to the next page."
+      #     )
+      #   )
+      #   
+      #   # add overlay
+      #   div_id <- 'analysis_data_UI_dragdrop_grouping'
+      #   show_message_updating(div_id)
+      #   
+      #   # create groupings: if 'add group' has not been clicked, show smart default grouping
+      #   # if 'add group' is clicked, show last grouping results before clicking the button
+      #   if (length(group_list$data) == 0) {
+      #     drag_drop_groupings <- create_drag_drop_groups(
+      #       ns = ns,
+      #       .data = store$col_assignment_df,
+      #       ns_prefix = 'analysis_data',
+      #       n_dummy_groups = store$n_dummy_groups
+      #     )
+      #   } else{
+      #     drag_drop_groupings <- create_drag_drop_groups(
+      #       ns = ns,
+      #       .data = store$col_assignment_df,
+      #       ns_prefix = 'analysis_data',
+      #       n_dummy_groups = store$n_dummy_groups,
+      #       grouped_varibles = group_list$data
+      #     )
+      #   }
+      #   
+      #   # remove overlay
+      #   close_message_updating(div_id)
+      #   
+      #   # update global var keeping track of the number of groups
+      #   if(store$n_dummy_groups < 1){
+      #     store$n_dummy_groups <- drag_drop_groupings$n_dummy_groups
+      #   }
+      #   
+      #   # return the HTML code for the UI
+      #   return(drag_drop_groupings$html)
+      # })
+      # 
+      # # save the current grouping results and the number of group increases one when observe 'add a group' clicked
+      # observeEvent(input$analysis_data_add_group, {
+      #   
+      #   df <- store$col_assignment_df
+      #   groups <- list()
+      #   
+      #   for (i in 1:store$n_dummy_groups) {
+      #     # find the column indexes of dummy variables in the same group
+      #     input_id <- paste0("analysis_data_categorical_group_", i)
+      #     idx <- which(colnames(df) %in% input[[input_id]])
+      #     # save the user input group name and dummies' names of the group into a list for each group
+      #     groups <- c(groups, list(c(input[[paste0("rename_group_", i)]], colnames(df)[idx])))
+      #   }
+      #   group_list$data <- groups
+      #   store$n_dummy_groups <- store$n_dummy_groups + 1
+      # })
+      # 
+      # observeEvent(input$analysis_data_remove_group, {
+      #   # save the current results when observe 'remove group' clicked
+      #   df <- store$col_assignment_df
+      #   groups <- list()
+      #   
+      #   for (i in 1:store$n_dummy_groups) {
+      #     # find the column indexes of dummy variables in the same group
+      #     input_id <- paste0("analysis_data_categorical_group_", i)
+      #     idx <- which(colnames(df) %in% input[[input_id]])
+      #     # save the user input group name and dummies' names of the group into a list for each group
+      #     groups <- c(groups, list(c(input[[paste0("rename_group_", i)]], colnames(df)[idx])))
+      #   }
+      #   group_list$data <- groups
+      #   
+      #   # remove the last group from the results list and the number of group decreases one
+      #   group_list$data <- group_list$data[-store$n_dummy_groups]
+      #   store$n_dummy_groups <- store$n_dummy_groups - 1
+      # })
       
       # create new dataframe when user saves variable grouping
-      observeEvent(input$analysis_data_save_groupings, {
-        
-        req(store$col_assignment_df)
-        
-        # remove any previous dataframes from the store
-        store <- remove_downstream_data(store, page = 'group')
-        
-        store$grouped_df <- store$col_assignment_df
-        problematic_group_names <- c()
-        groups <- list()
-        
-        # save grouping results before clicking save changes button
-        for (i in 1:store$n_dummy_groups) {
-          # find the column indexes of dummy variables in the same group
-          input_id <- paste0("analysis_data_categorical_group_", i)
-          idx <- which(colnames(store$grouped_df) %in% input[[input_id]])
-          # save the user input group name and dummies' names of the group into a list for each group
-          groups <- c(groups, list(c(input[[paste0("rename_group_", i)]], colnames(store$grouped_df)[idx])))
-        }
-        group_list$data <- groups
-        
-        # only if there are grouped variables, proceed to convert dummies to categorical; otherwise, not update the dataframe
-        if(length(group_list$data) > 0){
-          
-          for (i in 1:store$n_dummy_groups) {
-            # find the column indexes of dummy variables in the same group
-            input_id <- paste0("analysis_data_categorical_group_", i)
-            cleaned_tmp <- clean_dummies_to_categorical_internal(i, store$grouped_df, input[[input_id]], input[[paste0("rename_group_", i)]], problematic_group_names)
-            store$grouped_df <- cleaned_tmp[[2]]
-            problematic_group_names <- cleaned_tmp[[1]]
-          }
-          
-          # launch warning message:
-          # if there are empty variable names, click ok will stay at the page
-          if(length(problematic_group_names) != 0){
-            show_popup_group_name_warning(session, problematic_group_names)
-          }
-          
-          # add to log
-          log_event <- 'Assigned dummy coded variables to groups: \n'
-          for (i in 1:store$n_dummy_groups){
-            input_id <- paste0("analysis_data_categorical_group_", i)
-            log_event <- paste0(log_event, '\tgroup', i, ': ', paste0(input[[input_id]], collapse = '; '), '\n')
-          }
-          store$log <- append(store$log, log_event)
-          
-        }
-        # if no variable names are empty, by clicking Save Grouping, move to next page
-        if(length(problematic_group_names) == 0){
-          updateTabsetPanel(session = global_session, inputId = "analysis_data_tabs", selected = "Verify")
-        }
-        
-        # create a copy of the dataframe that the user can modify on the verify page
-        colnames(store$grouped_df) <- clean_names(colnames(store$grouped_df))
-        store$user_modifed_df <- store$grouped_df
-      })
-      
+      # observeEvent(input$analysis_data_save_groupings, {
+      #   
+      #   req(store$col_assignment_df)
+      #   
+      #   # remove any previous dataframes from the store
+      #   store <- remove_downstream_data(store, page = 'group')
+      #   
+      #   store$grouped_df <- store$col_assignment_df
+      #   problematic_group_names <- c()
+      #   groups <- list()
+      #   
+      #   # save grouping results before clicking save changes button
+      #   for (i in 1:store$n_dummy_groups) {
+      #     # find the column indexes of dummy variables in the same group
+      #     input_id <- paste0("analysis_data_categorical_group_", i)
+      #     idx <- which(colnames(store$grouped_df) %in% input[[input_id]])
+      #     # save the user input group name and dummies' names of the group into a list for each group
+      #     groups <- c(groups, list(c(input[[paste0("rename_group_", i)]], colnames(store$grouped_df)[idx])))
+      #   }
+      #   group_list$data <- groups
+      #   
+      #   # only if there are grouped variables, proceed to convert dummies to categorical; otherwise, not update the dataframe
+      #   if(length(group_list$data) > 0){
+      #     
+      #     for (i in 1:store$n_dummy_groups) {
+      #       # find the column indexes of dummy variables in the same group
+      #       input_id <- paste0("analysis_data_categorical_group_", i)
+      #       cleaned_tmp <- clean_dummies_to_categorical_internal(i, store$grouped_df, input[[input_id]], input[[paste0("rename_group_", i)]], problematic_group_names)
+      #       store$grouped_df <- cleaned_tmp[[2]]
+      #       problematic_group_names <- cleaned_tmp[[1]]
+      #     }
+      #     
+      #     # launch warning message:
+      #     # if there are empty variable names, click ok will stay at the page
+      #     if(length(problematic_group_names) != 0){
+      #       show_popup_group_name_warning(session, problematic_group_names)
+      #     }
+      #     
+      #     # add to log
+      #     log_event <- 'Assigned dummy coded variables to groups: \n'
+      #     for (i in 1:store$n_dummy_groups){
+      #       input_id <- paste0("analysis_data_categorical_group_", i)
+      #       log_event <- paste0(log_event, '\tgroup', i, ': ', paste0(input[[input_id]], collapse = '; '), '\n')
+      #     }
+      #     store$log <- append(store$log, log_event)
+      #     
+      #   }
+      #   # if no variable names are empty, by clicking Save Grouping, move to next page
+      #   if(length(problematic_group_names) == 0){
+      #     updateTabsetPanel(session = global_session, inputId = "analysis_data_tabs", selected = "Verify")
+      #   }
+      #   
+      #   # create a copy of the dataframe that the user can modify on the verify page
+      #   colnames(store$grouped_df) <- clean_names(colnames(store$grouped_df))
+      #   store$user_modifed_df <- store$grouped_df
+      # })
+      # 
       # once new data is uploaded, grouped result is cleared, and the number of groups changes to either the number of smart defaul groups or 1
-      observeEvent(input$analysis_data_button_columnAssignSave, {
-        group_list$data <- c()
-        auto_groups <- NULL#list(contains_dummy = FALSE, dummy_columns = NULL)#clean_detect_dummy_cols_unique(store$col_assignment_df)
-        store$n_dummy_groups <- max(length(auto_groups), 1)
-      })
+      # observeEvent(input$analysis_data_button_columnAssignSave, {
+      #   group_list$data <- c()
+      #   auto_groups <- NULL#list(contains_dummy = FALSE, dummy_columns = NULL)#clean_detect_dummy_cols_unique(store$col_assignment_df)
+      #   store$n_dummy_groups <- max(length(auto_groups), 1)
+      # })
       
       
       # verify data -------------------------------------------------------------
       
       # maintain a user modified dataframe that is continuously updated
       observe({
-        
-        # stop here if columns haven't been assigned
-        validate_data_grouped(store)
+        # stop here if data hasn't been uploaded and columns assigned
+        validate_columns_assigned(store)
         
         # stop here if analysis_data_modify_UI hasn't been rendered yet
         req(input$analysis_data_1_changeDataType)
         
         # use assigned dataframe as the template
-        user_modified_df <- store$grouped_df
+        user_modified_df <- store$col_assignment_df
         
         # get input indices and current input values
         indices <- seq_along(user_modified_df)
@@ -420,12 +416,12 @@ server_data <- function(store, id, global_session){
       observeEvent(input$analysis_data_button_reset, {
         
         # reset dataframe
-        store$user_modified_df <- store$grouped_df
+        store$user_modified_df <- store$col_assignment_df
         
         ## reset UI
         # set indices to map over
-        all_col_names <- colnames(store$grouped_df)
-        default_data_types <- convert_data_type_to_simple(store$grouped_df)
+        all_col_names <- colnames(store$col_assignment_df)
+        default_data_types <- convert_data_type_to_simple(store$col_assignment_df)
         indices <- seq_along(all_col_names)
         
         # update the inputs
@@ -446,12 +442,11 @@ server_data <- function(store, id, global_session){
       # render UI for modifying the data
       output$analysis_data_modify_UI <- renderUI({
         
-        # stop here if columns haven't been assigned and grouped
+        # stop here if columns haven't been assigned
         validate_columns_assigned(store)
-        validate_data_grouped(store)
-        
+
         # get default data types
-        default_data_types <- convert_data_type_to_simple(store$grouped_df) #! input data changed to the result of group data
+        default_data_types <- convert_data_type_to_simple(store$col_assignment_df) #! input data changed to the result of group data
         
         # add default column types to store
         store$current_simple_column_types <- default_data_types
@@ -459,7 +454,7 @@ server_data <- function(store, id, global_session){
         # create UI table
         UI_table <- create_data_summary_grid(
           ns = ns,
-          .data = store$grouped_df,
+          .data = store$col_assignment_df,
           default_data_types = default_data_types,
           ns_prefix = 'analysis_data',
           design = store$analysis_design,
@@ -474,8 +469,7 @@ server_data <- function(store, id, global_session){
         
         # stop here if columns haven't been assigned and grouped
         validate_columns_assigned(store)
-        validate_data_grouped(store)
-        
+
         # original data column indices
         indices <- seq_along(colnames(store$user_modified_df))
         
@@ -512,8 +506,7 @@ server_data <- function(store, id, global_session){
         
         # stop here if columns haven't been assigned and grouped
         validate_columns_assigned(store)
-        validate_data_grouped(store)
-        
+
         # stop here if analysis_data_modify_UI hasn't yet rendered
         # this works because colnames of user_modified_df is overwritten by the UI
         # which defaults to an empty string before it renders
@@ -647,14 +640,14 @@ server_data <- function(store, id, global_session){
       })
       
       # save into store for reproducible script
-      group_list_data <- reactive(group_list$data)
+     # group_list_data <- reactive(group_list$data)
       analysis_data_upload_name <- reactive(input$analysis_data_upload$name)
       analysis_data_header <- reactive(input$analysis_data_header)
       analysis_data_delim_value <- reactive(input$analysis_data_delim_value)
       analysis_data_save <- reactive(input$analysis_data_save)
       
       observeEvent(input$analysis_data_save, {
-        store$analysis$data$group$group_list <- group_list_data()
+        #store$analysis$data$group$group_list <- group_list_data()
         store$analysis$data$upload$analysis_data_upload$name <- analysis_data_upload_name()
         store$analysis$data$upload$analysis_data_header <- analysis_data_header()
         store$analysis$data$upload$analysis_data_delim_value <- analysis_data_delim_value()
