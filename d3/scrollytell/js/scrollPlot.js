@@ -9,13 +9,13 @@ estimands.d3State1 = function(){
     estimands.resetPlot()
     
     // show only factual scatter points
-    d3.selectAll(".scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints")
         .attr("pointer-events", "none")
         .style('opacity', 0.8)
-    d3.selectAll(".scatterPoints[factual='counterfactual']")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints[factual='counterfactual']")
         .style('display', 'none')
         .style('opacity', 0)
-    d3.selectAll(".showOnHover")
+    d3.selectAll("#estimands-plot-ATE .showOnHover")
         .style('display', 'none')
 }
 
@@ -27,20 +27,20 @@ estimands.d3State2 = function(){
     estimands.resetPlot()
 
     // highlight counterfactual points
-    d3.selectAll(".scatterPoints[factual='factual']")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints[factual='factual']")
         .style('display', null)
         .transition()
         .duration(1200)
         .style('opacity', 0.2)
-    d3.selectAll(".scatterPoints[factual='counterfactual']")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints[factual='counterfactual']")
         .style('display', null)
         .style('opacity', 0)
         .transition()
         .duration(1200)
         .style('opacity', 0.8)
-    d3.selectAll(".scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints")
         .attr("pointer-events", "none")
-    d3.selectAll(".showOnHover")
+    d3.selectAll("#estimands-plot-ATE .showOnHover")
         .style('display', 'none')
 }
 
@@ -52,11 +52,11 @@ estimands.d3State3 = function(){
     estimands.resetPlot()
 
     // reset scatter points to match previous state
-    d3.selectAll(".scatterPoints[factual='factual']")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints[factual='factual']")
         .style('display', null)
         .style('opacity', 0.2)
         .attr("pointer-events", "all")
-    d3.selectAll(".scatterPoints[factual='counterfactual']")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints[factual='counterfactual']")
         .style('display', null)
         .transition("fade-out")
         .duration(1200)
@@ -64,14 +64,14 @@ estimands.d3State3 = function(){
         .attr("pointer-events", "all")
 
     // show example lines
-    d3.selectAll(".showOnHover[pairID='" + 1 + "']")
+    d3.selectAll("#estimands-plot-ATE .showOnHover[pairID='" + 1 + "']")
         .style('display', null)
         .style('opacity', 0)
         .transition()
         .duration(1200)
         .delay(300)
         .style('opacity', 1)
-    d3.selectAll(".scatterPoints[pairID='" + 1 + "']")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints[pairID='" + 1 + "']")
         .transition()
         .duration(1200)
         .delay(300)
@@ -93,7 +93,7 @@ estimands.d3State4 = function(){
         .attr('viewBox', '0 0 ' + newHeight + ' ' + estimands.config.heightTall)
 
     // show all points
-    d3.selectAll(".scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints")
         .style('display', null)
         .style('opacity', 0.2)
 
@@ -103,16 +103,16 @@ estimands.d3State4 = function(){
     // animations
     // highlight each ICE
     delayFn = function(index){ return (((index**0.001)-1) * 5000000) - 1000 } // accelerating curve
-    d3.selectAll('.showOnHover')
+    d3.selectAll('#estimands-plot-ATE .showOnHover')
         .style('opacity', 0)
         .style('display', null)
-    d3.selectAll(".showOnHover, .scatterPoints") 
+    d3.selectAll("#estimands-plot-ATE .showOnHover, #estimands-plot-ATE .scatterPoints") 
         .transition()
         .duration(300)
         .delay(d => delayFn(d.pair_id))
         .style('opacity', 1)
     // unhighlight each ICE slightly later
-    d3.selectAll(".showOnHover, .scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .showOnHover, #estimands-plot-ATE .scatterPoints")
         .transition()
         .duration(300)
         .delay(d => delayFn(+d.pair_id+1 * 0.7))
@@ -120,7 +120,7 @@ estimands.d3State4 = function(){
 
     // make the ICE bars fall
     estimands.dropICE(estimands.data.line)
-    d3.selectAll('.line-dashed')
+    d3.selectAll('#estimands-plot-ATE .line-dashed')
         .transition()
         .duration(2500)
         .attr('x1', d => xScale(d.drop_x1))
@@ -128,7 +128,7 @@ estimands.d3State4 = function(){
         .attr('x2', d => xScale(d.drop_x2))
         .attr('y2', d => yScale((d.drop_y2)))
         .delay(d => delayFn(+d.pair_id+1 * 0.7))
-    d3.selectAll('.line-dashed')
+    d3.selectAll('#estimands-plot-ATE .line-dashed')
         .transition('disappear')
         .duration(750)
         .delay(delayFn(11) + 5000)
@@ -162,7 +162,7 @@ estimands.d3State4 = function(){
           .attr('pointer-events', null)
 
     // remove x label and legend
-    d3.selectAll(".xAxis text, .xAxis line, .legend")
+    d3.selectAll("#estimands-plot-ATE .xAxis text, #estimands-plot-ATE .xAxis line, #estimands-plot-ATE .legend")
         .transition()
         .duration(1000)
         .style('opacity', 0)
@@ -170,7 +170,7 @@ estimands.d3State4 = function(){
 
     // add new x axis
     let axisDelay = delayFn(1) + 4000
-    estimands.clone('.xAxis')
+    estimands.clone('#estimands-plot-ATE .xAxis')
         .attr('class', 'axis xAxisBottom')
         .style('opacity', 0)
         .transition()
@@ -178,17 +178,17 @@ estimands.d3State4 = function(){
         .delay(axisDelay)
         .style('opacity', null)
         .attr("transform", "translate(0," + (estimands.config.bodyHeight + 70) + ")") // not sure why 70 works
-    d3.selectAll('.xAxisBottom text, .xAxisBottom line').remove()
+    d3.selectAll('#estimands-plot-ATE .xAxisBottom text, #estimands-plot-ATE .xAxisBottom line').remove()
 
     // add new y axis
-    d3.select('.yAxisBottom')
+    d3.select('#estimands-plot-ATE .yAxisBottom')
         .style('display', null)
         .style('opacity', 0)
         .transition()
         .duration(1000)
         .delay(axisDelay)
         .style('opacity', null)
-    estimands.clone('.yAxisLabel')
+    estimands.clone('#estimands-plot-ATE .yAxisLabel')
         .attr('class', 'axisLabel YAxisLabelBottom')
         .attr('x', -400) // not sure why -400 works
         .text("Difference in running time")
@@ -199,7 +199,7 @@ estimands.d3State4 = function(){
         .style('opacity', null)
 
     // add average line and label
-    d3.selectAll('.ICEATEline, .ICEATElabel')
+    d3.selectAll('#estimands-plot-ATE .ICEATEline, #estimands-plot-ATE .ICEATElabel')
         .style('opacity', 0)
         .transition()
         .duration(1000)
@@ -208,7 +208,7 @@ estimands.d3State4 = function(){
         .delay(delayFn(11) + 6500)
     
     // add back points
-    d3.selectAll(".scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints")
         .transition()
         .duration(1000)
         .style('display', null)
@@ -217,7 +217,7 @@ estimands.d3State4 = function(){
         .attr("pointer-events", "all")
     
     // move ICE bars back up
-    d3.selectAll(".line-dashed")
+    d3.selectAll("#estimands-plot-ATE .line-dashed")
         .transition()
         .duration(1000)
         .delay(delayFn(11) + 8000)
@@ -237,15 +237,15 @@ estimands.d3State5 = function(){
     estimands.resetPlot()
 
     // remove table if exists
-    d3.selectAll("#estimands-table").remove()
+    d3.selectAll("#estimands-table-ATE").remove()
 
     // show all points
-    d3.selectAll(".scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints")
         .style('display', null)
         .style('opacity', 0.2)
 
     // move MoD ATE label to bottom left
-    d3.selectAll('.ICEATElabel')
+    d3.selectAll('#estimands-plot-ATE .ICEATElabel')
         .style('display', null)
         .style('opacity', 1)
         .transition()
@@ -256,14 +256,14 @@ estimands.d3State5 = function(){
         .text('MoD ATE: ' + estimands.roundNumber(estimands.ATE, 2))
 
     // show mean lines and difference lines
-    d3.selectAll(".meanLines")
+    d3.selectAll("#estimands-plot-ATE .meanLines")
         .style('display', null)
         .style('opacity', 0)
         .transition()
         .duration(1000)
         .delay(2500)
         .style('opacity', 1)
-    d3.selectAll(".meanLinesConnector, .DoMATELabel")
+    d3.selectAll("#estimands-plot-ATE .meanLinesConnector, #estimands-plot-ATE .DoMATELabel")
         .style('display', null)
         .style('opacity', 0)
         .transition()
@@ -272,14 +272,14 @@ estimands.d3State5 = function(){
         .style('opacity', 1)
     
     // move DoM ATE label to bottom left
-    d3.selectAll('.DoMATELabel')
+    d3.selectAll('#estimands-plot-ATE .DoMATELabel')
         .transition('move')
         .duration(1000)
         .attr('x', xScale(0.35))
         .attr('y', yScale(0.5))
         .text('= DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
         .delay(8000)
-    d3.selectAll('.meanLinesConnector.label.background')
+    d3.selectAll('#estimands-plot-ATE .meanLinesConnector.label.background')
         .transition()
         .delay(8000)
         .style('display', 'none')
@@ -293,14 +293,14 @@ estimands.d3State6 = function(){
     estimands.resetPlot()
 
     // show all points
-    d3.selectAll(".scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .scatterPoints")
         .style('display', null)
         .style('opacity', 0.2)
         .attr("pointer-events", "all")
 
     // show example lines
     let initialHighlightedPoint = 1
-    d3.selectAll(".showOnHover[pairID='" + initialHighlightedPoint + "'], .scatterPoints[pairID='" + initialHighlightedPoint + "']")
+    d3.selectAll("#estimands-plot-ATE .showOnHover[pairID='" + initialHighlightedPoint + "'], #estimands-plot-ATE .scatterPoints[pairID='" + initialHighlightedPoint + "']")
         .style('display', null)
         .style('opacity', 0)
         .transition()
@@ -309,8 +309,8 @@ estimands.d3State6 = function(){
         .style('opacity', 1)
 
     // add table
-    estimands.buildTable(estimands.data.line)
-    d3.selectAll('#estimands-table')
+    estimands.buildTable(estimands.data.line, '#estimands-plot-ATE', 'estimands-table-ATE')
+    d3.selectAll('#estimands-table-ATE')
         .style('opacity', 0)
         .transition()
         .duration(1400)
@@ -318,7 +318,7 @@ estimands.d3State6 = function(){
         .style('opacity', 1)
 
     // emphasize starting table row
-    d3.selectAll("#estimands-table tr[pairID='" + initialHighlightedPoint + "']")
+    d3.selectAll("#estimands-table-ATE tr[pairID='" + initialHighlightedPoint + "']")
         .transition()
         .duration(1400)
         .delay(1100)

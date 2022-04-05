@@ -1,7 +1,9 @@
 estimands.initializeData = function(data){
   //buildTable(data.ratings)
-  estimands.buildPlot(data)
+  estimands.buildPlot(data, "#estimands-plot-ATE")
   estimands.d3State1()
+  estimands.plotATT(data, '#estimands-plot-ATT')
+  estimands.plotATC(data, '#estimands-plot-ATC')
 }
 
 // read in the data

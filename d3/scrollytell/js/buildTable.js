@@ -1,4 +1,4 @@
-estimands.buildTable = function(data){
+estimands.buildTable = function(data, selector, id){
 
     console.log("Data into buildTable():", data)
   
@@ -15,7 +15,7 @@ estimands.buildTable = function(data){
     })
   
     // create table
-    let table = d3.select('#estimands-plot-ATE').append('table').attr('id', 'estimands-table')
+    let table = d3.select(selector).append('table').attr('class', 'estimands-table').attr('id', id)
     let tcol = table.append('colgroup')
     let thead = table.append('thead')
     let tbody = table.append('tbody')
@@ -43,6 +43,10 @@ estimands.buildTable = function(data){
         .enter()
         .append('tr')
         .attr('pairID', d => d.pair_id)
+        .attr('treatment', function(d) {
+            if (d.treatment === '0') return 'control'
+            return 'treatment'
+          })
         .on('mouseover', estimands.mouseover) 
         .on('mouseleave', estimands.mouseleave)
   
