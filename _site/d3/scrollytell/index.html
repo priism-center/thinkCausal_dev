@@ -65,7 +65,6 @@
 
         </div>
       <div id="estimands-plot-container" class="estimands-d3-container">
-        <!-- <button id="trigger" onclick="triggerAnimation(store.scatter, scales)">Build histogram</button> -->
         <div id='estimands-plot-ATE'></div>
       </div>
     </div>
@@ -96,7 +95,49 @@
 
       <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
 
-      <p>&lt; INSERT DATA TABLE &gt;</p>
+    </div>
+    <div><h2>Subsetting by the treatment group treatment effects</h2>
+
+      <p>Sometimes researchers are only interested in summarizing causal effects for a particular set of observations part of the sample. For instance, it may make sense to focus on groups deemed most likely to receive the treatment or on those observations where we have the most data for estimation of a treatment effect.  Let’s return to our original sample of 9 runners. Imagine the 5 runners that wore HyperShoes were professional athletes who were given HyperShoes for free through their sponsorship. Suppose that the marketing team thinks that professional or semi-professional runners are the most likely consumers for this product. Then it might make the most sense to focus on the causal effect just for this type of runner</p>
+
+      <p>The average treatment effect on the treated (ATT) is the average causal effect of the sample with received the treatment (where z = 1). Calculating the ATT reflect whether wearingwould answer if the buying the professional runners HyperShoes caused the professional runnersm to run faster than they would have if they wore standard shoes.</p>
+
+      <p>Why can’t we just use the ATE? Remember that causal inference is a within persons comparison. Sometimes treatments are only given to specific groups (like professional athletes). In situations where our question only relates to the group that received the treatment, we care about summaries that only relate to the group of interest.</p>
+
+      <p>To calculate the ATT we compare the factual outcomes of runner 2, 3, 5, 6 and 8 (the runners who wore HyperShoes) to the counterfactual outcomes of runner 2, 3, 5, 6 and 8. Recall that obtaining counterfactual outcomes requires accessing our potential outcomes time machine. </p>
+
+      <br>
+
+      <div id='estimands-plot-ATT'></div>
+
+      <p>We can also think of the ATT within a potential outcomes table. The potential outcomes for all 9 runners in our sample is shown below. While we have potential outcomes for all 9 runners, ATT only uses data from runners where z = 1: </p>
+
+      <p>average y0 = (2.9 + 2.95  + 3.2 + 3.0  + 3.05 )/5 = 3.02</p>
+      <p>average y1 = ( 2.85 + 2.8  + 2.85 + 2.7  + 2.8)/5 = 2.8</p>
+      <p>ATT = average y1 - average y0 = -.22</p>
+
+      <p>Note in our example we divide by 5 because our sample has  5 runners with a z value of 1!</p>
+
+      <p>For our sample of 9 runners the ATT of -.22 is different from the ATE of -.15. This is because the ATE and ATT are summarizing different parts of our sample. The ATE is a summary of treatment effect across every runner in the sample while the ATT is a summary of only the 5 runners that wore the HyperShoe for their factual outcome. </p>
+
+      <br>
+      <p>&lt; INSERT QUIZ &gt;</p>
+      <br>
+
+      <h3>Subsetting by the Control Group</h3>
+
+      <p>In our last example we were interested in a causal question that only pertained to the treated group. We can ask similar questions about the control group. Imagine a different scenario, the governing body that organized marathon races is concerned that runners without HyperShoes are put at a disadvantage. How would the governing body know if runners without HyperShoes would have ran faster had they worn HyperShoes? </p>
+
+      <p>The average treatment effect on the control (ATC) is the average causal effect of the sample that did not receive the treatment (where z = 0). Calculating the ATC would answer if the runners without HyperShoes were at a disadvantage</p>
+
+      <p>Why do we only care about comparisons within the control group? Here we want to know if the group of runners without HyperShoes is disadvantaged without using HyperShoes. It is possible that the HyperShoes only have an effect on the runners that happened to be in the treated group (z = 1) to see if the runners without HyperShoes were disadvantaged we would need to compare the factual and counterfactual outcomes (y1 and y0) for the runners without HyperShoes (z = 0).</p>
+
+      <br>
+
+      <div id='estimands-plot-ATC'></div>
+
+      <p>Closing paragraph</p>
+
     </div>
   </main>
 </body>

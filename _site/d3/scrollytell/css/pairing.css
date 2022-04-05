@@ -49,6 +49,11 @@ body {
   max-width: 540px;
 } */
 
+#estimands-plot-ATC, #estimands-plot-ATT {
+  width: 70%;
+  padding: 2em;
+}
+
 /*### specific to d3 ###*/
 .ICElabel {
   fill: #6e6e6e;
@@ -61,7 +66,7 @@ body {
   stroke-width: 1em;
 }
 
-#estimands-table {
+.estimands-table {
   font-size: 0.85em;
   table-layout: fixed;
   width: auto;
@@ -72,15 +77,15 @@ body {
   width: 100%;
 }
 
-#estimands-table td, #estimands-table th {
+.estimands-table td, .estimands-table th {
   padding: 4px;
 }
 
-#estimands-table tr:nth-child(even){background-color: #fafafa;}
+.estimands-table tr:nth-child(even){background-color: #fafafa;}
 
-/* #estimands-table tr:hover {background-color: #ebebeb;} */
+/* .estimands-table tr:hover {background-color: #ebebeb;} */
 
-#estimands-table th {
+.estimands-table th {
   font-weight: 700;
   border-bottom: 2px solid grey;
 }
@@ -141,7 +146,7 @@ body {
 
 .legend > text {
   fill: #666666;
-  font-size: 0.85em;
+  font-size: 0.75em;
 }
 
 /* button {

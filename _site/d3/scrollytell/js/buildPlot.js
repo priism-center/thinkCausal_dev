@@ -1,6 +1,6 @@
 // https://www.d3-graph-gallery.com/graph/interactivity_transition.html
 
-estimands.getConfig = function(){
+estimands.getConfig = function(selector){
   let width = 540; //900px is width of learning article * 0.6
   let height = 400; 
   let margin = {
@@ -15,7 +15,7 @@ estimands.getConfig = function(){
   let bodyWidth = width - margin.left - margin.right;
 
   // the container is the SVG where we will draw the plot
-  let container = d3.select("#estimands-plot-ATE")
+  let container = d3.select(selector)
     .append("svg")
       .attr("class", "plot")
       .attr("preserveAspectRatio", "xMinYMin meet")
@@ -29,7 +29,7 @@ estimands.getConfig = function(){
   estimands.config = {width, height, margin, bodyHeight, bodyWidth, container}
   estimands.config.heightTall = 700;
   
-  return {width, height, margin, bodyHeight, bodyWidth, container}
+  return {width, height, margin, bodyHeight, bodyWidth, container, selector}
 }
 
 estimands.getScales = function(data, config) {
@@ -70,7 +70,7 @@ estimands.getScales = function(data, config) {
 }
 
 estimands.drawData = function(data, config, scales){
-  var {margin, container, bodyHeight, bodyWidth, width, height} = config;
+  var {margin, container, bodyHeight, bodyWidth, width, height, selector} = config;
   let {xScale, yScale, colorScale, strokeScale, yScaleBottomPlot} = scales;
   console.log('Data into drawData():', data)
 
@@ -155,7 +155,7 @@ estimands.drawData = function(data, config, scales){
       .style('opacity', 1)
     
     // emphasize table row
-    d3.selectAll("#estimands-table tr[pairID='" + pairID + "']")
+    d3.selectAll(".estimands-table tr[pairID='" + pairID + "']")
       .style('font-weight', 700)
       .style('background-color', '#ebebeb')
     
@@ -195,7 +195,7 @@ estimands.drawData = function(data, config, scales){
       .attr('r', pointRadius * 0.8)
     
     // emphasize table row
-    d3.selectAll("#estimands-table tr")
+    d3.selectAll(".estimands-table tr")
       .style('font-weight', null)
       .style('background-color', null)
 
@@ -342,10 +342,14 @@ estimands.drawData = function(data, config, scales){
         if (d.factual === '1') return 'factual'
         return 'counterfactual'
       })
+      .attr('treatment', function(d) {
+        if (d.treatment === '0') return 'control'
+        return 'treatment'
+      })
       .attr('pairID', d => d.pair_id)
       .attr("pointer-events", "none")
   // hide counterfactual points
-  d3.selectAll(".scatterPoints[factual='counterfactual']")
+  d3.selectAll(selector + " .scatterPoints[factual='counterfactual']")
     .style('display', 'none')
 
 
@@ -531,8 +535,8 @@ estimands.drawData = function(data, config, scales){
     .attr('treatment', '1')
 }
 
-estimands.buildPlot = function(data){
-  config = estimands.getConfig()
+estimands.buildPlot = function(data, selector){
+  config = estimands.getConfig(selector)
   scales = estimands.getScales(data, config)
   estimands.drawData(data, config, scales)
   estimands.changeRunnerText(1)
@@ -540,6 +544,57 @@ estimands.buildPlot = function(data){
 
 estimands.resetPlot = function(){
   d3.select('#estimands-plot-ATE svg').remove()
-  estimands.buildPlot(estimands.data)
+  estimands.buildPlot(estimands.data, "#estimands-plot-ATE")
   estimands.changeRunnerText(1)
+}
+
+// add ATT plot
+estimands.plotATT = function(data, selector){
+  config = estimands.getConfig(selector)
+  scales = estimands.getScales(data, config)
+  estimands.drawData(data, config, scales)
+  estimands.buildTable(data.line, selector, 'estimands-table-ATT')
+
+  // delay to ensure other function selectors are not modifying this plot on init
+  delay = 2000
+
+  // add mouseover
+  d3.selectAll(selector + ' .scatterPoints')
+    .attr("pointer-events", null)
+    .style('display', null)
+    .style('opacity', 0.8)
+
+  // remove control points
+  d3.selectAll(selector + ' .scatterPoints[treatment="control"]')
+    .remove()
+
+  // fade out control rows
+  d3.selectAll(selector + ' tr[treatment="control"] > td')
+    .remove()
+    // .style('filter', 'opacity(0.2)')
+    // .attr("pointer-events", 'none')
+}
+
+// add ATC plot
+estimands.plotATC = function(data, selector){
+  config = estimands.getConfig(selector)
+  scales = estimands.getScales(data, config)
+  estimands.drawData(data, config, scales)
+  estimands.buildTable(data.line, selector, 'estimands-table-ATC')
+
+  // add mouseover
+  d3.selectAll(selector + ' .scatterPoints')
+    .attr("pointer-events", null)
+    .style('display', null)
+    .style('opacity', 0.8)
+
+  // remove control points
+  d3.selectAll(selector + ' .scatterPoints[treatment="treatment"]')
+    .remove()
+
+  // fade out treatment rows
+  d3.selectAll(selector + ' tr[treatment="treatment"]')
+    .remove()
+    // .style('filter', 'opacity(0.2)')
+    // .attr("pointer-events", 'none')
 }
