@@ -208,7 +208,8 @@ plot_residual_observed_residual <- function(.model, covariate = NULL){
         geom_point(aes(colour = !!rlang::sym(covariate)))
     }
   }
-  p <- p + labs(x = "Observed Y", y = "Residual") + 
+  p <- p + geom_hline(yintercept = 0) + 
+    labs(x = "Observed Y", y = "Residual") + 
     theme_minimal() + theme(legend.position="bottom") 
   return(p)
 }
