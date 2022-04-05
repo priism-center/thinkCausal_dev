@@ -1,8 +1,8 @@
 // scrollytell
 // these animation states are kind of a mess
 // TODO: would a state machine work? https://bl.ocks.org/bricof/aff127297d7453ef18459cf52050ed6d
-estimands.d3State1 = function(){
-    console.log('estimandsState1')
+estimands.scrollytellState1 = function(){
+    console.log('Estimands Scrollytell State 1')
 
     // emphasize text and redraw plot
     estimands.emphasizeText("#estimands-trigger-1, #estimands-trigger-1 + p")
@@ -19,8 +19,8 @@ estimands.d3State1 = function(){
         .style('display', 'none')
 }
 
-estimands.d3State2 = function(){
-    console.log('estimandsState2')
+estimands.scrollytellState2 = function(){
+    console.log('Estimands Scrollytell State 2')
 
     // emphasize text and redraw plot
     estimands.emphasizeText("#estimands-trigger-2, #estimands-trigger-2 + p")
@@ -44,8 +44,8 @@ estimands.d3State2 = function(){
         .style('display', 'none')
 }
 
-estimands.d3State3 = function(){
-    console.log('estimandsState3')
+estimands.scrollytellState3 = function(){
+    console.log('Estimands Scrollytell State 3')
 
     // emphasize text and redraw plot
     estimands.emphasizeText("#estimands-trigger-3, #estimands-trigger-3 + p, #estimands-trigger-3 + p + p")
@@ -78,8 +78,8 @@ estimands.d3State3 = function(){
         .style('opacity', 1)
 }
 
-estimands.d3State4 = function(){
-    console.log('estimandsState4')
+estimands.scrollytellState4 = function(){
+    console.log('Estimands Scrollytell State 4')
 
     let {xScale, yScale} = estimands.scales;
 
@@ -177,7 +177,7 @@ estimands.d3State4 = function(){
         .duration(1000)
         .delay(axisDelay)
         .style('opacity', null)
-        .attr("transform", "translate(0," + (estimands.config.bodyHeight + 70) + ")") // not sure why 70 works
+        .attr("transform", "translate(0," + (estimands.config.bodyHeight + 65) + ")") // not sure why 65 works
     d3.selectAll('#estimands-plot-ATE .xAxisBottom text, #estimands-plot-ATE .xAxisBottom line').remove()
 
     // add new y axis
@@ -227,8 +227,8 @@ estimands.d3State4 = function(){
         .attr('y2', d => yScale((d.yName_y1)))
 }
 
-estimands.d3State5 = function(){
-    console.log('estimandsState5')
+estimands.scrollytellState5 = function(){
+    console.log('Estimands Scrollytell State 5')
 
     let {xScale, yScale} = estimands.scales;
 
@@ -268,7 +268,7 @@ estimands.d3State5 = function(){
         .style('opacity', 0)
         .transition()
         .duration(1000)
-        .delay(5000)
+        .delay(4000)
         .style('opacity', 1)
     
     // move DoM ATE label to bottom left
@@ -278,15 +278,15 @@ estimands.d3State5 = function(){
         .attr('x', xScale(0.35))
         .attr('y', yScale(0.5))
         .text('= DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
-        .delay(8000)
+        .delay(7000)
     d3.selectAll('#estimands-plot-ATE .meanLinesConnector.label.background')
         .transition()
-        .delay(8000)
+        .delay(7000)
         .style('display', 'none')
 }
 
-estimands.d3State6 = function(){
-    console.log('estimandsState6')
+estimands.scrollytellState6 = function(){
+    console.log('Estimands Scrollytell State 6')
 
     // emphasize text and redraw plot
     estimands.emphasizeText("#estimands-trigger-6, #estimands-trigger-6 + p")
@@ -327,7 +327,7 @@ estimands.d3State6 = function(){
 }
 
 estimands.plotState = 1
-estimands.triggerD3Animation = function(){
+estimands.triggerScrollytellAnimation = function(){
     // trigger the closest animation
 
     // get the positions of divs relative to the top of the viewport
@@ -348,79 +348,15 @@ estimands.triggerD3Animation = function(){
 
     // update plot if state changed
     if (index != estimands.plotState){
-        if (index == 0) estimands.d3State1()
-        if (index == 1) estimands.d3State2()
-        if (index == 2) estimands.d3State3()
-        if (index == 3) estimands.d3State4()
-        if (index == 4) estimands.d3State5()
-        if (index == 5) estimands.d3State6()
+        if (index == 0) estimands.scrollytellState1()
+        if (index == 1) estimands.scrollytellState2()
+        if (index == 2) estimands.scrollytellState3()
+        if (index == 3) estimands.scrollytellState4()
+        if (index == 4) estimands.scrollytellState5()
+        if (index == 5) estimands.scrollytellState6()
         estimands.plotState = index
     }
 }
 
 // add listener to trigger the animations on scroll
-document.addEventListener('scroll', estimands.triggerD3Animation);
-
-
-//// helpers ////
-estimands.emphasizeText = function(selectors){
-    d3.selectAll(".estimands-text-along-d3 > p, .estimands-text-along-d3 > h2")
-        .style('filter', 'opacity(0.2)')
-    // emphasize this text
-    d3.selectAll(selectors)
-        .style('filter', null)
-}
-estimands.dropICE = function(data){
-    // calculates the end position for each ICE segment
-    d3.map(data, function(d) {
-        d.drop_x1 = (d.pair_id - 1) / 10
-        d.drop_y1 = 0 - estimands.bottomPlotOffset
-        d.drop_x2 = (d.pair_id - 1) / 10
-        d.drop_y2 = (d.yName_y1 - d.yName_y0) - estimands.bottomPlotOffset
-    })
-}
-estimands.highlightText = function(selector, delay){
-    // flashes the text color yellow and temporarily enlarges
-
-    let currentFontSize = d3.selectAll(selector).style('font-size')
-    currentFontSize = currentFontSize.replace('px', '')
-    bigFontSize = (currentFontSize * 1.3) + 'px'
-    currentFontSize = currentFontSize + 'px'
-
-    d3.selectAll(selector)
-        .transition('highlightText')
-        .duration(500)
-        .style("fill", '#f0d000')
-        .style('font-size', bigFontSize)
-        .delay(delay)
-
-    d3.selectAll(selector)
-        .transition('highlightText')
-        .duration(500)
-        .style("fill", null)
-        .style('font-size', currentFontSize)
-        .delay(500 + delay)
-}
-estimands.killAnimations = function(){
-    // calling a blank transition again will kill
-    // any previous running ones with the same name
-    d3.selectAll("#estimands-plot-ATE *")
-        .transition()
-    d3.selectAll("#estimands-plot-ATE *")
-        .transition('highlightText')
-}
-estimands.roundNumber = function(num, dec){
-    // rounds a number to a certain decimal place and always maintains a decimal point
-    rounded = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec)
-    return rounded.toFixed(dec)
-}
-estimands.clone = function(selector) {
-    var node = d3.select(selector).node();
-    return d3.select(node.parentNode.insertBefore(node.cloneNode(true), node.nextSibling));
-}
-estimands.changeRunnerText = function(runner){
-    ICE = estimands.data.line.filter(d => d.pair_id == +runner)
-    ICE = estimands.roundNumber(ICE[0].yName_y1 - ICE[0].yName_y0, 2)
-    newText = "Runner " + runner + " has an ICE of " + ICE
-    d3.select("#estimands-runner-text").text(newText)
-}
+document.addEventListener('scroll', estimands.triggerScrollytellAnimation);

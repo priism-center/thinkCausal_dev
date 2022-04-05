@@ -4,7 +4,7 @@ estimands.getConfig = function(selector){
   let width = 540; //900px is width of learning article * 0.6
   let height = 400; 
   let margin = {
-      top: 30,
+      top: 50,
       bottom: 80,
       left: 60,
       right: 20
@@ -53,7 +53,7 @@ estimands.getScales = function(data, config) {
      .range([bodyHeight, 0])
   let yScaleBottomPlot = d3.scaleLinear()
     .domain([-(maxY - yAxisBuffer), 0])
-    .range([bodyHeight*2, bodyHeight+70])
+    .range([bodyHeight*2, bodyHeight+65])
 
   let colorScale = d3.scaleOrdinal()
       .domain(["0", "1"])
@@ -477,10 +477,16 @@ estimands.drawData = function(data, config, scales){
   // add subtitle
   container
     .append('text')
-    .attr('class', 'subtitle')
+    .attr('class', 'title')
     .attr('x', 0)
-    .attr('y', -10)
-    .text('Calculated average running times - lower is better')
+    .attr('y', -35)
+    .text('Calculated average running times')
+  container
+    .append('text')
+    .attr('x', 0)
+    .attr('y', -15)
+    .attr('class', 'subtitle')
+    .text('Lower is better')
 
   // add legend
   let legend = container
