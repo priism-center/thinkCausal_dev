@@ -2,6 +2,8 @@
 # this is just placeholder data for testing
 # TODO: replace data with proper sim
 
+library(dplyr)
+
 n <- 10
 y0 <- rnorm(n, 3, 0.5)
 y1 <- rnorm(n, 2, 0.5)
@@ -25,11 +27,13 @@ ggplot2::ggplot(
   ggplot2::geom_point()
 
 # readr::write_csv(.data, '../_site/d3/pairing/data/point-data.csv')
+# readr::write_csv(.data, 'd3/scrollytell/data/point-data.csv')
 
-library(dplyr)
+
 
 .dataLines <- .data %>%
   select(xName, yName, y, pair_id, treatment) %>% 
   tidyr::pivot_wider(names_from = y, values_from = c(xName, yName))
 
 # readr::write_csv(.dataLines, '../_site/d3/pairing/data/line-data.csv')
+# readr::write_csv(.dataLines, 'd3/scrollytell/data/line-data.csv')

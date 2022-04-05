@@ -77,6 +77,10 @@ body {
   width: 100%;
 }
 
+#estimands-table-ATC, #estimands-table-ATT {
+  font-size: 0.95em;
+}
+
 .estimands-table td, .estimands-table th {
   padding: 4px;
 }
@@ -139,9 +143,14 @@ body {
   font-size: 0.85em;
 }
 
-.subtitle {
+.title {
   font-size: 1.1em;
   fill: #666666;
+}
+
+.subtitle {
+  font-size: 0.9em;
+  fill: #a1a1a1;
 }
 
 .legend > text {
