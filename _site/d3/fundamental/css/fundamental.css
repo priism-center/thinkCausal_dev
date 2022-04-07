@@ -28,8 +28,9 @@
 /*delete body and #fundamental-plot-container chunks when moving to shiny */
 body {
   font-family: "Roboto", Helvetica, Arial, sans-serif;
-  color: #404040;
+  color: #666666;
   margin: 2em;
+  line-height: 1.5em;
   /* background-color: #fff; */
   max-width: 900px; /*same as learning container*/
 }
