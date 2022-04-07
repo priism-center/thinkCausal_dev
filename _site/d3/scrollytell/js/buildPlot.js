@@ -77,15 +77,17 @@ estimands.drawData = function(data, config, scales){
   let meanY = d3.mean(data.scatter, d => +d.yName);
   let meanX = d3.mean(data.scatter, d => +d.xName);
   estimands.data.meanX = meanX;
-  let minY = d3.min(data.scatter, d => +d.yName);
-  let maxY = d3.max(data.scatter, d => +d.yName);
-  let minX = d3.min(data.scatter, d => +d.xName);
-  let maxX = d3.max(data.scatter, d => +d.xName);
+  estimands.data.meanY = meanY;
+  // let minY = d3.min(data.scatter, d => +d.yName);
+  // let maxY = d3.max(data.scatter, d => +d.yName);
+  // let minX = d3.min(data.scatter, d => +d.xName);
+  // let maxX = d3.max(data.scatter, d => +d.xName);
 
   let strokeColor = '#6e6e6e'
   let strokeWidth = 2.5
   let pointOpacity = 0.8
   let pointRadius = 7
+  estimands.styles = {strokeColor, strokeWidth, pointOpacity, pointRadius}
 
 
 
@@ -123,6 +125,7 @@ estimands.drawData = function(data, config, scales){
   //   .append("div")
   //   .style("opacity", 0)
   //   .attr("class", "tooltip")
+
   // add mouse events
   estimands.mouseover = function(d){
     // tooltip
@@ -148,6 +151,12 @@ estimands.drawData = function(data, config, scales){
       .style('opacity', 1)
       .attr('r', pointRadius*1.2*0.8)
       .style('filter', 'brightness(0.9)')
+    
+    // de-emphasize mean lines
+    meanLinesATCSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
+    meanLinesATTSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
+    d3.selectAll(meanLinesATCSelector + ', ' + meanLinesATTSelector)
+      .style('opacity', 0.05)
 
     // emphasize lines
     d3.selectAll(".showOnHover[pairID='" + pairID + "']")
@@ -194,7 +203,13 @@ estimands.drawData = function(data, config, scales){
       .style('filter', null)
       .attr('r', pointRadius * 0.8)
     
-    // emphasize table row
+    // re-emphasize mean lines
+    meanLinesATCSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
+    meanLinesATTSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
+    d3.selectAll(meanLinesATCSelector + ', ' + meanLinesATTSelector)
+      .style('opacity', 1)
+    
+    // de-emphasize table row
     d3.selectAll(".estimands-table tr")
       .style('font-weight', null)
       .style('background-color', null)
@@ -354,101 +369,23 @@ estimands.drawData = function(data, config, scales){
 
 
     
-  // show mean lines
+  // show mean lines - ATE
   let meanYy0 = d3.mean(data.line, d => +d.yName_y0);
   let meanYy1 = d3.mean(data.line, d => +d.yName_y1);
-  // add connecting lines
-  container.append('g')
-    .append('line')
-      .attr('x1', xScale(-0.1))
-      .attr('y1', yScale(meanYy0))
-      .attr('x2', xScale(meanX))
-      .attr('y2', yScale(meanYy0))
-      .style('stroke', "#21918c")
-      .style('stroke-width', strokeWidth * 2/3)
-      .style('display', 'none')
-      .attr('class', 'meanLinesConnector')
-  container.append('g')
-    .append('line')
-      .attr('x1', xScale(meanX))
-      .attr('y1', yScale(meanYy0))
-      .attr('x2', xScale(meanX))
-      .attr('y2', yScale(meanYy1))
-      .style('stroke', strokeColor)
-      .style('stroke-width', strokeWidth * 2/3)
-      .style('display', 'none')
-      .attr('class', 'meanLinesConnector mean-dashed')
-  container.append('g')
-    .append('line')
-      .attr('x1', xScale(1.1))
-      .attr('y1', yScale(meanYy1))
-      .attr('x2', xScale(meanX))
-      .attr('y2', yScale(meanYy1))
-      .style('stroke', "#440154")
-      .style('stroke-width', strokeWidth * 2/3)
-      .style('display', 'none')
-      .attr('class', 'meanLinesConnector')
-  // add end points
-  container.append('g')
-    .append('circle')
-      .attr("cx", xScale(meanX))
-      .attr("cy", yScale(meanYy0))
-      .attr("r", pointRadius * 0.7)
-      .attr('fill', '#21918c')
-      .attr('stroke', "#21918c")
-      .attr('stroke-width', 2)
-      .style('display', 'none')
-      .attr('class', 'meanLinesConnector endCircle')
-  container.append('g')
-    .append('circle')
-      .attr("cx", xScale(meanX))
-      .attr("cy", yScale(meanYy1))
-      .attr("r", pointRadius * 0.7)
-      .attr('fill', '#440154')
-      .attr('stroke', "#440154")
-      .attr('stroke-width', 2)
-      .style('display', 'none')
-      .attr('class', 'meanLinesConnector endCircle')
-  // add label
-  container.append('g')
-    .append('rect')
-      .attr('width', 50)
-      .attr('height', 27)
-      .attr('x', xScale(meanX * 0.97))
-      .attr('y', yScale(meanY + 0.2))
-      .style('fill', '#fff')
-      .style('display', 'none')
-      .attr('class', 'meanLinesConnector label background')
-  estimands.data.DoMATE = meanYy1 - meanYy0
-  container.append('g')
-    .append('text')
-      .attr('x', xScale(meanX * 0.75))
-      .attr('y', yScale(meanY))
-      .text('DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
-      .style('display', 'none')
-      .attr('class', 'meanLinesConnector label DoMATELabel')
-  // add the mean lines
-  container.append('g')
-    .append('line')
-      .attr('x1', xScale(-0.1))
-      .attr('y1', yScale(meanYy0))
-      .attr('x2', xScale(0.1))
-      .attr('y2', yScale(meanYy0))
-      .style('stroke', "#333333")
-      .style('stroke-width', 5)
-      .style('display', 'none')
-      .attr('class', 'meanLines')
-  container.append('g')
-    .append('line')
-      .attr('x1', xScale(0.9))
-      .attr('y1', yScale(meanYy1))
-      .attr('x2', xScale(1.1))
-      .attr('y2', yScale(meanYy1))
-      .style('stroke', '#333333')
-      .style('stroke-width', 5)
-      .style('display', 'none')
-      .attr('class', 'meanLines')
- 
+  estimands.addMeanLines(container, meanYy0, meanYy1, 'ATE')
+
+  // show mean lines - ATT
+  dataLineATT = data.line.filter(d => d.treatment == "1")
+  let meanYy0ATT = d3.mean(dataLineATT, d => +d.yName_y0);
+  let meanYy1ATT = d3.mean(dataLineATT, d => +d.yName_y1);
+  estimands.addMeanLines(container, meanYy0ATT, meanYy1ATT, 'ATT')
+
+  // show mean lines - ATC
+  dataLineATC = data.line.filter(d => d.treatment == "0")
+  let meanYy0ATC = d3.mean(dataLineATC, d => +d.yName_y0);
+  let meanYy1ATC = d3.mean(dataLineATC, d => +d.yName_y1);
+  estimands.addMeanLines(container, meanYy0ATC, meanYy1ATC, 'ATC')
+
   
 
   // add ICE ATE line and label
@@ -474,7 +411,7 @@ estimands.drawData = function(data, config, scales){
 
 
 
-  // add subtitle
+  // add title and subtitle
   container
     .append('text')
     .attr('class', 'title')
@@ -564,6 +501,13 @@ estimands.plotATT = function(data, selector){
   // delay to ensure other function selectors are not modifying this plot on init
   delay = 2000
 
+  // add meanLinesATT
+  meanLinesSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
+  d3.selectAll(meanLinesSelector)
+    .style('display', null)
+    .style('opacity', 0.9)
+
+
   // add mouseover
   d3.selectAll(selector + ' .scatterPoints')
     .attr("pointer-events", null)
@@ -571,10 +515,10 @@ estimands.plotATT = function(data, selector){
     .style('opacity', 0.8)
 
   // remove control points
-  d3.selectAll(selector + ' .scatterPoints[treatment="control"]')
+  d3.selectAll(selector + ' .scatterPoints[treatment="control"], ' + selector + ' .showOnHover[treatment="control"]')
     .remove()
 
-  // fade out control rows
+  // remove control rows
   d3.selectAll(selector + ' tr[treatment="control"] > td')
     .remove()
     // .style('filter', 'opacity(0.2)')
@@ -588,17 +532,28 @@ estimands.plotATC = function(data, selector){
   estimands.drawData(data, config, scales)
   estimands.buildTable(data.line, selector, 'estimands-table-ATC')
 
+  // add meanLinesATC
+  meanLinesSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
+  d3.selectAll(meanLinesSelector)
+    .style('display', null)
+
   // add mouseover
   d3.selectAll(selector + ' .scatterPoints')
     .attr("pointer-events", null)
     .style('display', null)
-    .style('opacity', 0.8)
+    .style('opacity', 0.9)
+  
+  // remove mouseover from table
+  // nullFn = function(){}
+  // d3.selectAll(selector + 'tr')
+  //   .on('mouseover', null)
+  //   .on('mouseleave', null)
 
   // remove control points
-  d3.selectAll(selector + ' .scatterPoints[treatment="treatment"]')
+  d3.selectAll(selector + ' .scatterPoints[treatment="treatment"], ' + selector + ' .showOnHover[treatment="treatment"]')
     .remove()
 
-  // fade out treatment rows
+  // remove treatment rows
   d3.selectAll(selector + ' tr[treatment="treatment"]')
     .remove()
     // .style('filter', 'opacity(0.2)')
