@@ -29,16 +29,15 @@ fundamental.getConfig = function() {
 
 fundamental.getScales = function(data, config) {
  let { bodyWidth, bodyHeight, container } = config;
- let maximumValue = d3.max(data.distribution, d => +d.x);
- let minimumValue = d3.min(data.distribution, d => +d.x);
+ let maximumValue = 250 //d3.max(data.distribution, d => +d.x);
+ let minimumValue = -250 //d3.min(data.distribution, d => +d.x);
 
  let xScale = d3.scaleLinear()
-    //  .domain([minimumValue, maximumValue])
-     .domain([-250, 250])
-     .range([0, bodyWidth])
+    .domain([minimumValue, maximumValue])
+    .range([0, bodyWidth])
  let yScale = d3.scaleLinear()
-      .domain([0, 1.5])
-     .range([bodyHeight, 0])
+    .domain([0, 0.015]) //1.5])
+    .range([bodyHeight, 0])
 
  return {xScale, yScale}
 }
@@ -98,9 +97,9 @@ fundamental.drawRug = function(data, scales, config){
     .enter()
     .append('line')
       .attr('x1', d => xScale(d.x))
-      .attr('y1', d => yScale(0))
+      .attr('y1', yScale(0))
       .attr('x2', d => xScale(d.x))
-      .attr('y2', d => yScale(1))
+      .attr('y2', yScale(1))
       .style('stroke', "#525252")
       .style('stroke-width', 1)
       .style('opacity', '0.03')
@@ -113,15 +112,16 @@ fundamental.drawRug = function(data, scales, config){
     .attr('x1', xScale(fundamental.data.trueMean))
     .attr('y1', yScale(0))
     .attr('x2', xScale(fundamental.data.trueMean))
-    .attr('y2', yScale(1.5))
-    .style('stroke', '#6e6e6e')
+    .attr('y2', yScale(1))
+    .style('stroke', '#525252')
     .style('stroke-width', 3)
-    // .style('display', 'none')
+    .style('display', 'none')
   container.append('text')
-    .attr('class', 'trueMeanLine')
+    .attr('class', 'trueMeanLineLabel')
     .attr('x', xScale(+fundamental.data.trueMean + 5))
-    .attr('y', yScale(1.5*0.95))
+    .attr('y', yScale(1*0.95))
     .text('True mean')
+    .style('display', 'none')
 
   // add study line
   container.append('line')
@@ -129,86 +129,34 @@ fundamental.drawRug = function(data, scales, config){
     .attr('x1', xScale(fundamental.data.studyLine))
     .attr('y1', yScale(0))
     .attr('x2', xScale(fundamental.data.studyLine))
-    .attr('y2', yScale(1.25))
+    .attr('y2', yScale(1))
     .style('stroke', 'red')
     .style('stroke-width', 3)
     .style('display', 'none')
   container.append('text')
-    .attr('class', 'studyLine')
+    .attr('class', 'studyLineLabel')
     .attr('x', xScale(+fundamental.data.studyLine + 5))
-    .attr('y', yScale(1.25*0.95))
+    .attr('y', yScale(1*0.95))
     .text('Study results')
     .style('display', 'none')
   
   
   // add KDE
-
+  let thresholds = xScale.ticks(50)
+  let density = kde(epanechnikov(7), thresholds, data.distribution)
+  container.append('path')
+    // .attr('class', 'kde')
+    .datum(density)
+    .attr("fill", "none")
+    .attr("stroke", "#000")
+    .attr("stroke-width", 1.5)
+    .attr("stroke-linejoin", "round")
+    .attr('d', d3.line()
+      .curve(d3.curveBasis)
+      .x(d => xScale(d[0]))
+      .y(d => yScale(d[1]))
+    )
 }
-
-// fundamental.drawBars = function(data, scales, config){
-//   let {margin, container, bodyHeight, bodyWidth} = config;
-//   let {xScale, yScale} = scales;
-//   let nbins = 30;
-
-//   // set the parameters for the histogram
-//   let histogram = d3.histogram()
-//         .value(d => d.x)
-//         .domain(xScale.domain())
-//         .thresholds(xScale.ticks(nbins));
-
-//   // get the binned data
-//   let bins = histogram(data.distribution);
-
-//   // remove and redraw X axis
-//   d3.selectAll(".bottomaxis").remove()
-//   container.append("g")
-//     .attr("class", "bottomaxis")
-//     .attr("transform", "translate(" + margin.left + "," + bodyHeight + ")")
-//     .call(d3.axisBottom(xScale));
-
-//   // remove and redraw Y axis
-//   yScale.domain([0, d3.max(bins, d => d.length)]);
-//   d3.selectAll(".leftaxis").remove()
-//   container.append("g")
-//     .attr("class", "leftaxis")
-//     .call(d3.axisLeft(yScale))
-//     .style("transform",
-//       `translate(${margin.left}px, 0px)`
-//     )
-
-//   // join data with rect
-//   let rects = container
-//     .selectAll("rect")
-//     .data(bins)
-
-//   // add the new bars
-//   rects
-//     .enter()
-//     .append("rect") // Add a new rect for each new elements
-//     .merge(rects) // get the already existing elements as well
-//       .attr("x", 1)
-//       .attr("transform", function(d) { return "translate(" + (xScale(d.x0) + margin.left) + "," + yScale(d.length) + ")"; })
-//       .attr("width", function(d) { return xScale(d.x1) - xScale(d.x0) -1 ; })
-//       .attr("height", function(d) { return bodyHeight - yScale(d.length); })
-//       .style("fill", "#394E48")
-
-//   // delete the old bars
-//   rects
-//     .exit()
-//     .remove()
-//  }
-
-//  d3.select("#generateDistribution").on("click", function() {
-//   newMean = +$("#input-distribution-mean")[0].value
-//   fundamental.data.studyLine = +$("#input-distribution-mean")[0].value
-//  })
-
-// fundamental.drawHistogram = function() {
-//   let data = fundamental.data
-//   let config = fundamental.getConfig();
-//   let scales = fundamental.getScales(data, config);
-//   fundamental.drawBars(data, scales, config);
-// }
 
 fundamental.drawData = function() {
   let data = fundamental.data
@@ -233,7 +181,7 @@ d3.select("#input-distribution-mean").on('input', function() {
   fundamental.drawData()
   
   // make sure studyLine are displayed
-  d3.selectAll(".trueMeanLine")
+  d3.selectAll(".trueMeanLine, .trueMeanLineLabel")
     .style('display', null)
 })
 
