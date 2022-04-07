@@ -69,13 +69,13 @@ estimands.changeRunnerText = function(runner){
 }
 
 // add mean lines for the ATE, ATT, and ATC
-estimands.addMeanLines = function(container, meanYy0, meanYy1, className){
+estimands.addMeanLines = function(container, meanYy0, meanYy1, estimandType){
     let {xScale, yScale, colorScale, strokeScale, yScaleBottomPlot} = estimands.scales
     let {strokeColor, strokeWidth, pointOpacity, pointRadius} = estimands.styles
     meanX = estimands.data.meanX
     meanY = estimands.data.meanY
 
-    className = 'meanLines ' + 'meanLines' + className
+    className = 'meanLines ' + 'meanLines' + estimandType
     classConnector = className + 'Connector'
     classLabel = className + 'Label'
 
@@ -146,7 +146,7 @@ estimands.addMeanLines = function(container, meanYy0, meanYy1, className){
       .append('text')
         .attr('x', xScale(meanX * 0.75))
         .attr('y', yScale(meanY))
-        .text('DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
+        .text(estimandType + ": " + estimands.roundNumber(estimands.data.DoMATE, 2))
         .style('display', 'none')
         .attr('class', classConnector + ' label ' + classLabel)
     // add the mean lines
