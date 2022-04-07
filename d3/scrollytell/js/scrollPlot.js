@@ -119,7 +119,7 @@ estimands.scrollytellState4 = function(){
         .style('opacity', 0)
 
     // make the ICE bars fall
-    estimands.dropICE(estimands.data.line)
+    estimands.dropICE()
     d3.selectAll('#estimands-plot-ATE .line-dashed')
         .transition()
         .duration(2500)
@@ -256,14 +256,14 @@ estimands.scrollytellState5 = function(){
         .text('MoD ATE: ' + estimands.roundNumber(estimands.ATE, 2))
 
     // show mean lines and difference lines
-    d3.selectAll("#estimands-plot-ATE .meanLines")
+    d3.selectAll("#estimands-plot-ATE .meanLinesATE")
         .style('display', null)
         .style('opacity', 0)
         .transition()
         .duration(1000)
         .delay(2500)
         .style('opacity', 1)
-    d3.selectAll("#estimands-plot-ATE .meanLinesConnector, #estimands-plot-ATE .DoMATELabel")
+    d3.selectAll("#estimands-plot-ATE .meanLinesATEConnector, #estimands-plot-ATE .meanLinesATELabel")
         .style('display', null)
         .style('opacity', 0)
         .transition()
@@ -272,14 +272,14 @@ estimands.scrollytellState5 = function(){
         .style('opacity', 1)
     
     // move DoM ATE label to bottom left
-    d3.selectAll('#estimands-plot-ATE .DoMATELabel')
+    d3.selectAll('#estimands-plot-ATE .meanLinesATELabel')
         .transition('move')
         .duration(1000)
         .attr('x', xScale(0.35))
         .attr('y', yScale(0.5))
         .text('= DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
         .delay(7000)
-    d3.selectAll('#estimands-plot-ATE .meanLinesConnector.label.background')
+    d3.selectAll('#estimands-plot-ATE .meanLinesATEConnector.label.background')
         .transition()
         .delay(7000)
         .style('display', 'none')

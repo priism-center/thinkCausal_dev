@@ -6,9 +6,9 @@ estimands.emphasizeText = function(selectors){
         .style('filter', null)
 }
 
-estimands.dropICE = function(data){
+estimands.dropICE = function(){
     // calculates the end position for each ICE segment
-    d3.map(data, function(d) {
+    d3.map(estimands.data.line, function(d) {
         d.drop_x1 = (d.pair_id - 1) / 10
         d.drop_y1 = 0 - estimands.bottomPlotOffset
         d.drop_x2 = (d.pair_id - 1) / 10
@@ -62,6 +62,112 @@ estimands.clone = function(selector) {
 estimands.changeRunnerText = function(runner){
     ICE = estimands.data.line.filter(d => d.pair_id == +runner)
     ICE = estimands.roundNumber(ICE[0].yName_y1 - ICE[0].yName_y0, 2)
-    newText = "Runner " + runner + " has an ICE of " + ICE
+    if (runner.toString().length < 2) runner = runner + ' '
+    // console.log(runner.length)
+    newText = "Runner " + runner.toString() + " has an ICE of " + ICE
     d3.select("#estimands-runner-text").text(newText)
 }
+
+// add mean lines for the ATE, ATT, and ATC
+estimands.addMeanLines = function(container, meanYy0, meanYy1, className){
+    let {xScale, yScale, colorScale, strokeScale, yScaleBottomPlot} = estimands.scales
+    let {strokeColor, strokeWidth, pointOpacity, pointRadius} = estimands.styles
+    meanX = estimands.data.meanX
+    meanY = estimands.data.meanY
+
+    className = 'meanLines ' + 'meanLines' + className
+    classConnector = className + 'Connector'
+    classLabel = className + 'Label'
+
+    // add connecting lines
+    container.append('g')
+      .append('line')
+        .attr('x1', xScale(-0.1))
+        .attr('y1', yScale(meanYy0))
+        .attr('x2', xScale(meanX))
+        .attr('y2', yScale(meanYy0))
+        .style('stroke', "#21918c")
+        .style('stroke-width', strokeWidth * 2/3)
+        .style('display', 'none')
+        .attr('class', classConnector)
+    container.append('g')
+      .append('line')
+        .attr('x1', xScale(meanX))
+        .attr('y1', yScale(meanYy0))
+        .attr('x2', xScale(meanX))
+        .attr('y2', yScale(meanYy1))
+        .style('stroke', strokeColor)
+        .style('stroke-width', strokeWidth * 2/3)
+        .style('display', 'none')
+        .attr('class', classConnector + ' mean-dashed')
+    container.append('g')
+      .append('line')
+        .attr('x1', xScale(1.1))
+        .attr('y1', yScale(meanYy1))
+        .attr('x2', xScale(meanX))
+        .attr('y2', yScale(meanYy1))
+        .style('stroke', "#440154")
+        .style('stroke-width', strokeWidth * 2/3)
+        .style('display', 'none')
+        .attr('class', classConnector)
+    // add end points
+    container.append('g')
+      .append('circle')
+        .attr("cx", xScale(meanX))
+        .attr("cy", yScale(meanYy0))
+        .attr("r", pointRadius * 0.7)
+        .attr('fill', '#21918c')
+        .attr('stroke', "#21918c")
+        .attr('stroke-width', 2)
+        .style('display', 'none')
+        .attr('class', classConnector + ' endCircle')
+    container.append('g')
+      .append('circle')
+        .attr("cx", xScale(meanX))
+        .attr("cy", yScale(meanYy1))
+        .attr("r", pointRadius * 0.7)
+        .attr('fill', '#440154')
+        .attr('stroke', "#440154")
+        .attr('stroke-width', 2)
+        .style('display', 'none')
+        .attr('class', classConnector + ' endCircle')
+    // add label
+    container.append('g')
+      .append('rect')
+        .attr('width', 50)
+        .attr('height', 27)
+        .attr('x', xScale(meanX * 0.97))
+        .attr('y', yScale(meanY + 0.2))
+        .style('fill', '#fff')
+        .style('display', 'none')
+        .attr('class', classConnector + ' label background')
+    estimands.data.DoMATE = meanYy1 - meanYy0
+    container.append('g')
+      .append('text')
+        .attr('x', xScale(meanX * 0.75))
+        .attr('y', yScale(meanY))
+        .text('DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
+        .style('display', 'none')
+        .attr('class', classConnector + ' label ' + classLabel)
+    // add the mean lines
+    container.append('g')
+      .append('line')
+        .attr('x1', xScale(-0.1))
+        .attr('y1', yScale(meanYy0))
+        .attr('x2', xScale(0.1))
+        .attr('y2', yScale(meanYy0))
+        .style('stroke', "#333333")
+        .style('stroke-width', 5)
+        .style('display', 'none')
+        .attr('class', className)
+    container.append('g')
+      .append('line')
+        .attr('x1', xScale(0.9))
+        .attr('y1', yScale(meanYy1))
+        .attr('x2', xScale(1.1))
+        .attr('y2', yScale(meanYy1))
+        .style('stroke', '#333333')
+        .style('stroke-width', 5)
+        .style('display', 'none')
+        .attr('class', className)
+  }
