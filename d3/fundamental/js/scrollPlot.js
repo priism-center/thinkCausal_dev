@@ -28,8 +28,8 @@ fundamental.scrollytellState2 = function(){
     d3.selectAll(".rugLines")
         .style('display', 'none')
     
-    // remove trueMean label
-    d3.selectAll('.trueMeanLineLabel')
+    // remove trueMean label and kde
+    d3.selectAll('.trueMeanLineLabel, .fundamental-kde')
         .style('display', 'none')
 
     // // generate new distribution and study based on input
@@ -53,17 +53,65 @@ fundamental.scrollytellState3 = function(){
     console.log('fundamentalState3')
 
     fundamental.killAnimations()
+    let container = d3.select('#fundamental-plot > svg > g')
+    let {xScale, yScale} = fundamental.scales
+    delayFn = fundamental.delayFn
 
     // resets
+    d3.selectAll(".rugLines, .fundamental-kde").style('display', 'none')
 
     // remove study line label
     d3.selectAll('.studyLineLabel')
         .style('display', 'none')
 
     // make sure trueMean, studyLine, and rugLines are displayed
-    d3.selectAll(".trueMeanLine, .studyLine, .rugLines")
+    d3.selectAll(".trueMeanLine, .studyLine")
         .style('display', null)
+    
+    // add new study text and then remove it
+    container.append('text')
+        .attr('class', 'firstRepeatedStudyLabel')
+        .attr('x', xScale(+fundamental.data.distribution[0].x))
+        .attr('y', yScale(0.003*1.1))
+        .text('A repeated study')
+        .transition()
+        .delay(delayFn(fundamental.data.distribution[1].index))
+        .remove()
+    
+    // animate rugLines
+    d3.selectAll(".rugLines")
+        .transition('fade-in')
+        .delay(d => delayFn(d.index))
+        .style('display', null)
+        .style('opacity', 1)
+        .style('stroke-width', 5)
+        .style('stroke', 'black')
+    d3.selectAll(".rugLines")
+        .transition('final-state')
+        .duration(400)
+        .delay(d => delayFn(d.index + 1) + 100)
+        .style('opacity', 0.1)
+        .style('stroke-width', 1)
+        .style('stroke', '#525252')
+    
+    // animate kde
+    fundamental.data.distribution.map(function(d){
+        setTimeout(fundamental.redrawKDE, delayFn(d.index), d.index)
+    })
 
+    // add final label
+    n = d3.max(fundamental.data.distribution, d => d.index)
+    container.append('text')
+        .attr('class', 'kdeLabel')
+        .attr('x', xScale(-200))
+        .attr('y', yScale(0.01))
+        .text('Distribution of repeated studies')
+        .style('opacity', 0)
+        .transition()
+        .delay(delayFn(n) + 1500)
+        .duration(2000)
+        .style('opacity', 1)
+        
     fundamental.emphasizeText("#fundamental-trigger-3, #fundamental-trigger-3 + p, #fundamental-trigger-3 + p + p")
 }
 

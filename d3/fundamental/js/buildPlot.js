@@ -39,12 +39,15 @@ fundamental.getScales = function(data, config) {
     .domain([0, 0.015]) //1.5])
     .range([bodyHeight, 0])
 
+  fundamental.scales = {xScale, yScale}
+
  return {xScale, yScale}
 }
 
 fundamental.drawRug = function(data, scales, config){
   let {margin, container, bodyHeight, bodyWidth} = config;
   let {xScale, yScale} = scales
+  let rugHeight = 0.003
   console.log('Data into fundamental.drawRug():', data)
 
   let meanY = d3.mean(data.distribution, d => +d.x);
@@ -99,7 +102,7 @@ fundamental.drawRug = function(data, scales, config){
       .attr('x1', d => xScale(d.x))
       .attr('y1', yScale(0))
       .attr('x2', d => xScale(d.x))
-      .attr('y2', yScale(1))
+      .attr('y2', yScale(rugHeight))
       .style('stroke', "#525252")
       .style('stroke-width', 1)
       .style('opacity', '0.03')
@@ -112,7 +115,7 @@ fundamental.drawRug = function(data, scales, config){
     .attr('x1', xScale(fundamental.data.trueMean))
     .attr('y1', yScale(0))
     .attr('x2', xScale(fundamental.data.trueMean))
-    .attr('y2', yScale(1))
+    .attr('y2', yScale(rugHeight))
     .style('stroke', '#525252')
     .style('stroke-width', 3)
     .style('display', 'none')
@@ -129,7 +132,7 @@ fundamental.drawRug = function(data, scales, config){
     .attr('x1', xScale(fundamental.data.studyLine))
     .attr('y1', yScale(0))
     .attr('x2', xScale(fundamental.data.studyLine))
-    .attr('y2', yScale(1))
+    .attr('y2', yScale(rugHeight))
     .style('stroke', 'red')
     .style('stroke-width', 3)
     .style('display', 'none')
@@ -142,20 +145,35 @@ fundamental.drawRug = function(data, scales, config){
   
   
   // add KDE
-  let thresholds = xScale.ticks(50)
-  let density = kde(epanechnikov(7), thresholds, data.distribution)
+  // fundamental.redrawKDE(10)
+}
+
+fundamental.redrawKDE = function(index){
+  let container = d3.selectAll('#fundamental-plot > svg > g')
+  let xScale = fundamental.scales.xScale
+  let yScale = fundamental.scales.yScale
+  let data = fundamental.data.distribution.filter(d => d.index <= index)
+  let opacity = index / d3.max(fundamental.data.distribution, d => d.index)
+
+  // remove current line
+  d3.selectAll('.fundamental-kde').remove()
+  
+  // add KDE
+  let thresholds = xScale.ticks(30)
+  let density = kde(epanechnikov(7), thresholds, data)
   container.append('path')
-    // .attr('class', 'kde')
+    .attr('class', 'fundamental-kde fundamental-kde-' + index)
     .datum(density)
-    .attr("fill", "none")
-    .attr("stroke", "#000")
-    .attr("stroke-width", 1.5)
-    .attr("stroke-linejoin", "round")
     .attr('d', d3.line()
       .curve(d3.curveBasis)
       .x(d => xScale(d[0]))
       .y(d => yScale(d[1]))
     )
+    .style("stroke-width", 2)
+    .style("stroke-linejoin", "round")
+    .style("fill", "none")
+    .style("stroke", "#292929")
+    .style('opacity', opacity)
 }
 
 fundamental.drawData = function() {
