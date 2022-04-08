@@ -26,21 +26,18 @@ fundamental.scrollytellState2 = function(){
 
     // resets
     d3.selectAll(".rugLines")
+        .transition('fade-in')
+        .transition('final-state')
         .style('display', 'none')
     
-    // remove trueMean label and kde
-    d3.selectAll('.trueMeanLineLabel, .fundamental-kde')
+    // remove labels
+    d3.selectAll('.trueMeanLineLabel, .firstRepeatedStudyLabel')
+        .transition()
         .style('display', 'none')
-
-    // // generate new distribution and study based on input
-    // newMean = +$("#input-distribution-mean")[0].value
-    // fundamental.data.trueMean = newMean
-    // fundamental.data.distribution = fundamental.generateData(newMean);
-    // fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
-
-    // remove plot and redraw
-    // d3.select('#fundamental-plot svg').remove()
-    // fundamental.drawData()
+    
+    // kill kde
+    fundamental.killkdeAnimations()
+    d3.selectAll('.kdeLabel, .fundamental-kde').remove()
     
     // make sure trueMean and studyLine are displayed
     d3.selectAll(".trueMeanLine, .studyLine, .studyLineLabel")
@@ -61,7 +58,7 @@ fundamental.scrollytellState3 = function(){
     d3.selectAll(".rugLines, .fundamental-kde").style('display', 'none')
 
     // remove study line label
-    d3.selectAll('.studyLineLabel')
+    d3.selectAll('.studyLineLabel, .kdeLabel')
         .style('display', 'none')
 
     // make sure trueMean, studyLine, and rugLines are displayed
@@ -96,16 +93,19 @@ fundamental.scrollytellState3 = function(){
     
     // animate kde
     fundamental.data.distribution.map(function(d){
-        setTimeout(fundamental.redrawKDE, delayFn(d.index), d.index)
+        // plot kde for every other index (for performance)
+        if (d.index % 2 == 0){
+            fundamental.timeouts.push(setTimeout(fundamental.redrawKDE, delayFn(d.index), d.index))
+        }
     })
 
     // add final label
-    n = d3.max(fundamental.data.distribution, d => d.index)
+    n = fundamental.data.distribution.length
     container.append('text')
         .attr('class', 'kdeLabel')
-        .attr('x', xScale(-200))
-        .attr('y', yScale(0.01))
-        .text('Distribution of repeated studies')
+        .attr('x', 0)
+        .attr('y', 0)
+        .text(`Distribution of ${n} repeated studies`)
         .style('opacity', 0)
         .transition()
         .delay(delayFn(n) + 1500)
@@ -158,6 +158,7 @@ fundamental.triggerScrollytellAnimation = function(){
     let trigger5Pos = $('#fundamental-trigger-5')[0].getBoundingClientRect().top
     let trigger6Pos = $('#fundamental-trigger-6')[0].getBoundingClientRect().top
     let positions = [trigger1Pos, trigger2Pos, trigger3Pos, trigger4Pos, trigger5Pos, trigger6Pos]
+    let scrollyFns = [fundamental.scrollytellState1, fundamental.scrollytellState2, fundamental.scrollytellState3, fundamental.scrollytellState4, fundamental.scrollytellState5, fundamental.scrollytellState6]
 
     // make off page elements positive
     positions = positions.map(Math.abs)
@@ -166,15 +167,12 @@ fundamental.triggerScrollytellAnimation = function(){
     const minVal = Math.min(...positions)
     const index = positions.indexOf(minVal)
 
-    // update plot if state changed
-    if (index != fundamental.plotState){
-        if (index == 0) fundamental.scrollytellState1()
-        if (index == 1) fundamental.scrollytellState2()
-        if (index == 2) fundamental.scrollytellState3()
-        if (index == 3) fundamental.scrollytellState4()
-        if (index == 4) fundamental.scrollytellState5()
-        if (index == 5) fundamental.scrollytellState6()
-        fundamental.plotState = index
+    // update plot if state changed and user has entered value
+    if ($("#input-distribution-mean")[0].value != ''){
+        if (index != fundamental.plotState){
+            scrollyFns[index]()
+            fundamental.plotState = index
+        }
     }
 }
 
