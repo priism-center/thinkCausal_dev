@@ -1,12 +1,13 @@
 
 fundamental.generateData = function(mean){
-    let sd = Math.max(...[30, mean * 0.5]) 
+    let sd = 30 //Math.max(...[30, mean * 0.5]) 
     let n = 1000
     distribution = d3.range(n).map(function(i){
       num = jStat.normal.sample(mean, sd)
       num = num.toString()
       return {'x': num, "index": i}
     })
+
     return distribution;
   }
   
@@ -63,3 +64,20 @@ fundamental.killAnimations = function(){
 
 // controls the delay on the rugplot animation
 fundamental.delayFn = function(index){ return ((((((index+1)**0.001)-1) * 5000000)) / 1.3) + 100 } // accelerating curve
+
+// store timeouts for later cleaing
+fundamental.timeouts = []
+fundamental.killkdeAnimations = function(){
+    fundamental.timeouts.map(clearTimeout)
+    fundamental.timeouts = []
+}
+
+// find a point away from the study line and true mean
+// this is used for highlighting the first point and making sure its readable
+fundamental.findFarPoint = function(){
+  trueMean = +fundamental.data.trueMean
+  study = +fundamental.data.studyLine
+  if (trueMean > study){
+    return trueMean + 10
+  } else return study + 10
+}

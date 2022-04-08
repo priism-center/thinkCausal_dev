@@ -24,16 +24,18 @@ fundamental.getConfig = function() {
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")")
 
+  fundamental.config = {width, height, margin, bodyHeight, bodyWidth, container}
   return {width, height, margin, bodyHeight, bodyWidth, container}
 }
 
 fundamental.getScales = function(data, config) {
  let { bodyWidth, bodyHeight, container } = config;
- let maximumValue = 250 //d3.max(data.distribution, d => +d.x);
- let minimumValue = -250 //d3.min(data.distribution, d => +d.x);
+ let maximumValue = fundamental.data.max  //d3.max(data.distribution, d => +d.x);
+ let minimumValue = fundamental.data.min //d3.min(data.distribution, d => +d.x);
+ padding = (maximumValue - minimumValue) * 0.15
 
  let xScale = d3.scaleLinear()
-    .domain([minimumValue, maximumValue])
+    .domain([minimumValue - padding, maximumValue + padding])
     .range([0, bodyWidth])
  let yScale = d3.scaleLinear()
     .domain([0, 0.015]) //1.5])
@@ -50,26 +52,9 @@ fundamental.drawRug = function(data, scales, config){
   let rugHeight = 0.003
   console.log('Data into fundamental.drawRug():', data)
 
-  let meanY = d3.mean(data.distribution, d => +d.x);
-  let meanX = d3.mean(data.distribution, d => +d.index);
-  let minY = d3.min(data.distribution, d => +d.x);
-  let maxY = d3.max(data.distribution, d => +d.x);
-  let minX = d3.min(data.distribution, d => +d.index);
-  let maxX = d3.max(data.distribution, d => +d.index);
-
-  let strokeColor = '#6e6e6e'
-  let strokeWidth = 2.5
-  let pointOpacity = 0.8
-  let pointRadius = 7
-
-
 
   // add X axis
   let xAxis = d3.axisBottom(xScale)
-  // xAxis.ticks(3);
-  // xAxis.tickValues([0, 1]);
-  // let tickLabels = ['y0', 'y1']
-  // xAxis.tickFormat((d, i) => tickLabels[i])
   container.append("g")
     .attr('class', "axis xAxis")
     .attr("transform", "translate(0," + bodyHeight + ")")
@@ -80,18 +65,6 @@ fundamental.drawRug = function(data, scales, config){
     .attr('y', bodyHeight + margin.bottom/2)
     .attr('text-anchor', 'middle')
     .text("Running time")
-
-  // add Y axis
-  // container.append("g")
-  //   .attr('class', "axis yAxis")
-  //   .call(d3.axisLeft(yScale));
-  // container.append('text')
-  //   .attr('class', 'axisLabel yAxisLabel')
-  //   .attr('x', -margin.left-10)
-  //   .attr('y', yScale(meanY))
-  //   .attr('text-anchor', 'middle')
-  //   .attr("transform", "rotate(-90,-" + (margin.left-10) + "," + yScale(meanY) + ")")
-  //   .text("Running time")
 
   // draw the rug
   container.append('g')
@@ -116,15 +89,15 @@ fundamental.drawRug = function(data, scales, config){
     .attr('y1', yScale(0))
     .attr('x2', xScale(fundamental.data.trueMean))
     .attr('y2', yScale(rugHeight))
-    .style('stroke', '#525252')
+    .style('stroke', '#674ca1')
     .style('stroke-width', 3)
     .style('display', 'none')
-  container.append('text')
-    .attr('class', 'trueMeanLineLabel')
-    .attr('x', xScale(+fundamental.data.trueMean + 5))
-    .attr('y', yScale(1*0.95))
-    .text('True mean')
-    .style('display', 'none')
+  // container.append('text')
+  //   .attr('class', 'trueMeanLineLabel')
+  //   .attr('x', xScale(+fundamental.data.trueMean + 5))
+  //   .attr('y', yScale(1*0.95))
+  //   .text('True mean')
+  //   .style('display', 'none')
 
   // add study line
   container.append('line')
@@ -136,16 +109,12 @@ fundamental.drawRug = function(data, scales, config){
     .style('stroke', 'red')
     .style('stroke-width', 3)
     .style('display', 'none')
-  container.append('text')
-    .attr('class', 'studyLineLabel')
-    .attr('x', xScale(+fundamental.data.studyLine + 5))
-    .attr('y', yScale(1*0.95))
-    .text('Study results')
-    .style('display', 'none')
-  
-  
-  // add KDE
-  // fundamental.redrawKDE(10)
+  // container.append('text')
+  //   .attr('class', 'studyLineLabel')
+  //   .attr('x', xScale(+fundamental.data.studyLine + 5))
+  //   .attr('y', yScale(1*0.95))
+  //   .text('Study results')
+  //   .style('display', 'none')
 }
 
 fundamental.redrawKDE = function(index){
@@ -185,6 +154,20 @@ fundamental.drawData = function() {
 
 // update plot when user changes the mean
 d3.select("#input-distribution-mean").on('input', function() {
+
+  // hide mean line if no input and don't update
+  if (this.value === '') {
+    d3.selectAll(".trueMeanLine, .trueMeanLineLabel")
+      .style('display', 'none')
+    return ;
+  }
+
+  // ensure mean line is shown when there is input
+  d3.selectAll(".trueMeanLine, .trueMeanLineLabel")
+      .style('display', null)
+  
+  // don't update if numeric value is the same as previous input
+  if (+this.value == +fundamental.data.trueMean) return ;
   
   // update true mean value
   newMean = +$("#input-distribution-mean")[0].value
@@ -193,40 +176,65 @@ d3.select("#input-distribution-mean").on('input', function() {
   // generate new distribution and study based on input
   fundamental.data.distribution = fundamental.generateData(newMean);
   fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
+  
+  // guarantee first observation is far from studyLine and mean
+  fundamental.data.distribution[0].x = fundamental.findFarPoint()
 
   // remove plot and redraw
   d3.select('#fundamental-plot svg').remove()
   fundamental.drawData()
+  fundamental.updateXAxis()
   
   // make sure studyLine are displayed
   d3.selectAll(".trueMeanLine, .trueMeanLineLabel")
     .style('display', null)
 })
 
-// // update plot when user hits get study results
-// d3.select("#generate-study").on('click', function() {
+// update the x scale based on user input
+fundamental.updateXAxis = function(){
+  let maximumValue = d3.max(fundamental.data.distribution, d => +d.x);
+  let minimumValue = d3.min(fundamental.data.distribution, d => +d.x);
+  fundamental.data.max = maximumValue
+  fundamental.data.min = minimumValue
+  animationDuration = 2000
 
-//   // generate new distribution and study based on input
-//   newMean = +$("#input-distribution-mean")[0].value
-//   fundamental.data.trueMean = newMean
-//   fundamental.data.distribution = fundamental.generateData(newMean);
-//   fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
+  // new scale and axis
+  padding = (maximumValue - minimumValue) * 0.15
+  let newXScale = d3.scaleLinear()
+    .domain([minimumValue - padding, maximumValue + padding])
+    .range([0, fundamental.config.bodyWidth])
+  let newAxis = d3.axisBottom(newXScale)
 
-//   // remove plot and redraw
-//   d3.select('#fundamental-plot svg').remove()
-//   fundamental.drawData()
+  // store for use in KDE
+  fundamental.scales.xScale = newXScale
+
+  // animate to new axis
+  d3.select('.xAxis')
+    .transition()
+    .duration(animationDuration)
+    // .ease(d3.easeLinear)
+    .call(newAxis)
   
-//   // make sure trueMean and studyLine are displayed
-//   d3.selectAll(".trueMeanLine, .studyLine")
-//     .style('display', null)
-// })
-
-// show rug lines on user input
-// d3.select("#generate-distribution").on("click", function() {
-//   // make sure trueMean, studyLine, and rugLines are displayed
-//   d3.selectAll(".trueMeanLine, .studyLine, .rugLines")
-//     .style('display', null)
-// })
+  // animate rug
+  d3.selectAll('.rugLines')
+    .transition()
+    .duration(animationDuration)
+    // .ease(d3.easeLinear)
+    .attr('x1', d => newXScale(d.x))
+    .attr('x2', d => newXScale(d.x))
+  d3.selectAll('.trueMeanLine')
+    .transition()
+    .duration(animationDuration)
+    // .ease(d3.easeLinear)
+    .attr('x1', newXScale(fundamental.data.trueMean))
+    .attr('x2', newXScale(fundamental.data.trueMean))
+  d3.selectAll('.studyLine')
+    .transition()
+    .duration(animationDuration)
+    // .ease(d3.easeLinear)
+    .attr('x1', newXScale(fundamental.data.studyLine))
+    .attr('x2', newXScale(fundamental.data.studyLine))
+}
 
 // intialize plot
 fundamental.showData = function() {
@@ -235,6 +243,9 @@ fundamental.showData = function() {
     fundamental.data.trueMean = 0;
     fundamental.data.distribution = fundamental.generateData(fundamental.data.trueMean);
     fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
+    fundamental.data.distribution[0].x = fundamental.findFarPoint()
+    fundamental.data.max = d3.max(fundamental.data.distribution, d => +d.x);
+    fundamental.data.min = d3.min(fundamental.data.distribution, d => +d.x);
 
     // initialize plot
     fundamental.drawData();
