@@ -1,26 +1,26 @@
 library(tidyverse)
 dat <- read_csv('~/Dropbox/thinkCausal_dev/thinkCausal/data/IHDP_observational.csv')
-cats <- dat %>% select(contains('mom'), -momage, ark, ein, har, mia, pen, tex, was, cig, drugs, booze, work.dur, prenatal, twin)
 
 
-get_groups <- function(selected_x, cat_df){
+transform_indicator_to_categorical <- function(.x, cat_df){
 compare <- cat_df %>% 
-  select(-selected_x)
+  select(-.x)
   
   run_test <- lapply(1:length(compare), function(i){
-      tmp <- tibble(cat_df[[all_of(selected_x)]], compare[[i]])
+      tmp <- tibble(cat_df[[all_of(.x)]], compare[[i]])
       rows <- tmp %>% 
         mutate(rSum = rowSums(across())) %>% 
         filter(rSum > 1) %>% 
         nrow()
-      if(rows == 0) i
+      if(rows == 0) names(cat_df)[i]
     })
   
-  out <- names(compare)[unlist(run_test)]
-  out <- c(test, out)
+  out <- unlist(run_test)
+  if(length(out) > 1) out <- c(.x, out) 
   return(out)
 }
 
-get_groups(test = 'mom.lths', cat_df = cats)
+transform_indicator_to_categorical(.x = 'treat', cat_df = dat)
 
 
+cat_df <- dat
