@@ -372,6 +372,7 @@ estimands.drawData = function(data, config, scales){
   // show mean lines - ATE
   let meanYy0 = d3.mean(data.line, d => +d.yName_y0);
   let meanYy1 = d3.mean(data.line, d => +d.yName_y1);
+  estimands.data.DoMATE = meanYy1 - meanYy0
   estimands.addMeanLines(container, meanYy0, meanYy1, 'ATE')
 
   // show mean lines - ATT

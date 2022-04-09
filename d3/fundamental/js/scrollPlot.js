@@ -71,6 +71,10 @@ fundamental.scrollytellState3 = function(){
         .attr('x', xScale(+fundamental.data.distribution[0].x))
         .attr('y', yScale(0.003*1.1))
         .text('A repeated study')
+        .attr('opacity', 0)
+        .transition()
+        .duration(500)
+        .attr('opacity', 1)
         .transition()
         .delay(delayFn(fundamental.data.distribution[1].index))
         .remove()
@@ -81,7 +85,7 @@ fundamental.scrollytellState3 = function(){
         .delay(d => delayFn(d.index))
         .style('display', null)
         .style('opacity', 1)
-        .style('stroke-width', 5)
+        .style('stroke-width', 2)
         .style('stroke', 'black')
     d3.selectAll(".rugLines")
         .transition('final-state')
@@ -94,12 +98,14 @@ fundamental.scrollytellState3 = function(){
     // animate kde
     fundamental.data.distribution.map(function(d){
         // plot kde for every other index (for performance)
+        headstart = 500
         if (d.index % 2 == 0){
-            fundamental.timeouts.push(setTimeout(fundamental.redrawKDE, delayFn(d.index), d.index))
+            fundamental.timeouts.push(setTimeout(fundamental.redrawKDE, delayFn(d.index) - headstart, d.index))
         }
     })
 
     // add final label
+    lag = 2000
     n = fundamental.data.distribution.length
     container.append('text')
         .attr('class', 'kdeLabel')
@@ -108,9 +114,17 @@ fundamental.scrollytellState3 = function(){
         .text(`Distribution of ${n} repeated studies`)
         .style('opacity', 0)
         .transition()
-        .delay(delayFn(n) + 1500)
+        .delay(delayFn(n) + lag)
         .duration(2000)
         .style('opacity', 1)
+    
+    // fade out rugLines
+    d3.selectAll(".rugLines")
+        .transition('fade-out')
+        .delay(delayFn(n) + lag)
+        .duration(2000)
+        .style('opacity', 0.01)
+
         
     fundamental.emphasizeText("#fundamental-trigger-3, #fundamental-trigger-3 + p, #fundamental-trigger-3 + p + p")
 }
@@ -168,7 +182,7 @@ fundamental.triggerScrollytellAnimation = function(){
     const index = positions.indexOf(minVal)
 
     // update plot if state changed and user has entered value
-    if ($("#input-distribution-mean")[0].value != ''){
+    if ($("#input-distribution-mean").val() != ''){
         if (index != fundamental.plotState){
             scrollyFns[index]()
             fundamental.plotState = index

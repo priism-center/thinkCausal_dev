@@ -141,12 +141,11 @@ estimands.addMeanLines = function(container, meanYy0, meanYy1, estimandType){
         .style('fill', '#fff')
         .style('display', 'none')
         .attr('class', classConnector + ' label background')
-    estimands.data.DoMATE = meanYy1 - meanYy0
     container.append('g')
       .append('text')
         .attr('x', xScale(meanX * 0.75))
         .attr('y', yScale(meanY))
-        .text(estimandType + ": " + estimands.roundNumber(estimands.data.DoMATE, 2))
+        .text(estimandType + ": " + estimands.roundNumber(meanYy1 - meanYy0, 2))
         .style('display', 'none')
         .attr('class', classConnector + ' label ' + classLabel)
     // add the mean lines

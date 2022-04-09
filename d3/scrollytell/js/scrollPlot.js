@@ -338,6 +338,7 @@ estimands.triggerScrollytellAnimation = function(){
     let trigger5Pos = $('#estimands-trigger-5')[0].getBoundingClientRect().top
     let trigger6Pos = $('#estimands-trigger-6')[0].getBoundingClientRect().top
     let positions = [trigger1Pos, trigger2Pos, trigger3Pos, trigger4Pos, trigger5Pos, trigger6Pos]
+    let scrollyFns = [estimands.scrollytellState1, estimands.scrollytellState2, estimands.scrollytellState3, estimands.scrollytellState4, estimands.scrollytellState5, estimands.scrollytellState6]
 
     // make off page elements positive
     positions = positions.map(Math.abs)
@@ -348,12 +349,7 @@ estimands.triggerScrollytellAnimation = function(){
 
     // update plot if state changed
     if (index != estimands.plotState){
-        if (index == 0) estimands.scrollytellState1()
-        if (index == 1) estimands.scrollytellState2()
-        if (index == 2) estimands.scrollytellState3()
-        if (index == 3) estimands.scrollytellState4()
-        if (index == 4) estimands.scrollytellState5()
-        if (index == 5) estimands.scrollytellState6()
+        scrollyFns[index]()
         estimands.plotState = index
     }
 }
