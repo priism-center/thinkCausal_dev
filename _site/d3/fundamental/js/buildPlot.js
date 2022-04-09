@@ -156,7 +156,7 @@ fundamental.drawData = function() {
 d3.select("#input-distribution-mean").on('input', function() {
 
   // hide mean line if no input and don't update
-  if (this.value === '') {
+  if (this.value === '' || isNaN(this.value)) {
     d3.selectAll(".trueMeanLine, .trueMeanLineLabel")
       .style('display', 'none')
     return ;
@@ -170,7 +170,7 @@ d3.select("#input-distribution-mean").on('input', function() {
   if (+this.value == +fundamental.data.trueMean) return ;
   
   // update true mean value
-  newMean = +$("#input-distribution-mean")[0].value
+  newMean = +$("#input-distribution-mean").val()
   fundamental.data.trueMean = newMean
 
   // generate new distribution and study based on input

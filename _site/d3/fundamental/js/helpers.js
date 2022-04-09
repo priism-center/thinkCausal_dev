@@ -1,6 +1,6 @@
 
 fundamental.generateData = function(mean){
-    let sd = 30 //Math.max(...[30, mean * 0.5]) 
+    let sd = 30 //Math.max(...[0.5, Math.abs(mean) * 0.2]) 
     let n = 1000
     distribution = d3.range(n).map(function(i){
       num = jStat.normal.sample(mean, sd)
@@ -78,6 +78,6 @@ fundamental.findFarPoint = function(){
   trueMean = +fundamental.data.trueMean
   study = +fundamental.data.studyLine
   if (trueMean > study){
-    return trueMean + 10
-  } else return study + 10
+    return trueMean + 10 // Math.max(...[0.5, Math.abs(trueMean) * 0.1])
+  } else return study + 10 // Math.max(...[0.5, Math.abs(study) * 0.1])
 }
