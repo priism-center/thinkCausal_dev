@@ -52,7 +52,7 @@ fundamental.scrollytellState3 = function(){
     fundamental.killAnimations()
     let container = d3.select('#fundamental-plot > svg > g')
     let {xScale, yScale} = fundamental.scales
-    delayFn = fundamental.delayFn
+    let delayFn = fundamental.delayFn
 
     // resets
     d3.selectAll(".rugLines, .fundamental-kde").style('display', 'none')
@@ -98,7 +98,7 @@ fundamental.scrollytellState3 = function(){
     // animate kde
     fundamental.data.distribution.map(function(d){
         // plot kde for every other index (for performance)
-        headstart = 500
+        let headstart = 100
         if (d.index % 2 == 0){
             fundamental.timeouts.push(setTimeout(fundamental.redrawKDE, delayFn(d.index) - headstart, d.index))
         }

@@ -102,7 +102,7 @@ estimands.scrollytellState4 = function(){
 
     // animations
     // highlight each ICE
-    delayFn = function(index){ return (((index**0.001)-1) * 5000000) - 1000 } // accelerating curve
+    let delayFn = function(index){ return (((index**0.001)-1) * 5000000) - 1000 } // accelerating curve
     d3.selectAll('#estimands-plot-ATE .showOnHover')
         .style('opacity', 0)
         .style('display', null)

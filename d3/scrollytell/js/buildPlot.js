@@ -153,8 +153,8 @@ estimands.drawData = function(data, config, scales){
       .style('filter', 'brightness(0.9)')
     
     // de-emphasize mean lines
-    meanLinesATCSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
-    meanLinesATTSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
+    let meanLinesATCSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
+    let meanLinesATTSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
     d3.selectAll(meanLinesATCSelector + ', ' + meanLinesATTSelector)
       .style('opacity', 0.05)
 
@@ -204,8 +204,8 @@ estimands.drawData = function(data, config, scales){
       .attr('r', pointRadius * 0.8)
     
     // re-emphasize mean lines
-    meanLinesATCSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
-    meanLinesATTSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
+    let meanLinesATCSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
+    let meanLinesATTSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
     d3.selectAll(meanLinesATCSelector + ', ' + meanLinesATTSelector)
       .style('opacity', 1)
     
@@ -376,13 +376,13 @@ estimands.drawData = function(data, config, scales){
   estimands.addMeanLines(container, meanYy0, meanYy1, 'ATE')
 
   // show mean lines - ATT
-  dataLineATT = data.line.filter(d => d.treatment == "1")
+  let dataLineATT = data.line.filter(d => d.treatment == "1")
   let meanYy0ATT = d3.mean(dataLineATT, d => +d.yName_y0);
   let meanYy1ATT = d3.mean(dataLineATT, d => +d.yName_y1);
   estimands.addMeanLines(container, meanYy0ATT, meanYy1ATT, 'ATT')
 
   // show mean lines - ATC
-  dataLineATC = data.line.filter(d => d.treatment == "0")
+  let dataLineATC = data.line.filter(d => d.treatment == "0")
   let meanYy0ATC = d3.mean(dataLineATC, d => +d.yName_y0);
   let meanYy1ATC = d3.mean(dataLineATC, d => +d.yName_y1);
   estimands.addMeanLines(container, meanYy0ATC, meanYy1ATC, 'ATC')
@@ -480,8 +480,8 @@ estimands.drawData = function(data, config, scales){
 }
 
 estimands.buildPlot = function(data, selector){
-  config = estimands.getConfig(selector)
-  scales = estimands.getScales(data, config)
+  let config = estimands.getConfig(selector)
+  let scales = estimands.getScales(data, config)
   estimands.drawData(data, config, scales)
   estimands.changeRunnerText(1)
 }
@@ -494,16 +494,16 @@ estimands.resetPlot = function(){
 
 // add ATT plot
 estimands.plotATT = function(data, selector){
-  config = estimands.getConfig(selector)
-  scales = estimands.getScales(data, config)
+  let config = estimands.getConfig(selector)
+  let scales = estimands.getScales(data, config)
   estimands.drawData(data, config, scales)
   estimands.buildTable(data.line, selector, 'estimands-table-ATT')
 
   // delay to ensure other function selectors are not modifying this plot on init
-  delay = 2000
+  let delay = 2000
 
   // add meanLinesATT
-  meanLinesSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
+  let meanLinesSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
   d3.selectAll(meanLinesSelector)
     .style('display', null)
     .style('opacity', 0.9)
@@ -528,13 +528,13 @@ estimands.plotATT = function(data, selector){
 
 // add ATC plot
 estimands.plotATC = function(data, selector){
-  config = estimands.getConfig(selector)
-  scales = estimands.getScales(data, config)
+  let config = estimands.getConfig(selector)
+  let scales = estimands.getScales(data, config)
   estimands.drawData(data, config, scales)
   estimands.buildTable(data.line, selector, 'estimands-table-ATC')
 
   // add meanLinesATC
-  meanLinesSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
+  let meanLinesSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
   d3.selectAll(meanLinesSelector)
     .style('display', null)
 

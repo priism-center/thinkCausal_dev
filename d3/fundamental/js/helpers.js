@@ -2,7 +2,7 @@
 fundamental.generateData = function(mean){
     let sd = 30 //Math.max(...[0.5, Math.abs(mean) * 0.2]) 
     let n = 1000
-    distribution = d3.range(n).map(function(i){
+    let distribution = d3.range(n).map(function(i){
       num = jStat.normal.sample(mean, sd)
       num = num.toString()
       return {'x': num, "index": i}
@@ -36,7 +36,7 @@ fundamental.highlightText = function(selector, delay){
 
     let currentFontSize = d3.selectAll(selector).style('font-size')
     currentFontSize = currentFontSize.replace('px', '')
-    bigFontSize = (currentFontSize * 1.3) + 'px'
+    let bigFontSize = (currentFontSize * 1.3) + 'px'
     currentFontSize = currentFontSize + 'px'
 
     d3.selectAll(selector)
@@ -75,8 +75,8 @@ fundamental.killkdeAnimations = function(){
 // find a point away from the study line and true mean
 // this is used for highlighting the first point and making sure its readable
 fundamental.findFarPoint = function(){
-  trueMean = +fundamental.data.trueMean
-  study = +fundamental.data.studyLine
+  let trueMean = +fundamental.data.trueMean
+  let study = +fundamental.data.studyLine
   if (trueMean > study){
     return trueMean + 10 // Math.max(...[0.5, Math.abs(trueMean) * 0.1])
   } else return study + 10 // Math.max(...[0.5, Math.abs(study) * 0.1])
