@@ -21,7 +21,7 @@ estimands.highlightText = function(selector, delay){
 
     let currentFontSize = d3.selectAll(selector).style('font-size')
     currentFontSize = currentFontSize.replace('px', '')
-    bigFontSize = (currentFontSize * 1.3) + 'px'
+    let bigFontSize = (currentFontSize * 1.3) + 'px'
     currentFontSize = currentFontSize + 'px'
 
     d3.selectAll(selector)
@@ -50,7 +50,7 @@ estimands.killAnimations = function(){
 
 estimands.roundNumber = function(num, dec){
     // rounds a number to a certain decimal place and always maintains a decimal point
-    rounded = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec)
+    let rounded = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec)
     return rounded.toFixed(dec)
 }
 
@@ -60,11 +60,11 @@ estimands.clone = function(selector) {
 }
 
 estimands.changeRunnerText = function(runner){
-    ICE = estimands.data.line.filter(d => d.pair_id == +runner)
+    let ICE = estimands.data.line.filter(d => d.pair_id == +runner)
     ICE = estimands.roundNumber(ICE[0].yName_y1 - ICE[0].yName_y0, 2)
     if (runner.toString().length < 2) runner = runner + ' '
     // console.log(runner.length)
-    newText = "Runner " + runner.toString() + " has an ICE of " + ICE
+    let newText = "Runner " + runner.toString() + " has an ICE of " + ICE
     d3.select("#estimands-runner-text").text(newText)
 }
 
@@ -72,12 +72,12 @@ estimands.changeRunnerText = function(runner){
 estimands.addMeanLines = function(container, meanYy0, meanYy1, estimandType){
     let {xScale, yScale, colorScale, strokeScale, yScaleBottomPlot} = estimands.scales
     let {strokeColor, strokeWidth, pointOpacity, pointRadius} = estimands.styles
-    meanX = estimands.data.meanX
-    meanY = estimands.data.meanY
+    let meanX = estimands.data.meanX
+    let meanY = estimands.data.meanY
 
-    className = 'meanLines ' + 'meanLines' + estimandType
-    classConnector = className + 'Connector'
-    classLabel = className + 'Label'
+    let className = 'meanLines ' + 'meanLines' + estimandType
+    let classConnector = className + 'Connector'
+    let classLabel = className + 'Label'
 
     // add connecting lines
     container.append('g')

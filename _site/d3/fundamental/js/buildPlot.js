@@ -32,7 +32,7 @@ fundamental.getScales = function(data, config) {
  let { bodyWidth, bodyHeight, container } = config;
  let maximumValue = fundamental.data.max  //d3.max(data.distribution, d => +d.x);
  let minimumValue = fundamental.data.min //d3.min(data.distribution, d => +d.x);
- padding = (maximumValue - minimumValue) * 0.15
+ let padding = (maximumValue - minimumValue) * 0.15
 
  let xScale = d3.scaleLinear()
     .domain([minimumValue - padding, maximumValue + padding])
@@ -170,7 +170,7 @@ d3.select("#input-distribution-mean").on('input', function() {
   if (+this.value == +fundamental.data.trueMean) return ;
   
   // update true mean value
-  newMean = +$("#input-distribution-mean").val()
+  let newMean = +$("#input-distribution-mean").val()
   fundamental.data.trueMean = newMean
 
   // generate new distribution and study based on input
@@ -192,14 +192,15 @@ d3.select("#input-distribution-mean").on('input', function() {
 
 // update the x scale based on user input
 fundamental.updateXAxis = function(){
-  let maximumValue = d3.max(fundamental.data.distribution, d => +d.x);
-  let minimumValue = d3.min(fundamental.data.distribution, d => +d.x);
+  const range = d3.extent(fundamental.data.distribution, d => +d.x)
+  const maximumValue = range[1] //d3.max(fundamental.data.distribution, d => +d.x);
+  const minimumValue = range[0] //d3.min(fundamental.data.distribution, d => +d.x);
   fundamental.data.max = maximumValue
   fundamental.data.min = minimumValue
-  animationDuration = 2000
+  const animationDuration = 2000
 
   // new scale and axis
-  padding = (maximumValue - minimumValue) * 0.15
+  let padding = (maximumValue - minimumValue) * 0.15
   let newXScale = d3.scaleLinear()
     .domain([minimumValue - padding, maximumValue + padding])
     .range([0, fundamental.config.bodyWidth])
@@ -249,5 +250,4 @@ fundamental.showData = function() {
 
     // initialize plot
     fundamental.drawData();
-    // fundamental.drawHistogram
 }
