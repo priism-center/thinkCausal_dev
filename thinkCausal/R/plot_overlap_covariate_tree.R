@@ -7,9 +7,9 @@ validate_model_ <- function(.model){
 }
 
 # read data for testing functions
-df <- read.csv("./data/IHDP_observational.csv") %>%
-  select(-c(yc0hat, yc1hat))
-fit <- bartc(y.obs, treat, ., data = df)
+# df <- read.csv("./data/IHDP_observational.csv") %>%
+#   select(-c(yc0hat, yc1hat))
+# fit <- bartc(y.obs, treat, ., data = df)
 
 
 plot_overlap_covariate_tree <- function(.model, rule){
@@ -44,8 +44,8 @@ plot_overlap_covariate_tree <- function(.model, rule){
 }
 
 
-plot_overlap_covariate_tree(fit, rule = "sd")
-plot_overlap_covariate_tree(fit, rule = "chi")
+# plot_overlap_covariate_tree(fit, rule = "sd")
+# plot_overlap_covariate_tree(fit, rule = "chi")
 
 
 
