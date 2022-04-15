@@ -38,7 +38,7 @@ fundamental.getScales = function(data, config) {
     .domain([minimumValue - padding, maximumValue + padding])
     .range([0, bodyWidth])
  let yScale = d3.scaleLinear()
-    .domain([0, 0.015]) //1.5])
+    .domain([0, 0.045]) //1.5])
     .range([bodyHeight, 0])
 
   fundamental.scales = {xScale, yScale}
@@ -49,7 +49,7 @@ fundamental.getScales = function(data, config) {
 fundamental.drawRug = function(data, scales, config){
   let {margin, container, bodyHeight, bodyWidth} = config;
   let {xScale, yScale} = scales
-  let rugHeight = 0.003
+  let rugHeight = 0.005
   console.log('Data into fundamental.drawRug():', data)
 
 
@@ -64,7 +64,7 @@ fundamental.drawRug = function(data, scales, config){
     .attr("x", bodyWidth/2)
     .attr('y', bodyHeight + margin.bottom/2)
     .attr('text-anchor', 'middle')
-    .text("Running time")
+    .text("Change in running time")
 
   // draw the rug
   container.append('g')
@@ -89,7 +89,7 @@ fundamental.drawRug = function(data, scales, config){
     .attr('y1', yScale(0))
     .attr('x2', xScale(fundamental.data.trueMean))
     .attr('y2', yScale(rugHeight))
-    .style('stroke', '#674ca1')
+    .style('stroke', 'red')
     .style('stroke-width', 3)
     .style('display', 'none')
   // container.append('text')
@@ -106,7 +106,7 @@ fundamental.drawRug = function(data, scales, config){
     .attr('y1', yScale(0))
     .attr('x2', xScale(fundamental.data.studyLine))
     .attr('y2', yScale(rugHeight))
-    .style('stroke', 'red')
+    .style('stroke', '#674ca1')
     .style('stroke-width', 3)
     .style('display', 'none')
   // container.append('text')
@@ -153,24 +153,17 @@ fundamental.drawData = function() {
 }
 
 // update plot when user changes the mean
-d3.select("#input-distribution-mean").on('input', function() {
-
-  // hide mean line if no input and don't update
-  if (this.value === '' || isNaN(this.value)) {
-    d3.selectAll(".trueMeanLine, .trueMeanLineLabel")
-      .style('display', 'none')
-    return ;
-  }
+fundamental.updatePlot = function(value) {
 
   // ensure mean line is shown when there is input
   d3.selectAll(".trueMeanLine, .trueMeanLineLabel")
       .style('display', null)
   
   // don't update if numeric value is the same as previous input
-  if (+this.value == +fundamental.data.trueMean) return ;
+  if (+value == +fundamental.data.trueMean) return ;
   
   // update true mean value
-  let newMean = +$("#input-distribution-mean").val()
+  let newMean = +fundamental.trueMeanSlider.val() //$("#input-distribution-mean").val()
   fundamental.data.trueMean = newMean
 
   // generate new distribution and study based on input
@@ -188,13 +181,13 @@ d3.select("#input-distribution-mean").on('input', function() {
   // make sure studyLine are displayed
   d3.selectAll(".trueMeanLine, .trueMeanLineLabel")
     .style('display', null)
-})
+}
 
 // update the x scale based on user input
 fundamental.updateXAxis = function(){
   const range = d3.extent(fundamental.data.distribution, d => +d.x)
-  const maximumValue = range[1] //d3.max(fundamental.data.distribution, d => +d.x);
-  const minimumValue = range[0] //d3.min(fundamental.data.distribution, d => +d.x);
+  const maximumValue = range[1]
+  const minimumValue = range[0]
   fundamental.data.max = maximumValue
   fundamental.data.min = minimumValue
   const animationDuration = 2000

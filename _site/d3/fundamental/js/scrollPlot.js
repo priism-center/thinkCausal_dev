@@ -42,6 +42,11 @@ fundamental.scrollytellState2 = function(){
     // make sure trueMean and studyLine are displayed
     d3.selectAll(".trueMeanLine, .studyLine, .studyLineLabel")
         .style('display', null)
+    d3.selectAll(".studyLine")
+        .style('opacity', 0)
+        .transition()
+        .duration(1000)
+        .style('opacity', 1)
 
     fundamental.emphasizeText("#fundamental-trigger-2, #fundamental-trigger-2 + p")
 }
@@ -69,14 +74,14 @@ fundamental.scrollytellState3 = function(){
     container.append('text')
         .attr('class', 'firstRepeatedStudyLabel')
         .attr('x', xScale(+fundamental.data.distribution[0].x))
-        .attr('y', yScale(0.003*1.1))
+        .attr('y', yScale(0.005*1.1))
         .text('A repeated study')
         .attr('opacity', 0)
         .transition()
         .duration(500)
         .attr('opacity', 1)
         .transition()
-        .delay(delayFn(fundamental.data.distribution[1].index))
+        .delay(delayFn(fundamental.data.distribution[1].index) - 600)
         .remove()
     
     // animate rugLines
