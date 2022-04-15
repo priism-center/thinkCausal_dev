@@ -6,6 +6,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/fundamental.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
 </head>
 <body>
   <main>
@@ -35,8 +36,10 @@
 
         <p>We can plot the observed (factual) running timesoutcomes of all 9 runners in our study. In our study, rRunners 1, 4, 7 and 9 wore standard shoes while runners 2, 3, 5, 6, and 8 wore HyperShoes. </p>
 
-        <input id='input-distribution-mean' type="number">True mean</input>
+        <!-- <input id='input-distribution-mean' type="range" min="-50" max="50" step="5"><label>True mean</label> -->
 
+        <input type="text" id="fundamental-slider-distribution-mean" class="js-range-slider" value="0" />
+        
         <p><br></p>
 
         <br><br><br><br>
@@ -114,8 +117,10 @@
 <script src="../src/jquery-3.3.1.slim.min.js"></script>
 <script src="../src/d3.v5.js"></script>
 <script src="../src/jstat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
 <script src="js/namespace.js"></script>
 <script src="js/helpers.js"></script>
+<script src="js/slider.js"></script>
 <script src="js/scrollPlot.js"></script>
 <script src="js/buildPlot.js"></script>
 <script src="js/init.js"></script>
