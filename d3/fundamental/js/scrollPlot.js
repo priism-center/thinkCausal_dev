@@ -82,6 +82,7 @@ fundamental.scrollytellState3 = function(){
         .attr('opacity', 1)
         .transition()
         .delay(delayFn(fundamental.data.distribution[1].index) - 600)
+        .style('opacity', 0)
         .remove()
     
     // animate rugLines
@@ -110,13 +111,13 @@ fundamental.scrollytellState3 = function(){
     })
 
     // add final label
-    lag = 2000
-    n = fundamental.data.distribution.length
+    let lag = 2000
+    let n = fundamental.data.distribution.length
     container.append('text')
         .attr('class', 'kdeLabel')
         .attr('x', 0)
         .attr('y', 0)
-        .text(`Distribution of ${n} repeated studies`)
+        .text(`Distribution of ${n.toLocaleString("en-US")} repeated studies`)
         .style('opacity', 0)
         .transition()
         .delay(delayFn(n) + lag)
@@ -134,37 +135,6 @@ fundamental.scrollytellState3 = function(){
     fundamental.emphasizeText("#fundamental-trigger-3, #fundamental-trigger-3 + p, #fundamental-trigger-3 + p + p")
 }
 
-fundamental.scrollytellState4 = function(){
-    console.log('fundamentalState4')
-
-    fundamental.killAnimations()
-
-    // resets
-  
-
-    fundamental.emphasizeText("#fundamental-trigger-4, #fundamental-trigger-4 + p")
-}
-
-fundamental.scrollytellState5 = function(){
-    console.log('fundamentalState5')
-
-    fundamental.killAnimations()
-
-    // resets
-
-
-    fundamental.emphasizeText("#fundamental-trigger-5, #fundamental-trigger-5 + p")
-}
-
-fundamental.scrollytellState6 = function(){
-    console.log('fundamentalState6')
-
-    fundamental.killAnimations()
-
-
-    fundamental.emphasizeText("#fundamental-trigger-6, #fundamental-trigger-6 + p")
-}
-
 fundamental.plotState = 1
 fundamental.triggerScrollytellAnimation = function(){
     // trigger the closest animation
@@ -173,11 +143,8 @@ fundamental.triggerScrollytellAnimation = function(){
     let trigger1Pos = $('#fundamental-trigger-1')[0].getBoundingClientRect().top
     let trigger2Pos = $('#fundamental-trigger-2')[0].getBoundingClientRect().top
     let trigger3Pos = $('#fundamental-trigger-3')[0].getBoundingClientRect().top
-    let trigger4Pos = $('#fundamental-trigger-4')[0].getBoundingClientRect().top
-    let trigger5Pos = $('#fundamental-trigger-5')[0].getBoundingClientRect().top
-    let trigger6Pos = $('#fundamental-trigger-6')[0].getBoundingClientRect().top
-    let positions = [trigger1Pos, trigger2Pos, trigger3Pos, trigger4Pos, trigger5Pos, trigger6Pos]
-    let scrollyFns = [fundamental.scrollytellState1, fundamental.scrollytellState2, fundamental.scrollytellState3, fundamental.scrollytellState4, fundamental.scrollytellState5, fundamental.scrollytellState6]
+    let positions = [trigger1Pos, trigger2Pos, trigger3Pos]
+    let scrollyFns = [fundamental.scrollytellState1, fundamental.scrollytellState2, fundamental.scrollytellState3]
 
     // make off page elements positive
     positions = positions.map(Math.abs)
