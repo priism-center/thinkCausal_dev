@@ -64,7 +64,7 @@ fundamental.drawRug = function(data, scales, config){
     .attr("x", bodyWidth/2)
     .attr('y', bodyHeight + margin.bottom/2)
     .attr('text-anchor', 'middle')
-    .text("Change in running time")
+    .text("Change in running time (seconds)")
 
   // draw the rug
   container.append('g')

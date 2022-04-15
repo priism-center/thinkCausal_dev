@@ -19,9 +19,9 @@ fundamental.sampleFrom = function(array){
 function kde(kernel, thresholds, data) {
     return thresholds.map(t => [t, d3.mean(data, d => kernel(t - d.x))]); //x is the column name
   }
-  function epanechnikov(bandwidth) {
+function epanechnikov(bandwidth) {
     return x => Math.abs(x /= bandwidth) <= 1 ? 0.75 * (1 - x * x) / bandwidth : 0;
-  }
+}
 
 
 fundamental.emphasizeText = function(selectors){
