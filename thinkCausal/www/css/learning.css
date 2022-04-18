@@ -1,5 +1,13 @@
-/* controls the quiz */
 
+/* wrapper on each learning page */
+@media only screen and (max-width: 769px) {
+  .learning-page {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/* controls the quiz */
 .quiz-container {
   max-width: min(100%, 750px)
 }

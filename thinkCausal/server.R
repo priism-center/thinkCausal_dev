@@ -9,7 +9,7 @@ shinyServer(function(input, output, session) {
     page_history = NULL,
     js = NULL
   )
-  
+
   
   # javascript initiated actions --------------------------------------------
 
@@ -356,15 +356,15 @@ shinyServer(function(input, output, session) {
   # add listeners that link the concepts title image to its article
   # this allows the actionLinks in concepts_page.R to work
   tab_titles <- c(
-      "Randomization",
+      'randomization' = "Randomization",
       'Fundamental problem',
       'Assumptions',
       'Regression methods',
       'Decision trees',
-      'Post-treatment variables',
-      'Causal estimands',
+      'post-treatment' = 'Post-treatment variables',
+      'causal-estimands' = 'Causal estimands',
       'Bias and efficiency',
-      'Potential outcomes'
+      'potential-outcomes' = 'Potential outcomes'
     )
   lapply(tab_titles, function(page_to_go_to) {
     page_id <- paste0("concepts_link_", tolower(gsub('-| ', '_', page_to_go_to)))
@@ -372,6 +372,24 @@ shinyServer(function(input, output, session) {
       shinyjs::runjs("window.scrollTo(0, 0)")
       updateNavbarPage(session, "nav", page_to_go_to)
     })
+  })
+  
+  # add deep links
+  # e.g. apsta.shinyapps.io/thinkCausal/?causal-estimands goes straight to the article
+  observe({
+    # get argument from the url
+    url_query <- parseQueryString(session$clientData$url_search)
+    url_query <- names(url_query)
+    
+    # match argument to list
+    url_options <- names(tab_titles) # urls are the set in tab_titles
+    match_index <- match(url_query, url_options)
+    
+    # change page if match exists
+    if (isTRUE(match_index > 0)){
+      shinyjs::runjs("window.scrollTo(0, 0)")
+      updateNavbarPage(session, inputId = "nav", selected = tab_titles[[match_index]])
+    }
   })
 
   # run the modules

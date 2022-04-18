@@ -4,6 +4,7 @@
 ### constraints for questions are: question must return a list of user inputs that can be checked against ##
 ### you can have as many questions as you want ###
 ### cannot change this logic --> first incorrect answer stops the quiz and puts the user in the article ###
+### requires learning.css style sheet in /www folder ###
 
 require(shiny)
 require(shinyjs)

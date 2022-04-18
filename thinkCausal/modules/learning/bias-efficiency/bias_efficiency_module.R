@@ -71,6 +71,7 @@ ui_learning_bias_efficiency <- function(id) {
   ns <- NS(id)
   tagList(
     ui <- fluidPage(
+      class = 'learning-page',
       
       # the quiz UI
       # ui_quiz(id = ns('quiz')),

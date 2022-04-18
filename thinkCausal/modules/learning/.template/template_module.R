@@ -53,6 +53,7 @@ ui_learning_template <- function(id) {
   ns <- NS(id)
   tagList(
     ui <- fluidPage(
+      class = 'learning-page',
       
       # UI content for the learning module
       div(

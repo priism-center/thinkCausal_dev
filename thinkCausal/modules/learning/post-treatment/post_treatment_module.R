@@ -84,6 +84,7 @@ ui_learning_post_treatment <- function(id) {
   ns <- NS(id)
   tagList(
     ui <- fluidPage(
+      class = 'learning-page',
       
       # the quiz UI
       ui_quiz(id = ns('quiz')),
@@ -100,8 +101,7 @@ ui_learning_post_treatment <- function(id) {
                      selected = 'Do not control for bugs',
                      inline = TRUE
         ), 
-        plotOutput(outputId = ns('posttreatment_plot'), 
-                   height = 500, width = 700),
+        plotOutput(outputId = ns('posttreatment_plot'), height = 500),
         wellPanel(
           conditionalPanel(
             condition = "input.include_pt == 'Do not control for bugs'",

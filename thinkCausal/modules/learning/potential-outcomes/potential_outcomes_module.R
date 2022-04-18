@@ -55,6 +55,7 @@ ui_learning_potential_outcomes <- function(id) {
   ns <- NS(id)
   tagList(
     ui <- fluidPage(
+      class = 'learning-page',
       useShinyjs(),
       # UI content for the learning module
       div(

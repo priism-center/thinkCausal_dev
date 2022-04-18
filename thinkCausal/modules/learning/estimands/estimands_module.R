@@ -139,6 +139,7 @@ ui_learning_estimands <- function(id) {
   ns <- NS(id)
   tagList(
     ui <- fluidPage(
+      class = 'learning-page',
       
       # load custom css
       includeCSS(file.path('www', 'learning', 'estimands', 'css', 'pairing.css')),
