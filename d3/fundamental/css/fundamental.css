@@ -51,6 +51,12 @@ body {
   color: rgb(216, 65, 65);
 }
 
+.trueMeanLine {
+  stroke-dasharray: 0.3em, 0.4em;
+  stroke: red;
+  stroke-width: 0.15em;
+}
+
 /*### specific to d3 ###*/
 .ICElabel {
   fill: #6e6e6e;
