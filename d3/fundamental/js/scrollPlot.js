@@ -12,7 +12,8 @@ fundamental.scrollytellState1 = function(){
     // d3.selectAll(".trueMeanLineLabel")
     //     .style('display', null)
     fundamental.changeStudyText(true)
-    
+    clearTimeout(fundamental.timeoutStudyText)
+
     // remove trueMean label
     d3.selectAll('.studyLineLabel')
         .style('display', 'none')
@@ -42,7 +43,7 @@ fundamental.scrollytellState2 = function(){
 
     // update the ATE text in the paragraph
     let delay = 1700
-    setTimeout(fundamental.changeStudyText, delay, false)
+    fundamental.timeoutStudyText = setTimeout(fundamental.changeStudyText, delay, false)
     
     // make sure trueMean and studyLine are displayed
     d3.selectAll(".trueMeanLine, .studyLine, .studyLineLabel")
@@ -67,6 +68,7 @@ fundamental.scrollytellState3 = function(){
 
     // resets
     d3.selectAll(".rugLines, .fundamental-kde").style('display', 'none')
+    clearTimeout(fundamental.timeoutStudyText)
 
     // remove study line label
     d3.selectAll('.studyLineLabel, .kdeLabel')
