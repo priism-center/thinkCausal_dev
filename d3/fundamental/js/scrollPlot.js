@@ -42,7 +42,7 @@ fundamental.scrollytellState2 = function(){
     d3.selectAll('.kdeLabel, .fundamental-kde').remove()
 
     // update the ATE text in the paragraph
-    let delay = 1700
+    let delay = 700
     fundamental.timeoutStudyText = setTimeout(fundamental.changeStudyText, delay, false)
     
     // make sure trueMean and studyLine are displayed
