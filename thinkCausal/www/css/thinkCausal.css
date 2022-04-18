@@ -12,11 +12,13 @@ body {
   font-size: 1.6em;
 }
 
+/*
 .wrapper {
   max-width: 1280px;
   margin: auto;
   display: block;
 }
+*/
 
 /* headers */
 h1, h2, h3, h4, h5, h6 {
@@ -81,6 +83,7 @@ summary{
 .dropdown-menu > li > a {
   color: #525252;
   font-weight: 300;
+  border: none;
 }
 
 .dropdown-menu > li.active > a,
@@ -495,6 +498,7 @@ footer a, footer a:hover {
 
 .navbar  {
   margin-bottom: 4em;
+  border: none;
 }
 
 .navbar-brand{

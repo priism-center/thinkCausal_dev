@@ -1,4 +1,5 @@
 // hide the logo, feedback, header, and footer if on mobile
+// TODO: can this be done with CSS media queires?
 function showHideMobile(){
   let window_width = $(window).width();
   let logo = $(".logo")

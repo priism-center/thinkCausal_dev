@@ -53,19 +53,6 @@ fundamental.drawRug = function(data, scales, config){
   console.log('Data into fundamental.drawRug():', data)
 
 
-  // add X axis
-  let xAxis = d3.axisBottom(xScale)
-  container.append("g")
-    .attr('class', "axis xAxis")
-    .attr("transform", "translate(0," + bodyHeight + ")")
-    .call(xAxis);
-  container.append('text')
-    .attr('class', 'axisLabel')
-    .attr("x", bodyWidth/2)
-    .attr('y', bodyHeight + margin.bottom/2)
-    .attr('text-anchor', 'middle')
-    .text("Change in running time (seconds)")
-
   // draw the rug
   container.append('g')
     .selectAll('line')
@@ -88,10 +75,11 @@ fundamental.drawRug = function(data, scales, config){
     .attr('x1', xScale(fundamental.data.trueMean))
     .attr('y1', yScale(0))
     .attr('x2', xScale(fundamental.data.trueMean))
-    .attr('y2', yScale(rugHeight))
+    .attr('y2', yScale(rugHeight*2.5))
     .style('stroke', 'red')
     .style('stroke-width', 3)
     .style('display', 'none')
+    .style('z-index', -999)
   // container.append('text')
   //   .attr('class', 'trueMeanLineLabel')
   //   .attr('x', xScale(+fundamental.data.trueMean + 5))
@@ -127,6 +115,20 @@ fundamental.drawRug = function(data, scales, config){
     .style('stroke', 'black')
     .style('stroke-width', 3)
     .style('display', 'none')
+
+
+  // add X axis
+  let xAxis = d3.axisBottom(xScale)
+  container.append("g")
+    .attr('class', "axis xAxis")
+    .attr("transform", "translate(0," + bodyHeight + ")")
+    .call(xAxis);
+  container.append('text')
+    .attr('class', 'axisLabel')
+    .attr("x", bodyWidth/2)
+    .attr('y', bodyHeight + margin.bottom/2)
+    .attr('text-anchor', 'middle')
+    .text("Change in running time (seconds)")
 }
 
 fundamental.redrawKDE = function(index){
@@ -205,7 +207,7 @@ fundamental.updateXAxis = function(){
   const minimumValue = range[0]
   fundamental.data.max = maximumValue
   fundamental.data.min = minimumValue
-  const animationDuration = 2000
+  const animationDuration = 1000
 
   // new scale and axis
   let padding = (maximumValue - minimumValue) * 0.15
