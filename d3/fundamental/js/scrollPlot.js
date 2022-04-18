@@ -11,6 +11,7 @@ fundamental.scrollytellState1 = function(){
         .style('display', 'none')
     // d3.selectAll(".trueMeanLineLabel")
     //     .style('display', null)
+    fundamental.changeStudyText(true)
     
     // remove trueMean label
     d3.selectAll('.studyLineLabel')
@@ -25,7 +26,7 @@ fundamental.scrollytellState2 = function(){
     fundamental.killAnimations()
 
     // resets
-    d3.selectAll(".rugLines")
+    d3.selectAll(".rugLines, .sampleMeanLine")
         .transition('fade-in')
         .transition('final-state')
         .style('display', 'none')
@@ -38,6 +39,10 @@ fundamental.scrollytellState2 = function(){
     // kill kde
     fundamental.killkdeAnimations()
     d3.selectAll('.kdeLabel, .fundamental-kde').remove()
+
+    // update the ATE text in the paragraph
+    let delay = 1700
+    setTimeout(fundamental.changeStudyText, delay, false)
     
     // make sure trueMean and studyLine are displayed
     d3.selectAll(".trueMeanLine, .studyLine, .studyLineLabel")
@@ -45,6 +50,7 @@ fundamental.scrollytellState2 = function(){
     d3.selectAll(".studyLine")
         .style('opacity', 0)
         .transition()
+        .delay(delay) // ensures axis animation is finished
         .duration(1000)
         .style('opacity', 1)
 
@@ -130,6 +136,16 @@ fundamental.scrollytellState3 = function(){
         .delay(delayFn(n) + lag)
         .duration(2000)
         .style('opacity', 0.01)
+
+    // add mean line
+    // d3.selectAll(".sampleMeanLine")
+    //     .style('opacity', 0)
+    //     .transition('fade-out')
+    //     .delay(delayFn(n) + lag + 2000)
+    //     .duration(2000)
+    //     .style('opacity', 0.8)
+    //     .style('display', null)
+    //     .attr('y2', yScale(fundamental.data.kdeHeight))
 
         
     fundamental.emphasizeText("#fundamental-trigger-3, #fundamental-trigger-3 + p, #fundamental-trigger-3 + p + p")
