@@ -9,6 +9,7 @@ body {
   font-family: "Roboto", Helvetica, Arial, sans-serif;
   color: #636363;
   font-weight: 300;
+  font-size: 1.6em;
 }
 
 .wrapper {
@@ -444,9 +445,9 @@ html {
 /*controls the cards on the design and model pages*/
 .card {
   min-height: 450px;
-  -webkit-box-shadow: 6px 10px 16px  rgba(74, 74, 74, 0.3);
+  /*-webkit-box-shadow: 6px 10px 16px  rgba(74, 74, 74, 0.3);
   -moz-box-shadow: 6px 10px 16px  rgba(74, 74, 74, 0.3);
-  box-shadow: 6px 10px 16px rgba(74, 74, 74, 0.3);
+  box-shadow: 6px 10px 16px rgba(74, 74, 74, 0.3);*/
   border-radius: 6px;
 }
 

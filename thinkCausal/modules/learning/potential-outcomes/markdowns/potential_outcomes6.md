@@ -1,3 +1,5 @@
+<br><br>
+
 # Potential Outcomes Notation
 Using notation is a helpful way to formalize potential outcomes. This helps when we want to start thinking about functions of potential outcomes or talk about general properties that involve potential outcomes. In causal inference, the letter z can be used to represent a treatment, intervention or exposure variable. Generally, z = 1 denotes receiving the treatment, intervention or exposure in question and z = 0 denotes not receiving the treatment, intervention or exposure. Similarly, y1 reflects the outcome of interest if the treatment is received and y0 reflects the outcome of interest if the treatment was not received. y denotes the observed outcome. This is the outcome we observe in practice. It can be helpful to keep in mind that this outcome depends on an individual's value of z.
 

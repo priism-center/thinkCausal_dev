@@ -72,12 +72,41 @@ fundamental.killkdeAnimations = function(){
     fundamental.timeouts = []
 }
 
+fundamental.runif = function(min, max) { 
+  return Math.random() * (max - min) + min
+}
+
+// find a random point within +/- 0.5 and 0.75 sd from the mean
+fundamental.setStudy = function(){
+  let trueMean = +fundamental.data.trueMean
+  let sd = jStat.stdev(fundamental.data.distribution.map(d => +d.x))
+  let direction = Math.round(Math.random()) * 2 -1
+  let magnitude = fundamental.runif(0.5, 0.75)
+  let study = trueMean + (direction * sd * magnitude)
+
+  return(study)
+}
+
 // find a point away from the study line and true mean
 // this is used for highlighting the first point and making sure its readable
-fundamental.findFarPoint = function(){
+fundamental.setFirstRepeat = function(){
   let trueMean = +fundamental.data.trueMean
   let study = +fundamental.data.studyLine
   if (trueMean > study){
-    return trueMean + 10 // Math.max(...[0.5, Math.abs(trueMean) * 0.1])
-  } else return study + 10 // Math.max(...[0.5, Math.abs(study) * 0.1])
+    return trueMean + 5 // Math.max(...[0.5, Math.abs(trueMean) * 0.1])
+  } else return study + 5 // Math.max(...[0.5, Math.abs(study) * 0.1])
+}
+
+fundamental.roundNumber = function(num, dec){
+  // rounds a number to a certain decimal place and always maintains a decimal point
+  let rounded = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec)
+  return rounded.toFixed(dec)
+}
+
+fundamental.changeStudyText = function(blank){
+  let ATE = fundamental.roundNumber(fundamental.data.studyLine, 2)
+  if (blank) ATE = "____"
+  // console.log(runner.length)
+  let newText = "Your study had an ATE of " + ATE
+  d3.select("#fundamental-study-text").text(newText)
 }

@@ -115,6 +115,18 @@ fundamental.drawRug = function(data, scales, config){
   //   .attr('y', yScale(1*0.95))
   //   .text('Study results')
   //   .style('display', 'none')
+
+  // add sample mean line
+  let rugSampleHeight = rugHeight * 2 //fundamental.data.kdeHeight
+  container.append('line')
+    .attr('class', 'sampleMeanLine')
+    .attr('x1', xScale(fundamental.data.sampleMean))
+    .attr('y1', yScale(0))
+    .attr('x2', xScale(fundamental.data.sampleMean))
+    .attr('y2', yScale(rugSampleHeight))
+    .style('stroke', 'black')
+    .style('stroke-width', 3)
+    .style('display', 'none')
 }
 
 fundamental.redrawKDE = function(index){
@@ -130,6 +142,7 @@ fundamental.redrawKDE = function(index){
   // add KDE
   let thresholds = xScale.ticks(30)
   let density = kde(epanechnikov(7), thresholds, data)
+  fundamental.data.kdeHeight = d3.max(density, d => d[1])
   container.append('path')
     .attr('class', 'fundamental-kde fundamental-kde-' + index)
     .datum(density)
@@ -168,10 +181,12 @@ fundamental.updatePlot = function(value) {
 
   // generate new distribution and study based on input
   fundamental.data.distribution = fundamental.generateData(newMean);
-  fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
+  fundamental.data.studyLine = fundamental.setStudy();
+  fundamental.data.sampleMean = d3.mean(fundamental.data.distribution, d => d.x);
+  // fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
   
   // guarantee first observation is far from studyLine and mean
-  fundamental.data.distribution[0].x = fundamental.findFarPoint()
+  fundamental.data.distribution[0].x = fundamental.setFirstRepeat()
 
   // remove plot and redraw
   d3.select('#fundamental-plot svg').remove()
@@ -236,8 +251,10 @@ fundamental.showData = function() {
     fundamental.data = {}
     fundamental.data.trueMean = 0;
     fundamental.data.distribution = fundamental.generateData(fundamental.data.trueMean);
-    fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
-    fundamental.data.distribution[0].x = fundamental.findFarPoint()
+    // fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
+    fundamental.data.studyLine = fundamental.setStudy()
+    fundamental.data.distribution[0].x = fundamental.setFirstRepeat()
+    fundamental.data.sampleMean = d3.mean(fundamental.data.distribution, d => d.x);
     fundamental.data.max = d3.max(fundamental.data.distribution, d => +d.x);
     fundamental.data.min = d3.min(fundamental.data.distribution, d => +d.x);
 

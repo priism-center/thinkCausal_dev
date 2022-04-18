@@ -66,14 +66,14 @@ ui_learning_potential_outcomes <- function(id) {
                                     choices = c("Alex uses the HyperShoe" = 'hyper',
                                                 "Alex does not use the HyperShoe" = 'normal'), 
                                     multiple = F),
-                        actionButton(ns('submit'), 'Submit'))),
+                        actionButton(ns('submit'), 'Submit'), style="width: min(100%, 400px)")),
         br(),br(),
         uiOutput(ns('output_based_on_selection'))
       ),
       
       # the quiz UI
       # can be moved within the UI; recommended to place at top of UI if not embedding
-      ui_quiz(id = ns('quiz')) # comment out this line if quiz is not required
+      # ui_quiz(id = ns('quiz')) # comment out this line if quiz is not required
       
       # div(
       #   class = ns('learning-content'), # required
@@ -127,7 +127,7 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
                 align = "center", height="80%", width="100%"),
               br(),br(),
               includeMarkdown(file.path(store_l_potential_outcomes$path_to_here, "markdowns", 'potential_outcomes2_treated.md')),
-              actionButton(ns("hyper_conterfactual"), "Show me what if Alex wasn't using the HyperShoe"),
+              actionButton(ns("hyper_conterfactual"), "Show me what if Alex wasn't using the HyperShoe", style="width: min(100%, 400px)"),
               br(),br(),
               imageOutput(ns('hyper_conterfactual_illustration')),
               br(),br(),br(),br(),br(),br(),

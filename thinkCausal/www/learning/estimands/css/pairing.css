@@ -1,5 +1,6 @@
-/*### scrollytell ###*/
+/*### scrollytell; TODO: should this sheet be generic for all scrolly tells? ###*/
 .scrollytell-container {
+  max-width: 1000px;
   display: flex;
   justify-content: space-between;
 }

@@ -152,31 +152,31 @@ ui_learning_estimands <- function(id) {
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
         includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_1.md')),
-        br(),
-        radioButtons(inputId = ns('include_pt'),
-                     label = 'Include post-treatment variable bugs?',
-                     choices = c('Include bugs', 'Do not include bugs'),
-                     selected = 'Do not include bugs'),
-        plotOutput(outputId = ns('posttreatment_plot'), 
-                   height = 500),
+        # br(),
+        # radioButtons(inputId = ns('include_pt'),
+        #              label = 'Include post-treatment variable bugs?',
+        #              choices = c('Include bugs', 'Do not include bugs'),
+        #              selected = 'Do not include bugs'),
+        # plotOutput(outputId = ns('posttreatment_plot'), 
+        #            height = 500),
         br(),br(),br(),
-        
-        div(
-          class = 'scrollytell-container',
-          
-          # text content
-          div(
-            class = 'estimands-text-along-d3',
-            includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_ate.md'))
-          ),
-          
-          # d3js content
-          div(id = 'plot-container', # TODO: should prefix the div ids
-              class = 'estimands-d3-container',
-              div(id = 'plot-scatter')
-          )
-        )
       ),
+      
+      div(
+        class = 'scrollytell-container',
+        
+        # text content
+        div(
+          class = 'estimands-text-along-d3',
+          includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_ate.md'))
+        ),
+        
+        # d3js content
+        div(id = 'plot-container', # TODO: should prefix the div ids
+            class = 'estimands-d3-container',
+            div(id = 'plot-scatter')
+        )
+      ), br(),br(),br(),
       
       # the quiz UI
       ui_quiz(id = ns('quiz')),
@@ -216,48 +216,48 @@ server_learning_estimands <- function(id, plot_theme = ggplot2::theme_get) {
       )
       
       # plot jitter
-      output$posttreatment_plot <- renderPlot({
-
-        if (input$include_pt == 'Include bugs') {
-          
-          # create plot with post-treatment variable
-          p <- store_l_estimands$plants_df %>% 
-            group_by(bugs, z) %>% 
-            mutate(mean = mean(h1)) %>% 
-            ggplot(aes(x = jitter(as.numeric(z)), y = h1, 
-                       group = bugs, shape = bugs, col = z_as_text)) +
-            geom_point() +
-            # TODO: fix this
-            geom_hline(aes(yintercept = mean)) +
-            scale_color_manual(values = c(4, 2)) +
-            scale_x_continuous(labels = c('Control', 'Treatment'), breaks = c(0, 1)) +
-            scale_shape_manual(values = c(19, 1)) + 
-            labs(title = 'TBD',
-                 subtitle = 'TBD',
-                 x = 'Treatment status',
-                 y = 'Plant height',
-                 color = NULL)
-          
-        } else {
-          
-          # create plot without post-treatment variable
-          p <- ggplot(data = store_l_estimands$plants_df,
-                      aes(x = jitter(as.numeric(z)), y = h1, col = z_as_text)) +
-            geom_point() +
-            scale_color_manual(values = c(4, 2)) +
-            scale_x_continuous(labels = c('Control', 'Treatment'), breaks = c(0, 1)) +
-            labs(title = 'TBD',
-                 subtitle = 'TBD',
-                 x = 'Treatment status',
-                 y = 'Plant height',
-                 color = NULL)
-        }
-
-        # add theme
-        p <- p + plot_theme()
-
-        return(p)
-      })
+      # output$posttreatment_plot <- renderPlot({
+      # 
+      #   if (input$include_pt == 'Include bugs') {
+      #     
+      #     # create plot with post-treatment variable
+      #     p <- store_l_estimands$plants_df %>% 
+      #       group_by(bugs, z) %>% 
+      #       mutate(mean = mean(h1)) %>% 
+      #       ggplot(aes(x = jitter(as.numeric(z)), y = h1, 
+      #                  group = bugs, shape = bugs, col = z_as_text)) +
+      #       geom_point() +
+      #       # TODO: fix this
+      #       geom_hline(aes(yintercept = mean)) +
+      #       scale_color_manual(values = c(4, 2)) +
+      #       scale_x_continuous(labels = c('Control', 'Treatment'), breaks = c(0, 1)) +
+      #       scale_shape_manual(values = c(19, 1)) + 
+      #       labs(title = 'TBD',
+      #            subtitle = 'TBD',
+      #            x = 'Treatment status',
+      #            y = 'Plant height',
+      #            color = NULL)
+      #     
+      #   } else {
+      #     
+      #     # create plot without post-treatment variable
+      #     p <- ggplot(data = store_l_estimands$plants_df,
+      #                 aes(x = jitter(as.numeric(z)), y = h1, col = z_as_text)) +
+      #       geom_point() +
+      #       scale_color_manual(values = c(4, 2)) +
+      #       scale_x_continuous(labels = c('Control', 'Treatment'), breaks = c(0, 1)) +
+      #       labs(title = 'TBD',
+      #            subtitle = 'TBD',
+      #            x = 'Treatment status',
+      #            y = 'Plant height',
+      #            color = NULL)
+      #   }
+      # 
+      #   # add theme
+      #   p <- p + plot_theme()
+      # 
+      #   return(p)
+      # })
     }
   )
 }

@@ -1,7 +1,7 @@
 /* controls the quiz */
 
 .quiz-container {
-  max-width: min(100%, 800px)
+  max-width: min(100%, 750px)
 }
 
 .quiz-container h3 {
@@ -14,7 +14,7 @@
 }
 
 .quiz-container .skip-button, .quiz-container .restart-button {
-  max-width: 80px !important;
+  max-width: 90px !important;
   font-size: 0.8em !important;
   background: none !important;
   color: grey !important;;
@@ -55,7 +55,7 @@
 /* this lives outside of the .quiz-container */
 .learning-content {
   display: none;
-  max-width: 900px;
+  max-width: 750px;
 }
 /* can also hide the entire quiz
 .quiz-container {

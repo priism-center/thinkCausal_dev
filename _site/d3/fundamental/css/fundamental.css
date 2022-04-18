@@ -32,11 +32,24 @@ body {
   margin: 2em;
   line-height: 1.5em;
   /* background-color: #fff; */
-  max-width: 900px; /*same as learning container*/
+  max-width: 750px; /*same as learning container*/
 }
 /* #fundamental-plot-container {
   max-width: 540px;
 } */
+
+#fundamental-study-text {
+  background: rgb(196, 211, 255);
+  padding: 0.2em 0.2em 0.1em 0.2em;
+  border-radius: 0.3em;
+  font-weight: 500;
+}
+
+.fundamental-slider-label {
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: rgb(216, 65, 65);
+}
 
 /*### specific to d3 ###*/
 .ICElabel {
