@@ -171,12 +171,10 @@ fundamental.triggerScrollytellAnimation = function(){
     const minVal = Math.min(...positions)
     const index = positions.indexOf(minVal)
 
-    // update plot if state changed and user has entered value
-    if ($("#input-distribution-mean").val() != ''){
-        if (index != fundamental.plotState){
-            scrollyFns[index]()
-            fundamental.plotState = index
-        }
+    // update plot if state changed
+    if (index != fundamental.plotState){
+        scrollyFns[index]()
+        fundamental.plotState = index
     }
 }
 

@@ -142,25 +142,25 @@ ui_learning_estimands <- function(id) {
       class = 'learning-page',
       
       # load custom css
-      includeCSS(file.path('www', 'learning', 'estimands', 'css', 'pairing.css')),
+      includeCSS(file.path('www', 'learning', 'estimands', 'css', 'estimands.css')),
       
       # load custom javascript
+      tags$script(src = file.path('js', 'libraries', 'd3.v5.js')), 
+      tags$script(src = file.path('js', 'libraries', 'jstat.min.js')), 
+      
+      tags$script(src = file.path('learning', 'estimands', 'js', 'namespace.js')),
+      tags$script(src = file.path('learning', 'estimands', 'js', 'helpers.js')),
+      tags$script(src = file.path('learning', 'estimands', 'js', 'scrollPlot.js')),
+      tags$script(src = file.path('learning', 'estimands', 'js', 'buildTable.js')),
       tags$script(src = file.path('learning', 'estimands', 'js', 'buildPlot.js')),
-      tags$script(src = file.path('learning', 'estimands', 'js', 'showData.js')),
+      tags$script(src = file.path('learning', 'estimands', 'js', 'init.js')),
       
       # UI content for the learning module
       div(
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
         includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_1.md')),
-        # br(),
-        # radioButtons(inputId = ns('include_pt'),
-        #              label = 'Include post-treatment variable bugs?',
-        #              choices = c('Include bugs', 'Do not include bugs'),
-        #              selected = 'Do not include bugs'),
-        # plotOutput(outputId = ns('posttreatment_plot'), 
-        #            height = 500),
-        br(),br(),br(),
+        br(),br(),br(),br(),br(),br(),
       ),
       
       div(
@@ -173,9 +173,9 @@ ui_learning_estimands <- function(id) {
         ),
         
         # d3js content
-        div(id = 'plot-container', # TODO: should prefix the div ids
+        div(id = 'estimands-plot-container', # TODO: should prefix the div ids
             class = 'estimands-d3-container',
-            div(id = 'plot-scatter')
+            div(id = 'estimands-plot-ATE')
         )
       ), br(),br(),br(),
       
@@ -216,49 +216,6 @@ server_learning_estimands <- function(id, plot_theme = ggplot2::theme_get) {
         embed_quiz = TRUE
       )
       
-      # plot jitter
-      # output$posttreatment_plot <- renderPlot({
-      # 
-      #   if (input$include_pt == 'Include bugs') {
-      #     
-      #     # create plot with post-treatment variable
-      #     p <- store_l_estimands$plants_df %>% 
-      #       group_by(bugs, z) %>% 
-      #       mutate(mean = mean(h1)) %>% 
-      #       ggplot(aes(x = jitter(as.numeric(z)), y = h1, 
-      #                  group = bugs, shape = bugs, col = z_as_text)) +
-      #       geom_point() +
-      #       # TODO: fix this
-      #       geom_hline(aes(yintercept = mean)) +
-      #       scale_color_manual(values = c(4, 2)) +
-      #       scale_x_continuous(labels = c('Control', 'Treatment'), breaks = c(0, 1)) +
-      #       scale_shape_manual(values = c(19, 1)) + 
-      #       labs(title = 'TBD',
-      #            subtitle = 'TBD',
-      #            x = 'Treatment status',
-      #            y = 'Plant height',
-      #            color = NULL)
-      #     
-      #   } else {
-      #     
-      #     # create plot without post-treatment variable
-      #     p <- ggplot(data = store_l_estimands$plants_df,
-      #                 aes(x = jitter(as.numeric(z)), y = h1, col = z_as_text)) +
-      #       geom_point() +
-      #       scale_color_manual(values = c(4, 2)) +
-      #       scale_x_continuous(labels = c('Control', 'Treatment'), breaks = c(0, 1)) +
-      #       labs(title = 'TBD',
-      #            subtitle = 'TBD',
-      #            x = 'Treatment status',
-      #            y = 'Plant height',
-      #            color = NULL)
-      #   }
-      # 
-      #   # add theme
-      #   p <- p + plot_theme()
-      # 
-      #   return(p)
-      # })
     }
   )
 }

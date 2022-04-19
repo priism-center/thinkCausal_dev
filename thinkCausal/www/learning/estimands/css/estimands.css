@@ -1,7 +1,9 @@
 /*### scrollytell ###*/
+/*this top section should go into a global css sheet*/
 .scrollytell-container {
   display: flex;
   justify-content: space-between;
+  max-width: 1000px;
 }
 
 .estimands-text-along-d3,
@@ -11,11 +13,11 @@
 
 .estimands-text-along-d3 {
   padding: 0px 50px 0 0;
-  width: 35%;
+  width: 40%;
 }
 
 .estimands-d3-container {
-  width: 65%;
+  width: 60%;
   height: 650px; /* should match height of d3 plot or d3 plot plus appended table */
   position: -webkit-sticky;
   position: sticky;
@@ -38,13 +40,13 @@
 
 
 /*delete body and #estimands-plot-container chunks when moving to shiny */
+/*
 body {
   font-family: "Roboto", Helvetica, Arial, sans-serif;
   color: #404040;
   margin: 2em;
-  /* background-color: #fff; */
-  max-width: 750px; /*same as learning container*/
-}
+  max-width: 750px;
+} */
 /* #estimands-plot-container {
   max-width: 540px;
 } */
