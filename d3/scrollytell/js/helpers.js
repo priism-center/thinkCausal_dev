@@ -75,7 +75,7 @@ estimands.addMeanLines = function(container, meanYy0, meanYy1, estimandType){
     let meanX = estimands.data.meanX
     let meanY = estimands.data.meanY
 
-    let className = 'meanLines ' + 'meanLines' + estimandType
+    let className = 'estimands-meanLines ' + 'estimands-meanLines' + estimandType
     let classConnector = className + 'Connector'
     let classLabel = className + 'Label'
 
@@ -99,7 +99,7 @@ estimands.addMeanLines = function(container, meanYy0, meanYy1, estimandType){
         .style('stroke', strokeColor)
         .style('stroke-width', strokeWidth * 2/3)
         .style('display', 'none')
-        .attr('class', classConnector + ' mean-dashed')
+        .attr('class', classConnector + ' estimands-mean-dashed')
     container.append('g')
       .append('line')
         .attr('x1', xScale(1.1))
@@ -120,7 +120,7 @@ estimands.addMeanLines = function(container, meanYy0, meanYy1, estimandType){
         .attr('stroke', "#21918c")
         .attr('stroke-width', 2)
         .style('display', 'none')
-        .attr('class', classConnector + ' endCircle')
+        .attr('class', classConnector + ' estimands-endCircle')
     container.append('g')
       .append('circle')
         .attr("cx", xScale(meanX))
@@ -130,7 +130,7 @@ estimands.addMeanLines = function(container, meanYy0, meanYy1, estimandType){
         .attr('stroke', "#440154")
         .attr('stroke-width', 2)
         .style('display', 'none')
-        .attr('class', classConnector + ' endCircle')
+        .attr('class', classConnector + ' estimands-endCircle')
     // add label
     container.append('g')
       .append('rect')
@@ -170,3 +170,4 @@ estimands.addMeanLines = function(container, meanYy0, meanYy1, estimandType){
         .style('display', 'none')
         .attr('class', className)
   }
+  

@@ -9,13 +9,13 @@ estimands.scrollytellState1 = function(){
     estimands.resetPlot()
     
     // show only factual scatter points
-    d3.selectAll("#estimands-plot-ATE .scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints")
         .attr("pointer-events", "none")
         .style('opacity', 0.8)
-    d3.selectAll("#estimands-plot-ATE .scatterPoints[factual='counterfactual']")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints[factual='counterfactual']")
         .style('display', 'none')
         .style('opacity', 0)
-    d3.selectAll("#estimands-plot-ATE .showOnHover")
+    d3.selectAll("#estimands-plot-ATE .estimands-showOnHover")
         .style('display', 'none')
 }
 
@@ -27,20 +27,20 @@ estimands.scrollytellState2 = function(){
     estimands.resetPlot()
 
     // highlight counterfactual points
-    d3.selectAll("#estimands-plot-ATE .scatterPoints[factual='factual']")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints[factual='factual']")
         .style('display', null)
         .transition()
         .duration(1200)
         .style('opacity', 0.2)
-    d3.selectAll("#estimands-plot-ATE .scatterPoints[factual='counterfactual']")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints[factual='counterfactual']")
         .style('display', null)
         .style('opacity', 0)
         .transition()
         .duration(1200)
         .style('opacity', 0.8)
-    d3.selectAll("#estimands-plot-ATE .scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints")
         .attr("pointer-events", "none")
-    d3.selectAll("#estimands-plot-ATE .showOnHover")
+    d3.selectAll("#estimands-plot-ATE .estimands-showOnHover")
         .style('display', 'none')
 }
 
@@ -52,11 +52,11 @@ estimands.scrollytellState3 = function(){
     estimands.resetPlot()
 
     // reset scatter points to match previous state
-    d3.selectAll("#estimands-plot-ATE .scatterPoints[factual='factual']")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints[factual='factual']")
         .style('display', null)
         .style('opacity', 0.2)
         .attr("pointer-events", "all")
-    d3.selectAll("#estimands-plot-ATE .scatterPoints[factual='counterfactual']")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints[factual='counterfactual']")
         .style('display', null)
         .transition("fade-out")
         .duration(1200)
@@ -64,14 +64,14 @@ estimands.scrollytellState3 = function(){
         .attr("pointer-events", "all")
 
     // show example lines
-    d3.selectAll("#estimands-plot-ATE .showOnHover[pairID='" + 1 + "']")
+    d3.selectAll("#estimands-plot-ATE .estimands-showOnHover[pairID='" + 1 + "']")
         .style('display', null)
         .style('opacity', 0)
         .transition()
         .duration(1200)
         .delay(300)
         .style('opacity', 1)
-    d3.selectAll("#estimands-plot-ATE .scatterPoints[pairID='" + 1 + "']")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints[pairID='" + 1 + "']")
         .transition()
         .duration(1200)
         .delay(300)
@@ -93,7 +93,7 @@ estimands.scrollytellState4 = function(){
         .attr('viewBox', '0 0 ' + newHeight + ' ' + estimands.config.heightTall)
 
     // show all points
-    d3.selectAll("#estimands-plot-ATE .scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints")
         .style('display', null)
         .style('opacity', 0.2)
 
@@ -103,16 +103,16 @@ estimands.scrollytellState4 = function(){
     // animations
     // highlight each ICE
     let delayFn = function(index){ return (((index**0.001)-1) * 5000000) - 1000 } // accelerating curve
-    d3.selectAll('#estimands-plot-ATE .showOnHover')
+    d3.selectAll('#estimands-plot-ATE .estimands-showOnHover')
         .style('opacity', 0)
         .style('display', null)
-    d3.selectAll("#estimands-plot-ATE .showOnHover, #estimands-plot-ATE .scatterPoints") 
+    d3.selectAll("#estimands-plot-ATE .estimands-showOnHover, #estimands-plot-ATE .estimands-scatterPoints") 
         .transition()
         .duration(300)
         .delay(d => delayFn(d.pair_id))
         .style('opacity', 1)
     // unhighlight each ICE slightly later
-    d3.selectAll("#estimands-plot-ATE .showOnHover, #estimands-plot-ATE .scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .estimands-showOnHover, #estimands-plot-ATE .estimands-scatterPoints")
         .transition()
         .duration(300)
         .delay(d => delayFn(+d.pair_id+1 * 0.7))
@@ -120,7 +120,7 @@ estimands.scrollytellState4 = function(){
 
     // make the ICE bars fall
     estimands.dropICE()
-    d3.selectAll('#estimands-plot-ATE .line-dashed')
+    d3.selectAll('#estimands-plot-ATE .estimands-line-dashed')
         .transition()
         .duration(2500)
         .attr('x1', d => xScale(d.drop_x1))
@@ -128,7 +128,7 @@ estimands.scrollytellState4 = function(){
         .attr('x2', d => xScale(d.drop_x2))
         .attr('y2', d => yScale((d.drop_y2)))
         .delay(d => delayFn(+d.pair_id+1 * 0.7))
-    d3.selectAll('#estimands-plot-ATE .line-dashed')
+    d3.selectAll('#estimands-plot-ATE .estimands-line-dashed')
         .transition('disappear')
         .duration(750)
         .delay(delayFn(11) + 5000)
@@ -137,7 +137,7 @@ estimands.scrollytellState4 = function(){
     // add points
     d3.select("#estimands-plot-ATE > svg > g")
         .append('g')
-        .selectAll('droppedPoints')
+        .selectAll('estimands-droppedPoints')
         .data(estimands.data.line)
         .enter()
         .append("circle")
@@ -148,7 +148,7 @@ estimands.scrollytellState4 = function(){
           .style('stroke', 'white')
           .style('stroke-width', 1)
           .style('radius', 7 * 0.8)
-          .attr('class', 'droppedPoints')
+          .attr('class', 'estimands-droppedPoints')
           .attr('pairID', d => d.pair_id)
           .style('opacity', 0)
           .on('mouseover', estimands.mouseover)
@@ -162,7 +162,7 @@ estimands.scrollytellState4 = function(){
           .attr('pointer-events', null)
 
     // remove x label and legend
-    d3.selectAll("#estimands-plot-ATE .xAxis text, #estimands-plot-ATE .xAxis line, #estimands-plot-ATE .legend")
+    d3.selectAll("#estimands-plot-ATE .estimands-xAxis text, #estimands-plot-ATE .estimands-xAxis line, #estimands-plot-ATE .estimands-legend")
         .transition()
         .duration(1000)
         .style('opacity', 0)
@@ -170,26 +170,26 @@ estimands.scrollytellState4 = function(){
 
     // add new x axis
     let axisDelay = delayFn(1) + 4000
-    estimands.clone('#estimands-plot-ATE .xAxis')
-        .attr('class', 'axis xAxisBottom')
+    estimands.clone('#estimands-plot-ATE .estimands-xAxis')
+        .attr('class', 'estimands-axis estimands-xAxisBottom')
         .style('opacity', 0)
         .transition()
         .duration(1000)
         .delay(axisDelay)
         .style('opacity', null)
         .attr("transform", "translate(0," + (estimands.config.bodyHeight + 65) + ")") // not sure why 65 works
-    d3.selectAll('#estimands-plot-ATE .xAxisBottom text, #estimands-plot-ATE .xAxisBottom line').remove()
+    d3.selectAll('#estimands-plot-ATE .estimands-xAxisBottom text, #estimands-plot-ATE .estimands-xAxisBottom line').remove()
 
     // add new y axis
-    d3.select('#estimands-plot-ATE .yAxisBottom')
+    d3.select('#estimands-plot-ATE .estimands-yAxisBottom')
         .style('display', null)
         .style('opacity', 0)
         .transition()
         .duration(1000)
         .delay(axisDelay)
         .style('opacity', null)
-    estimands.clone('#estimands-plot-ATE .yAxisLabel')
-        .attr('class', 'axisLabel YAxisLabelBottom')
+    estimands.clone('#estimands-plot-ATE .estimands-yAxisLabel')
+        .attr('class', 'estimands-axisLabel estimands-YAxisLabelBottom')
         .attr('x', -400) // not sure why -400 works
         .text("Difference in running time")
         .style('opacity', 0)
@@ -199,7 +199,7 @@ estimands.scrollytellState4 = function(){
         .style('opacity', null)
 
     // add average line and label
-    d3.selectAll('#estimands-plot-ATE .ICEATEline, #estimands-plot-ATE .ICEATElabel')
+    d3.selectAll('#estimands-plot-ATE .estimands-ICEATEline, #estimands-plot-ATE .estimands-ICEATElabel')
         .style('opacity', 0)
         .transition()
         .duration(1000)
@@ -208,7 +208,7 @@ estimands.scrollytellState4 = function(){
         .delay(delayFn(11) + 6500)
     
     // add back points
-    d3.selectAll("#estimands-plot-ATE .scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints")
         .transition()
         .duration(1000)
         .style('display', null)
@@ -217,7 +217,7 @@ estimands.scrollytellState4 = function(){
         .attr("pointer-events", "all")
     
     // move ICE bars back up
-    d3.selectAll("#estimands-plot-ATE .line-dashed")
+    d3.selectAll("#estimands-plot-ATE .estimands-line-dashed")
         .transition()
         .duration(1000)
         .delay(delayFn(11) + 8000)
@@ -240,12 +240,12 @@ estimands.scrollytellState5 = function(){
     d3.selectAll("#estimands-table-ATE").remove()
 
     // show all points
-    d3.selectAll("#estimands-plot-ATE .scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints")
         .style('display', null)
         .style('opacity', 0.2)
 
     // move MoD ATE label to bottom left
-    d3.selectAll('#estimands-plot-ATE .ICEATElabel')
+    d3.selectAll('#estimands-plot-ATE .estimands-ICEATElabel')
         .style('display', null)
         .style('opacity', 1)
         .transition()
@@ -256,14 +256,14 @@ estimands.scrollytellState5 = function(){
         .text('MoD ATE: ' + estimands.roundNumber(estimands.ATE, 2))
 
     // show mean lines and difference lines
-    d3.selectAll("#estimands-plot-ATE .meanLinesATE")
+    d3.selectAll("#estimands-plot-ATE .estimands-meanLinesATE")
         .style('display', null)
         .style('opacity', 0)
         .transition()
         .duration(1000)
         .delay(2500)
         .style('opacity', 1)
-    d3.selectAll("#estimands-plot-ATE .meanLinesATEConnector, #estimands-plot-ATE .meanLinesATELabel")
+    d3.selectAll("#estimands-plot-ATE .estimands-meanLinesATEConnector, #estimands-plot-ATE .estimands-meanLinesATELabel")
         .style('display', null)
         .style('opacity', 0)
         .transition()
@@ -272,14 +272,14 @@ estimands.scrollytellState5 = function(){
         .style('opacity', 1)
     
     // move DoM ATE label to bottom left
-    d3.selectAll('#estimands-plot-ATE .meanLinesATELabel')
+    d3.selectAll('#estimands-plot-ATE .estimands-meanLinesATELabel')
         .transition('move')
         .duration(1000)
         .attr('x', xScale(0.35))
         .attr('y', yScale(0.5))
         .text('= DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
         .delay(7000)
-    d3.selectAll('#estimands-plot-ATE .meanLinesATEConnector.label.background')
+    d3.selectAll('#estimands-plot-ATE .estimands-meanLinesATEConnector.label.background')
         .transition()
         .delay(7000)
         .style('display', 'none')
@@ -293,14 +293,14 @@ estimands.scrollytellState6 = function(){
     estimands.resetPlot()
 
     // show all points
-    d3.selectAll("#estimands-plot-ATE .scatterPoints")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints")
         .style('display', null)
         .style('opacity', 0.2)
         .attr("pointer-events", "all")
 
     // show example lines
     let initialHighlightedPoint = 1
-    d3.selectAll("#estimands-plot-ATE .showOnHover[pairID='" + initialHighlightedPoint + "'], #estimands-plot-ATE .scatterPoints[pairID='" + initialHighlightedPoint + "']")
+    d3.selectAll("#estimands-plot-ATE .estimands-showOnHover[pairID='" + initialHighlightedPoint + "'], #estimands-plot-ATE .estimands-scatterPoints[pairID='" + initialHighlightedPoint + "']")
         .style('display', null)
         .style('opacity', 0)
         .transition()

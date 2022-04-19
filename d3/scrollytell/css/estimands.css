@@ -55,14 +55,14 @@ body {
 }
 
 /*### specific to d3 ###*/
-.ICElabel {
+.estimands-ICElabel {
   fill: #6e6e6e;
   font-style: italic;
   font-size: 0.8em;
   z-index: 99;
 }
 
-.line-dashed, .mean-dashed {
+.estimands-line-dashed, .estimands-mean-dashed {
   stroke-dasharray: 4, 8;
   stroke-width: 1em;
 }
@@ -126,35 +126,35 @@ body {
   color: #666666;
 } */
 
-.axis > path {
+.estimands-axis > path {
   stroke: #b5b5b5;
 }
 
-.axis > g > line {
+.estimands-axis > g > line {
   stroke: #b5b5b5;
 }
 
-.axis > g > text {
+.estimands-axis > g > text {
   fill: #666666;
   font-size: 1.2em;
 }
 
-.axisLabel {
+.estimands-axisLabel {
   fill: #666666;
   font-size: 0.85em;
 }
 
-.title {
+.estimands-title {
   font-size: 1.1em;
   fill: #666666;
 }
 
-.subtitle {
+.estimands-subtitle {
   font-size: 0.9em;
   fill: #a1a1a1;
 }
 
-.legend > text {
+.estimands-legend > text {
   fill: #666666;
   font-size: 0.75em;
 }

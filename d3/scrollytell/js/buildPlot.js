@@ -98,21 +98,21 @@ estimands.drawData = function(data, config, scales){
   let tickLabels = ['y0', 'y1']
   xAxis.tickFormat((d, i) => tickLabels[i])
   container.append("g")
-    .attr('class', "axis xAxis")
+    .attr('class', "estimands-axis estimands-xAxis")
     .attr("transform", "translate(0," + bodyHeight + ")")
     .call(xAxis);
 
   // add Y axis
   container.append("g")
-    .attr('class', "axis yAxis")
+    .attr('class', "estimands-axis estimands-yAxis")
     .call(d3.axisLeft(yScale));
   container.append('g')
-    .attr('class', 'axis yAxisBottom')
+    .attr('class', 'estimands-axis estimands-yAxisBottom')
     .call(d3.axisLeft(yScaleBottomPlot).ticks(6))
 
     .style('display', 'none')
   container.append('text')
-    .attr('class', 'axisLabel yAxisLabel')
+    .attr('class', 'estimands-axisLabel estimands-yAxisLabel')
     .attr('x', -margin.left-10)
     .attr('y', yScale(meanY)+10)
     .attr('text-anchor', 'middle')
@@ -133,7 +133,7 @@ estimands.drawData = function(data, config, scales){
     //   .style('display', null)
 
     // make sure all other points are not shown
-    d3.selectAll('.showOnHover')
+    d3.selectAll('.estimands-showOnHover')
       .style('display', 'none')
       .transition() // kill any transitions
 
@@ -141,25 +141,25 @@ estimands.drawData = function(data, config, scales){
     let pairID = d3.select(this).attr('pairID')
 
     // de-emphasize points not in pairing
-    d3.selectAll(".scatterPoints, .droppedPoints")
+    d3.selectAll(".estimands-scatterPoints, .estimands-droppedPoints")
       .style('opacity', 0.2)
-    d3.selectAll(".scatterPoints[pairID='" + pairID + "']")
+    d3.selectAll(".estimands-scatterPoints[pairID='" + pairID + "']")
       .style('opacity', 1)
       .attr('r', pointRadius*1.2)
       .style('filter', 'brightness(0.9)')
-    d3.selectAll(".droppedPoints[pairID='" + pairID + "']")
+    d3.selectAll(".estimands-droppedPoints[pairID='" + pairID + "']")
       .style('opacity', 1)
       .attr('r', pointRadius*1.2*0.8)
       .style('filter', 'brightness(0.9)')
     
     // de-emphasize mean lines
-    let meanLinesATCSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
-    let meanLinesATTSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
+    let meanLinesATCSelector = selector + ' .estimands-meanLinesATC, ' + selector + ' .estimands-meanLinesATCConnector, ' + selector + ' .estimands-meanLinesATCConnectorLabel'
+    let meanLinesATTSelector = selector + ' .estimands-meanLinesATT, ' + selector + ' .estimands-meanLinesATTConnector, ' + selector + ' .estimands-meanLinesATTConnectorLabel'
     d3.selectAll(meanLinesATCSelector + ', ' + meanLinesATTSelector)
       .style('opacity', 0.05)
 
     // emphasize lines
-    d3.selectAll(".showOnHover[pairID='" + pairID + "']")
+    d3.selectAll(".estimands-showOnHover[pairID='" + pairID + "']")
       .style('display', null)
       .style('opacity', 1)
     
@@ -194,18 +194,18 @@ estimands.drawData = function(data, config, scales){
     //   .style('fill', null)
 
     // re-emphasize other points
-    d3.selectAll('.scatterPoints')
+    d3.selectAll('.estimands-scatterPoints')
       .style('opacity', pointOpacity)
       .style('filter', null)
       .attr('r', pointRadius)
-    d3.selectAll('.droppedPoints')
+    d3.selectAll('.estimands-droppedPoints')
       .style('opacity', pointOpacity)
       .style('filter', null)
       .attr('r', pointRadius * 0.8)
     
     // re-emphasize mean lines
-    let meanLinesATCSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
-    let meanLinesATTSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
+    let meanLinesATCSelector = selector + ' .estimands-meanLinesATC, ' + selector + ' .estimands-meanLinesATCConnector, ' + selector + ' .estimands-meanLinesATCConnectorLabel'
+    let meanLinesATTSelector = selector + ' .estimands-meanLinesATT, ' + selector + ' .estimands-meanLinesATTConnector, ' + selector + ' .estimands-meanLinesATTConnectorLabel'
     d3.selectAll(meanLinesATCSelector + ', ' + meanLinesATTSelector)
       .style('opacity', 1)
     
@@ -214,7 +214,7 @@ estimands.drawData = function(data, config, scales){
       .style('font-weight', null)
       .style('background-color', null)
 
-    d3.selectAll('.showOnHover')
+    d3.selectAll('.estimands-showOnHover')
       .style('display', 'none')
   }
 
@@ -234,7 +234,7 @@ estimands.drawData = function(data, config, scales){
       .style('stroke-width', strokeWidth * 2/3)
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
-      .attr('class', 'showOnHover')
+      .attr('class', 'estimands-showOnHover')
   container.append('g')
     .selectAll('line')
     .data(data.line)
@@ -248,7 +248,7 @@ estimands.drawData = function(data, config, scales){
       .style('stroke-width', strokeWidth * 2/3)
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
-      .attr('class', 'line-dashed showOnHover')
+      .attr('class', 'estimands-line-dashed estimands-showOnHover')
   container.append('g')
     .selectAll('line')
     .data(data.line)
@@ -262,11 +262,11 @@ estimands.drawData = function(data, config, scales){
       .style('stroke-width', strokeWidth * 2/3)
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
-      .attr('class', 'showOnHover')
+      .attr('class', 'estimands-showOnHover')
 
   // add endpoints to ICE lines
   container.append('g')
-    .selectAll('endCircles')
+    .selectAll('estimands-endCircles')
     .data(data.line)
     .enter()
     .append('circle')
@@ -280,10 +280,10 @@ estimands.drawData = function(data, config, scales){
       .attr('stroke', "#21918c")
       .attr('stroke-width', 2)
       .style('display', 'none')
-      .attr('class', 'endCircle showOnHover')
+      .attr('class', 'estimands-endCircle estimands-showOnHover')
       .attr('pairID', d => d.pair_id)
   container.append('g')
-    .selectAll('endCircle')
+    .selectAll('estimands-endCircle')
     .data(data.line)
     .enter()
     .append('circle')
@@ -297,7 +297,7 @@ estimands.drawData = function(data, config, scales){
       .attr('stroke', "#440154")
       .attr('stroke-width', 2)
       .style('display', 'none')
-      .attr('class', 'endCircle showOnHover')
+      .attr('class', 'estimands-endCircle estimands-showOnHover')
       .attr('pairID', d => d.pair_id)
 
   // add ICE label
@@ -313,7 +313,7 @@ estimands.drawData = function(data, config, scales){
       .style('fill', '#fff')
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
-      .attr('class', 'ICElabel showOnHover')
+      .attr('class', 'estimands-ICElabel estimands-showOnHover')
   container.append('g')
     .selectAll('text')
     .data(data.line)
@@ -328,7 +328,7 @@ estimands.drawData = function(data, config, scales){
       })
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
-      .attr('class', 'ICElabel showOnHover')
+      .attr('class', 'estimands-ICElabel estimands-showOnHover')
 
 
 
@@ -352,7 +352,7 @@ estimands.drawData = function(data, config, scales){
       .on('mouseover', estimands.mouseover)
       .on('mousemove', estimands.mousemove)
       .on('mouseleave', estimands.mouseleave)
-      .attr('class', 'scatter scatterPoints')
+      .attr('class', 'estimands-scatter estimands-scatterPoints')
       .attr('factual', function(d) {
         if (d.factual === '1') return 'factual'
         return 'counterfactual'
@@ -364,7 +364,7 @@ estimands.drawData = function(data, config, scales){
       .attr('pairID', d => d.pair_id)
       .attr("pointer-events", "none")
   // hide counterfactual points
-  d3.selectAll(selector + " .scatterPoints[factual='counterfactual']")
+  d3.selectAll(selector + " .estimands-scatterPoints[factual='counterfactual']")
     .style('display', 'none')
 
 
@@ -401,11 +401,11 @@ estimands.drawData = function(data, config, scales){
       .style('stroke', "#333333")
       .style('stroke-width', 4)
       .style('display', 'none')
-      .attr('class', 'ICEATEline')
+      .attr('class', 'estimands-ICEATEline')
   container.append('g')
     .append('text')
       .style('display', 'none')
-      .attr('class', 'ICEATElabel')
+      .attr('class', 'estimands-ICEATElabel')
       .attr('x', xScale(0.95))
       .attr('y', (yScale(estimands.ATE - estimands.bottomPlotOffset)) * 0.98)
       .text('ATE: ' + estimands.roundNumber(estimands.ATE, 2))
@@ -415,7 +415,7 @@ estimands.drawData = function(data, config, scales){
   // add title and subtitle
   container
     .append('text')
-    .attr('class', 'title')
+    .attr('class', 'estimands-title')
     .attr('x', 0)
     .attr('y', -35)
     .text('Calculated average running times')
@@ -423,13 +423,13 @@ estimands.drawData = function(data, config, scales){
     .append('text')
     .attr('x', 0)
     .attr('y', -15)
-    .attr('class', 'subtitle')
+    .attr('class', 'estimands-subtitle')
     .text('Lower is better')
 
   // add legend
   let legend = container
     .append('g')
-    .attr("class", "legend")
+    .attr("class", "estimands-legend")
     .attr("transform",
             "translate(" + -bodyWidth*1/2.3 + " ," + (0 + (bodyHeight * 1.17)) + ")")
   legend.append("circle")
@@ -503,20 +503,20 @@ estimands.plotATT = function(data, selector){
   let delay = 2000
 
   // add meanLinesATT
-  let meanLinesSelector = selector + ' .meanLinesATT, ' + selector + ' .meanLinesATTConnector, ' + selector + ' .meanLinesATTConnectorLabel'
+  let meanLinesSelector = selector + ' .estimands-meanLinesATT, ' + selector + ' .estimands-meanLinesATTConnector, ' + selector + ' .estimands-meanLinesATTConnectorLabel'
   d3.selectAll(meanLinesSelector)
     .style('display', null)
     .style('opacity', 0.9)
 
 
   // add mouseover
-  d3.selectAll(selector + ' .scatterPoints')
+  d3.selectAll(selector + ' .estimands-scatterPoints')
     .attr("pointer-events", null)
     .style('display', null)
     .style('opacity', 0.8)
 
   // remove control points
-  d3.selectAll(selector + ' .scatterPoints[treatment="control"], ' + selector + ' .showOnHover[treatment="control"]')
+  d3.selectAll(selector + ' .estimands-scatterPoints[treatment="control"], ' + selector + ' .estimands-showOnHover[treatment="control"]')
     .remove()
 
   // remove control rows
@@ -534,12 +534,12 @@ estimands.plotATC = function(data, selector){
   estimands.buildTable(data.line, selector, 'estimands-table-ATC')
 
   // add meanLinesATC
-  let meanLinesSelector = selector + ' .meanLinesATC, ' + selector + ' .meanLinesATCConnector, ' + selector + ' .meanLinesATCConnectorLabel'
+  let meanLinesSelector = selector + ' .estimands-meanLinesATC, ' + selector + ' .estimands-meanLinesATCConnector, ' + selector + ' .estimands-meanLinesATCConnectorLabel'
   d3.selectAll(meanLinesSelector)
     .style('display', null)
 
   // add mouseover
-  d3.selectAll(selector + ' .scatterPoints')
+  d3.selectAll(selector + ' .estimands-scatterPoints')
     .attr("pointer-events", null)
     .style('display', null)
     .style('opacity', 0.9)
@@ -551,7 +551,7 @@ estimands.plotATC = function(data, selector){
   //   .on('mouseleave', null)
 
   // remove control points
-  d3.selectAll(selector + ' .scatterPoints[treatment="treatment"], ' + selector + ' .showOnHover[treatment="treatment"]')
+  d3.selectAll(selector + ' .estimands-scatterPoints[treatment="treatment"], ' + selector + ' .estimands-showOnHover[treatment="treatment"]')
     .remove()
 
   // remove treatment rows
