@@ -6,4 +6,5 @@ Eu ultrices vitae auctor eu augue ut. Tempus urna et pharetra pharetra. Cursus t
 
 ### Have issues or questions?
 
-Reach out via ... or submit an issue on our [GitHub page](https://github.com/gperrett/thinkCausal_dev/issues). 
+Leave feedback [here](https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link) or submit an issue on our [GitHub page](https://github.com/gperrett/thinkCausal_dev/issues). 
+

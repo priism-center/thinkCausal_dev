@@ -279,7 +279,7 @@ estimands.scrollytellState5 = function(){
         .attr('y', yScale(0.5))
         .text('= DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
         .delay(7000)
-    d3.selectAll('#estimands-plot-ATE .estimands-meanLinesATEConnector.label.background')
+    d3.selectAll('#estimands-plot-ATE .estimands-meanLinesATEConnector.background')
         .transition()
         .delay(7000)
         .style('display', 'none')

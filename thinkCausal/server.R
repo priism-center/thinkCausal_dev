@@ -55,25 +55,25 @@ shinyServer(function(input, output, session) {
   
   # store the page history
   # show/hide back button
-  observeEvent(input$nav, {
-    
-    # store history
-    store$page_history <- append(store$page_history, input$nav)
-    
-    # trigger icon if leaving analysis page
-    if (!stringr::str_detect(input$nav, "^analysis") && 
-        !identical(get_nav_previous_analysis_page(store), character(0))){
-      shinyjs::show(selector = '.back-to-analysis-button')
-    } else {
-      shinyjs::hide(selector = '.back-to-analysis-button')
-    }
-  })
+  # observeEvent(input$nav, {
+  #   
+  #   # store history
+  #   store$page_history <- append(store$page_history, input$nav)
+  #   
+  #   # trigger icon if leaving analysis page
+  #   if (!stringr::str_detect(input$nav, "^analysis") && 
+  #       !identical(get_nav_previous_analysis_page(store), character(0))){
+  #     shinyjs::show(selector = '.back-to-analysis-button')
+  #   } else {
+  #     shinyjs::hide(selector = '.back-to-analysis-button')
+  #   }
+  # })
   
   # move to new page when button is clicked
-  observeEvent(input$back_to_analysis_button, {
-    new_page <- get_nav_previous_analysis_page(store)
-    updateNavbarPage(session, inputId = "nav", selected = new_page)
-  })
+  # observeEvent(input$back_to_analysis_button, {
+  #   new_page <- get_nav_previous_analysis_page(store)
+  #   updateNavbarPage(session, inputId = "nav", selected = new_page)
+  # })
 
 
   # design text  ------------------------------------------------------------

@@ -1,10 +1,10 @@
 help_slideover <- tagList(
   
   # floating button to activate help slide over
-  tags$div(id = 'sideBarBtn',
-           class = 'sideBarBtn',
-           onclick = "openHelp()",
-           'Help'),
+  # tags$div(id = 'sideBarBtn',
+  #          class = 'sideBarBtn',
+  #          onclick = "openHelp()",
+  #          'Help'),
   
   # exit div for help slide over
   tags$div(

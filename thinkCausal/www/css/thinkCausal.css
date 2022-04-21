@@ -471,16 +471,28 @@ footer {
   left: 0;
   bottom: 0;
   width: 100%;
-  padding: 0.5em;
+  padding: 0.3rem 2rem 0.3rem 2rem;
   background-color: #9e9cb5;
   color: white;
-  text-align: center;
   z-index: 1000;
 }
 
 footer a, footer a:hover {
   color: white;
 }
+
+.left-align {
+  float: left;
+  margin-left: 0; 
+  margin-right: auto;
+}
+
+.right-align {
+  float: right;
+  margin-left: auto; 
+  margin-right: 0;
+}
+
 
 .bottom-shadow {
   position: sticky;

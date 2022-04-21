@@ -177,7 +177,17 @@ ui_learning_estimands <- function(id) {
             class = 'estimands-d3-container',
             div(id = 'estimands-plot-ATE')
         )
-      ), br(),br(),br(),
+      ), 
+      
+      br(),br(),br(),br(),br(),br(),br(),br(),br(),
+      
+      div(
+        class = ns('learning-content'), # required
+        class = 'learning-content',  # required
+        br(),
+        includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_2.md')),
+        br()
+      ),
       
       # the quiz UI
       ui_quiz(id = ns('quiz')),
@@ -188,7 +198,10 @@ ui_learning_estimands <- function(id) {
         class = ns('learning-content-blur'), # required for blur
         class = 'learning-content-blur', # required for blur
         br(),
-        includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_2.md'))
+        includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_attatc.md')),
+        br(),br(),br(),br(),br(),
+        wellPanel(includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_related.md'))),
+        includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_citations.md'))
       )
     )
   )

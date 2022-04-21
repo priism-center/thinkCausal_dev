@@ -1,40 +1,51 @@
 
-<h2 id="estimands-trigger-1">State 1: Factuals</h2>
+<h2 id="estimands-trigger-1">Factuals</h2>
 
-<p>We can plot the observed (factual) running timesoutcomes of all 9 runners in our study. In our study, rRunners 1, 4, 7 and 9 wore standard shoes while runners 2, 3, 5, 6, and 8 wore HyperShoes. </p>
+We'll start by recording the observed (factual) running times of all 10 runners in our study.
+<br><br>
+As shown, 5 of the runners wore HyperShoes while the other 5 runners wore standard shoes.
+
 
 <br><br><br><br><br><br><br><br><br><br><br><br>
 
 <p><br></p>
 
-<h2 id="estimands-trigger-2">State 2: Counterfactuals</h2>
+<h2 id="estimands-trigger-2">Counterfactuals</h2>
 
-<p>Because we have access to our potential outcomes time-machine, we can also plot each runner's unobserved (counterfactual) outcomes. When looking at counterfactual outcomes we see the running times runners 2,3,5,6 and 8 would have had if they were wearing sStandard sShoes which fills in the missing y0's.  We also seeand the running times runners 1, 4, 7 and 9 would have had if they were wearing HyperShoes which fills in the missing y1s.</p>
+Calculating the ATE also requires the unobserved counterfactual running times of all 10 runners. The counterfactual running time is the time each runner would have had if they had worn the other shoe. <br><br>
+This part may appear confusing, how can we use counterfactual outcomes if they aren't observed? We'll cover this later on but for now, imagine we had the impossible power to simultaneously observe factual and coutnerfactual outcomes at the same time.
 
-<br><br><br><br><br><br><br><br><br><br><br><br>
-
-<h2 id="estimands-trigger-3">State 3: ICE</h2>
-
-<p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
-
-<p><a id="estimands-runner-text">Runner 1 has an ICE of -1.69.</a> Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
 
 <br><br><br><br><br><br><br><br><br><br><br><br>
 
-<h2 id="estimands-trigger-4">State 4: Mean of individual differences</h2>
+<h2 id="estimands-trigger-3">Individual Causal Effects (ICE)</h2>
 
-<p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? </p>
-
-<br><br><br><br><br><br><br><br><br><br><br><br>
-
-<h2 id="estimands-trigger-5">State 5: Differences of group means</h2>
-
-<p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? </p>
+When we have both potential outcomes (a y1 and a y0) we can calculate a runners individual causal effect by taking the difference of an individual runner's y1 and y0. The individual causal effect tells us how much faster or slower the HyperShoes casued the runners finishing time to be. <br><br> You can hover over a point on the plot to see the Individual Causal Effect of the selected runner: <a id="estimands-runner-text">Runner 1 has an ICE of -1.69.</a>
 
 <br><br><br><br><br><br><br><br><br><br><br><br>
 
-<h2 id="estimands-trigger-6">State 6: Table</h2>
+<h2 id="estimands-trigger-4">The ATE is the average of ICEs</h2>
 
-<p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength?  </p>
+One way of calculating the ATE is by taking the average of all 10 runners Individual Causal Effect's. After averaging all 10 Individual Causal Effects we see that the ATE is -1.33.
+<br><br>
+You can hover over any point to explore a runner's Individual Causal Effect and how it related the the ATE.
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<h2 id="estimands-trigger-5">The ATE is the average y1 - the average y0</h2>
+
+Another way of calculating the ATE is by taking the difference between the average of all y1s and the average of all y0s.<br><br> It is important to note that y1 and y0 both include factual and counterfactual observations. The values in y1 are finishing times for all 10 runners if they wore HyperShoes and values in y0 are the finishing times of all 10 runners if they wore standard shoes.
+<br><br>
+Notice the ATE is the same as when we averaged Individual Causal Effects of all 10 runners.
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<h2 id="estimands-trigger-6">Potential outcomes table</h2>
+
+This potential outcomes table  displays the data in way that may be more conducive to making calculations by hand.
+<br><br>
+The average treatment effect is a summary of the entire samples within person comparisons. Remember you can calculate the ATE by taking the average of all 10 runner Individual Causal Effects or by taking the difference of the average y1 and average y0.
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

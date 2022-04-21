@@ -1,11 +1,4 @@
 /*### scrollytell ###*/
-/*this top section should go into a global css sheet*/
-.scrollytell-container {
-  display: flex;
-  justify-content: space-between;
-  max-width: 1000px;
-}
-
 .estimands-text-along-d3,
 .estimands-d3-container {
   background-color: #fff;
@@ -86,6 +79,7 @@ body {
 
 .estimands-table td, .estimands-table th {
   padding: 4px;
+  text-align: end;
 }
 
 .estimands-table tr:nth-child(even){background-color: #fafafa;}
