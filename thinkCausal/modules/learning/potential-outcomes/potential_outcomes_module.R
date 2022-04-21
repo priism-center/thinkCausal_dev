@@ -226,7 +226,7 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
         
         output$hyper_eight_runners_1 <- renderImage({
           list(
-            src = './www/learning/potential-outcomes/illustrations/eight_runners_1.png',
+            src = './www/learning/potential-outcomes/illustrations/eight_runners_1_hyper.png',
             width = "100%", height = "300%"
           )
         }, deleteFile = FALSE)
@@ -240,11 +240,11 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
         
         output$hyper_po_notation_table <- DT::renderDataTable({ 
           data.frame(
-            runner = 1:9,
-            shoe = c(0,1,1,0,1,1,0,1,0),
-            y0 = c("3.10", "2.90", "2.95", "3.40", "3.20", "3.00", "2.95", "3.05", "2.95"),
-            y1 = c("3.00", "2.85", "2.80", "3.20", "2.85", "2.70", "2.95", "2.80", "3.00"),
-            y = c("3.10", "2.85", "2.80", "3.40", "2.85", "2.70", "2.95", "2.80", "2.95")
+            runner = 1:8,
+            shoe = c(1,0,0,1,0,1,0,0),
+            y0 = c("3.20", "2.95", "2.95", "3.30", "3.00", "2.80", "3.00", "2.90"),
+            y1 = c("3.10", "2.85", "2.80", "3.20", "2.85", "2.70", "2.95", "2.80"),
+            y = c("3.10", "2.95", "2.95", "3.20", "3.00", "2.70", "3.00", "2.90")
           ) %>% 
             DT::datatable(
               selection = 'none',
@@ -264,21 +264,21 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
       observeEvent(input$hyper_which_po_mode,{
         
         if (input$hyper_which_po_mode %in% 'omniscience'){
-          standard_shoe <- c("3.10", "2.90", "2.95", "3.40", "3.20", "3.00", "2.95", "3.05", "2.95")
-          hypershoe <- c("3.00", "2.85", "2.80", "3.20", "2.85", "2.70", "2.95", "2.80", "3.00")
+          standard_shoe <- c("3.20", "2.95", "2.95", "3.30", "3.00", "2.80", "3.00", "2.90")
+          hypershoe <- c("3.10", "2.85", "2.80", "3.20", "2.85", "2.70", "2.95", "2.80")
         }else {
-          standard_shoe <- c("3.10", "", "", "3.40", "", "", "", "3.05", "2.95")
-          hypershoe <- c("3.00", "2.85", "2.80", "", "2.85", "2.70", "2.95", "", "")
+          standard_shoe <- c("", "2.95", "2.95", "", "3.00", "", "3.00", "2.90")
+          hypershoe <- c("3.10", "", "", "3.20", "", "2.70", "", "")
         }
         
         output$hyper_po_table <- DT::renderDataTable({ 
           data.frame(
-            runner = 1:9,
-            shoe = c("Standard shoe", "HyperShoe", "HyperShoe", "Standard shoe",
-                     "HyperShoe", "HyperShoe", "HyperShoe", "Standard shoe", "Standard shoe"),
+            runner = 1:8,
+            shoe = c("HyperShoe", "Standard shoe", "Standard shoe", "HyperShoe", 
+                     "Standard shoe", "HyperShoe", "Standard shoe", "Standard shoe"),
             standard_shoe = standard_shoe,
             hypershoe = hypershoe,
-            observed = c("3.10", "2.85", "2.80", "3.40", "2.85", "2.70", "2.95", "2.80", "2.95")
+            observed = c("3.10", "2.95", "2.95", "3.20", "3.00", "2.70", "3.00", "2.90")
           ) %>% 
             rename("Finishing time with standard shoe" = standard_shoe, 
                    "Finishing time with HyperShoe" = hypershoe,
@@ -343,7 +343,7 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
         
         output$normal_eight_runners_1 <- renderImage({
           list(
-            src = './www/learning/potential-outcomes/illustrations/eight_runners_1.png',
+            src = './www/learning/potential-outcomes/illustrations/eight_runners_1_normal.png',
             width = "100%", height = "300%"
           )
         }, deleteFile = FALSE)
@@ -357,11 +357,11 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
         
         output$normal_po_notation_table <- DT::renderDataTable({ 
           data.frame(
-            runner = 1:9,
-            shoe = c(0,1,1,0,1,1,0,1,0),
-            y0 = c("3.10", "2.90", "2.95", "3.40", "3.20", "3.00", "2.95", "3.05", "2.95"),
-            y1 = c("3.00", "2.85", "2.80", "3.20", "2.85", "2.70", "2.95", "2.80", "3.00"),
-            y = c("3.10", "2.85", "2.80", "3.40", "2.85", "2.70", "2.95", "2.80", "2.95")
+            runner = 1:8,
+            shoe = c(0,0,0,1,0,1,0,0),
+            y0 = c("3.20", "2.95", "2.95", "3.30", "3.00", "2.80", "3.00", "2.90"),
+            y1 = c("3.10", "2.85", "2.80", "3.20", "2.85", "2.70", "2.95", "2.80"),
+            y = c("3.20", "2.95", "2.95", "3.20", "3.00", "2.70", "3.00", "2.90")
           ) %>% 
             DT::datatable(
               selection = 'none',
@@ -381,22 +381,23 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
       observeEvent(input$normal_which_po_mode,{
         
         if (input$normal_which_po_mode %in% 'omniscience'){
-          standard_shoe <- c("3.10", "2.90", "2.95", "3.40", "3.20", "3.00", "2.95", "3.05", "2.95")
-          hypershoe <- c("3.00", "2.85", "2.80", "3.20", "2.85", "2.70", "2.95", "2.80", "3.00")
+          standard_shoe <- c("3.20", "2.95", "2.95", "3.30", "3.00", "2.80", "3.00", "2.90")
+          hypershoe <- c("3.10", "2.85", "2.80", "3.20", "2.85", "2.70", "2.95", "2.80")
         }else {
-          standard_shoe <- c("3.10", "", "", "3.40", "", "", "", "3.05", "2.95")
-          hypershoe <- c("3.00", "2.85", "2.80", "", "2.85", "2.70", "2.95", "", "")
+          standard_shoe <- c("3.20", "2.95", "2.95", "", "3.00", "", "3.00", "2.90")
+          hypershoe <- c("", "", "", "3.20", "", "2.70", "", "")
         }
         
         # create table
         output$normal_po_table <- DT::renderDataTable({ 
           data.frame(
-            runner = 1:9,
-            shoe = c("Standard shoe", "HyperShoe", "HyperShoe", "Standard shoe",
-                     "HyperShoe", "HyperShoe", "HyperShoe", "Standard shoe", "Standard shoe"),
+            runner = 1:8,
+            # Alex (the first one) wears standard shoe
+            shoe = c("Standard shoe", "Standard shoe", "Standard shoe", "HyperShoe", 
+                     "Standard shoe", "HyperShoe", "Standard shoe", "Standard shoe"),
             standard_shoe = standard_shoe,
             hypershoe = hypershoe,
-            observed = c("3.10", "2.85", "2.80", "3.40", "2.85", "2.70", "2.95", "2.80", "2.95")
+            observed = c("3.20", "2.95", "2.95", "3.20", "3.00", "2.70", "3.00", "2.90")
           ) %>% 
             rename("Finishing time with standard shoe" = standard_shoe, 
                    "Finishing time with HyperShoe" = hypershoe,
