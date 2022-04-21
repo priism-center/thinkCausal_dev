@@ -1,1 +1,5 @@
-### Citations and Readings
+### Citations and readings
+
+- lorem
+- ipsum
+- dolor

@@ -1,4 +1,4 @@
-# Fundamental problem of causal inference
+## Fundamental problem of causal inference
 
 You may have noticed a major problem in this story, how can we compare the factual and counterfactual outcomes if the counterfactual outcome did not actually happen? This is the fundamental problem of causal inference. We can never observe both potential outcomes for Alex or for any individual. How can we proceed if we can never observe both potential outcomes? 
 
@@ -9,7 +9,7 @@ Instead of using an impossible time machine to see how fast Alex would have run 
 The only difference between factual and counterfactual potential outcomes is the treatment, all other variables need to be exactly the same. For now we will use our potential outcomes time-machine to observe all potential outcomes, in later modules we will return to more practical (and possible!) ways of dealing with the fundamental problem of causal inference. 
 
 
-# Potential Outcomes Table
+## Potential outcomes table
 
 Alex was not the only one that could have worn HyperShoes or standard shoes. We can imagine a study with many runners that either wore HyperShoes or standard running shoes. Each runner has their own set of potential outcomes and the individual causal effect of HyperShoes is unique across different runners:
 

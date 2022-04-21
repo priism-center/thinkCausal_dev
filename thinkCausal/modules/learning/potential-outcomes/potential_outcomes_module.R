@@ -57,36 +57,34 @@ ui_learning_potential_outcomes <- function(id) {
     ui <- fluidPage(
       class = 'learning-page',
       useShinyjs(),
+      
+      # load custom css
+      includeCSS(file.path('www', 'learning', 'potential-outcomes', 'css', 'potential-outcomes.css')),
+      
       # UI content for the learning module
       div(
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
         includeMarkdown(file.path(store_l_potential_outcomes$path_to_here, "markdowns", 'potential_outcomes1.md')),
         fluidRow(column(width = 6,
-                        selectInput(inputId = ns("which_outcome"), label = "Which shoes will Alex use:", 
+                        selectInput(inputId = ns("which_outcome"), label = 
+                                      "Which shoes will Alex use:", 
                                     choices = c("Alex uses the HyperShoe" = 'hyper',
                                                 "Alex does not use the HyperShoe" = 'normal'), 
                                     multiple = F),
-                        actionButton(ns('submit'), 'Submit'), style="width: min(100%, 400px)")),
+                        actionButton(ns('submit'), 
+                                     'Submit'))),
         br(),br(),
-        uiOutput(ns('output_based_on_selection'))
+        uiOutput(ns('output_based_on_selection')),
+        br(),br(),br(),br(),br(),
+        wellPanel(includeMarkdown(file.path(store_l_potential_outcomes$path_to_here, "markdowns", 'potential_outcomes_related.md'))),
+        includeMarkdown(file.path(store_l_potential_outcomes$path_to_here, "markdowns", 'potential_outcomes_citations.md'))
       ),
       
       # the quiz UI
       # can be moved within the UI; recommended to place at top of UI if not embedding
       # ui_quiz(id = ns('quiz')) # comment out this line if quiz is not required
-      
-      # div(
-      #   class = ns('learning-content'), # required
-      #   class = 'learning-content',  # required
-      #   class = ns('learning-content-blur'), # required for blur (comment out this line if blur is not required)
-      #   class = 'learning-content-blur', # required for blur (comment out this line remove if blur is not required)
-      #   br(),
-      #   includeMarkdown(file.path(store_l_potential_outcomes$path_to_here, "markdowns", 'potential_outcomes_2.md')),
-      #   br(),
-      #   wellPanel(includeMarkdown(file.path(store_l_potential_outcomes$path_to_here, "markdowns", 'potential_outcomes_related.md'))),
-      #   includeMarkdown(file.path(store_l_potential_outcomes$path_to_here, "markdowns", 'potential_outcomes_citations.md'))
-      # )
+
     )
   )
 }
@@ -125,23 +123,26 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
             tagList(
               img(
                 src = "learning/potential-outcomes/illustrations/PO_treated.png",
-                align = "center", height="80%", width="100%"),
+                align = "center", width = "90%"),
               br(),br(),
               includeMarkdown(file.path(store_l_potential_outcomes$path_to_here, "markdowns", 'potential_outcomes2_treated.md')),
               actionButton(ns("hyper_conterfactual"), "Show me what if Alex wasn't using the HyperShoe", style="width: min(100%, 400px)"),
               br(),br(),
-              imageOutput(ns('hyper_conterfactual_illustration')),
+              imageOutput(ns('hyper_conterfactual_illustration'), height = NULL),
               br(),br(),br(),br(),br(),br(),
               uiOutput(ns("hyper_text_1")),
-              imageOutput(ns('hyper_hist_illustration')),
+              imageOutput(ns('hyper_hist_illustration'), height = NULL),
               br(),br(),br(),br(),
               uiOutput(ns("hyper_text_2")),
-              imageOutput(ns('hyper_eight_runners_1')),
-              br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
-              br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
-              imageOutput(ns('hyper_eight_runners_2')),
-              br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
-              br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+              br(),
+              imageOutput(ns('hyper_eight_runners_1'), width = "100%", height = NULL),
+              br(),
+              # br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+              # br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+              imageOutput(ns('hyper_eight_runners_2'), width = "100%", height = NULL),
+              # br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+              # br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+              br(),br(),br(),
               uiOutput(ns("hyper_po_table_text")),
               uiOutput(ns("hyper_which_po_table")),
               dataTableOutput(ns("hyper_po_table")),
@@ -154,23 +155,26 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
             tagList(
               img(
                 src = 'learning/potential-outcomes/illustrations/PO_control.png',
-                align = "center", height="80%", width="100%"),
+                align = "center", width="90%"),
               br(),br(),
               includeMarkdown(file.path(store_l_potential_outcomes$path_to_here, "markdowns", 'potential_outcomes2_control.md')),
               actionButton(ns("normal_conterfactual"), "Show me what if Alex was using the HyperShoe"),
               br(),br(),
-              imageOutput(ns('normal_conterfactual_illustration')),
+              imageOutput(ns('normal_conterfactual_illustration'), height = NULL),
               br(),br(),br(),br(),br(),br(),
               uiOutput(ns("normal_text_1")),
-              imageOutput(ns('normal_hist_illustration')),
+              imageOutput(ns('normal_hist_illustration'), height = NULL),
               br(),br(),br(),br(),
               uiOutput(ns("normal_text_2")),
-              imageOutput(ns('normal_eight_runners_1')),
-              br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
-              br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
-              imageOutput(ns('normal_eight_runners_2')),
-              br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
-              br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+              br(),
+              imageOutput(ns('normal_eight_runners_1'), width = "100%", height = NULL),
+              br(),
+              # br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+              # br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+              imageOutput(ns('normal_eight_runners_2'), width = "100%", height = NULL),
+              # br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+              # br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
+              br(),br(),br(),
               uiOutput(ns("normal_po_table_text")),
               uiOutput(ns("normal_which_po_table")),
               dataTableOutput(ns("normal_po_table")),
@@ -213,28 +217,28 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
         output$hyper_conterfactual_illustration <- renderImage({
           list(
             src = './www/learning/potential-outcomes/illustrations/Factual_conterfactual_treated.png',
-            width = "100%", height = "120%"
+            width = "90%"
           )
         }, deleteFile = FALSE)
         
         output$hyper_hist_illustration <- renderImage({
           list(
             src = './www/learning/potential-outcomes/illustrations/hist_treated.png',
-            width = "100%", height = "120%"
+            width = "90%"
           )
         }, deleteFile = FALSE)
         
         output$hyper_eight_runners_1 <- renderImage({
           list(
             src = './www/learning/potential-outcomes/illustrations/eight_runners_1_hyper.png',
-            width = "100%", height = "300%"
+            style = "max-width: 90%; max-height: 800px;"
           )
         }, deleteFile = FALSE)
         
         output$hyper_eight_runners_2 <- renderImage({
           list(
             src = './www/learning/potential-outcomes/illustrations/eight_runners_2.png',
-            width = "100%", height = "300%"
+            style = "max-width: 90%; max-height: 800px;"
           )
         }, deleteFile = FALSE)
         
@@ -330,28 +334,28 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
         output$normal_conterfactual_illustration <- renderImage({
           list(
             src = './www/learning/potential-outcomes/illustrations/Factual_conterfactual_control.png',
-            width = "100%", height = "120%"
+            width = "90%"
           )
         }, deleteFile = FALSE)
         
         output$normal_hist_illustration <- renderImage({
           list(
             src = './www/learning/potential-outcomes/illustrations/hist_control.png',
-            width = "100%", height = "120%"
+            width = "90%"
           )
         }, deleteFile = FALSE)
         
         output$normal_eight_runners_1 <- renderImage({
           list(
             src = './www/learning/potential-outcomes/illustrations/eight_runners_1_normal.png',
-            width = "100%", height = "300%"
+            style = "max-width: 90%; max-height: 800px;"
           )
         }, deleteFile = FALSE)
         
         output$normal_eight_runners_2 <- renderImage({
           list(
             src = './www/learning/potential-outcomes/illustrations/eight_runners_2.png',
-            width = "100%", height = "300%"
+            style = "max-width: 90%; max-height: 800px;"
           )
         }, deleteFile = FALSE)
         

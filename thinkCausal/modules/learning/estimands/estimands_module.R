@@ -179,7 +179,7 @@ ui_learning_estimands <- function(id) {
         )
       ), 
       
-      br(),br(),br(),br(),br(),br(),br(),br(),br(),
+      br(),br(),br(),br(),br(),
       
       div(
         class = ns('learning-content'), # required
