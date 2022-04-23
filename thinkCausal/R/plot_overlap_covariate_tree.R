@@ -40,7 +40,7 @@ plot_overlap_covariate_tree <- function(.model, rule){
     cart <- rpart::rpart(overlap_prob_chi ~ ., data = .data)
     p <- rpart.plot::rpart.plot(cart, type = 2, branch = 1, box.palette = 0)
   }
-  # return(p)
+  return(cart)
 }
 
 

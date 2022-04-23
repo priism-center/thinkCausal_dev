@@ -17,6 +17,8 @@ library(dplyr)
 library(ggplot2)
 library(stringr)
 library(purrr)
+library(patchwork)
+library(ggdendro)
 
 # for bart
 library(plotBart)
