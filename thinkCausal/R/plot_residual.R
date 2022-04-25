@@ -45,11 +45,11 @@ clean_detect_logical <- function(x){
 }
 
 # read data for testing functions
-df <- read.csv("./data/IHDP_observational.csv") %>%
-  select(-c(yc0hat, yc1hat))
-fit_ate <- bartc(y.obs, treat, ., data = df, estimand = "ate")
-fit_att <- bartc(y.obs, treat, ., data = df, estimand = "att")
-fit_atc <- bartc(y.obs, treat, ., data = df, estimand = "atc")
+# df <- read.csv("./data/IHDP_observational.csv") %>%
+#   select(-c(yc0hat, yc1hat))
+# fit_ate <- bartc(y.obs, treat, ., data = df, estimand = "ate")
+# fit_att <- bartc(y.obs, treat, ., data = df, estimand = "att")
+# fit_atc <- bartc(y.obs, treat, ., data = df, estimand = "atc")
 
 
 ### plot functions for residuals from bart fit ---------------------------------
@@ -98,17 +98,17 @@ plot_residual_observed_predicted <- function(.model, covariate = NULL){
   return(p)
 }
 
-plot_residual_observed_predicted(fit_ate)
-plot_residual_observed_predicted(fit_ate, "sex")
-plot_residual_observed_predicted(fit_ate, "momage")
-
-plot_residual_observed_predicted(fit_att)
-plot_residual_observed_predicted(fit_att, "sex")
-plot_residual_observed_predicted(fit_att, "momage")
-
-plot_residual_observed_predicted(fit_atc)
-plot_residual_observed_predicted(fit_atc, "sex")
-plot_residual_observed_predicted(fit_atc, "momage")
+# plot_residual_observed_predicted(fit_ate)
+# plot_residual_observed_predicted(fit_ate, "sex")
+# plot_residual_observed_predicted(fit_ate, "momage")
+# 
+# plot_residual_observed_predicted(fit_att)
+# plot_residual_observed_predicted(fit_att, "sex")
+# plot_residual_observed_predicted(fit_att, "momage")
+# 
+# plot_residual_observed_predicted(fit_atc)
+# plot_residual_observed_predicted(fit_atc, "sex")
+# plot_residual_observed_predicted(fit_atc, "momage")
 
 
 
@@ -213,16 +213,16 @@ plot_residual_observed_residual <- function(.model, covariate = NULL){
   return(p)
 }
 
-plot_residual_observed_residual(fit_ate)
-plot_residual_observed_residual(fit_ate, "sex")
-plot_residual_observed_residual(fit_ate, "momage")
-
-plot_residual_observed_residual(fit_att)
-plot_residual_observed_residual(fit_att, "sex")
-plot_residual_observed_residual(fit_att, "momage")
-
-plot_residual_observed_residual(fit_atc)
-plot_residual_observed_residual(fit_atc, "sex")
-plot_residual_observed_residual(fit_atc, "momage")
+# plot_residual_observed_residual(fit_ate)
+# plot_residual_observed_residual(fit_ate, "sex")
+# plot_residual_observed_residual(fit_ate, "momage")
+# 
+# plot_residual_observed_residual(fit_att)
+# plot_residual_observed_residual(fit_att, "sex")
+# plot_residual_observed_residual(fit_att, "momage")
+# 
+# plot_residual_observed_residual(fit_atc)
+# plot_residual_observed_residual(fit_atc, "sex")
+# plot_residual_observed_residual(fit_atc, "momage")
 
 
