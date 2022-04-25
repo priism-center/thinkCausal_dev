@@ -64,6 +64,7 @@
 .learning-content {
   display: none;
   max-width: 750px;
+  font-size: 1.8em;
 }
 /* can also hide the entire quiz
 .quiz-container {
