@@ -60,7 +60,7 @@
 
         <h2 id="estimands-trigger-6">Potential Outcomes Table</h2>
 
-        <p>This potential outcomes table  displays the data in way that may be more conducive to making calculations by hand. <br><br> The average treatment effect is a summary of the entire samples within person comparisons. Remember you can calculate the ATE by taking the average of all 10 runner Individual Causal Effects or by taking the difference of the average y1 and average y0. </p>
+        <p> We can also think of the ATE within a potential outcomes table, you can hover over the graph or the table for a closer look! Using a potential outcomes table has the benifit of displaying the data in way that may be more conducive to making calculations by hand. <br><br> The average treatment effect is a summary of the entire samples within person comparisons. Remember you can calculate the ATE by taking the average of all 10 runner Individual Causal Effects or by taking the difference of the average y1 and average y0. <br><br>Remember that calculating the ATE requiors knowing each runner's factual and counterfactual observations. For now, keep imagining that you have access to both potnetial outcomes (both y1 and y0) for all 10 runners.</p>
 
         <br><br><br><br><br><br><br><br><br>
 
@@ -70,52 +70,30 @@
       </div>
     </div>
     <br><br><br><br><br>
-    <div><h2>Next section after scrollytell</h2>
+    <div><h2>Subsetting by the treatment group</h2>
 
-      <p>Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable <code>bugs</code> is very close to the true treatment effect. The analysis that includes the post-treatment variable <code>bugs</code> is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!</p>
+      <p>Sometimes researchers are only interested in summarizing causal effects for a particular set of observations. In observational studies, where the treatment is not randomly assigned, individuals that received the treatment are often very different from individuals that did not receive the treatment. It may make sense to focus on group that received the treatment. </p>
 
-      <p><br></p>
-
-      <h2>Why are analyses with post-treatment variables biased?</h2>
-
-      <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
-
-      <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
-
-      <p>&lt; INSERT DATA TABLE &gt;</p>
-    </div>
-    <div><h2>Average treatment effects</h2>
-
-      <p>Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable <code>bugs</code> is very close to the true treatment effect. The analysis that includes the post-treatment variable <code>bugs</code> is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!</p>
-
-      <p><br></p>
-
-      <h2>Why are analyses with post-treatment variables biased?</h2>
-
-      <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
-
-      <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
-
-    </div>
-    <div><h2>Subsetting by the treatment group treatment effects</h2>
-
-      <p>Sometimes researchers are only interested in summarizing causal effects for a particular set of observations part of the sample. For instance, it may make sense to focus on groups deemed most likely to receive the treatment or on those observations where we have the most data for estimation of a treatment effect.  Let’s return to our original sample of 9 runners. Imagine the 5 runners that wore HyperShoes were professional athletes who were given HyperShoes for free through their sponsorship. Suppose that the marketing team thinks that professional or semi-professional runners are the most likely consumers for this product. Then it might make the most sense to focus on the causal effect just for this type of runner</p>
-
-      <p>The average treatment effect on the treated (ATT) is the average causal effect of the sample with received the treatment (where z = 1). Calculating the ATT reflect whether wearingwould answer if the buying the professional runners HyperShoes caused the professional runnersm to run faster than they would have if they wore standard shoes.</p>
-
-      <p>Why can’t we just use the ATE? Remember that causal inference is a within persons comparison. Sometimes treatments are only given to specific groups (like professional athletes). In situations where our question only relates to the group that received the treatment, we care about summaries that only relate to the group of interest.</p>
-
-      <p>To calculate the ATT we compare the factual outcomes of runner 2, 3, 5, 6 and 8 (the runners who wore HyperShoes) to the counterfactual outcomes of runner 2, 3, 5, 6 and 8. Recall that obtaining counterfactual outcomes requires accessing our potential outcomes time machine. </p>
-
+      <p>Let’s return to our original sample of 10 runners from the HyperShoe study. In our study, 5 runners received the treatment and wore HyperShoes while 5 did not receive the treatment and wore standard shoes. Suppose that all 5 runners that wore HyperShoes are semi-professional runners while only 2 of the 5 runners wearing standard shoes are semi-professionals and the remaining 3 are amateur-runners. </p>
+     
+      <p>The average treatment effect on the treated (ATT) is the average causal effect of the sample with received the treatment (where z = 1 and y = y1 in potential outcomes notation). In our example, the ATT is the average casual effect for the runners who wore HyperShoes for their factual outcome.</p>
+      
+      <p>We can calculate the ATT by taking averaging the individual causal effect of the 5 runners that received the treatment (z = 1) or by taking the difference between the average y1 and the average y0 for the group of runners that received the treatment (z = 1). </p>
+      
       <br>
 
       <div id='estimands-plot-ATT'></div>
 
-      <p>We can also think of the ATT within a potential outcomes table. The potential outcomes for all 9 runners in our sample is shown below. While we have potential outcomes for all 9 runners, ATT only uses data from runners where z = 1: </p>
-
+      <p>Here is the worked out example of how the ATT was calculated:</p>
       <p>average y0 = (2.9 + 2.95  + 3.2 + 3.0  + 3.05 )/5 = 3.02</p>
       <p>average y1 = ( 2.85 + 2.8  + 2.85 + 2.7  + 2.8)/5 = 2.8</p>
       <p>ATT = average y1 - average y0 = -.22</p>
+      <br><br>
+      <p>Alternativly, you could also take the average of the indiviudal causal effects for the 5 runners that wore HyperShoes (z = 1)</p>
+      <p>ATT = average ICE = (-.91 + -.47 + -1.67 + -.6  + -2.7)/5 = -1.27</p>
+
+
+      <p>Remember calculating the ATT requiors we have both the factual and counterfacutal outcomes for all of the 5 runners! In practice you will never be able to see counterfacutal observations but for now we'll imagie that you have this ability. </p>
 
       <p>Note in our example we divide by 5 because our sample has  5 runners with a z value of 1!</p>
 
