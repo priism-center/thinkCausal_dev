@@ -1,6 +1,6 @@
 
 
-fundamental.getConfig = function() {
+fundamental.getConfig = function(selector) {
   let width = 540; //900px is width of learning article * 0.6
   let height = 400;
   let margin = {
@@ -15,7 +15,7 @@ fundamental.getConfig = function() {
   let bodyWidth = width - margin.left - margin.right;
 
   // the container is the SVG where we will draw the plot
-  let container = d3.select("#fundamental-plot")
+  let container = d3.select(selector)
     .append("svg")
       .attr("class", "plot")
       .attr("preserveAspectRatio", "xMinYMin meet")
@@ -24,7 +24,6 @@ fundamental.getConfig = function() {
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")")
 
-  fundamental.config = {width, height, margin, bodyHeight, bodyWidth, container}
   return {width, height, margin, bodyHeight, bodyWidth, container}
 }
 
@@ -40,8 +39,6 @@ fundamental.getScales = function(data, config) {
  let yScale = d3.scaleLinear()
     .domain([0, 0.045]) //1.5])
     .range([bodyHeight, 0])
-
-  fundamental.scales = {xScale, yScale}
 
  return {xScale, yScale}
 }
@@ -67,11 +64,11 @@ fundamental.drawRug = function(data, scales, config){
       .style('stroke-width', 1)
       .style('opacity', '0.03')
       .style('display', 'none')
-      .attr('class', 'rugLines')
+      .attr('class', 'fundamental-rugLines')
 
   // add true mean line
   container.append('line')
-    .attr('class', 'trueMeanLine')
+    .attr('class', 'fundamental-trueMeanLine')
     .attr('x1', xScale(fundamental.data.trueMean))
     .attr('y1', yScale(-0.003))
     .attr('x2', xScale(fundamental.data.trueMean))
@@ -87,7 +84,7 @@ fundamental.drawRug = function(data, scales, config){
 
   // add study line
   container.append('line')
-    .attr('class', 'studyLine')
+    .attr('class', 'fundamental-studyLine')
     .attr('x1', xScale(fundamental.data.studyLine))
     .attr('y1', yScale(0))
     .attr('x2', xScale(fundamental.data.studyLine))
@@ -105,7 +102,7 @@ fundamental.drawRug = function(data, scales, config){
   // add sample mean line
   let rugSampleHeight = rugHeight * 2 //fundamental.data.kdeHeight
   container.append('line')
-    .attr('class', 'sampleMeanLine')
+    .attr('class', 'fundamental-sampleMeanLine')
     .attr('x1', xScale(fundamental.data.sampleMean))
     .attr('y1', yScale(0))
     .attr('x2', xScale(fundamental.data.sampleMean))
@@ -118,26 +115,26 @@ fundamental.drawRug = function(data, scales, config){
   // add X axis
   let xAxis = d3.axisBottom(xScale)
   container.append("g")
-    .attr('class', "axis xAxis")
+    .attr('class', "fundamental-axis fundamental-xAxis")
     .attr("transform", "translate(0," + bodyHeight + ")")
     .call(xAxis);
   container.append('text')
-    .attr('class', 'axisLabel')
+    .attr('class', 'fundamental-axisLabel')
     .attr("x", bodyWidth/2)
     .attr('y', bodyHeight + margin.bottom/2)
     .attr('text-anchor', 'middle')
     .text("Change in running time (seconds)")
 }
 
-fundamental.redrawKDE = function(index){
-  let container = d3.selectAll('#fundamental-plot > svg > g')
+fundamental.drawKDE = function(selector, index){
+  let container = d3.selectAll(selector)
   let xScale = fundamental.scales.xScale
   let yScale = fundamental.scales.yScale
   let data = fundamental.data.distribution.filter(d => d.index <= index)
   let opacity = index / d3.max(fundamental.data.distribution, d => d.index)
 
   // remove current line
-  d3.selectAll('.fundamental-kde').remove()
+  container.selectAll('.fundamental-kde').remove()
   
   // add KDE
   let thresholds = xScale.ticks(30)
@@ -158,10 +155,12 @@ fundamental.redrawKDE = function(index){
     .style('opacity', opacity)
 }
 
-fundamental.drawData = function() {
+fundamental.drawData = function(selector) {
   let data = fundamental.data
-  let config = fundamental.getConfig();
+  let config = fundamental.getConfig(selector);
+  fundamental.config = config
   let scales = fundamental.getScales(data, config);
+  fundamental.scales = scales
   fundamental.drawRug(data, scales, config);
 }
 
@@ -169,7 +168,7 @@ fundamental.drawData = function() {
 fundamental.updatePlot = function(value) {
 
   // ensure mean line is shown when there is input
-  d3.selectAll(".trueMeanLine, .trueMeanLineLabel")
+  d3.selectAll(".fundamental-trueMeanLine, .fundamental-trueMeanLineLabel")
       .style('display', null)
   
   // don't update if numeric value is the same as previous input
@@ -190,11 +189,11 @@ fundamental.updatePlot = function(value) {
 
   // remove plot and redraw
   d3.select('#fundamental-plot svg').remove()
-  fundamental.drawData()
+  fundamental.drawData("#fundamental-plot")
   fundamental.updateXAxis()
   
-  // make sure studyLine are displayed
-  d3.selectAll(".trueMeanLine, .trueMeanLineLabel")
+  // make sure true lines are displayed
+  d3.selectAll(".fundamental-trueMeanLine, .fundamental-trueMeanLineLabel")
     .style('display', null)
 }
 
@@ -218,26 +217,26 @@ fundamental.updateXAxis = function(){
   fundamental.scales.xScale = newXScale
 
   // animate to new axis
-  d3.select('.xAxis')
+  d3.select('.fundamental-xAxis')
     .transition()
     .duration(animationDuration)
     // .ease(d3.easeLinear)
     .call(newAxis)
   
   // animate rug
-  d3.selectAll('.rugLines')
+  d3.selectAll('.fundamental-rugLines')
     .transition()
     .duration(animationDuration)
     // .ease(d3.easeLinear)
     .attr('x1', d => newXScale(d.x))
     .attr('x2', d => newXScale(d.x))
-  d3.selectAll('.trueMeanLine')
+  d3.selectAll('.fundamental-trueMeanLine')
     .transition()
     .duration(animationDuration)
     // .ease(d3.easeLinear)
     .attr('x1', newXScale(fundamental.data.trueMean))
     .attr('x2', newXScale(fundamental.data.trueMean))
-  d3.selectAll('.studyLine')
+  d3.selectAll('.fundamental-studyLine')
     .transition()
     .duration(animationDuration)
     // .ease(d3.easeLinear)
@@ -259,5 +258,101 @@ fundamental.showData = function() {
     fundamental.data.min = d3.min(fundamental.data.distribution, d => +d.x);
 
     // initialize plot
-    fundamental.drawData();
+    fundamental.drawData('#fundamental-plot');
 }
+
+// build the efficiency and bias
+fundamental.buildDensity = function(selector){ 
+  // let selector = '#fundamental-plot-efficiency'
+
+  // attach svg
+  let data = fundamental.data
+  let config = fundamental.getConfig(selector);
+  let {margin, container, bodyHeight, bodyWidth} = config
+  let {xScale, yScale} = fundamental.getScales(data, config);
+
+  // add X axis
+  let xAxis = d3.axisBottom(xScale)
+  container.append("g")
+    .attr('class', "fundamental-axis fundamental-xAxis")
+    .attr("transform", "translate(0," + bodyHeight + ")")
+    .call(xAxis);
+  container.append('text')
+    .attr('class', 'fundamental-axisLabel')
+    .attr("x", bodyWidth/2)
+    .attr('y', bodyHeight + margin.bottom/2)
+    .attr('text-anchor', 'middle')
+    .text("Change in running time (seconds)")
+
+  // draw density
+  selector = selector + " > svg > g"
+  let n_data = fundamental.data.distribution.length
+  fundamental.drawKDE(selector, n_data)
+
+  // add true line
+  container.append('line')
+    .attr('class', 'fundamental-trueMeanLine')
+    .attr('x1', xScale(fundamental.data.trueMean))
+    .attr('y1', yScale(-0.003))
+    .attr('x2', xScale(fundamental.data.trueMean))
+    .attr('y2', yScale(0.005*3))
+    // .style('display', 'none')
+    .style('z-index', -999)
+
+  return {config, xScale, yScale};
+}
+fundamental.buildEfficiencyPlot = function(){
+  // build plot with original kde
+  let {config, xScale, yScale} = fundamental.buildDensity('#fundamental-plot-efficiency');
+  let {margin, container, bodyHeight, bodyWidth} = config;
+
+  console.log('building')
+
+  // calculate new kde
+  let data = JSON.parse(JSON.stringify(fundamental.data.distribution)) // deep copy
+  data.forEach(d => d.x = d.x * 0.25) // scale by 0.5
+  // console.log(data)
+
+  // add KDE
+  let thresholds = xScale.ticks(30)
+  let density = kde(epanechnikov(7), thresholds, data)
+  // fundamental.data.kdeHeight = d3.max(density, d => d[1])
+  // container.append('path')
+  //   .attr('class', 'fundamental-kde-efficiency')
+  //   .datum(density)
+  //   .attr('d', d3.line()
+  //     .curve(d3.curveBasis)
+  //     .x(d => xScale(d[0]))
+  //     .y(d => yScale(d[1]))
+  //   )
+  //   .style("stroke-width", 2)
+  //   .style("stroke-linejoin", "round")
+  //   .style("fill", "none")
+  //   .style("stroke", "red") //#292929
+  //   .style('opacity', 1)
+  container.select('path')
+    .datum(density)
+    .enter()
+    // .merge(container.select('path'))
+    .append('path')
+    .transition()
+    .duration(1000)
+    .attr('d', d3.line()
+      .curve(d3.curveBasis)
+      .x(d => xScale(d[0]))
+      .y(d => yScale(d[1]))
+    )
+    .style("stroke", "red")
+    // .exit().remove()
+
+  // animate
+  // container.select('')
+
+};
+fundamental.buildBiasPlot = function(){
+  // build plot
+  let container = fundamental.buildDensity('#fundamental-plot-bias')
+
+  // animate
+  // container.append('text').text('asd')
+};
