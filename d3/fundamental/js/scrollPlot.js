@@ -7,7 +7,7 @@ fundamental.scrollytellState1 = function(){
     fundamental.killAnimations()
 
     // resets
-    d3.selectAll(".studyLine, .rugLines")
+    d3.selectAll(".fundamental-studyLine, .fundamental-rugLines")
         .style('display', 'none')
     // d3.selectAll(".trueMeanLineLabel")
     //     .style('display', null)
@@ -15,7 +15,7 @@ fundamental.scrollytellState1 = function(){
     clearTimeout(fundamental.timeoutStudyText)
 
     // remove trueMean label
-    d3.selectAll('.studyLineLabel')
+    d3.selectAll('.fundamental-studyLineLabel')
         .style('display', 'none')
 
     fundamental.emphasizeText("#fundamental-trigger-1, #fundamental-trigger-1 + p")
@@ -27,28 +27,28 @@ fundamental.scrollytellState2 = function(){
     fundamental.killAnimations()
 
     // resets
-    d3.selectAll(".rugLines, .sampleMeanLine")
+    d3.selectAll(".fundamental-rugLines, .fundamental-sampleMeanLine")
         .transition('fade-in')
         .transition('final-state')
         .style('display', 'none')
     
     // remove labels
-    d3.selectAll('.trueMeanLineLabel, .firstRepeatedStudyLabel')
+    d3.selectAll('.fundamental-trueMeanLineLabel, .fundamental-firstRepeatedStudyLabel')
         .transition()
         .style('display', 'none')
     
     // kill kde
     fundamental.killkdeAnimations()
-    d3.selectAll('.kdeLabel, .fundamental-kde').remove()
+    d3.select('#fundamental-plot').selectAll('.fundamental-kdeLabel, .fundamental-kde').remove()
 
     // update the ATE text in the paragraph
     let delay = 700
     fundamental.timeoutStudyText = setTimeout(fundamental.changeStudyText, delay, false)
     
     // make sure trueMean and studyLine are displayed
-    d3.selectAll(".trueMeanLine, .studyLine, .studyLineLabel")
+    d3.selectAll(".fundamental-trueMeanLine, .fundamental-studyLine, .fundamental-studyLineLabel")
         .style('display', null)
-    d3.selectAll(".studyLine")
+    d3.selectAll(".fundamental-studyLine")
         .style('opacity', 0)
         .transition()
         .delay(delay) // ensures axis animation is finished
@@ -67,20 +67,20 @@ fundamental.scrollytellState3 = function(){
     let delayFn = fundamental.delayFn
 
     // resets
-    d3.selectAll(".rugLines, .fundamental-kde").style('display', 'none')
+    d3.select('#fundamental-plot').selectAll(".fundamental-rugLines, .fundamental-kde").style('display', 'none')
     clearTimeout(fundamental.timeoutStudyText)
 
     // remove study line label
-    d3.selectAll('.studyLineLabel, .kdeLabel')
+    d3.selectAll('.fundamental-studyLineLabel, .fundamental-kdeLabel')
         .style('display', 'none')
 
     // make sure trueMean, studyLine, and rugLines are displayed
-    d3.selectAll(".trueMeanLine, .studyLine")
+    d3.selectAll(".fundamental-trueMeanLine, .fundamental-studyLine")
         .style('display', null)
     
     // add new study text and then remove it
     container.append('text')
-        .attr('class', 'firstRepeatedStudyLabel')
+        .attr('class', 'fundamental-firstRepeatedStudyLabel')
         .attr('x', xScale(+fundamental.data.distribution[0].x))
         .attr('y', yScale(0.005*1.1))
         .text('A repeated study')
@@ -94,14 +94,14 @@ fundamental.scrollytellState3 = function(){
         .remove()
     
     // animate rugLines
-    d3.selectAll(".rugLines")
+    d3.selectAll(".fundamental-rugLines")
         .transition('fade-in')
         .delay(d => delayFn(d.index))
         .style('display', null)
         .style('opacity', 1)
         .style('stroke-width', 2)
         .style('stroke', 'black')
-    d3.selectAll(".rugLines")
+    d3.selectAll(".fundamental-rugLines")
         .transition('final-state')
         .duration(400)
         .delay(d => delayFn(d.index + 1) + 100)
@@ -114,7 +114,7 @@ fundamental.scrollytellState3 = function(){
         // plot kde for every other index (for performance)
         let headstart = 100
         if (d.index % 2 == 0){
-            fundamental.timeouts.push(setTimeout(fundamental.redrawKDE, delayFn(d.index) - headstart, d.index))
+            fundamental.timeouts.push(setTimeout(fundamental.drawKDE, delayFn(d.index) - headstart, '#fundamental-plot > svg > g', d.index))
         }
     })
 
@@ -122,7 +122,7 @@ fundamental.scrollytellState3 = function(){
     let lag = 2000
     let n = fundamental.data.distribution.length
     container.append('text')
-        .attr('class', 'kdeLabel')
+        .attr('class', 'fundamental-kdeLabel')
         .attr('x', 0)
         .attr('y', 0)
         .text(`Distribution of ${n.toLocaleString("en-US")} repeated studies`)
@@ -133,7 +133,7 @@ fundamental.scrollytellState3 = function(){
         .style('opacity', 1)
     
     // fade out rugLines
-    d3.selectAll(".rugLines")
+    d3.selectAll(".fundamental-rugLines")
         .transition('fade-out')
         .delay(delayFn(n) + lag)
         .duration(2000)

@@ -65,11 +65,17 @@ fundamental.killAnimations = function(){
 // controls the delay on the rugplot animation
 fundamental.delayFn = function(index){ return ((((((index+1)**0.001)-1) * 5000000)) / 1.3) + 100 } // accelerating curve
 
-// store timeouts for later cleaing
+// store timeouts for later clearing
 fundamental.timeouts = []
 fundamental.killkdeAnimations = function(){
     fundamental.timeouts.map(clearTimeout)
     fundamental.timeouts = []
+}
+
+fundamental.sliderTimeouts = [];
+fundamental.killSliderAnimations = function(){
+    fundamental.sliderTimeouts.map(clearTimeout)
+    fundamental.sliderTimeouts = []
 }
 
 fundamental.runif = function(min, max) { 

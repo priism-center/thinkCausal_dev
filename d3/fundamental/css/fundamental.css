@@ -51,17 +51,10 @@ body {
   color: rgb(216, 65, 65);
 }
 
-.trueMeanLine {
+.fundamental-trueMeanLine {
   stroke-dasharray: 0.3em, 0.4em;
   stroke: red;
   stroke-width: 0.15em;
-}
-
-/*### specific to d3 ###*/
-.ICElabel {
-  fill: #6e6e6e;
-  font-style: italic;
-  font-size: 0.8em;
 }
 
 .line-dashed {
@@ -81,29 +74,29 @@ body {
   color: #666666;
 }
 
-.axis > path {
+.fundamental-axis > path {
   stroke: #b5b5b5;
 }
 
-.axis > g > line {
+.fundamental-axis > g > line {
   stroke: #b5b5b5;
 }
 
-.axis > g > text {
+.fundamental-axis > g > text {
   fill: #666666;
 }
 
-.axisLabel {
+.fundamental-axisLabel {
   fill: #666666;
   font-size: 0.65em;
 }
 
-.subtitle {
+.fundamental-subtitle {
   font-size: 1em;
   fill: #666666;
 }
 
-.legend > text {
+.fundamental-legend > text {
   fill: #666666;
   font-size: 0.65em;
 }
