@@ -65,7 +65,7 @@ rpart_ggplot_overlap <- function(.model){
       'y = ', fitr$leaf_labels$label,
       '\nn = ', n_leaf)
   )
-  yes_no_offset <- c(0.65, 1.35)
+  yes_no_offset <- c(0.7, 1.3)
   yes_no <- tibble(
     x = c(fitr$labels$x[[1]] * yes_no_offset[1],
           fitr$labels$x[[1]] * yes_no_offset[2]),
@@ -74,7 +74,7 @@ rpart_ggplot_overlap <- function(.model){
   )
   split_labels <- tibble(
     x = fitr$labels$x,
-    y = fitr$labels$y + 0.08,
+    y = fitr$labels$y + 0.085,
     label = paste0(
       'y = ', pred_split,
       '\nn = ', n_split
