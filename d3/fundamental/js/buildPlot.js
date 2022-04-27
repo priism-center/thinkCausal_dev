@@ -179,7 +179,7 @@ fundamental.updatePlot = function(value) {
   fundamental.data.trueMean = newMean
 
   // generate new distribution and study based on input
-  fundamental.data.distribution = fundamental.generateData(newMean);
+  fundamental.data.distribution = fundamental.generateData(newMean, fundamental.data.trueSD);
   fundamental.data.studyLine = fundamental.setStudy();
   fundamental.data.sampleMean = d3.mean(fundamental.data.distribution, d => d.x);
   // fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
@@ -249,7 +249,8 @@ fundamental.showData = function() {
     // initialize values
     fundamental.data = {}
     fundamental.data.trueMean = 0;
-    fundamental.data.distribution = fundamental.generateData(fundamental.data.trueMean);
+    fundamental.data.trueSD = 10;
+    fundamental.data.distribution = fundamental.generateData(fundamental.data.trueMean, fundamental.data.trueSD);
     // fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
     fundamental.data.studyLine = fundamental.setStudy()
     fundamental.data.distribution[0].x = fundamental.setFirstRepeat()
@@ -306,53 +307,102 @@ fundamental.buildEfficiencyPlot = function(){
   let {config, xScale, yScale} = fundamental.buildDensity('#fundamental-plot-efficiency');
   let {margin, container, bodyHeight, bodyWidth} = config;
 
-  console.log('building')
 
   // calculate new kde
-  let data = JSON.parse(JSON.stringify(fundamental.data.distribution)) // deep copy
-  data.forEach(d => d.x = d.x * 0.25) // scale by 0.5
-  // console.log(data)
+  let wideningFactor = 1.75
+  let data = fundamental.generateData(fundamental.data.trueMean, fundamental.data.trueSD * wideningFactor);
 
-  // add KDE
+  // duplicate current KDE
+  container.select('.fundamental-kde')
+    .clone()
+    .style('stroke-dasharray', '4, 4')
+    .style('opacity', 0.3);
+
+  // calculate new KDE
   let thresholds = xScale.ticks(30)
-  let density = kde(epanechnikov(7), thresholds, data)
-  // fundamental.data.kdeHeight = d3.max(density, d => d[1])
-  // container.append('path')
-  //   .attr('class', 'fundamental-kde-efficiency')
-  //   .datum(density)
-  //   .attr('d', d3.line()
-  //     .curve(d3.curveBasis)
-  //     .x(d => xScale(d[0]))
-  //     .y(d => yScale(d[1]))
-  //   )
-  //   .style("stroke-width", 2)
-  //   .style("stroke-linejoin", "round")
-  //   .style("fill", "none")
-  //   .style("stroke", "red") //#292929
-  //   .style('opacity', 1)
-  container.select('path')
-    .datum(density)
-    .enter()
-    // .merge(container.select('path'))
-    .append('path')
-    .transition()
-    .duration(1000)
-    .attr('d', d3.line()
-      .curve(d3.curveBasis)
-      .x(d => xScale(d[0]))
-      .y(d => yScale(d[1]))
-    )
-    .style("stroke", "red")
-    // .exit().remove()
+  let densityOld = kde(epanechnikov(7), thresholds, fundamental.data.distribution)
+  let densityNew = kde(epanechnikov(7), thresholds, data)
 
-  // animate
-  // container.select('')
+  // transitions to and fro new KDE
+  function transitionTo(){
+    container.select('.fundamental-kde') 
+      .datum(densityNew)
+      .transition()
+      .duration(5000)
+      .attr('d', d3.line()
+        .curve(d3.curveBasis)
+        .x(d => xScale(d[0]))
+        .y(d => yScale(d[1]))
+      )
+      .on('end', transitionFrom)
+  }
+  function transitionFrom(){
+    container.select('.fundamental-kde')
+      .datum(densityOld)
+      .transition()
+      .duration(5000)
+      .attr('d', d3.line()
+        .curve(d3.curveBasis)
+        .x(d => xScale(d[0]))
+        .y(d => yScale(d[1]))
+      )
+      .on('end', transitionTo)
+  }
 
+  // initialize transition
+  transitionTo();
 };
 fundamental.buildBiasPlot = function(){
-  // build plot
-  let container = fundamental.buildDensity('#fundamental-plot-bias')
+  // build plot with original kde
+  let {config, xScale, yScale} = fundamental.buildDensity('#fundamental-plot-bias');
+  let {margin, container, bodyHeight, bodyWidth} = config;
 
-  // animate
-  // container.append('text').text('asd')
+
+  // calculate new kde by shifting the current kde
+  let data = JSON.parse(JSON.stringify(fundamental.data.distribution)) // deep copy
+  data.forEach(d => d.x = +d.x + 15) // right shift
+
+  // duplicate current KDE
+  container.select('.fundamental-kde')
+    .clone()
+    .style('stroke-dasharray', '4, 4')
+    .style('opacity', 0.3);
+
+  // calculate new KDE
+  let thresholds = xScale.ticks(30)
+  let densityOld = kde(epanechnikov(7), thresholds, fundamental.data.distribution)
+  let densityNew = kde(epanechnikov(7), thresholds, data)
+
+  // transitions to and fro new KDE
+  function transitionTo(){
+    container.select('.fundamental-kde') 
+      .datum(densityNew)
+      .transition()
+      .duration(5000)
+      .attr('d', d3.line()
+        .curve(d3.curveBasis)
+        .x(d => xScale(d[0]))
+        .y(d => yScale(d[1]))
+      )
+      // .ease(d3.easeBounceOut) //https://github.com/d3/d3-ease
+      .on('end', transitionFrom)
+  }
+  function transitionFrom(){
+    // update KDE
+    container.select('.fundamental-kde')
+      .datum(densityOld)
+      .transition()
+      .duration(5000)
+      .attr('d', d3.line()
+        .curve(d3.curveBasis)
+        .x(d => xScale(d[0]))
+        .y(d => yScale(d[1]))
+      )
+      .on('end', transitionTo)
+
+    // update label
+  }
+
+  // initialize transition
+  transitionTo()
 };

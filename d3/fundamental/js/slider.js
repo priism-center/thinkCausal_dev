@@ -10,65 +10,65 @@ fundamental.trueMeanSlider = $("#fundamental-slider-distribution-mean").ionRange
     }
 });
 
-fundamental.sliderEfficiency = $("#fundamental-slider-efficiency").ionRangeSlider({
-    type: "single",
-    from: -1,
-    min: -1,
-    max: 1,
-    step: 0.00001,
-    grid: false,
-    // hide_min_max: true,
-    hide_from_to: true,
+// fundamental.sliderEfficiency = $("#fundamental-slider-efficiency").ionRangeSlider({
+//     type: "single",
+//     from: -1,
+//     min: -1,
+//     max: 1,
+//     step: 0.00001,
+//     grid: false,
+//     // hide_min_max: true,
+//     hide_from_to: true,
 
-    onFinish: function(data) {
-        // fundamental.updatePlot(data.input.val());
-        fundamental.updateSliderLabel();
-        fundamental.killSliderAnimations();
-    }
-});
+//     onFinish: function(data) {
+//         // fundamental.updatePlot(data.input.val());
+//         fundamental.updateSliderLabel();
+//         fundamental.killSliderAnimations();
+//     }
+// });
 
-fundamental.sliderBias = $("#fundamental-slider-bias").ionRangeSlider({
-    type: "single",
-    from: -1,
-    min: -1,
-    max: 1,
-    step: 0.00001,
-    grid: false,
-    // hide_min_max: true,
-    hide_from_to: true,
+// fundamental.sliderBias = $("#fundamental-slider-bias").ionRangeSlider({
+//     type: "single",
+//     from: -1,
+//     min: -1,
+//     max: 1,
+//     step: 0.00001,
+//     grid: false,
+//     // hide_min_max: true,
+//     hide_from_to: true,
 
-    onUpdate: function(data){
-        // console.log(data)
-        $("#temp").text(data.from)
-    },
-    onFinish: function(data) {
-        // fundamental.updatePlot(data.input.val());
-        fundamental.updateSliderLabel()
-        $("#temp").text(data.from)
-        fundamental.killSliderAnimations();
-    }
-});
+//     onUpdate: function(data){
+//         // console.log(data)
+//         $("#temp").text(data.from)
+//     },
+//     onFinish: function(data) {
+//         // fundamental.updatePlot(data.input.val());
+//         fundamental.updateSliderLabel()
+//         $("#temp").text(data.from)
+//         fundamental.killSliderAnimations();
+//     }
+// });
 
-fundamental.updateSliderLabel = function(){
-    $("#fundamental-slider-efficiency-container .irs-min").text("Low efficiency")
-    $("#fundamental-slider-efficiency-container .irs-max").text("High efficiency")
-    $("#fundamental-slider-bias-container .irs-min").text("Low bias")
-    $("#fundamental-slider-bias-container .irs-max").text("High bias")
-}
+// fundamental.updateSliderLabel = function(){
+//     $("#fundamental-slider-efficiency-container .irs-min").text("Low efficiency")
+//     $("#fundamental-slider-efficiency-container .irs-max").text("High efficiency")
+//     $("#fundamental-slider-bias-container .irs-min").text("Low bias")
+//     $("#fundamental-slider-bias-container .irs-max").text("High bias")
+// }
 
-fundamental.animateSlider = function(){
-    fundamental.sliderDuration = 2000
-    for (let i = 0; i < fundamental.sliderDuration; i++){
-        let newVal = (i - 1000) / 1000 
-        fundamental.sliderTimeouts.push(
-            setTimeout(() => {
-                fundamental.sliderBias.data("ionRangeSlider").update({from: newVal});
-                fundamental.sliderEfficiency.data("ionRangeSlider").update({from: newVal});
-                fundamental.updateSliderLabel();
-            }, i)
-        )
-    }
-}
+// fundamental.animateSlider = function(){
+//     fundamental.sliderDuration = 2000
+//     for (let i = 0; i < fundamental.sliderDuration; i++){
+//         let newVal = (i - 1000) / 1000 
+//         fundamental.sliderTimeouts.push(
+//             setTimeout(() => {
+//                 fundamental.sliderBias.data("ionRangeSlider").update({from: newVal});
+//                 fundamental.sliderEfficiency.data("ionRangeSlider").update({from: newVal});
+//                 fundamental.updateSliderLabel();
+//             }, i)
+//         )
+//     }
+// }
 
 
 fundamental.isInViewport = function(element) {
@@ -84,12 +84,13 @@ fundamental.isInViewport = function(element) {
 
 // trigger slider animation when slider is in view
 fundamental.sliderTriggered = false
+fundamental.plotTriggered = false
 document.addEventListener('scroll', function(){
-    let isInView = fundamental.isInViewport($('#fundamental-slider-efficiency-container')[0])
-    if (!fundamental.sliderTriggered && isInView){
+    let isInView = fundamental.isInViewport($('#fundamental-plot-efficiency')[0])
+    if (!fundamental.plotTriggered && isInView){
         fundamental.buildEfficiencyPlot();
         fundamental.buildBiasPlot();
-        fundamental.animateSlider();
-        fundamental.sliderTriggered = true
+        // fundamental.animateSlider();
+        fundamental.plotTriggered = true
     }
 });
