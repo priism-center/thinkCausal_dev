@@ -76,42 +76,11 @@ server_diagnostic <- function(store, id, global_session){
             .model = store$model_results,
             rule = 'both'
           )
-          # save the cart results from rpart
-          cart_sd <- plot_overlap_covariate_tree(.model = store$model_results, rule = "sd")
-          cart_chi <- plot_overlap_covariate_tree(.model = store$model_results, rule = "chi")
-          
-          # clean data from the rpart result
-          fitr_sd <- dendro_data(cart_sd)
-          fitr_chi <- dendro_data(cart_chi)
-          
-          # plot tree based on sd rule
-          p2 <- ggplot() +
-            geom_segment(data = fitr_sd$segments, 
-                         aes(x = x, y = y, xend = xend, yend = yend)) + 
-            geom_rect(data = fitr_sd$labels,
-              aes(xmin = x - 0.5, xmax = x + 0.5, ymin = y - 0.03, ymax = y + 0.03),
-              size = 0.5, fill = "#FFFFFFFF", color = "black") +
-            geom_rect(data = fitr_sd$leaf_labels,
-                      aes(xmin = x - 0.2, xmax = x + 0.2, ymin = y - 0.09, ymax = y - 0.02),
-                      size = 0.5, fill = "#FFFFFFFF", color = "black") +
-            geom_text(data = fitr_sd$labels, aes(x = x, y = y, label = label), size=3) +
-            geom_text(data = fitr_sd$leaf_labels, aes(x = x, y = y - 0.05, label = label), size=3) +
-            theme_dendro()
-          
-          # plot tree based on chi rule
-          p3 <- ggplot() +
-            geom_segment(data = fitr_chi$segments, 
-                         aes(x = x, y = y, xend = xend, yend = yend)) + 
-            geom_rect(data = fitr_chi$labels,
-                      aes(xmin = x - 0.5, xmax = x + 0.5, ymin = y - 0.03, ymax = y + 0.03),
-                      size = 0.5, fill = "#FFFFFFFF", color = "black") +
-            geom_rect(data = fitr_chi$leaf_labels,
-                      aes(xmin = x - 0.2, xmax = x + 0.2, ymin = y - 0.09, ymax = y - 0.02),
-                      size = 0.5, fill = "#FFFFFFFF", color = "black") +
-            geom_text(data = fitr_chi$labels, aes(x = x, y = y, label = label), size=3) +
-            geom_text(data = fitr_chi$leaf_labels, aes(x = x, y = y - 0.05, label = label), size=3) +
-            theme_dendro()
-          # patchwork pakage to combine the plots
+          # plot classification tree on covariates in terms of overlap
+          p2 <- plot_overlap_covariate_tree(.model = store$model_results, rule = "sd")
+          p3 <- plot_overlap_covariate_tree(.model = store$model_results, rule = "chi")
+        
+          # patchwork package to combine the plots
           p <- p1 | (p2 / p3)
             
         }else{
