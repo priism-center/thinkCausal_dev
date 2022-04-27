@@ -26,6 +26,10 @@ server_eda <- function(store, id, global_session){
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$model)
       })
       
+      
+     
+      
+      
       # update variables on the eda page once the save button on the verify data page is clicked
       observeEvent(store$analysis$data$verify$analysis_data_save, {
         new_col_names <- colnames(store$verified_df)
@@ -147,6 +151,17 @@ server_eda <- function(store, id, global_session){
           )
         }
       })
+      
+      output$render_analysis_eda_variable_x <- renderUI({
+        selectInput(
+          inputId = ns("analysis_eda_variable_x"),
+          label = "X: ",
+          multiple = FALSE,
+          choices = colnames(store$verified_df),
+          selected = NULL
+        )
+      })
+      
       
       # create the descriptive plots
       # build the exploration plots

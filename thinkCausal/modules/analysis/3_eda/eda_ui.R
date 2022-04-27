@@ -32,13 +32,14 @@ ui_eda <- function(store, id){
             ),
             conditionalPanel(
               condition = "input.analysis_eda_select_plot_type != 'Pairs'", ns = ns, 
-              selectInput(
-                inputId = ns("analysis_eda_variable_x"),
-                label = "X: ",
-                multiple = FALSE,
-                choices = NULL,
-                selected = NULL
-              ),
+              # selectInput(
+              #   inputId = ns("analysis_eda_variable_x"),
+              #   label = "X: ",
+              #   multiple = NULL,
+              #   choices = NULL,
+              #   selected = NULL
+              # ),
+              uiOutput(ns("render_analysis_eda_variable_x")), 
               conditionalPanel(
                 condition = "input.analysis_eda_select_plot_type == 'Scatter'", ns = ns, 
                 selectInput(

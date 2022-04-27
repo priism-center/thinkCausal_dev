@@ -157,14 +157,14 @@ plot_residual_density <- function(.model, covariate = NULL){
   return(p)
 }
 
-plot_residual_density(fit_ate)
-plot_residual_density(fit_ate, "sex")
-
-plot_residual_density(fit_att)
-plot_residual_density(fit_att, "sex")
-
-plot_residual_density(fit_atc)
-plot_residual_density(fit_atc, "sex")
+# plot_residual_density(fit_ate)
+# plot_residual_density(fit_ate, "sex")
+# 
+# plot_residual_density(fit_att)
+# plot_residual_density(fit_att, "sex")
+# 
+# plot_residual_density(fit_atc)
+# plot_residual_density(fit_atc, "sex")
 
 
 
