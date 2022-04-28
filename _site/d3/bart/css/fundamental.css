@@ -1,0 +1,127 @@
+/*### scrollytell ###*/
+.scrollytell-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.fundamental-text-along-d3,
+.fundamental-d3-container {
+  background-color: #fff;
+}
+
+.fundamental-text-along-d3 {
+  padding: 0px 50px 0 0;
+  width: 35%;
+}
+
+.fundamental-d3-container {
+  width: 65%;
+  height: 400px; /* should match height of d3 plot */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 30px;
+  padding: 20px 0 0 0;
+}
+
+
+
+/*delete body and #fundamental-plot-container chunks when moving to shiny */
+body {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  color: #666666;
+  margin: 2em;
+  line-height: 1.5em;
+  /* background-color: #fff; */
+  max-width: 750px; /*same as learning container*/
+}
+/* #fundamental-plot-container {
+  max-width: 540px;
+} */
+
+#fundamental-study-text {
+  background: rgb(196, 211, 255);
+  padding: 0.2em 0.2em 0.1em 0.2em;
+  border-radius: 0.3em;
+  font-weight: 500;
+}
+
+.fundamental-slider-label {
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: rgb(216, 65, 65);
+}
+
+.fundamental-trueMeanLine {
+  stroke-dasharray: 0.3em, 0.4em;
+  stroke: red;
+  stroke-width: 0.15em;
+}
+
+.fundamental-support-label {
+  /* font-weight: 300; */
+  font-size:0.9rem;
+  fill: rgb(95, 95, 95);
+}
+
+.line-dashed {
+  stroke-dasharray: 4, 8;
+  stroke-width: 1em;
+}
+
+.tooltip {
+  font-size: 0.8em;
+  background-color: white;
+  border: solid #394E48;
+  border-width: 2px;
+  border-radius: 2px;
+  padding: 0.5rem 0.5rem 0.3rem 0.5rem;
+  text-align: left;
+  position: absolute;
+  color: #666666;
+}
+
+.fundamental-axis > path {
+  stroke: #b5b5b5;
+}
+
+.fundamental-axis > g > line {
+  stroke: #b5b5b5;
+}
+
+.fundamental-axis > g > text {
+  fill: #666666;
+}
+
+.fundamental-axisLabel {
+  fill: #666666;
+  font-size: 0.65em;
+}
+
+.fundamental-subtitle {
+  font-size: 1em;
+  fill: #666666;
+}
+
+.fundamental-legend > text {
+  fill: #666666;
+  font-size: 0.65em;
+}
+
+/* button {
+  width: 150px;
+  max-width: 100%;
+  background-color: #726078;
+  padding: 0.8em;
+  margin: 0.5em;
+  border-radius: 2px;
+  border: none;
+  color: white;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+button:hover {
+  filter: brightness(1.2);
+}
+button:active {
+  filter: brightness(0.7);
+} */
