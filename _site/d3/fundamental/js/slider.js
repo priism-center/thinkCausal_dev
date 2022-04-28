@@ -7,6 +7,7 @@ fundamental.trueMeanSlider = $("#fundamental-slider-distribution-mean").ionRange
 
     onFinish: function(data) {
         fundamental.updatePlot(data.input.val());
+        fundamental.buildSupportPlots();
     }
 });
 
@@ -71,26 +72,26 @@ fundamental.trueMeanSlider = $("#fundamental-slider-distribution-mean").ionRange
 // }
 
 
-fundamental.isInViewport = function(element) {
-    const rect = element.getBoundingClientRect();
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-}
+// fundamental.isInViewport = function(element) {
+//     const rect = element.getBoundingClientRect();
+//     return (
+//         rect.top >= 0 &&
+//         rect.left >= 0 &&
+//         rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+//         rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+//     );
+// }
 
 
-// trigger slider animation when slider is in view
-fundamental.sliderTriggered = false
-fundamental.plotTriggered = false
-document.addEventListener('scroll', function(){
-    let isInView = fundamental.isInViewport($('#fundamental-plot-efficiency')[0])
-    if (!fundamental.plotTriggered && isInView){
-        fundamental.buildEfficiencyPlot();
-        fundamental.buildBiasPlot();
-        // fundamental.animateSlider();
-        fundamental.plotTriggered = true
-    }
-});
+// // trigger slider animation when slider is in view
+// fundamental.sliderTriggered = false
+// fundamental.plotTriggered = false
+// document.addEventListener('scroll', function(){
+//     let isInView = fundamental.isInViewport($('#fundamental-plot-efficiency')[0])
+//     if (!fundamental.plotTriggered && isInView){
+//         fundamental.buildEfficiencyPlot();
+//         fundamental.buildBiasPlot();
+//         // fundamental.animateSlider();
+//         fundamental.plotTriggered = true
+//     }
+// });

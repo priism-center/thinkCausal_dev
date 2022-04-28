@@ -262,9 +262,9 @@ fundamental.showData = function() {
     fundamental.drawData('#fundamental-plot');
 }
 
-// build the efficiency and bias
+
+// build the efficiency and bias plots
 fundamental.buildDensity = function(selector){ 
-  // let selector = '#fundamental-plot-efficiency'
 
   // attach svg
   let data = fundamental.data
@@ -308,6 +308,22 @@ fundamental.buildEfficiencyPlot = function(){
   let {margin, container, bodyHeight, bodyWidth} = config;
 
 
+  // add labels 
+  container.append('text')
+    .attr('class', 'fundamental-support-label fundamental-efficiency-label-old')
+    .attr("x", bodyWidth * 1/2)
+    .attr('y', 10)
+    .attr('text-anchor', 'middle')
+    .text('Efficient')
+  container.append('text')
+    .attr('class', 'fundamental-support-label fundamental-efficiency-label-new')
+    .attr("x", bodyWidth * 1/2)
+    .attr('y', 115)
+    .attr('text-anchor', 'middle')
+    .text('Inefficient')
+    .style('opacity', 0)
+
+
   // calculate new kde
   let wideningFactor = 1.75
   let data = fundamental.generateData(fundamental.data.trueMean, fundamental.data.trueSD * wideningFactor);
@@ -324,33 +340,66 @@ fundamental.buildEfficiencyPlot = function(){
   let densityNew = kde(epanechnikov(7), thresholds, data)
 
   // transitions to and fro new KDE
-  function transitionTo(){
+  let duration = 5000
+  function transitionToNewKDE(){
+    let stall = 1000
     container.select('.fundamental-kde') 
       .datum(densityNew)
       .transition()
-      .duration(5000)
+      .duration(duration)
+      .delay(stall)
       .attr('d', d3.line()
         .curve(d3.curveBasis)
         .x(d => xScale(d[0]))
         .y(d => yScale(d[1]))
       )
-      .on('end', transitionFrom)
+      .on('end', transitionToOldKDE)
+
+  // update labels
+  container.select('.fundamental-efficiency-label-old')
+    .transition()
+    .duration(duration)
+    .delay(stall)
+    .ease(d3.easeExpOut)
+    .style('opacity', 0)
+  container.select('.fundamental-efficiency-label-new')
+    .transition()
+    .duration(duration)
+    .delay(stall)
+    .ease(d3.easeExpIn)
+    .style('opacity', 1)
   }
-  function transitionFrom(){
+  function transitionToOldKDE(){
+    let stall = 3000
     container.select('.fundamental-kde')
       .datum(densityOld)
       .transition()
-      .duration(5000)
+      .duration(duration)
+      .delay(stall)
       .attr('d', d3.line()
         .curve(d3.curveBasis)
         .x(d => xScale(d[0]))
         .y(d => yScale(d[1]))
       )
-      .on('end', transitionTo)
+      .on('end', transitionToNewKDE)
+
+    // update labels
+    container.select('.fundamental-efficiency-label-old')
+      .transition()
+      .duration(duration)
+      .delay(stall)
+      .ease(d3.easeExpIn)
+      .style('opacity', 1)
+    container.select('.fundamental-efficiency-label-new')
+      .transition()
+      .duration(duration)
+      .delay(stall)
+      .ease(d3.easeExpOut)
+      .style('opacity', 0)
   }
 
   // initialize transition
-  transitionTo();
+  transitionToNewKDE();
 };
 fundamental.buildBiasPlot = function(){
   // build plot with original kde
@@ -358,9 +407,24 @@ fundamental.buildBiasPlot = function(){
   let {margin, container, bodyHeight, bodyWidth} = config;
 
 
+  // add labels 
+  container.append('text')
+    .attr('class', 'fundamental-support-label fundamental-bias-label-old')
+    .attr("x", bodyWidth * 1/2)
+    .attr('y', 10)
+    .attr('text-anchor', 'middle')
+    .text('Unbiased')
+  container.append('text')
+    .attr('class', 'fundamental-support-label fundamental-bias-label-new')
+    .attr("x", bodyWidth * 2.5/4)
+    .attr('y', 10)
+    .attr('text-anchor', 'middle')
+    .text('Biased')
+    .style('opacity', 0)
+
   // calculate new kde by shifting the current kde
   let data = JSON.parse(JSON.stringify(fundamental.data.distribution)) // deep copy
-  data.forEach(d => d.x = +d.x + 15) // right shift
+  data.forEach(d => d.x = +d.x + 7) // right shift
 
   // duplicate current KDE
   container.select('.fundamental-kde')
@@ -374,35 +438,77 @@ fundamental.buildBiasPlot = function(){
   let densityNew = kde(epanechnikov(7), thresholds, data)
 
   // transitions to and fro new KDE
-  function transitionTo(){
+  let duration = 5000
+  function transitionToNewKDE(){
+    let stall = 1000
     container.select('.fundamental-kde') 
       .datum(densityNew)
       .transition()
-      .duration(5000)
+      .duration(duration)
+      .delay(stall)
       .attr('d', d3.line()
         .curve(d3.curveBasis)
         .x(d => xScale(d[0]))
         .y(d => yScale(d[1]))
       )
-      // .ease(d3.easeBounceOut) //https://github.com/d3/d3-ease
-      .on('end', transitionFrom)
+      // .ease(d3.easeQuadOut) //https://github.com/d3/d3-ease
+      .on('end', transitionToOldKDE)
+
+    // update labels
+    container.select('.fundamental-bias-label-old')
+      .transition()
+      .duration(duration)
+      .delay(stall)
+      .ease(d3.easeExpOut)
+      .style('opacity', 0)
+    container.select('.fundamental-bias-label-new')
+      .transition()
+      .duration(duration)
+      .delay(stall)
+      .ease(d3.easeExpIn)
+      .style('opacity', 1)
   }
-  function transitionFrom(){
+  function transitionToOldKDE(){
+    let stall = 3000
     // update KDE
     container.select('.fundamental-kde')
       .datum(densityOld)
       .transition()
-      .duration(5000)
+      .duration(duration)
+      .delay(stall)
       .attr('d', d3.line()
         .curve(d3.curveBasis)
         .x(d => xScale(d[0]))
         .y(d => yScale(d[1]))
       )
-      .on('end', transitionTo)
+      // .ease(d3.easeQuadInOut) //https://github.com/d3/d3-ease
+      .on('end', transitionToNewKDE)
 
-    // update label
+    // update labels
+    container.select('.fundamental-bias-label-old')
+      .transition()
+      .duration(duration)
+      .delay(stall)
+      .ease(d3.easeExpIn)
+      .style('opacity', 1)
+    container.select('.fundamental-bias-label-new')
+      .transition()
+      .duration(duration)
+      .delay(stall)
+      .ease(d3.easeExpOut)
+      .style('opacity', 0)
   }
 
   // initialize transition
-  transitionTo()
+  transitionToNewKDE()
 };
+fundamental.buildSupportPlots = function(){
+
+  // remove old plots
+  d3.selectAll('#fundamental-plot-efficiency > svg').remove()
+  d3.selectAll('#fundamental-plot-bias > svg').remove()
+
+  // build new plots
+  fundamental.buildEfficiencyPlot();
+  fundamental.buildBiasPlot();
+}
