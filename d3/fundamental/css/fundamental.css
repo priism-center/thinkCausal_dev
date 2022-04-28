@@ -57,6 +57,12 @@ body {
   stroke-width: 0.15em;
 }
 
+.fundamental-support-label {
+  /* font-weight: 300; */
+  font-size:0.9rem;
+  fill: rgb(95, 95, 95);
+}
+
 .line-dashed {
   stroke-dasharray: 4, 8;
   stroke-width: 1em;
