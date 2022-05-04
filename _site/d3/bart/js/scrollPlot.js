@@ -6,6 +6,8 @@ bart.scrollytellState1 = function(){
     // resets
     container.selectAll('.bart-lines').style('display', 'none');
     container.selectAll('.bart-observations').style('opacity', null)
+    bart.verticalLine.style('display', 'none')
+    container.select('.bart-hoverRect').attr('pointer-events', 'none')
 
     // clearTimeout(bart.timeoutStudyText)
 
@@ -24,12 +26,13 @@ bart.scrollytellState2 = function(){
     console.log('bartState2')
 
     // de-emphasize points
-    container.selectAll('.bart-observations').style('opacity', 0.3)
+    container.selectAll('.bart-observations').style('opacity', 0.2)
 
     // emphasize lines
     container.selectAll('.bart-lines').style('display', 'none');
     container.selectAll('.bart-lines-diffFit0, .bart-lines-diffFit1')
         .style('display', null);
+    container.select('.bart-hoverRect').attr('pointer-events', 'all')
 
     // adjust data for vertical line
     d3.map(bart.data.fits, x => { x.scroll0 = x.diffFit0 } )
@@ -51,7 +54,7 @@ bart.scrollytellState3 = function(){
         .style('display', null);
 
     // de-emphasize points
-    container.selectAll('.bart-observations').style('opacity', 0.3)
+    container.selectAll('.bart-observations').style('opacity', 0.2)
 
     // adjust data for vertical line
     d3.map(bart.data.fits, x => { x.scroll0 = x.lmFit0 } )
@@ -73,14 +76,14 @@ bart.scrollytellState4 = function(){
         .style('display', null);
 
     // de-emphasize points
-    container.selectAll('.bart-observations').style('opacity', 0.3)
+    container.selectAll('.bart-observations').style('opacity', 0.2)
 
     // adjust data for vertical line
     d3.map(bart.data.fits, x => { x.scroll0 = x.bartFit0 } )
     d3.map(bart.data.fits, x => { x.scroll1 = x.bartFit1 } )
 
     // adjust subtitle
-    container.select('.bart-subtitle').text('BART')
+    container.select('.bart-subtitle').text('Bayesian Additive Regression Trees (BART)')
         
     bart.emphasizeText("#bart-trigger-4, #bart-trigger-4 + p")
 }

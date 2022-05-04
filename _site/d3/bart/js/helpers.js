@@ -16,6 +16,7 @@ bart.roundNumber = function(num, dec){
 }
 
 bart.emphasizeText = function(selectors){
+  // de-emphasize this text
   d3.selectAll(".bart-text-along-d3 > p, .bart-text-along-d3 > h2")
       .style('filter', 'opacity(0.2)')
   // emphasize this text
@@ -36,6 +37,8 @@ bart.addLines = function(container, data, y0, y1, scales){
   let {xScale, yScale, colorScale} = scales
   let class0 = "bart-lines bart-lines-" + y0
   let class1 = "bart-lines bart-lines-" + y1
+
+  // add y0 line
   container.append('path')
     .datum(data.fits)
     .attr('d', d3.line()
@@ -46,7 +49,8 @@ bart.addLines = function(container, data, y0, y1, scales){
     .style("stroke", colorScale('0'))
     .style('fill', 'none')
     .attr('class', class0)
-  // .style('display', 'none')
+
+  // add y1 line
   container.append('path')
     .datum(data.fits)
     .attr('d', d3.line()
@@ -57,17 +61,18 @@ bart.addLines = function(container, data, y0, y1, scales){
     .style("stroke", colorScale('1'))
     .style('fill', 'none')
     .attr('class', class1)
-    // .style('display', 'none')
 }
 
 bart.addTitle = function(container){
-  // add title and subtitle
+  // add title
   container
     .append('text')
     .attr('x', 0)
     .attr('y', -35)
     .text('Heterogeneous treatment effect')
     .attr('class', 'bart-title')
+  
+  // add subtitle
   container
     .append('text')
     .attr('x', 0)

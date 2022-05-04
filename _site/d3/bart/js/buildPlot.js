@@ -1,9 +1,8 @@
 
-
 bart.getConfig = function(selector) {
-  let width = 540; //900px is width of learning article * 0.6
-  let height = 400;
-  let margin = {
+  const width = 540; //900px is width of learning article * 0.6
+  const height = 400;
+  const margin = {
       top: 50,
       bottom: 80,
       left: 60,
@@ -11,11 +10,11 @@ bart.getConfig = function(selector) {
   }
 
   // the body is the area that will be occupied by the plot
-  let bodyHeight = height - margin.top - margin.bottom;
-  let bodyWidth = width - margin.left - margin.right;
+  const bodyHeight = height - margin.top - margin.bottom;
+  const bodyWidth = width - margin.left - margin.right;
 
   // the container is the SVG where we will draw the plot
-  let container = d3.select(selector)
+  const container = d3.select(selector)
     .append("svg")
       .attr("class", "plot")
       .attr("preserveAspectRatio", "xMinYMin meet")
@@ -28,35 +27,35 @@ bart.getConfig = function(selector) {
 }
 
 bart.getScales = function(data, config) {
- let { bodyWidth, bodyHeight, container } = config;
- let maxX = d3.max(data.observations, d => +d.caloriesConsumed);
- let minX = d3.min(data.observations, d => +d.caloriesConsumed);
- let maxY = d3.max(data.observations, d => +d.runningTime);
- let minY = d3.min(data.observations, d => +d.runningTime);
- let padding = (maxX - minX) * 0.075
+  const { bodyWidth, bodyHeight, container } = config;
+  const maxX = d3.max(data.observations, d => +d.caloriesConsumed);
+  const minX = d3.min(data.observations, d => +d.caloriesConsumed);
+  const maxY = d3.max(data.observations, d => +d.runningTime);
+  const minY = d3.min(data.observations, d => +d.runningTime);
+  const padding = (maxX - minX) * 0.075
 
- let xScale = d3.scaleLinear()
+  const xScale = d3.scaleLinear()
     .domain([minX - padding, maxX + padding])
     .range([0, bodyWidth])
- let yScale = d3.scaleLinear()
+  const yScale = d3.scaleLinear()
     .domain([minY - padding, maxY + padding]) 
     .range([bodyHeight, 0])
 
-let colorScale = d3.scaleOrdinal()
-  .domain(["0", "1"])
-  .range(["#21918c", "#440154"])
+  const colorScale = d3.scaleOrdinal()
+    .domain(["0", "1"])
+    .range(["#21918c", "#440154"])
 
  return {xScale, yScale, colorScale}
 }
 
 bart.drawPlot = function(data, scales, config){
-  let {width, height, margin, container, bodyHeight, bodyWidth} = config;
-  let {xScale, yScale, colorScale} = scales
+  const {width, height, margin, container, bodyHeight, bodyWidth} = config;
+  const {xScale, yScale, colorScale} = scales
   console.log('Data into bart.drawPlot():', data)
 
 
   // add X axis
-  let xAxis = d3.axisBottom(xScale).tickSize(-bodyHeight)
+  const xAxis = d3.axisBottom(xScale).tickSize(-bodyHeight)
   container.append("g")
     .attr('class', "bart-axis bart-xAxis")
     .attr("transform", "translate(0," + bodyHeight + ")")
@@ -69,7 +68,7 @@ bart.drawPlot = function(data, scales, config){
     .text("Calories consumed")
 
   // add Y axis
-  let yAxis = d3.axisLeft(yScale).tickSize(-bodyWidth)
+  const yAxis = d3.axisLeft(yScale).tickSize(-bodyWidth)
   container.append("g")
     .attr('class', "bart-axis bart-yAxis")
     .call(yAxis);
@@ -82,10 +81,10 @@ bart.drawPlot = function(data, scales, config){
     .text("Running time (seconds)");
 
   // draw observations scatter
-  let pointOpacity = 0.8
-  let pointRadius = 5.5
-  let strokeColor = '#fff'
-  let strokeWidth = 0.8
+  const pointOpacity = 0.8
+  const pointRadius = 5.5
+  const strokeColor = '#fff'
+  const strokeWidth = 0.8
   container.append('g')
     .selectAll("bart-observations")
     .data(data.observations)
@@ -113,48 +112,45 @@ bart.drawPlot = function(data, scales, config){
   bart.addLegend(container, scales, config)
 
   // add vertical line
-  // TODO: change this from div to slider?
-  bart.verticalLine = d3.select('#bart-plot')
-    .append("div")
-    .style("position", "absolute")
-    .style("z-index", "19")
-    .style("width", "2px")    
-    .style("background", "#696969" )
+  bart.verticalLine = container
+    .append('line')
     .attr('class', 'bart-verticalLine')
+  
+  // add tooltip
+  bart.tooltip = d3.select('body') //select("#bart-plot") //container
+    .append("div")
+    .style("display", 'none')
+    .attr("class", "bart-tooltip")
 
   // add rect to hold mouse event that updates the vertical line
-  d3.select('#bart-plot > svg > g')
+  container
     .append('rect')
     .style("fill", "none")
-    .style("pointer-events", "all")
+    .attr("pointer-events", "all")
     .style("z-index", "200")
     .attr('width', bodyWidth)
     .attr('height', bodyHeight)
-    .on("mousemove", onMouseMove)
-    // .on("mouseover", onMouseMove)
+    .on("mousemove", bart.onMouseMove)
+    // .on("mouseover", bart.onMouseMove)
+    .on('mouseleave', function(){
+      bart.verticalLine.style('display', 'none')
+      bart.tooltip.style('display', 'none')
+    })
+    .attr('class', 'bart-hoverRect');
 }
 
-// intialize plot
-bart.showData = function(data) {
-
-    // initialize plot
-    let config = bart.getConfig("#bart-plot");
-    bart.config = config;
-    let scales = bart.getScales(data, config);
-    bart.scales = scales;
-    bart.drawPlot(data, scales, config);
-}
-
-
-function onMouseMove() {
+bart.onMouseMove = function() {
   const { xScale, yScale } = bart.scales;
-  let { margin, height, bodyHeight } = bart.config;
 
   // get mouse location and limit to range
   let mouseX = d3.mouse(this)[0];
-  mouseX = Math.min(Math.max(parseInt(mouseX), 30), 440); // not sure where these values come from
+  const mouseRange = [
+    xScale(d3.min(bart.data.observations, d => d.caloriesConsumed)),
+    xScale(d3.max(bart.data.observations, d => d.caloriesConsumed))
+  ]
+  mouseX = Math.min(Math.max(parseInt(mouseX), mouseRange[0]), mouseRange[1]); 
 
-  // recover coordinate we need
+  // recover coordinate from the fitted line
   const data = Array.from(bart.data.fits, d => d.caloriesConsumed);
   const x0 = xScale.invert(mouseX);
   const bisect = d3.bisector(function(d) { return d; }).left
@@ -165,14 +161,33 @@ function onMouseMove() {
   // console.log(selectedData)
 
   // get pixel locations
-  // TODO: make this reactive to scroll
-  // const closestYBottomPx = yScale(selectedData.bartFit1)
-  // const closestYTopPx = yScale(selectedData.bartFit0)
   const closestYBottomPx = yScale(selectedData.scroll1)
   const closestYTopPx = yScale(selectedData.scroll0)
   
   // update vertical line position
-  bart.verticalLine.style("left", mouseX + margin.left + "px" )
-  bart.verticalLine.style("bottom", (height - closestYBottomPx - margin.top - 4) + "px" )
-  bart.verticalLine.style("top", (closestYTopPx + margin.top + 21) + "px" )
+  bart.verticalLine
+    .attr('x1', mouseX)
+    .attr('x2', mouseX)
+    .attr('y1', closestYBottomPx)
+    .attr('y2', closestYTopPx)
+    .style('display', null)
+
+  // tooltip (TODO: issue with positioning; convert to d3 shape instead of div?)
+  const ICE = bart.roundNumber(selectedData.scroll0 - selectedData.scroll1, 1)
+  let ATE = d3.mean(bart.data.fits, d => d.scroll0) - d3.mean(bart.data.fits, d => d.scroll1)
+  ATE = bart.roundNumber(ATE, 1)
+  bart.tooltip
+    .style('display', null)
+    .html(`<p style='font-weight: 500'>Average treatment effect: ${ATE}<br>Individual causal effect: ${ICE}`)
+    .style("left", (d3.event.pageX + 20) + "px")
+    .style("top", (d3.event.pageY + 5) + "px")
+}
+
+// initialize plot
+bart.showData = function(data) {
+  const config = bart.getConfig("#bart-plot");
+  bart.config = config;
+  const scales = bart.getScales(data, config);
+  bart.scales = scales;
+  bart.drawPlot(data, scales, config);
 }

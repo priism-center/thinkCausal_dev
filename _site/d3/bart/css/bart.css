@@ -75,23 +75,9 @@ body {
 }
 
 .bart-verticalLine {
-}
-
-.line-dashed {
-  stroke-dasharray: 4, 8;
-  stroke-width: 1em;
-}
-
-.tooltip {
-  font-size: 0.8em;
-  background-color: white;
-  border: solid #394E48;
-  border-width: 2px;
-  border-radius: 2px;
-  padding: 0.5rem 0.5rem 0.3rem 0.5rem;
-  text-align: left;
-  position: absolute;
-  color: #666666;
+  stroke: #232323;
+  stroke-dasharray: 6, 6;
+  stroke-width: 2px;
 }
 
 .bart-axis > path {
@@ -124,6 +110,19 @@ body {
 .bart-legend > text {
   fill: #666666;
   font-size: 0.65em;
+}
+
+.bart-tooltip {
+  width: 180px;
+  font-size: 0.8em;
+  background-color: white;
+  border: solid #394E48;
+  border-width: 2px;
+  border-radius: 2px;
+  padding: 0.01rem 0.7rem 0.01rem 0.7rem;
+  text-align: left;
+  position: absolute;
+  color: #666666;
 }
 
 /* button {
