@@ -51,7 +51,7 @@ bart.getScales = function(data, config) {
 bart.drawPlot = function(data, scales, config){
   const {width, height, margin, container, bodyHeight, bodyWidth} = config;
   const {xScale, yScale, colorScale} = scales
-  console.log('Data into bart.drawPlot():', data)
+  // console.log('Data into bart.drawPlot():', data)
 
 
   // add X axis
@@ -81,10 +81,6 @@ bart.drawPlot = function(data, scales, config){
     .text("Running time (seconds)");
 
   // draw observations scatter
-  const pointOpacity = 0.8
-  const pointRadius = 5.5
-  const strokeColor = '#fff'
-  const strokeWidth = 0.8
   container.append('g')
     .selectAll("bart-observations")
     .data(data.observations)
@@ -92,11 +88,11 @@ bart.drawPlot = function(data, scales, config){
     .append("circle")
       .attr("cx", d => xScale(d.caloriesConsumed))
       .attr("cy", d => yScale(d.runningTime))
-      .attr("r", pointRadius)
-      .style('opacity', pointOpacity)
+      .attr("r", 5.5)
+      .style('opacity', 0.8)
       .style('fill', d => colorScale(d.z))
-      .style('stroke', strokeColor)
-      .style('stroke-width', strokeWidth)
+      .style('stroke', "#fff")
+      .style('stroke-width', 0.8)
       .attr('class', 'bart-observations')
 
 
@@ -117,12 +113,12 @@ bart.drawPlot = function(data, scales, config){
     .attr('class', 'bart-verticalLine')
   
   // add tooltip
-  bart.tooltip = d3.select('body') //select("#bart-plot") //container
+  bart.tooltip = d3.select("#bart-plot")
     .append("div")
     .style("display", 'none')
     .attr("class", "bart-tooltip")
 
-  // add rect to hold mouse event that updates the vertical line
+  // add rect to hold mouse event that updates the vertical line and tooltip
   container
     .append('rect')
     .style("fill", "none")
@@ -131,7 +127,6 @@ bart.drawPlot = function(data, scales, config){
     .attr('width', bodyWidth)
     .attr('height', bodyHeight)
     .on("mousemove", bart.onMouseMove)
-    // .on("mouseover", bart.onMouseMove)
     .on('mouseleave', function(){
       bart.verticalLine.style('display', 'none')
       bart.tooltip.style('display', 'none')
@@ -158,29 +153,24 @@ bart.onMouseMove = function() {
 
   // get the closest data point
   const selectedData = bart.data.fits[i-1]
-  // console.log(selectedData)
-
-  // get pixel locations
-  const closestYBottomPx = yScale(selectedData.scroll1)
-  const closestYTopPx = yScale(selectedData.scroll0)
   
   // update vertical line position
   bart.verticalLine
     .attr('x1', mouseX)
     .attr('x2', mouseX)
-    .attr('y1', closestYBottomPx)
-    .attr('y2', closestYTopPx)
+    .attr('y1', yScale(selectedData.scroll0))
+    .attr('y2', yScale(selectedData.scroll1))
     .style('display', null)
 
-  // tooltip (TODO: issue with positioning; convert to d3 shape instead of div?)
-  const ICE = bart.roundNumber(selectedData.scroll0 - selectedData.scroll1, 1)
-  let ATE = d3.mean(bart.data.fits, d => d.scroll0) - d3.mean(bart.data.fits, d => d.scroll1)
+  // update tooltip
+  const ICE = bart.roundNumber(selectedData.scroll1 - selectedData.scroll0, 1)
+  let ATE = d3.mean(bart.data.fits, d => d.scroll1) - d3.mean(bart.data.fits, d => d.scroll0)
   ATE = bart.roundNumber(ATE, 1)
   bart.tooltip
     .style('display', null)
     .html(`<p style='font-weight: 500'>Average treatment effect: ${ATE}<br>Individual causal effect: ${ICE}`)
-    .style("left", (d3.event.pageX + 20) + "px")
-    .style("top", (d3.event.pageY + 5) + "px")
+    .style("left", (d3.event.layerX + 20) + "px")
+    .style("top", (d3.event.layerY + 5) + "px")
 }
 
 // initialize plot

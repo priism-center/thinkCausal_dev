@@ -7,8 +7,12 @@ n <- 100
 calories_consumed <- runif(n, min = 0, max = 1000)
 z <- sample(c(0, 1), size = n, replace = TRUE)
 decreasing_fn <- function(x) (-x^(1/15) + 1 ) * 1000
-plot(decreasing_fn(1:1000))
-running_time <- 5000 + (z * decreasing_fn(calories_consumed)) + rnorm(n, mean = 0, sd = 50)
+u_fn <- function(x) ((x - 500) ^2 / 1000) - 500
+plot(u_fn(1:1000))
+running_time <- 5000 + (z * u_fn(calories_consumed)) + rnorm(n, mean = 0, sd = 50)
+
+# true ATE
+mean(u_fn(calories_consumed))
 
 .data <- tibble::tibble(
   z = z,
@@ -63,3 +67,8 @@ bartFit1 = colMeans(predict(bartEstimate, tibble(zz = 1, caloriesConsumed = calo
 
 # readr::write_csv(.data, 'd3/bart/data/observations.csv')
 # readr::write_csv(.data_fitted, 'd3/bart/data/fits.csv')
+
+# plotBart::plot_moderator_c_pd(bartEstimate, .data$caloriesConsumed)
+# plotBart::plot_CATE(bartEstimate)
+# plotBart::plot_ICATE(bartEstimate, nbins = 15)
+# plotBart::plot_moderator_search(bartEstimate)

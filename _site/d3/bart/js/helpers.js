@@ -69,7 +69,7 @@ bart.addTitle = function(container){
     .append('text')
     .attr('x', 0)
     .attr('y', -35)
-    .text('Heterogeneous treatment effect')
+    .text('Heterogeneous treatment effects')
     .attr('class', 'bart-title')
   
   // add subtitle
@@ -113,4 +113,18 @@ bart.addLegend = function(container, scales, config){
     .text("Treatment")
     .attr("alignment-baseline","middle")
     .attr('class', 'bart-legend-text')
+}
+
+bart.updatePointerOnScroll = function(container, dataSelector){
+    
+  // enable pointer events
+  container.select('.bart-hoverRect').attr('pointer-events', 'all')
+
+  // turn off line and tooltip (briefly, so it resets)
+  bart.verticalLine.style('display', 'none')
+  bart.tooltip.style('display', 'none')
+  
+  // adjust data for vertical line
+  d3.map(bart.data.fits, x => { x.scroll0 = x[dataSelector + "Fit0"] } )
+  d3.map(bart.data.fits, x => { x.scroll1 = x[dataSelector + "Fit1"] } )
 }

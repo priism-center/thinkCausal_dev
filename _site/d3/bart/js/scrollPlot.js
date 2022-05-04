@@ -1,7 +1,7 @@
 // scrollytell
 bart.scrollytellState1 = function(){
     let container = bart.config.container
-    console.log('bartState1')
+    // console.log('bartState1')
 
     // resets
     container.selectAll('.bart-lines').style('display', 'none');
@@ -11,9 +11,8 @@ bart.scrollytellState1 = function(){
 
     // clearTimeout(bart.timeoutStudyText)
 
-    // adjust data for vertical line (remove line)
-    d3.map(bart.data.fits, x => { x.scroll0 = 100000 } )
-    d3.map(bart.data.fits, x => { x.scroll1 = 100000 } )
+    // remove vertical line
+    bart.verticalLine.style('display', 'none')
 
     // adjust subtitle
     container.select('.bart-subtitle').text(null)
@@ -23,7 +22,7 @@ bart.scrollytellState1 = function(){
 
 bart.scrollytellState2 = function(){
     let container = bart.config.container
-    console.log('bartState2')
+    // console.log('bartState2')
 
     // de-emphasize points
     container.selectAll('.bart-observations').style('opacity', 0.2)
@@ -32,11 +31,9 @@ bart.scrollytellState2 = function(){
     container.selectAll('.bart-lines').style('display', 'none');
     container.selectAll('.bart-lines-diffFit0, .bart-lines-diffFit1')
         .style('display', null);
-    container.select('.bart-hoverRect').attr('pointer-events', 'all')
 
-    // adjust data for vertical line
-    d3.map(bart.data.fits, x => { x.scroll0 = x.diffFit0 } )
-    d3.map(bart.data.fits, x => { x.scroll1 = x.diffFit1 } )
+    // update vertical line
+    bart.updatePointerOnScroll(container, 'diff')
 
     // adjust subtitle
     container.select('.bart-subtitle').text('Difference in means')
@@ -46,7 +43,7 @@ bart.scrollytellState2 = function(){
 
 bart.scrollytellState3 = function(){
     let container = bart.config.container
-    console.log('bartState3')
+    // console.log('bartState3')
 
     // resets
     container.selectAll('.bart-lines').style('display', 'none');
@@ -56,9 +53,8 @@ bart.scrollytellState3 = function(){
     // de-emphasize points
     container.selectAll('.bart-observations').style('opacity', 0.2)
 
-    // adjust data for vertical line
-    d3.map(bart.data.fits, x => { x.scroll0 = x.lmFit0 } )
-    d3.map(bart.data.fits, x => { x.scroll1 = x.lmFit1 } )
+    // update vertical line
+    bart.updatePointerOnScroll(container, 'lm')
 
     // adjust subtitle
     container.select('.bart-subtitle').text('Linear regression')
@@ -68,7 +64,7 @@ bart.scrollytellState3 = function(){
 
 bart.scrollytellState4 = function(){
     let container = bart.config.container
-    console.log('bartState4')
+    // console.log('bartState4')
 
     // resets
     container.selectAll('.bart-lines').style('display', 'none');
@@ -78,9 +74,8 @@ bart.scrollytellState4 = function(){
     // de-emphasize points
     container.selectAll('.bart-observations').style('opacity', 0.2)
 
-    // adjust data for vertical line
-    d3.map(bart.data.fits, x => { x.scroll0 = x.bartFit0 } )
-    d3.map(bart.data.fits, x => { x.scroll1 = x.bartFit1 } )
+    // update vertical line
+    bart.updatePointerOnScroll(container, 'bart')
 
     // adjust subtitle
     container.select('.bart-subtitle').text('Bayesian Additive Regression Trees (BART)')
