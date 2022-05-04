@@ -32,7 +32,8 @@ bartEstimate <- bartCause::bartc(
         seed = 2
       )
 
-caloriesConsumedTest <- seq(0, 1000, length.out = n);
+# TODO: replace this with original data?
+caloriesConsumedTest <- seq(0, 1000, length.out = 1000);
 lmFit0 <- predict(regEstimate, newdata = tibble(z = 0, caloriesConsumed = caloriesConsumedTest));
 lmFit1 <- predict(regEstimate, newdata = tibble(z = 1, caloriesConsumed = caloriesConsumedTest));
 bartFit0 = colMeans(predict(bartEstimate, tibble(zz = 0, caloriesConsumed = caloriesConsumedTest)));
@@ -60,4 +61,5 @@ bartFit1 = colMeans(predict(bartEstimate, tibble(zz = 1, caloriesConsumed = calo
     color = 'Model')
   
 
-# readr::write_csv(.dataLines, '../_site/d3/pairing/data/line-data.csv')
+# readr::write_csv(.data, 'd3/bart/data/observations.csv')
+# readr::write_csv(.data_fitted, 'd3/bart/data/fits.csv')

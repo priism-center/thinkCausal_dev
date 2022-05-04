@@ -1,7 +1,20 @@
 
-fundamental.init = function(){
-  fundamental.showData();
-  fundamental.scrollytellState1();
-  fundamental.buildSupportPlots();
+bart.init = function(data){
+  bart.showData(data);
+  bart.scrollytellState1();
 }
-fundamental.init()
+
+bart.loadData = function(){
+  return Promise.all([
+      d3.csv("data/observations.csv"),
+      d3.csv("data/fits.csv"),
+  ]).then(datasets => {
+      bart.data = {},
+      bart.data.observations = datasets[0];
+      bart.data.fits = datasets[1];
+      console.log("Loaded bart data:", bart.data)
+      return bart.data;
+  })
+}
+
+bart.loadData().then(bart.init)

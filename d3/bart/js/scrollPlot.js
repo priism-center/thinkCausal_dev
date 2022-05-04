@@ -1,168 +1,101 @@
 // scrollytell
-// these animation states are kind of a mess
-// TODO: would a state machine work? https://bl.ocks.org/bricof/aff127297d7453ef18459cf52050ed6d
-fundamental.scrollytellState1 = function(){
-    console.log('fundamentalState1')
-
-    fundamental.killAnimations()
+bart.scrollytellState1 = function(){
+    let container = bart.config.container
+    console.log('bartState1')
 
     // resets
-    d3.selectAll(".fundamental-studyLine, .fundamental-rugLines")
-        .style('display', 'none')
-    // d3.selectAll(".trueMeanLineLabel")
-    //     .style('display', null)
-    fundamental.changeStudyText(true)
-    clearTimeout(fundamental.timeoutStudyText)
+    container.selectAll('.bart-lines').style('display', 'none');
+    container.selectAll('.bart-observations').style('opacity', null)
 
-    // remove trueMean label
-    d3.selectAll('.fundamental-studyLineLabel')
-        .style('display', 'none')
+    // clearTimeout(bart.timeoutStudyText)
 
-    fundamental.emphasizeText("#fundamental-trigger-1, #fundamental-trigger-1 + p")
+    // adjust data for vertical line (remove line)
+    d3.map(bart.data.fits, x => { x.scroll0 = 100000 } )
+    d3.map(bart.data.fits, x => { x.scroll1 = 100000 } )
+
+    // adjust subtitle
+    container.select('.bart-subtitle').text(null)
+
+    bart.emphasizeText("#bart-trigger-1, #bart-trigger-1 + p")
 }
 
-fundamental.scrollytellState2 = function(){
-    console.log('fundamentalState2')
+bart.scrollytellState2 = function(){
+    let container = bart.config.container
+    console.log('bartState2')
 
-    fundamental.killAnimations()
+    // de-emphasize points
+    container.selectAll('.bart-observations').style('opacity', 0.3)
 
-    // resets
-    d3.selectAll(".fundamental-rugLines, .fundamental-sampleMeanLine")
-        .transition('fade-in')
-        .transition('final-state')
-        .style('display', 'none')
-    
-    // remove labels
-    d3.selectAll('.fundamental-trueMeanLineLabel, .fundamental-firstRepeatedStudyLabel')
-        .transition()
-        .style('display', 'none')
-    
-    // kill kde
-    fundamental.killkdeAnimations()
-    d3.select('#fundamental-plot').selectAll('.fundamental-kdeLabel, .fundamental-kde').remove()
+    // emphasize lines
+    container.selectAll('.bart-lines').style('display', 'none');
+    container.selectAll('.bart-lines-diffFit0, .bart-lines-diffFit1')
+        .style('display', null);
 
-    // update the ATE text in the paragraph
-    let delay = 700
-    fundamental.timeoutStudyText = setTimeout(fundamental.changeStudyText, delay, false)
-    
-    // make sure trueMean and studyLine are displayed
-    d3.selectAll(".fundamental-trueMeanLine, .fundamental-studyLine, .fundamental-studyLineLabel")
-        .style('display', null)
-    d3.selectAll(".fundamental-studyLine")
-        .style('opacity', 0)
-        .transition()
-        .delay(delay) // ensures axis animation is finished
-        .duration(1000)
-        .style('opacity', 1)
+    // adjust data for vertical line
+    d3.map(bart.data.fits, x => { x.scroll0 = x.diffFit0 } )
+    d3.map(bart.data.fits, x => { x.scroll1 = x.diffFit1 } )
 
-    fundamental.emphasizeText("#fundamental-trigger-2, #fundamental-trigger-2 + p")
+    // adjust subtitle
+    container.select('.bart-subtitle').text('Difference in means')
+
+    bart.emphasizeText("#bart-trigger-2, #bart-trigger-2 + p")
 }
 
-fundamental.scrollytellState3 = function(){
-    console.log('fundamentalState3')
-
-    fundamental.killAnimations()
-    let container = d3.select('#fundamental-plot > svg > g')
-    let {xScale, yScale} = fundamental.scales
-    let delayFn = fundamental.delayFn
+bart.scrollytellState3 = function(){
+    let container = bart.config.container
+    console.log('bartState3')
 
     // resets
-    d3.select('#fundamental-plot').selectAll(".fundamental-rugLines, .fundamental-kde").style('display', 'none')
-    clearTimeout(fundamental.timeoutStudyText)
+    container.selectAll('.bart-lines').style('display', 'none');
+    container.selectAll('.bart-lines-lmFit0, .bart-lines-lmFit1')
+        .style('display', null);
 
-    // remove study line label
-    d3.selectAll('.fundamental-studyLineLabel, .fundamental-kdeLabel')
-        .style('display', 'none')
+    // de-emphasize points
+    container.selectAll('.bart-observations').style('opacity', 0.3)
 
-    // make sure trueMean, studyLine, and rugLines are displayed
-    d3.selectAll(".fundamental-trueMeanLine, .fundamental-studyLine")
-        .style('display', null)
-    
-    // add new study text and then remove it
-    container.append('text')
-        .attr('class', 'fundamental-firstRepeatedStudyLabel')
-        .attr('x', xScale(+fundamental.data.distribution[0].x))
-        .attr('y', yScale(0.005*1.1))
-        .text('A repeated study')
-        .attr('opacity', 0)
-        .transition()
-        .duration(500)
-        .attr('opacity', 1)
-        .transition()
-        .delay(delayFn(fundamental.data.distribution[1].index) - 600)
-        .style('opacity', 0)
-        .remove()
-    
-    // animate rugLines
-    d3.selectAll(".fundamental-rugLines")
-        .transition('fade-in')
-        .delay(d => delayFn(d.index))
-        .style('display', null)
-        .style('opacity', 1)
-        .style('stroke-width', 2)
-        .style('stroke', 'black')
-    d3.selectAll(".fundamental-rugLines")
-        .transition('final-state')
-        .duration(400)
-        .delay(d => delayFn(d.index + 1) + 100)
-        .style('opacity', 0.1)
-        .style('stroke-width', 1)
-        .style('stroke', '#525252')
-    
-    // animate kde
-    fundamental.data.distribution.map(function(d){
-        // plot kde for every other index (for performance)
-        let headstart = 100
-        if (d.index % 2 == 0){
-            fundamental.timeouts.push(setTimeout(fundamental.drawKDE, delayFn(d.index) - headstart, '#fundamental-plot > svg > g', d.index))
-        }
-    })
+    // adjust data for vertical line
+    d3.map(bart.data.fits, x => { x.scroll0 = x.lmFit0 } )
+    d3.map(bart.data.fits, x => { x.scroll1 = x.lmFit1 } )
 
-    // add final label
-    let lag = 2000
-    let n = fundamental.data.distribution.length
-    container.append('text')
-        .attr('class', 'fundamental-kdeLabel')
-        .attr('x', 0)
-        .attr('y', 0)
-        .text(`Distribution of ${n.toLocaleString("en-US")} repeated studies`)
-        .style('opacity', 0)
-        .transition()
-        .delay(delayFn(n) + lag)
-        .duration(2000)
-        .style('opacity', 1)
-    
-    // fade out rugLines
-    d3.selectAll(".fundamental-rugLines")
-        .transition('fade-out')
-        .delay(delayFn(n) + lag)
-        .duration(2000)
-        .style('opacity', 0.01)
-
-    // add mean line
-    // d3.selectAll(".sampleMeanLine")
-    //     .style('opacity', 0)
-    //     .transition('fade-out')
-    //     .delay(delayFn(n) + lag + 2000)
-    //     .duration(2000)
-    //     .style('opacity', 0.8)
-    //     .style('display', null)
-    //     .attr('y2', yScale(fundamental.data.kdeHeight))
-
+    // adjust subtitle
+    container.select('.bart-subtitle').text('Linear regression')
         
-    fundamental.emphasizeText("#fundamental-trigger-3, #fundamental-trigger-3 + p, #fundamental-trigger-3 + p + p")
+    bart.emphasizeText("#bart-trigger-3, #bart-trigger-3 + p, #bart-trigger-3 + p + p")
 }
 
-fundamental.plotState = 1
-fundamental.triggerScrollytellAnimation = function(){
+bart.scrollytellState4 = function(){
+    let container = bart.config.container
+    console.log('bartState4')
+
+    // resets
+    container.selectAll('.bart-lines').style('display', 'none');
+    container.selectAll('.bart-lines-bartFit0, .bart-lines-bartFit1')
+        .style('display', null);
+
+    // de-emphasize points
+    container.selectAll('.bart-observations').style('opacity', 0.3)
+
+    // adjust data for vertical line
+    d3.map(bart.data.fits, x => { x.scroll0 = x.bartFit0 } )
+    d3.map(bart.data.fits, x => { x.scroll1 = x.bartFit1 } )
+
+    // adjust subtitle
+    container.select('.bart-subtitle').text('BART')
+        
+    bart.emphasizeText("#bart-trigger-4, #bart-trigger-4 + p")
+}
+
+bart.plotState = 1
+bart.triggerScrollytellAnimation = function(){
     // trigger the closest animation
 
     // get the positions of divs relative to the top of the viewport
-    let trigger1Pos = $('#fundamental-trigger-1')[0].getBoundingClientRect().top
-    let trigger2Pos = $('#fundamental-trigger-2')[0].getBoundingClientRect().top
-    let trigger3Pos = $('#fundamental-trigger-3')[0].getBoundingClientRect().top
-    let positions = [trigger1Pos, trigger2Pos, trigger3Pos]
-    let scrollyFns = [fundamental.scrollytellState1, fundamental.scrollytellState2, fundamental.scrollytellState3]
+    let trigger1Pos = $('#bart-trigger-1')[0].getBoundingClientRect().top
+    let trigger2Pos = $('#bart-trigger-2')[0].getBoundingClientRect().top
+    let trigger3Pos = $('#bart-trigger-3')[0].getBoundingClientRect().top
+    let trigger4Pos = $('#bart-trigger-4')[0].getBoundingClientRect().top
+    let positions = [trigger1Pos, trigger2Pos, trigger3Pos, trigger4Pos]
+    let scrollyFns = [bart.scrollytellState1, bart.scrollytellState2, bart.scrollytellState3, bart.scrollytellState4]
 
     // make off page elements positive
     positions = positions.map(Math.abs)
@@ -172,11 +105,11 @@ fundamental.triggerScrollytellAnimation = function(){
     const index = positions.indexOf(minVal)
 
     // update plot if state changed
-    if (index != fundamental.plotState){
+    if (index != bart.plotState){
         scrollyFns[index]()
-        fundamental.plotState = index
+        bart.plotState = index
     }
 }
 
 // add listener
-document.addEventListener('scroll', fundamental.triggerScrollytellAnimation);
+document.addEventListener('scroll', bart.triggerScrollytellAnimation);

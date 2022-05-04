@@ -4,17 +4,17 @@
   justify-content: space-between;
 }
 
-.fundamental-text-along-d3,
-.fundamental-d3-container {
+.bart-text-along-d3,
+.bart-d3-container {
   background-color: #fff;
 }
 
-.fundamental-text-along-d3 {
+.bart-text-along-d3 {
   padding: 0px 50px 0 0;
   width: 35%;
 }
 
-.fundamental-d3-container {
+.bart-d3-container {
   width: 65%;
   height: 400px; /* should match height of d3 plot */
   position: -webkit-sticky;
@@ -25,42 +25,56 @@
 
 
 
-/*delete body and #fundamental-plot-container chunks when moving to shiny */
+/*delete body and #bart-plot-container chunks when moving to shiny */
 body {
   font-family: "Roboto", Helvetica, Arial, sans-serif;
   color: #666666;
   margin: 2em;
   line-height: 1.5em;
   /* background-color: #fff; */
-  max-width: 750px; /*same as learning container*/
+  max-width: 900px; /*same as learning container*/
 }
-/* #fundamental-plot-container {
+/* #bart-plot-container {
   max-width: 540px;
 } */
 
-#fundamental-study-text {
+#bart-study-text {
   background: rgb(196, 211, 255);
   padding: 0.2em 0.2em 0.1em 0.2em;
   border-radius: 0.3em;
   font-weight: 500;
 }
 
-.fundamental-slider-label {
+.bart-axis > path {
+  display: none;
+}
+
+.bart-axis .tick > line {
+  stroke: #e7e7e7;
+}
+
+.bart-legend-text {
+  font-size: 0.8em;
+  /* font-weight: 500; */
+}
+
+.bart-slider-label {
   font-weight: 500;
   font-size: 1.1rem;
   color: rgb(216, 65, 65);
 }
 
-.fundamental-trueMeanLine {
-  stroke-dasharray: 0.3em, 0.4em;
-  stroke: red;
-  stroke-width: 0.15em;
+.bart-lines {
+  stroke-width: 0.2rem;
 }
 
-.fundamental-support-label {
+.bart-support-label {
   /* font-weight: 300; */
   font-size:0.9rem;
   fill: rgb(95, 95, 95);
+}
+
+.bart-verticalLine {
 }
 
 .line-dashed {
@@ -80,29 +94,34 @@ body {
   color: #666666;
 }
 
-.fundamental-axis > path {
+.bart-axis > path {
   stroke: #b5b5b5;
 }
 
-.fundamental-axis > g > line {
+.bart-axis > g > line {
   stroke: #b5b5b5;
 }
 
-.fundamental-axis > g > text {
+.bart-axis > g > text {
   fill: #666666;
 }
 
-.fundamental-axisLabel {
+.bart-axisLabel {
   fill: #666666;
   font-size: 0.65em;
 }
 
-.fundamental-subtitle {
-  font-size: 1em;
+.bart-title {
+  font-size: 1.1em;
   fill: #666666;
 }
 
-.fundamental-legend > text {
+.bart-subtitle {
+  font-size: 0.9em;
+  fill: #a1a1a1;
+}
+
+.bart-legend > text {
   fill: #666666;
   font-size: 0.65em;
 }
