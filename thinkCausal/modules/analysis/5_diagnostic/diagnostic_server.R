@@ -156,7 +156,8 @@ server_diagnostic <- function(store, id, global_session){
           switch(
             req(input$analysis_diagnostics_tabs),
             "Trace plot" = 'diagnostic_trace_plot.png',
-            "Common support" = 'diagnostic_common_support_plot.png'
+            "Common support" = 'diagnostic_common_support_plot.png',
+            "Residual plot" = 'diagnostic_residual_plot.png'
           )
         },
         content = function(file) {
@@ -165,7 +166,8 @@ server_diagnostic <- function(store, id, global_session){
           active_plot <- switch(
             req(input$analysis_diagnostics_tabs),
             'Trace plot' = analysis_diagnostics_plot_trace(),
-            'Common support' = analysis_diagnostics_plot_support()
+            'Common support' = analysis_diagnostics_plot_support(),
+            "Residual plot" = analysis_diagnostics_plot_residual()
           )
           
           # write out plot
