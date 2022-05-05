@@ -33,6 +33,19 @@ ui_diagnostic <- function(store, id){
               br(),
               plotOutput(ns('analysis_diagnostics_plot_support'),
                          height = 600)
+            ),
+            tabPanel(
+              title = 'Residual plot',
+              br(),
+              selectInput(
+                inputId = ns("analysis_diagnostics_plot_residual_covariate"),
+                label = "By covariate: ",
+                multiple = FALSE,
+                choices = NULL,
+                selected = NULL
+              ),
+              plotOutput(ns('analysis_diagnostics_plot_residual'),
+                         height = 600)
             )
           )
         )

@@ -94,7 +94,7 @@ plot_residual_observed_predicted <- function(.model, covariate = NULL){
     }
   }
   p <- p + labs(x = "Predicted Y", y = "Observed Y") + 
-    theme_minimal() + theme(legend.position="bottom") 
+    theme_minimal() 
   return(p)
 }
 
@@ -112,7 +112,7 @@ plot_residual_observed_predicted <- function(.model, covariate = NULL){
 
 
 
-# plot densdity of residual (predicted y - observed y)
+# plot density of residual (predicted y - observed y)
 plot_residual_density <- function(.model, covariate = NULL){
   
   # ensure model is a of class bartcFit
@@ -153,7 +153,7 @@ plot_residual_density <- function(.model, covariate = NULL){
     }
   }
   p <- p + labs(x = "Residual", y = "Density") + 
-    theme_minimal() + theme(legend.position="bottom") 
+    theme_minimal()
   return(p)
 }
 
@@ -210,7 +210,7 @@ plot_residual_observed_residual <- function(.model, covariate = NULL){
   }
   p <- p + geom_hline(yintercept = 0) + 
     labs(x = "Observed Y", y = "Residual") + 
-    theme_minimal() + theme(legend.position="bottom") 
+    theme_minimal() 
   return(p)
 }
 
