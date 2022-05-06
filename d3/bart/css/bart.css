@@ -38,6 +38,11 @@ body {
   max-width: 540px;
 } */
 
+#bart-plot-posterior {
+  max-width: 630px; /*900px * 0.7*/
+  padding: 2em;
+}
+
 #bart-study-text {
   background: rgb(196, 211, 255);
   padding: 0.2em 0.2em 0.1em 0.2em;
@@ -109,7 +114,7 @@ body {
 
 .bart-legend > text {
   fill: #666666;
-  font-size: 0.65em;
+  font-size: 0.75em;
 }
 
 .bart-tooltip {
@@ -125,7 +130,7 @@ body {
   color: #666666;
 }
 
-/* button {
+button {
   width: 150px;
   max-width: 100%;
   background-color: #726078;
@@ -142,4 +147,4 @@ button:hover {
 }
 button:active {
   filter: brightness(0.7);
-} */
+}

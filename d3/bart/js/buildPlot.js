@@ -23,7 +23,7 @@ bart.getConfig = function(selector) {
       .attr("transform",
             `translate(${margin.left},${margin.top})`)
 
-  return {width, height, margin, bodyHeight, bodyWidth, container}
+  return {width, height, margin, bodyHeight, bodyWidth, container, selector}
 }
 
 bart.getScales = function(data, config) {
@@ -106,14 +106,21 @@ bart.drawPlot = function(data, scales, config){
 
   // add legend
   bart.addLegend(container, scales, config)
+}
+
+bart.drawMainPlot = function(data, scales, config){
+  const { width, height, margin, container, bodyHeight, bodyWidth, selector} = config;
+
+  // draw base plot
+  bart.drawPlot(data, scales, config);
 
   // add vertical line
-  bart.verticalLine = container
+  bart.verticalLine = config.container
     .append('line')
-    .attr('class', 'bart-verticalLine')
-  
+    .attr('class', 'bart-verticalLine')  
+
   // add tooltip
-  bart.tooltip = d3.select("#bart-plot")
+  bart.tooltip = d3.select(selector)
     .append("div")
     .style("display", 'none')
     .attr("class", "bart-tooltip")
@@ -123,7 +130,7 @@ bart.drawPlot = function(data, scales, config){
     .append('rect')
     .style("fill", "none")
     .attr("pointer-events", "all")
-    .style("z-index", "200")
+    .style("z-index", "2000")
     .attr('width', bodyWidth)
     .attr('height', bodyHeight)
     .on("mousemove", bart.onMouseMove)
@@ -134,50 +141,56 @@ bart.drawPlot = function(data, scales, config){
     .attr('class', 'bart-hoverRect');
 }
 
-bart.onMouseMove = function() {
-  const { xScale, yScale } = bart.scales;
+bart.drawPosteriorPlot = function(data, scales, config){
+  const { width, height, margin, container, bodyHeight, bodyWidth, selector} = config;
+  const {xScale, yScale, colorScale} = scales
 
-  // get mouse location and limit to range
-  let mouseX = d3.mouse(this)[0];
-  const mouseRange = [
-    xScale(d3.min(bart.data.observations, d => d.caloriesConsumed)),
-    xScale(d3.max(bart.data.observations, d => d.caloriesConsumed))
-  ]
-  mouseX = Math.min(Math.max(parseInt(mouseX), mouseRange[0]), mouseRange[1]); 
+  // draw base plot
+  bart.drawPlot(data, scales, config);
 
-  // recover coordinate from the fitted line
-  const data = Array.from(bart.data.fits, d => d.caloriesConsumed);
-  const x0 = xScale.invert(mouseX);
-  const bisect = d3.bisector(function(d) { return d; }).left
-  const i = bisect(data, x0, 1);
+  // remove everything but bart
+  const itemsToRemove = '.bart-lines-diffFit0, .bart-lines-diffFit1, .bart-lines-lmFit0, .bart-lines-lmFit1'
+  container.selectAll(itemsToRemove).remove()
 
-  // get the closest data point
-  const selectedData = bart.data.fits[i-1]
-  
-  // update vertical line position
-  bart.verticalLine
-    .attr('x1', mouseX)
-    .attr('x2', mouseX)
-    .attr('y1', yScale(selectedData.scroll0))
-    .attr('y2', yScale(selectedData.scroll1))
+  // de-emphasize points
+  container.selectAll('.bart-observations').style('opacity', 0.2)
+
+  // add subtitle
+  container.select('.bart-subtitle').text('Bayesian Additive Regression Trees (BART)')
+
+  // add static vertical line
+  const index = 840
+  const selectedData = bart.data.fits[index]
+  container.append('line')
+    .attr('class', 'bart-verticalLine')
+    .attr('x1', xScale(selectedData.caloriesConsumed))
+    .attr('x2', xScale(selectedData.caloriesConsumed))
+    .attr('y1', yScale(selectedData.bartFit0))
+    .attr('y2', yScale(selectedData.bartFit1))
     .style('display', null)
 
-  // update tooltip
-  const ICE = bart.roundNumber(selectedData.scroll1 - selectedData.scroll0, 1)
-  let ATE = d3.mean(bart.data.fits, d => d.scroll1) - d3.mean(bart.data.fits, d => d.scroll0)
-  ATE = bart.roundNumber(ATE, 1)
-  bart.tooltip
-    .style('display', null)
-    .html(`<p style='font-weight: 500'>Average treatment effect: ${ATE}<br>Individual causal effect: ${ICE}`)
-    .style("left", (d3.event.layerX + 20) + "px")
-    .style("top", (d3.event.layerY + 5) + "px")
+  // extend viewbox
+  const newHeight = 600
+  const newWidth = 540
+  d3.selectAll(`${selector} > svg`)
+      .attr('viewBox', '0 0 ' + newWidth + ' ' + newHeight)
 }
 
 // initialize plot
 bart.showData = function(data) {
+
+  // build main plot
   const config = bart.getConfig("#bart-plot");
   bart.config = config;
   const scales = bart.getScales(data, config);
   bart.scales = scales;
-  bart.drawPlot(data, scales, config);
+  bart.drawMainPlot(data, scales, config);
+
+  // build posterior plot
+  bart.posterior = {}
+  const configPosterior = bart.getConfig("#bart-plot-posterior");
+  bart.posterior.config = configPosterior;
+  const scalesPosterior = bart.getScales(data, configPosterior);
+  bart.posterior.scales = scalesPosterior;
+  bart.drawPosteriorPlot(data, scalesPosterior, configPosterior);
 }

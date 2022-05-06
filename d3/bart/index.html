@@ -19,7 +19,7 @@
       <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
 
       <h2>Notes</h2>
-      <p>Voronoi based vertical line hover showing distance between response surfaces</p>
+      <p>This is mostly just a UX experiment; causal definitions are loosely interpreted</p>
 
       <br><br><br>
     </div>
@@ -68,6 +68,7 @@
         <br><br><br><br><br><br><br><br><br>
 
         </div>
+      
       <div id="bart-plot-container" class="bart-d3-container">
         <!-- <button id="trigger" onclick="triggerAnimation(store.scatter, scales)">Build histogram</button> -->
         <div id='bart-plot'></div>
@@ -80,7 +81,7 @@
 
       <p><br></p>
 
-      <h2>Efficiency</h2>
+      <h2>BART posterior</h2>
 
       <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
 
@@ -89,7 +90,8 @@
       <!-- <div id="fundamental-slider-efficiency-container">
         <input type="text" id="fundamental-slider-efficiency" class="js-range-slider" value="0" />
       </div> -->
-      <!-- <div id='fundamental-plot-efficiency'></div> -->
+      <button id="bart-trigger" onclick="bart.triggerPosteriorAnimation()">Animate</button>
+      <div id='bart-plot-posterior'></div>
 
       <p><br></p>
 

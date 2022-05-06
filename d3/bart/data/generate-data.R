@@ -63,12 +63,21 @@ bartFit1 = colMeans(predict(bartEstimate, tibble(zz = 1, caloriesConsumed = calo
     x = 'Calories consumed',
     y = 'Running time',
     color = 'Model')
-  
 
-# readr::write_csv(.data, 'd3/bart/data/observations.csv')
-# readr::write_csv(.data_fitted, 'd3/bart/data/fits.csv')
 
 # plotBart::plot_moderator_c_pd(bartEstimate, .data$caloriesConsumed)
 # plotBart::plot_CATE(bartEstimate)
-# plotBart::plot_ICATE(bartEstimate, nbins = 15)
+# plotBart::plot_ICATE(bartEstimate, n_bins = 15)
 # plotBart::plot_moderator_search(bartEstimate)
+
+# credible intervals
+# TODO: this uses observations, not fitted values
+icates <- bartCause::extract(bartEstimate, "icate")
+probs <- c(0.05, 0.2, 0.8, 0.95)
+cred_int <- apply(icates, 2, function(x) quantile(x, probs = probs))
+cred_int <- cred_int %>% t() %>% as_tibble()
+colnames(cred_int) <- paste0('q_', probs * 100)
+
+# readr::write_csv(.data, 'd3/bart/data/observations.csv')
+# readr::write_csv(.data_fitted, 'd3/bart/data/fits.csv')
+# readr::write_csv(cred_int, 'd3/bart/data/credible_intervals.csv')
