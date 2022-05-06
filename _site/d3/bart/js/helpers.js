@@ -3,11 +3,11 @@
 bart.delayFn = function(index){ return ((((((index+1)**0.001)-1) * 5000000)) / 1.3) + 100 } // accelerating curve
 
 // store timeouts for later clearing
-bart.timeouts = []
-bart.killkdeAnimations = function(){
-    bart.timeouts.map(clearTimeout)
-    bart.timeouts = []
-}
+// bart.timeouts = []
+// bart.killkdeAnimations = function(){
+//     bart.timeouts.map(clearTimeout)
+//     bart.timeouts = []
+// }
 
 bart.roundNumber = function(num, dec){
   // rounds a number to a certain decimal place and always maintains a decimal point
@@ -34,9 +34,9 @@ bart.emphasizeText = function(selectors){
 
 // add lines
 bart.addLines = function(container, data, y0, y1, scales){
-  let {xScale, yScale, colorScale} = scales
-  let class0 = "bart-lines bart-lines-" + y0
-  let class1 = "bart-lines bart-lines-" + y1
+  const {xScale, yScale, colorScale} = scales
+  const class0 = "bart-lines bart-lines-" + y0
+  const class1 = "bart-lines bart-lines-" + y1
 
   // add y0 line
   container.append('path')
@@ -81,16 +81,16 @@ bart.addTitle = function(container){
 }
 
 bart.addLegend = function(container, scales, config){
-  let {xScale, yScale, colorScale} = scales
-  let {bodyWidth, bodyHeight, margin} = config
+  const {xScale, yScale, colorScale} = scales
+  const {bodyWidth, bodyHeight, margin} = config
   
   let legend = container
     .append('g')
-    .attr("class", "legend")
+    .attr("class", "bart-legend")
     .attr("transform",
             "translate(" + bodyWidth*2.5/9 + " ," + (0 - (margin.bottom*3/5)) + ")")
 
-  let width = 500;
+  const width = 500;
   legend.append("circle")
     .attr("cx", width*0.48)
     .attr("cy", 10)
@@ -115,6 +115,7 @@ bart.addLegend = function(container, scales, config){
     .attr('class', 'bart-legend-text')
 }
 
+// reset the pointer events for each scrollytell state
 bart.updatePointerOnScroll = function(container, dataSelector){
     
   // enable pointer events
@@ -127,4 +128,135 @@ bart.updatePointerOnScroll = function(container, dataSelector){
   // adjust data for vertical line
   d3.map(bart.data.fits, x => { x.scroll0 = x[dataSelector + "Fit0"] } )
   d3.map(bart.data.fits, x => { x.scroll1 = x[dataSelector + "Fit1"] } )
+}
+
+// mouse event for main plot
+bart.onMouseMove = function() {
+  const { xScale, yScale } = bart.scales;
+
+  // get mouse location and limit to range
+  let mouseX = d3.mouse(this)[0];
+  const mouseRange = [
+    xScale(d3.min(bart.data.observations, d => d.caloriesConsumed)),
+    xScale(d3.max(bart.data.observations, d => d.caloriesConsumed))
+  ]
+  mouseX = Math.min(Math.max(parseInt(mouseX), mouseRange[0]), mouseRange[1]); 
+
+  // recover coordinate from the fitted line
+  const data = Array.from(bart.data.fits, d => d.caloriesConsumed);
+  const x0 = xScale.invert(mouseX);
+  const bisect = d3.bisector(function(d) { return d; }).left
+  const i = bisect(data, x0, 1);
+
+  // get the closest data point
+  const selectedData = bart.data.fits[i-1]
+  
+  // update vertical line position
+  bart.verticalLine
+    .attr('x1', mouseX)
+    .attr('x2', mouseX)
+    .attr('y1', yScale(selectedData.scroll0))
+    .attr('y2', yScale(selectedData.scroll1))
+    .style('display', null)
+
+  // update tooltip
+  const ICATE = bart.roundNumber(selectedData.scroll1 - selectedData.scroll0, 1)
+  let ATE = d3.mean(bart.data.fits, d => d.scroll1) - d3.mean(bart.data.fits, d => d.scroll0)
+  ATE = bart.roundNumber(ATE, 1)
+  bart.tooltip
+    .style('display', null)
+    .html(`<p style='font-weight: 500'>Average treatment effect: ${ATE}<br>Individual conditional average treatment effect: ${ICATE}`)
+    .style("left", (d3.event.layerX + 20) + "px")
+    .style("top", (d3.event.layerY + 5) + "px")
+}
+
+// animate the posterior plot
+bart.triggerPosteriorAnimation = function(){
+  let container = bart.posterior.config.container
+
+  // replace button
+  let newButton = $('<button id="bart-reset" onclick="bart.resetPosteriorPlot()">Reset animation</button>')
+  $('#bart-trigger').after(newButton)
+  $('#bart-trigger').remove()
+
+  // move line down
+  container.select('.bart-verticalLine')
+      .transition()
+      .duration(2000)
+      .delay(200)
+      .attr('x1', 50)
+      .attr('x2', 150)
+      .attr('y1', 400)
+      .attr('y2', 400)
+      .style('display', null)
+  
+  // convert to circle
+  container.append("circle")
+      .style('opacity', 0)
+      .transition()
+      .duration(2000)
+      .delay(3000)
+      .attr("cx", 150)
+      .attr("cy", 400)
+      .attr("r", 5.5)
+      .style('stroke-width', 0.8)
+      .style('fill', 'black')
+      .style('stroke', "#fff")
+      .transition()
+      .duration(500)
+      .style('opacity', 0.8);
+  container.select('.bart-verticalLine')
+      .transition()
+      .delay(6000)
+      .duration(500)
+      .style('opacity', 0)
+      .remove()
+  
+  // add distribution
+  container.append('line')
+      .attr('class', 'bart-posterior-distribution')
+      .attr('x1', 100)
+      .attr('x2', 200)
+      .attr('y1', 400)
+      .attr('y2', 400)
+      .style('stroke', 'black')
+      .style('opacity', 0)
+      .transition()
+      .duration(1000)
+      .delay(6750)
+      .style('opacity', 1)
+  container.append('line')
+      .attr('class', 'bart-posterior-distribution')
+      .attr('x1', 125)
+      .attr('x2', 175)
+      .attr('y1', 400)
+      .attr('y2', 400)
+      .style('stroke', 'black')
+      .style('stroke-width', 3)
+      .style('opacity', 0)
+      .transition()
+      .duration(1000)
+      .delay(6750)
+      .style('opacity', 1)
+      
+}
+
+// reset the posterior plot
+bart.resetPosteriorPlot = function(){
+  const data = bart.data
+
+  // replace button
+  let newButton = $('<button id="bart-trigger" onclick="bart.triggerPosteriorAnimation()">Animate</button>')
+  $('#bart-reset').after(newButton)
+  $('#bart-reset').remove()
+
+  // remove existing
+  d3.select('#bart-plot-posterior > svg').remove()
+
+  // build posterior plot
+  const configPosterior = bart.getConfig("#bart-plot-posterior");
+  bart.posterior.config = configPosterior;
+  const scalesPosterior = bart.getScales(data, configPosterior);
+  bart.posterior.scales = scalesPosterior;
+  bart.drawPosteriorPlot(data, scalesPosterior, configPosterior);
 }
