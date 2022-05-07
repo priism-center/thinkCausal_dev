@@ -7,7 +7,7 @@
 
 #' @author George Perrett
 #' 
-#' @return a vector of names that corresponds to all other levels of the confounder
+#' @return a list that containing a vecotr best and a list possible. best is the most likely combination of levels while possible is all possible combinations of levels
 #' @export
 #'
 #' @examples
@@ -36,15 +36,17 @@ identify_indicators <- function(x, cats){
     })
     
     out <- unlist(run_test)
-    if(length(out) > 1) out <- c(.x, out) 
+    out <- c(.x, out) 
     out <- sort(out)
+    return(out)
+
     return(out)
   }
   
   run <- transform_indicator_to_categorical(.x = x, cat_df = cats)
   eval <- lapply(run, function(i){transform_indicator_to_categorical(.x = i, cat_df = cats)})
   probs <- table(match(eval, unique(eval)))/length(eval)
-  out <- eval[[which(probs == max(probs))]]
+  out <- list(best = eval[[which(probs == max(probs))]], possible = unique(eval))
   return(out)
 }
 
@@ -70,7 +72,7 @@ identify_indicators <- function(x, cats){
 #' race <- c("momwhite", "momblack", "momhisp")
 #' clean_dummies_to_categorical(df = df, group_names = race)
 
-clean_dummies_to_categorical <- function(df, group_names){
+clean_dummies_to_categorical <- function(df, group_names, new_name = 'categorical_var'){
   
   # find the column indexes of dummy variables in the same group 
   idx <- which(colnames(df) %in% group_names)
@@ -80,7 +82,7 @@ clean_dummies_to_categorical <- function(df, group_names){
   df <- df[,-idx, drop=FALSE]
   # add the new categorical variable into the dataset
   df <- cbind(df, categorical)
-  colnames(df)[ncol(df)] <- deparse(substitute(group_names))
+  names(df)[length(df)] <- new_name
   return(df)
   
 }

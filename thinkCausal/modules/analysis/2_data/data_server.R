@@ -552,7 +552,6 @@ server_data <- function(store, id, global_session){
       # with the new columns
       # create updated options for plotting and modeling pages
       observeEvent(input$analysis_data_save, {
-        
         req(store$user_modified_df)
         
         # remove saved dataframes if they exist
@@ -602,7 +601,7 @@ server_data <- function(store, id, global_session){
                                             .treatment_column = column_treatment,
                                             .response_column = column_response)
         store$analysis$data$verify$plot_vars <- plot_vars
-        
+
         #update moderator select on model page and moderator test page
         
         #
@@ -613,7 +612,6 @@ server_data <- function(store, id, global_session){
         # updateSelectInput(session = session,
         #                   inputId = 'analysis_moderators_explore_only',
         #                   choices = X_mods)
-        
         
         # move to next page
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$eda)

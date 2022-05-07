@@ -153,29 +153,67 @@ server_eda <- function(store, id, global_session){
       })
       
       output$render_analysis_eda_variable_x <- renderUI({
+        new_col_names <- colnames(store$verified_df)
+        cols_categorical <- store$column_types$categorical
+        cols_continuous <- store$column_types$continuous
         selectInput(
           inputId = ns("analysis_eda_variable_x"),
           label = "X: ",
           multiple = FALSE,
-          choices = colnames(store$verified_df),
+          choices = new_col_names,
           selected = NULL
         )
       })
       
+     
+      find_levels <- reactive({
+        # identify all logicals and indicators 
+        cols_indicators <- names(store$verified_df)[-c(1:2)][store$current_simple_column_types[-c(1,2)] == 'Binary']
       
+        #req(input$analysis_eda_variable_x) # to prevent rendering error
+        req(input$analysis_eda_variable_x)
+        
+        if(input$analysis_eda_variable_x %in%  cols_indicators){
+          levels <- identify_indicators(
+            x = input$analysis_eda_variable_x, # level to test
+            store$verified_df[, cols_indicators] # possible categorical variables
+            )
+          
+          return(levels$best)
+        } else return(NULL)
+      })
+      
+      
+      output$render_analysis_eda_x_levels <- renderUI({
+        levels_ui <- find_levels()
+        print(levels_ui)
+        if(length(levels_ui) > 1) {
+          selectInput(
+            inputId = ns("analysis_eda_x_levels"),
+            label = paste0("Contrast ", input$analysis_eda_variable_x, " with:"),
+            multiple = TRUE,
+            # removing selected .x from options
+            choices = levels_ui[which(levels_ui != input$analysis_eda_variable_x)],
+            selected = levels_ui[which(levels_ui != input$analysis_eda_variable_x)]
+          )
+        }else NULL
+          
+        })
+    
+  
       # create the descriptive plots
       # build the exploration plots
-      descriptive_plot <- reactive( {
+      descriptive_plot <- reactive({
         
         # stop here if data hasn't been uploaded and selected
         validate_data_verified(store)
-        
         p <- tryCatch({
           plot_exploration(
             .data = store$verified_df,
             .plot_type = input$analysis_eda_select_plot_type,
             .x = input$analysis_eda_variable_x,
             .y = input$analysis_eda_variable_y,
+            .levels = find_levels(),
             .fill = input$analysis_eda_variable_fill,
             .fill_static = 'grey20', #"#5c5980",
             .shape = input$analysis_eda_variable_shape,
@@ -196,8 +234,8 @@ server_eda <- function(store, id, global_session){
         
         # add theme
         p <- p + store$options$theme_custom
-        
         return(p)
+        
       })
       output$analysis_eda_plot <- renderPlot(descriptive_plot())
       

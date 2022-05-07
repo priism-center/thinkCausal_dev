@@ -40,6 +40,7 @@ ui_eda <- function(store, id){
               #   selected = NULL
               # ),
               uiOutput(ns("render_analysis_eda_variable_x")), 
+              uiOutput(ns("render_analysis_eda_x_levels")), 
               conditionalPanel(
                 condition = "input.analysis_eda_select_plot_type == 'Scatter'", ns = ns, 
                 selectInput(
