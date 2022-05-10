@@ -5,17 +5,19 @@ bart.scrollytellState1 = function(){
 
     // resets
     container.selectAll('.bart-lines').style('display', 'none');
-    container.selectAll('.bart-observations').style('opacity', null)
     bart.verticalLine.style('display', 'none')
     container.select('.bart-hoverRect').attr('pointer-events', 'none')
-
-    // clearTimeout(bart.timeoutStudyText)
-
-    // remove vertical line
     bart.verticalLine.style('display', 'none')
 
     // adjust subtitle
     container.select('.bart-subtitle').text(null)
+
+    // show points
+    container.selectAll('.bart-observations')
+        .transition()
+        .duration(500)
+        .delay(d => Math.random() * 1200)
+        .style('opacity', null)
 
     bart.emphasizeText("#bart-trigger-1, #bart-trigger-1 + p")
 }
@@ -25,7 +27,7 @@ bart.scrollytellState2 = function(){
     // console.log('bartState2')
 
     // de-emphasize points
-    container.selectAll('.bart-observations').style('opacity', 0.2)
+    container.selectAll('.bart-observations').transition().style('opacity', 0.2)
 
     // emphasize lines
     container.selectAll('.bart-lines').style('display', 'none');
