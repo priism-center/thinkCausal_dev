@@ -133,15 +133,15 @@ server_diagnostic <- function(store, id, global_session){
         # if "none" is selected, change it to NULL, otherwise remain the same
         covariates_selection <- switch(input$analysis_diagnostics_plot_residual_covariate, "None" = NULL, input$analysis_diagnostics_plot_residual_covariate)
         
-        p1 <- plot_residual_observed_predicted(.model = store$model_results, 
-                                               covariate = covariates_selection)
+        # p1 <- plot_residual_observed_predicted(.model = store$model_results, 
+        #                                        covariate = covariates_selection)
         p2 <- plot_residual_density(.model = store$model_results,
                                     covariate = covariates_selection)
         p3 <- plot_residual_observed_residual(.model = store$model_results,
                                               covariate = covariates_selection)
         
         # patchwork package to combine the plots
-        p <- p1 / p2 / p3
+        p <- p2 / p3
         
         # add theme
         p <- p + store$options$theme_custom
