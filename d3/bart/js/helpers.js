@@ -45,9 +45,9 @@ bart.addLines = function(container, data, y0, y1, scales){
       .x(d => xScale(d.caloriesConsumed))
       .y(d => yScale(d[y0]))
     )
-    .attr('treatment', '0')
     .style("stroke", colorScale('0'))
     .style('fill', 'none')
+    .style('display', 'none')
     .attr('class', class0)
 
   // add y1 line
@@ -57,9 +57,9 @@ bart.addLines = function(container, data, y0, y1, scales){
       .x(d => xScale(d.caloriesConsumed))
       .y(d => yScale(d[y1]))
     )
-    .attr('treatment', '0')
     .style("stroke", colorScale('1'))
     .style('fill', 'none')
+    .style('display', 'none')
     .attr('class', class1)
 }
 
@@ -179,66 +179,120 @@ bart.triggerPosteriorAnimation = function(){
   $('#bart-trigger').after(newButton)
   $('#bart-trigger').remove()
 
+  //// animate first point
+  let firstPointIndex = 12 // set in bart.drawPosteriorPlot()
+  // let newCoords = 
+
+  // temp
+  let xCoordAxis = 50
+  let xCoord = 150
+  let yCoord = 400
+  let quantiles = {x_5: 100, x_20: 125, x_80: 175, x_95: 200}
+
   // move line down
   container.select('.bart-verticalLine')
       .transition()
       .duration(2000)
       .delay(200)
-      .attr('x1', 50)
-      .attr('x2', 150)
-      .attr('y1', 400)
-      .attr('y2', 400)
+      .attr('x1', xCoordAxis)
+      .attr('x2', xCoord)
+      .attr('y1', yCoord)
+      .attr('y2', yCoord)
       .style('display', null)
+  
+  // create subsgroup
+  // let containerAnim = container.append('g').attr('class', 'bart-animated-plot')
   
   // convert to circle
   container.append("circle")
-      .style('opacity', 0)
-      .transition()
-      .duration(2000)
-      .delay(3000)
-      .attr("cx", 150)
-      .attr("cy", 400)
-      .attr("r", 5.5)
-      .style('stroke-width', 0.8)
-      .style('fill', 'black')
-      .style('stroke', "#fff")
-      .transition()
-      .duration(500)
-      .style('opacity', 0.8);
+    .style('opacity', 0)
+    .transition()
+    .duration(2000)
+    .delay(3000)
+    .attr("cx", xCoord)
+    .attr("cy", yCoord)
+    .attr("r", 5.5)
+    .attr('class', 'bart-animated-plot')
+    .style('stroke-width', 0.8)
+    .style('fill', 'black')
+    .style('stroke', "#fff")
+    .transition()
+    .duration(500)
+    .style('opacity', 0.8);
   container.select('.bart-verticalLine')
-      .transition()
-      .delay(6000)
-      .duration(500)
-      .style('opacity', 0)
-      .remove()
+    .transition()
+    .delay(6000)
+    .duration(500)
+    .style('opacity', 0)
+    .remove()
   
   // add distribution
   container.append('line')
-      .attr('class', 'bart-posterior-distribution')
-      .attr('x1', 100)
-      .attr('x2', 200)
-      .attr('y1', 400)
-      .attr('y2', 400)
-      .style('stroke', 'black')
-      .style('opacity', 0)
-      .transition()
-      .duration(1000)
-      .delay(6750)
-      .style('opacity', 1)
-  container.append('line')
-      .attr('class', 'bart-posterior-distribution')
-      .attr('x1', 125)
-      .attr('x2', 175)
-      .attr('y1', 400)
-      .attr('y2', 400)
-      .style('stroke', 'black')
-      .style('stroke-width', 3)
-      .style('opacity', 0)
-      .transition()
-      .duration(1000)
-      .delay(6750)
-      .style('opacity', 1)
-      
+    .attr('class', 'bart-posterior-distribution')
+    .attr('x1', quantiles.x_5)
+    .attr('x2', quantiles.x_95)
+    .attr('y1', yCoord)
+    .attr('y2', yCoord)
+    .attr('class', 'bart-animated-plot')
+    .style('stroke', 'black')
+    .style('opacity', 0)
+    .transition()
+    .duration(1000)
+    .delay(8250)
+    .style('opacity', 1)
+    container.append('line')
+    .attr('class', 'bart-posterior-distribution')
+    .attr('x1', quantiles.x_20)
+    .attr('x2', quantiles.x_80)
+    .attr('y1', yCoord)
+    .attr('y2', yCoord)
+    .attr('class', 'bart-animated-plot')
+    .style('stroke', 'black')
+    .style('stroke-width', 3)
+    .style('opacity', 0)
+    .transition()
+    .duration(1000)
+    .delay(6750)
+    .style('opacity', 1)
+
+  // add labels
+  container.append('text')
+    .attr("x", xCoord - 29)
+    .attr("y", yCoord + 25)
+    .text("|← 80th →|")
+    .style('font-size', "12px")
+    .attr("alignment-baseline", "middle")
+    .style('opacity', 0)
+    .transition()
+    .duration(1000)
+    .delay(7000)
+    .style('opacity', 1)
+  container.append('text')
+    .attr("x", xCoord - 47)
+    .attr("y", yCoord + 45)
+    .html("|← &nbsp&nbsp&nbsp&nbsp&nbsp 95th &nbsp&nbsp&nbsp&nbsp&nbsp →|")
+    .style('font-size', "12px")
+    .attr("alignment-baseline", "middle")
+    .style('opacity', 0)
+    .transition()
+    .duration(1000)
+    .delay(8250)
+    .style('opacity', 1)
+
+  // remove original plot
+  let itemsToRemove = ['g', 'path', 'text']
+  container.selectAll(itemsToRemove)
+    .transition()
+    .duration(1000)
+    .delay(11000)
+    .style('opacity', 0)
+    .transition()
+    .delay(12000)
+    .remove()
+  
+  // add axis
+
+  // add points
 }
 
 // reset the posterior plot

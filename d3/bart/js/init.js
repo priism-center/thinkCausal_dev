@@ -1,7 +1,7 @@
 
 bart.init = function(data){
   bart.showData(data);
-  bart.scrollytellState1();
+  // bart.scrollytellState1();
 }
 
 bart.loadData = function(){

@@ -151,6 +151,7 @@ bart.drawPosteriorPlot = function(data, scales, config){
   // remove everything but bart
   const itemsToRemove = '.bart-lines-diffFit0, .bart-lines-diffFit1, .bart-lines-lmFit0, .bart-lines-lmFit1'
   container.selectAll(itemsToRemove).remove()
+  container.selectAll('.bart-lines-bartFit0, .bart-lines-bartFit1').style('display', null)
 
   // de-emphasize points
   container.selectAll('.bart-observations').style('opacity', 0.2)
@@ -159,14 +160,19 @@ bart.drawPosteriorPlot = function(data, scales, config){
   container.select('.bart-subtitle').text('Bayesian Additive Regression Trees (BART)')
 
   // add static vertical line
-  const index = 840
-  const selectedData = bart.data.fits[index]
+  const index = 12 // chosen subjectively
+  const selectedObsData = bart.data.observations[index]
+  const selectedFitsData = bart.data.fits.filter(d => {
+    const val = bart.roundNumber(d.caloriesConsumed, 0)
+    const match = bart.roundNumber(selectedObsData.caloriesConsumed, 0)
+    return val == match
+  })[0]
   container.append('line')
     .attr('class', 'bart-verticalLine')
-    .attr('x1', xScale(selectedData.caloriesConsumed))
-    .attr('x2', xScale(selectedData.caloriesConsumed))
-    .attr('y1', yScale(selectedData.bartFit0))
-    .attr('y2', yScale(selectedData.bartFit1))
+    .attr('x1', xScale(selectedFitsData.caloriesConsumed))
+    .attr('x2', xScale(selectedFitsData.caloriesConsumed))
+    .attr('y1', yScale(selectedFitsData.bartFit0))
+    .attr('y2', yScale(selectedFitsData.bartFit1))
     .style('display', null)
 
   // extend viewbox
@@ -185,8 +191,10 @@ bart.showData = function(data) {
   const scales = bart.getScales(data, config);
   bart.scales = scales;
   bart.drawMainPlot(data, scales, config);
+  config.container.selectAll('.bart-observations').style('opacity', 0)
 
   // build posterior plot
+  bart.animation = {}
   bart.posterior = {}
   const configPosterior = bart.getConfig("#bart-plot-posterior");
   bart.posterior.config = configPosterior;
