@@ -73,10 +73,15 @@ bartFit1 = colMeans(predict(bartEstimate, tibble(zz = 1, caloriesConsumed = calo
 # credible intervals
 # TODO: this uses observations, not fitted values
 icates <- bartCause::extract(bartEstimate, "icate")
-probs <- c(0.05, 0.2, 0.8, 0.95)
+probs <- c(0.025, 0.1, 0.9, 0.975)
 cred_int <- apply(icates, 2, function(x) quantile(x, probs = probs))
 cred_int <- cred_int %>% t() %>% as_tibble()
-colnames(cred_int) <- paste0('q_', probs * 100)
+# colnames(cred_int) <- stringr::str_remove_all(paste0('q_', probs * 100), '\\.')
+colnames(cred_int) <- c('q_250', 'q_10', 'q_90', 'q_975') 
+
+# add means
+cred_int$x_mean <- colMeans(icates)
+cred_int$index <- rank(.data$caloriesConsumed, ties.method = 'first') # TODO is this right?
 
 # readr::write_csv(.data, 'd3/bart/data/observations.csv')
 # readr::write_csv(.data_fitted, 'd3/bart/data/fits.csv')

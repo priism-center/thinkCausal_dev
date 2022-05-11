@@ -49,10 +49,12 @@ bart.getScales = function(data, config) {
 }
 
 bart.drawPlot = function(data, scales, config){
-  const {width, height, margin, container, bodyHeight, bodyWidth} = config;
+  let {width, height, margin, container, bodyHeight, bodyWidth} = config;
   const {xScale, yScale, colorScale} = scales
   // console.log('Data into bart.drawPlot():', data)
 
+  // add all plot elements as a group for ease of later removal
+  container = container.append('g').attr('class', 'bart-basePlot')
 
   // add X axis
   const xAxis = d3.axisBottom(xScale).tickSize(-bodyHeight)
@@ -95,7 +97,6 @@ bart.drawPlot = function(data, scales, config){
       .style('stroke-width', 0.8)
       .attr('class', 'bart-observations')
 
-
   // add fitted lines
   bart.addLines(container, data, "diffFit0", "diffFit1", scales)
   bart.addLines(container, data, "lmFit0", "lmFit1", scales)
@@ -108,7 +109,7 @@ bart.drawPlot = function(data, scales, config){
   bart.addLegend(container, scales, config)
 }
 
-bart.drawMainPlot = function(data, scales, config){
+bart.drawScrollyPlot = function(data, scales, config){
   const { width, height, margin, container, bodyHeight, bodyWidth, selector} = config;
 
   // draw base plot
@@ -142,8 +143,8 @@ bart.drawMainPlot = function(data, scales, config){
 }
 
 bart.drawPosteriorPlot = function(data, scales, config){
-  const { width, height, margin, container, bodyHeight, bodyWidth, selector} = config;
-  const {xScale, yScale, colorScale} = scales
+  const { container, selector } = config;
+  const { xScale, yScale } = scales
 
   // draw base plot
   bart.drawPlot(data, scales, config);
@@ -161,6 +162,7 @@ bart.drawPosteriorPlot = function(data, scales, config){
 
   // add static vertical line
   const index = 12 // chosen subjectively
+  bart.animation.startIndex = index
   const selectedObsData = bart.data.observations[index]
   const selectedFitsData = bart.data.fits.filter(d => {
     const val = bart.roundNumber(d.caloriesConsumed, 0)
@@ -180,6 +182,13 @@ bart.drawPosteriorPlot = function(data, scales, config){
   const newWidth = 540
   d3.selectAll(`${selector} > svg`)
       .attr('viewBox', '0 0 ' + newWidth + ' ' + newHeight)
+  
+  // draw distribution plot
+  config.bodyHeight = newHeight - config.margin.top - config.margin.bottom;
+  let scalesDistribution = bart.animation.getScales(data, config)
+  bart.animation.config = config
+  bart.animation.scales = scalesDistribution
+  bart.animation.drawDistributionPlot(data, scalesDistribution, config)
 }
 
 // initialize plot
@@ -190,11 +199,10 @@ bart.showData = function(data) {
   bart.config = config;
   const scales = bart.getScales(data, config);
   bart.scales = scales;
-  bart.drawMainPlot(data, scales, config);
+  bart.drawScrollyPlot(data, scales, config);
   config.container.selectAll('.bart-observations').style('opacity', 0)
 
   // build posterior plot
-  bart.animation = {}
   bart.posterior = {}
   const configPosterior = bart.getConfig("#bart-plot-posterior");
   bart.posterior.config = configPosterior;
