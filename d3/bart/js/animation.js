@@ -24,6 +24,7 @@ bart.animation.getScales = function(data, config) {
   return {xScale, yScale, colorScale}
 }
 
+// draw the underlying interval distribution plot and then hide it
 bart.animation.drawDistributionPlot = function(data, scales, config){
   let { margin, container, bodyHeight, bodyWidth } = config;
   const { xScale, yScale } = scales
@@ -146,7 +147,7 @@ bart.triggerPosteriorAnimation = function(){
       .attr('y2', yCoord)
       .style('display', null)
   
-  // convert to circle
+  // convert to circle and add label
   container.append("circle")
     .style('opacity', 0)
     .transition()
@@ -161,6 +162,19 @@ bart.triggerPosteriorAnimation = function(){
     .style('stroke', "#fff")
     .transition()
     .duration(500)
+    .style('opacity', null);
+  container.append('text')
+    .attr("x", xCoord - 14)
+    .attr("y", yCoord - 15)
+    .text(bart.roundNumber(bart.data.credibleIntervals[firstPointIndex].x_mean, 0))
+    .style('font-size', "14px")
+    .style('font-weight', "500")
+    .attr("dominant-baseline", "middle")
+    .attr('class', 'bart-dist-label')
+    .style('opacity', 0)
+    .transition()
+    .duration(2000)
+    .delay(3250)
     .style('opacity', null);
   container.select('.bart-verticalLine')
     .transition()
@@ -205,7 +219,7 @@ bart.triggerPosteriorAnimation = function(){
     .attr("y", yCoord + 25)
     .html("|← &nbsp&nbsp 80th &nbsp&nbsp →|")
     .style('font-size', "12px")
-    .attr("alignment-baseline", "middle")
+    .attr("dominant-baseline", "middle")
     .attr('class', 'bart-dist-label')
     .style('opacity', 0)
     .transition()
@@ -217,7 +231,7 @@ bart.triggerPosteriorAnimation = function(){
     .attr("y", yCoord + 45)
     .html("|← &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 95th &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp →|")
     .style('font-size', "12px")
-    .attr("alignment-baseline", "middle")
+    .attr("dominant-baseline", "middle")
     .attr('class', 'bart-dist-label')
     .style('opacity', 0)
     .transition()
@@ -235,7 +249,7 @@ bart.triggerPosteriorAnimation = function(){
     .delay(12000)
     .remove()
   
-  // fade in full interval plot
+  // fade in full interval distribution plot
   d3.selectAll('.bart-distributionPlot')
     .style('opacity', 0)
     .attr('display', null)

@@ -64,8 +64,9 @@ bart.addLines = function(container, data, y0, y1, scales){
 }
 
 bart.addTitle = function(container){
+  let containerTitle = container.append('g')
   // add title
-  container
+  containerTitle
     .append('text')
     .attr('x', 0)
     .attr('y', -35)
@@ -73,7 +74,7 @@ bart.addTitle = function(container){
     .attr('class', 'bart-title')
   
   // add subtitle
-  container
+  containerTitle
     .append('text')
     .attr('x', 0)
     .attr('y', -15)
@@ -87,31 +88,30 @@ bart.addLegend = function(container, scales, config){
   let legend = container
     .append('g')
     .attr("class", "bart-legend")
-    .attr("transform",
-            "translate(" + bodyWidth*2.5/9 + " ," + (0 - (margin.bottom*3/5)) + ")")
+    .attr("transform", 
+          "translate(" + bodyWidth*7/9 + "," + (0 - (margin.bottom*3/5)) + ")")
 
-  const width = 500;
   legend.append("circle")
-    .attr("cx", width*0.48)
+    .attr("cx", 0)
     .attr("cy", 10)
     .attr("r", 5)
     .style("fill", colorScale('0'))
   legend.append("circle")
-    .attr("cx", width*0.48)
+    .attr("cx", 0)
     .attr("cy", 30)
     .attr("r", 5)
     .style("fill", colorScale('1'))
   legend.append("text")
-    .attr("x", width*0.5)
-    .attr("y", 12)
+    .attr("x", 10)
+    .attr("y", 10)
     .text("Control")
-    .attr("alignment-baseline", "middle")
+    .attr("dominant-baseline", "middle")
     .attr('class', 'bart-legend-text')
   legend.append("text")
-    .attr("x", width*0.5)
-    .attr("y", 32)
+    .attr("x", 10)
+    .attr("y", 30)
     .text("Treatment")
-    .attr("alignment-baseline","middle")
+    .attr("dominant-baseline", "middle")
     .attr('class', 'bart-legend-text')
 }
 
