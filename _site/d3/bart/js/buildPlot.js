@@ -98,9 +98,10 @@ bart.drawPlot = function(data, scales, config){
       .attr('class', 'bart-observations')
 
   // add fitted lines
-  bart.addLines(container, data, "diffFit0", "diffFit1", scales)
-  bart.addLines(container, data, "lmFit0", "lmFit1", scales)
-  bart.addLines(container, data, "bartFit0", "bartFit1", scales)
+  let containerLines = container.append('g')
+  bart.addLines(containerLines, data, "diffFit0", "diffFit1", scales)
+  bart.addLines(containerLines, data, "lmFit0", "lmFit1", scales)
+  bart.addLines(containerLines, data, "bartFit0", "bartFit1", scales)
   
   // add title
   bart.addTitle(container);

@@ -117,6 +117,10 @@ body {
   font-size: 0.75em;
 }
 
+.bart-dist-label {
+  fill: #666666;
+}
+
 .bart-tooltip {
   width: 190px;
   font-size: 0.8em;
