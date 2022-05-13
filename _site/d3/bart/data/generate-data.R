@@ -83,6 +83,12 @@ colnames(cred_int) <- c('q_250', 'q_10', 'q_90', 'q_975')
 cred_int$x_mean <- colMeans(icates)
 cred_int$index <- rank(.data$caloriesConsumed, ties.method = 'first') # TODO is this right?
 
+# starting positions for draggable points
+x <- seq(0, 1000, length.out = 8)
+preds <- colMeans(predict(bartEstimate, tibble(zz = 1, caloriesConsumed = x)));
+draggable_points <- tibble(runningTime = preds, caloriesConsumed = x)
+
 # readr::write_csv(.data, 'd3/bart/data/observations.csv')
 # readr::write_csv(.data_fitted, 'd3/bart/data/fits.csv')
 # readr::write_csv(cred_int, 'd3/bart/data/credible_intervals.csv')
+# readr::write_csv(draggable_points, 'd3/bart/data/draggable_points.csv')

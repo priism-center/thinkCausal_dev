@@ -15,6 +15,45 @@ bart.roundNumber = function(num, dec){
   return rounded.toFixed(dec)
 }
 
+bart.generateData = function(){
+  let data = bart.functional.movedPoints
+  let newData = JSON.parse(JSON.stringify(data)) // deep copy
+  let n = 8 //1000;
+
+  let mean = 0;
+  let sd = 60;
+  let noise = d3.range(n).map(function(i){
+        return jStat.normal.sample(mean, sd);
+  })
+
+  // interpolate points
+  // let newData = []
+
+  // add noise
+  newData.map( (d,i) => d.runningTime = +d.runningTime + noise[i])
+
+  return newData;
+}
+
+// http://jsfiddle.net/sbv2jj9m/4/
+
+
+// fundamental.generateData = function(mean, sd){
+//   // let sd = 10 //30 //Math.max(...[0.5, Math.abs(mean) * 0.2]) 
+//   let n = 1000
+//   let distribution = d3.range(n).map(function(i){
+//     num = jStat.normal.sample(mean, sd)
+//     num = num.toString()
+//     return {'x': num, "index": i}
+//   })
+
+//   return distribution;
+// }
+
+// fundamental.sampleFrom = function(array){
+//   return array[Math.floor(Math.random() * array.length)];
+// }
+
 bart.emphasizeText = function(selectors){
   // de-emphasize this text
   d3.selectAll(".bart-text-along-d3 > p, .bart-text-along-d3 > h2")
@@ -64,7 +103,7 @@ bart.addLines = function(container, data, y0, y1, scales){
 }
 
 bart.addTitle = function(container){
-  let containerTitle = container.append('g')
+  let containerTitle = container.append('g').attr('class', 'bart-title-group')
   // add title
   containerTitle
     .append('text')

@@ -32,7 +32,7 @@ bart.getScales = function(data, config) {
   const minX = d3.min(data.observations, d => +d.caloriesConsumed);
   const maxY = d3.max(data.observations, d => +d.runningTime);
   const minY = d3.min(data.observations, d => +d.runningTime);
-  const padding = (maxX - minX) * 0.075
+  const padding = (maxX - minX) * 0.06
 
   const xScale = d3.scaleLinear()
     .domain([minX - padding, maxX + padding])
@@ -84,7 +84,8 @@ bart.drawPlot = function(data, scales, config){
 
   // draw observations scatter
   container.append('g')
-    .selectAll("bart-observations")
+    .attr('class', 'bart-observations-group')
+    .selectAll(".bart-observations")
     .data(data.observations)
     .enter()
     .append("circle")
@@ -95,19 +96,20 @@ bart.drawPlot = function(data, scales, config){
       .style('fill', d => colorScale(d.z))
       .style('stroke', "#fff")
       .style('stroke-width', 0.8)
+      .attr('treatment', d => d.z)
       .attr('class', 'bart-observations')
 
   // add fitted lines
-  let containerLines = container.append('g')
-  bart.addLines(containerLines, data, "diffFit0", "diffFit1", scales)
-  bart.addLines(containerLines, data, "lmFit0", "lmFit1", scales)
-  bart.addLines(containerLines, data, "bartFit0", "bartFit1", scales)
+  let containerLines = container.append('g').attr('class', 'bart-lines-group')
+  bart.addLines(containerLines, data, "diffFit0", "diffFit1", scales);
+  bart.addLines(containerLines, data, "lmFit0", "lmFit1", scales);
+  bart.addLines(containerLines, data, "bartFit0", "bartFit1", scales);
   
   // add title
   bart.addTitle(container);
 
   // add legend
-  bart.addLegend(container, scales, config)
+  bart.addLegend(container, scales, config);
 }
 
 bart.drawScrollyPlot = function(data, scales, config){
@@ -210,4 +212,11 @@ bart.showData = function(data) {
   const scalesPosterior = bart.getScales(data, configPosterior);
   bart.posterior.scales = scalesPosterior;
   bart.drawPosteriorPlot(data, scalesPosterior, configPosterior);
+
+  // build functional form plot
+  const configFunctional = bart.getConfig("#bart-plot-functional");
+  bart.functional.config = configFunctional;
+  const scalesFunctional = bart.getScales(data, configFunctional);
+  bart.functional.scales = scalesFunctional;
+  bart.functional.drawPlot(data, scalesFunctional, configFunctional);
 }

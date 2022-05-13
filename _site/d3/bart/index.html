@@ -6,6 +6,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/bart.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
   <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/> -->
 </head>
 <body>
@@ -93,19 +94,15 @@
       <button id="bart-trigger" onclick="bart.triggerPosteriorAnimation()">Animate</button>
       <div id='bart-plot-posterior'></div>
 
-      <p><br></p>
+      <!-- <p><br></p> -->
 
-      <h2>Bias</h2>
+      <h2>Functional form</h2>
 
-      <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
+      <p>To demonstrate how adjusting BART performs across various functional forms, drag the handles (<i class="fa-solid fa-hand-pointer" style="color: #FF6978;"></i>) to adjust the treatment group's functional form and refit the models.</p>
 
-      <!-- [Plot should animate by shifting the distribution to the left or right]<br> -->
-
-      <!-- <div id="fundamental-slider-bias-container">
-        <a id="temp"></a>
-        <input type="text" id="fundamental-slider-bias" class="js-range-slider" value="0" />
-      </div> -->
-      <!-- <div id='fundamental-plot-bias'></div> -->
+      <div id='bart-plot-functional'></div>
+      <button id="bart-functional-fit" onclick="bart.functional.runModel()">Fit model</button>
+      Add slider here to show diff means, lm, bart
 
     </div>
     </div>
@@ -122,6 +119,7 @@
 <script src="js/helpers.js"></script>
 <!-- <script src="js/slider.js"></script> -->
 <script src="js/animation.js"></script>
+<script src="js/functional.js"></script>
 <script src="js/scrollPlot.js"></script>
 <script src="js/buildPlot.js"></script>
 <script src="js/init.js"></script>
