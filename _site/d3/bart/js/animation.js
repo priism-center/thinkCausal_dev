@@ -118,7 +118,7 @@ bart.triggerPosteriorAnimation = function(){
   const { xScale, yScale } = bart.animation.scales
 
   // replace button
-  let newButton = $('<button id="bart-reset" onclick="bart.resetPosteriorPlot()">Reset animation</button>')
+  let newButton = $('<button id="bart-reset" onclick="bart.resetPosteriorPlot()">Reset</button>')
   $('#bart-trigger').after(newButton)
   $('#bart-trigger').remove()
 

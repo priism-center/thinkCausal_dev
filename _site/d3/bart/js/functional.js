@@ -47,13 +47,14 @@ bart.functional.dragHandler = d3.drag()
         let newY = d3.event.y
 
         // fix the X value to prevent left-right drag
-        // const xRange = xScale.range()
+        const xRange = xScale.range()
         // newX = this.cx.baseVal.value
-        newX = this.x.baseVal.value
+        newX = this.x.baseVal.value // uncomment to let left-right drag
 
         // limit range to plot
         const yRange = yScale.range()
-        newY = Math.min(Math.max(newY, yRange[1]), yRange[0])
+        newY = bart.clamp(newY, yRange[1], yRange[0])
+        newX = bart.clamp(newX, xRange[0], xRange[1])
         
         // update rect position
         d3.select(this)
@@ -92,6 +93,10 @@ bart.functional.runModel = function(){
     $('#bart-functional-fit').after(newButton)
     $('#bart-functional-fit').remove()
 
+    // update tab buttons
+    bart.functional.showModel('none')
+    d3.selectAll('.bart-tab-button').attr('disabled', null)
+
     // add generated points
     container.append('g').attr('class', 'bart-generatedPoints-group')
         .selectAll('.bart-generatedPoints')
@@ -117,19 +122,37 @@ bart.functional.runModel = function(){
         .style('opacity', 0.2)
         .attr('pointer-events', 'none')
 
+    // add the control group to the data
+    let controlData = bart.data.observations.filter(d => d.z == '0')
+    let modelData = newPoints.concat(controlData)
+
+    // calculate diff means
+    let meanY0 = d3.mean(modelData.filter(d => d.z == '0'), d => d.runningTime)
+    let meanY1 = d3.mean(modelData.filter(d => d.z == '1'), d => d.runningTime)
+    modelData.map(d => d.diffFit0 = meanY0)
+    modelData.map(d => d.diffFit1 = meanY1)
+
+    // add mean diff and lm fit lines
+    bart.functional.addLines(modelData, 'diffFit0', 'diffFit1')
+    // bart.functional.addLines(modelData, 'lmFit0', 'lmFit1')
+
     // this should pass bart.functional.movedPoints to R
 
-
+    // TODO: how to add BART lines? async?
 }
 
+// reset the functional plot
 bart.functional.reset = function(){
     const data = bart.data
     const selector = bart.functional.config.selector
 
     // reset button
-    let newButton = $('<button id="bart-functional-fit" onclick="bart.functional.runModel()">Fit model</button>')
+    let newButton = $('<button id="bart-functional-fit" onclick="bart.functional.runModel()">Generate</button>')
     $('#bart-functional-reset').after(newButton)
     $('#bart-functional-reset').remove()
+
+    // disable model buttons
+    d3.selectAll('.bart-tab-button').attr('disabled', true)
 
     // remove plot
     d3.select(selector + ' > svg').remove();
@@ -140,4 +163,118 @@ bart.functional.reset = function(){
     const scalesFunctional = bart.getScales(data, configFunctional);
     bart.functional.scales = scalesFunctional;
     bart.functional.drawPlot(data, scalesFunctional, configFunctional);
+
+    // update tab buttons
+    bart.functional.showModel('none')
 }
+
+// update plot on button click
+bart.functional.showModel = function(model){
+    // model must be one of ['none', 'diff', 'lm', 'bart']
+    let activeButtonStyle = 'border-top: #726078 solid 3px; color: #3f3f3f;'
+    let selector = '#bart-functional-tab-' + model
+    let container = bart.functional.config.container
+
+    // highlight button
+    d3.selectAll('.bart-tab-button').attr('style', null)
+    d3.select(selector).attr('style', activeButtonStyle)
+
+    // fade observations
+    container.selectAll('.bart-generatedPoints, .bart-observations')
+        .transition()
+        .style('opacity', 0.2)
+
+    // show model on plot
+    if (model == 'none'){
+        // update subtitle
+        container.select('.bart-subtitle').text(null)
+
+        // hide lines
+        container.selectAll('.bart-lines').style('display', 'none');
+
+        // bring back observations
+        container.selectAll('.bart-generatedPoints, .bart-observations')
+            .transition()
+            .style('opacity', 0.8)
+
+    } else if (model == 'diff') {
+        // update subtitle
+        container.select('.bart-subtitle').text('Difference in means')
+
+        // show lines
+        container.selectAll('.bart-lines').style('display', 'none');
+        container.selectAll('.bart-lines-diffFit0, .bart-lines-diffFit1')
+            .style('display', null);
+
+    } else if (model == 'lm'){
+        // update subtitle
+        container.select('.bart-subtitle').text('Linear regression')
+
+        // show lines
+        container.selectAll('.bart-lines').style('display', 'none');
+        container.selectAll('.bart-lines-lmFit0, .bart-lines-lmFit1')
+            .style('display', null);
+
+    } else if (model == 'bart'){
+        // update subtitle
+        container.select('.bart-subtitle').text('Bayesian Additive Regression Trees (BART)')
+
+        // show lines
+        container.selectAll('.bart-lines').style('display', 'none');
+        container.selectAll('.bart-lines-bartFit0, .bart-lines-bartFit1')
+            .style('display', null);
+
+    }
+}
+
+// bart.functional.modelData = function(data){
+    
+//     // difference in means
+//     let meanY0 = d3.mean(data.filter(d => d.z == '0'), d => d.runningTime)
+//     let meanY1 = d3.mean(data.filter(d => d.z == '1'), d => d.runningTime)
+//     data.map(d => d.diffFit0 = meanY0)
+//     data.map(d => d.diffFit1 = meanY1)
+
+//     // linear regression
+//     // https://observablehq.com/@harrystevens/introducing-d3-regression 2D only!!!
+//     // https://simplestatistics.org/docs/#linearregressionline
+//     // let linearRegression = d3.regressionLinear()
+//     //     .x(d => d.caloriesConsumed)
+//     //     .y(d => d.runningTime)
+//     //     // .domain([-1.7, 16]);
+//     // console.log(linearRegression)
+
+//     return data;
+// }
+
+// add fitted lines to functional plot
+bart.functional.addLines = function(data, y0, y1){
+    let container = bart.functional.config.container
+    const {xScale, yScale, colorScale} = bart.functional.scales
+    const class0 = "bart-lines bart-lines-" + y0
+    const class1 = "bart-lines bart-lines-" + y1
+  
+    // add y0 line
+    container.append('path')
+      .datum(data)
+      .attr('d', d3.line()
+        .x(d => xScale(d.caloriesConsumed))
+        .y(d => yScale(d[y0]))
+      )
+      .style("stroke", colorScale('0'))
+      .style('fill', 'none')
+      .style('display', 'none')
+      .attr('class', class0)
+  
+    // add y1 line
+    container.append('path')
+      .datum(data)
+      .attr('d', d3.line()
+        .x(d => xScale(d.caloriesConsumed))
+        .y(d => yScale(d[y1]))
+      )
+      .style("stroke", colorScale('1'))
+      .style('fill', 'none')
+      .style('display', 'none')
+      .attr('class', class1)
+  }

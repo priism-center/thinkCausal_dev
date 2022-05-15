@@ -4,6 +4,10 @@ bart.init = function(data){
 
   // store for new coordinates resulting from draggable points
   bart.functional.movedPoints = bart.data.draggablePoints
+
+  // activate buttons in functional form
+  bart.functional.showModel('none')
+  
   // bart.scrollytellState1();
 }
 
