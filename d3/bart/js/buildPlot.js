@@ -4,7 +4,7 @@ bart.getConfig = function(selector) {
   const height = 400;
   const margin = {
       top: 50,
-      bottom: 80,
+      bottom: 50,
       left: 60,
       right: 20
   }
@@ -65,7 +65,7 @@ bart.drawPlot = function(data, scales, config){
   container.append('text')
     .attr('class', 'bart-axisLabel')
     .attr("x", bodyWidth/2)
-    .attr('y', bodyHeight + margin.bottom/2)
+    .attr('y', bodyHeight + margin.bottom*3/4)
     .attr('text-anchor', 'middle')
     .text("Calories consumed")
 

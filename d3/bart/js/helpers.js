@@ -15,28 +15,69 @@ bart.roundNumber = function(num, dec){
   return rounded.toFixed(dec)
 }
 
+bart.clamp = function(x, min, max){
+  return Math.min(Math.max(x, min), max)
+}
+
+// generates the data from the functional form user input
+// data is linearly interpolated between the points and then rnorm noise is added
 bart.generateData = function(){
   let data = bart.functional.movedPoints
   let newData = JSON.parse(JSON.stringify(data)) // deep copy
-  let n = 8 //1000;
+  let n = bart.data.observations.length / 2
+  let rangeX = bart.functional.scales.xScale.domain()
 
-  let mean = 0;
-  let sd = 60;
-  let noise = d3.range(n).map(function(i){
-        return jStat.normal.sample(mean, sd);
+  // generate noise
+  let sdX = 10
+  let sdY = 50 // same as generate-data.R
+  let noiseX = d3.range(n).map(function(i){
+    return jStat.normal.sample(0, sdX);
+  })
+  let noiseY = d3.range(n).map(function(i){
+    return jStat.normal.sample(0, sdY);
   })
 
   // interpolate points
-  // let newData = []
+  let newX = newData.map(d => +d.caloriesConsumed )
+  let newY = newData.map(d => +d.runningTime )
+  newX = bart.interpolateArray(newX, n)
+  newY = bart.interpolateArray(newY, n)
+
+  // convert back to object
+  let interpData = d3.zip(newX, newY)
+  interpData.map((d, i) => d.caloriesConsumed = newX[i] )
+  interpData.map((d, i) => d.runningTime = newY[i] )
 
   // add noise
-  newData.map( (d,i) => d.runningTime = +d.runningTime + noise[i])
+  interpData.map( (d,i) => bart.clamp( d.caloriesConsumed = +d.caloriesConsumed + noiseX[i], rangeX[0], rangeX[1] ))
+  interpData.map( (d,i) => d.runningTime = +d.runningTime + noiseY[i])
 
-  return newData;
+  // add treatment id
+  interpData.map( (d,i) => d.z = '1' )
+
+  return interpData;
 }
 
 // http://jsfiddle.net/sbv2jj9m/4/
-
+bart.interpolateArray = function(data, fitCount) {
+    
+  var linearInterpolate = function (before, after, atPoint) {
+      return before + (after - before) * atPoint;
+  };
+  
+  var newData = new Array();
+  var springFactor = new Number((data.length - 1) / (fitCount - 1));
+  newData[0] = data[0]; // for new allocation
+  for ( var i = 1; i < fitCount - 1; i++) {
+    var tmp = i * springFactor;
+    var before = new Number(Math.floor(tmp)).toFixed();
+    var after = new Number(Math.ceil(tmp)).toFixed();
+    var atPoint = tmp - before;
+    newData[i] = linearInterpolate(data[before], data[after], atPoint);
+    }
+  newData[fitCount - 1] = data[data.length - 1]; // for new allocation
+  return newData;
+};
 
 // fundamental.generateData = function(mean, sd){
 //   // let sd = 10 //30 //Math.max(...[0.5, Math.abs(mean) * 0.2]) 
@@ -179,7 +220,7 @@ bart.onMouseMove = function() {
     xScale(d3.min(bart.data.observations, d => d.caloriesConsumed)),
     xScale(d3.max(bart.data.observations, d => d.caloriesConsumed))
   ]
-  mouseX = Math.min(Math.max(parseInt(mouseX), mouseRange[0]), mouseRange[1]); 
+  mouseX = bart.clamp(mouseX, mouseRange[0], mouseRange[1]); 
 
   // recover coordinate from the fitted line
   const data = Array.from(bart.data.fits, d => d.caloriesConsumed);

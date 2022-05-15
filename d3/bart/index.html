@@ -21,6 +21,7 @@
 
       <h2>Notes</h2>
       <p>This is mostly just a UX experiment; causal definitions are loosely interpreted</p>
+      <p>Add single tree and true response curve?</p>
 
       <br><br><br>
     </div>
@@ -82,6 +83,31 @@
 
       <p><br></p>
 
+      <h2>Functional form</h2>
+
+      <p>BART performs well across various functional forms. Drag the <a style="color: #FF6978; font-weight: 500;">handles</a> (<i class="fa-solid fa-hand-pointer" style="color: #FF6978;"></i>) to adjust the treatment group's functional form and then refit the models.</p>
+
+      <div id='bart-plot-functional'></div>
+      <div class="bart-button-group">
+        <div class="bart-generate-group">
+          <p>Generate points</p>
+          <button id="bart-functional-fit" onclick="bart.functional.runModel()">Generate</button>
+        </div>
+        <div class="bart-tab-group">
+          <p>Choose model</p>
+          <div class="bart-tab-subgroup">
+            <button id="bart-functional-tab-none" class="bart-tab-button" onclick="bart.functional.showModel('none')">None</button>
+            <button id="bart-functional-tab-diff" class="bart-tab-button" disabled onclick="bart.functional.showModel('diff')">Mean difference</button>
+            <button id="bart-functional-tab-lm" class="bart-tab-button" disabled onclick="bart.functional.showModel('lm')">Linear regression</button>
+            <button id="bart-functional-tab-bart" class="bart-tab-button" disabled onclick="bart.functional.showModel('bart')">BART</button>
+          </div>
+        </div>
+      </div>
+      <br>
+      Add div here showing summary stats?
+
+      <p><br></p>
+
       <h2>BART posterior</h2>
 
       <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
@@ -96,13 +122,6 @@
 
       <!-- <p><br></p> -->
 
-      <h2>Functional form</h2>
-
-      <p>To demonstrate how adjusting BART performs across various functional forms, drag the handles (<i class="fa-solid fa-hand-pointer" style="color: #FF6978;"></i>) to adjust the treatment group's functional form and refit the models.</p>
-
-      <div id='bart-plot-functional'></div>
-      <button id="bart-functional-fit" onclick="bart.functional.runModel()">Fit model</button>
-      Add slider here to show diff means, lm, bart
 
     </div>
     </div>
@@ -111,6 +130,7 @@
 <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://d3js.org/d3.v5.js"></script>
 <script src="https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"></script> -->
+<!-- <script src="https://unpkg.com/d3-regression@1.3.10/dist/d3-regression.min.js"></script> -->
 <script src="../src/jquery-3.3.1.slim.min.js"></script>
 <script src="../src/d3.v5.js"></script>
 <script src="../src/jstat.min.js"></script>
