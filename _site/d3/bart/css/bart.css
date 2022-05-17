@@ -52,7 +52,7 @@ body {
 
 .bart-draggable {
   cursor: pointer;
-  fill: #FF6978;
+  fill: #a269b5;
   /* opacity: 0.8; */
   /* stroke: #fff; */
   /* stroke-width: 0.15em; */
@@ -61,7 +61,7 @@ body {
 }
 
 .bart-draggable-line {
-  stroke: #FF6978;
+  stroke: #a269b5;
   stroke-width: 1.5px;
   /* opacity: 0.8; */
   fill: none;
@@ -171,11 +171,15 @@ button:active {
 }
 
 .bart-button-group{
+  width: 100%;
+  height: 80px;
   display: flex;
-  justify-content: start;
+  /* flex-wrap: wrap; */
+  /* justify-content: start; */
 }
 
 .bart-tab-subgroup {
+  height: 100%;
   display: flex;
   justify-content: space-between;
   background: rgb(240, 240, 240);
@@ -186,7 +190,7 @@ button:active {
   width: 25%;
   background-color: transparent;
   color: #a8a8a8;
-  font-size: 1em;
+  font-size: 0.9em;
   border-top: transparent solid 2px;
   margin-top: 0px;
 }
@@ -203,7 +207,8 @@ button:active {
 }
 
 #bart-functional-fit, #bart-functional-reset {
-  height: 62%;
+  height: 100%;
   padding: 0;
   margin-top: 0;
+  font-size: 0.9em;
 }

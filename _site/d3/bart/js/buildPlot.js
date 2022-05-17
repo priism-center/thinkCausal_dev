@@ -43,14 +43,14 @@ bart.getScales = function(data, config) {
 
   const colorScale = d3.scaleOrdinal()
     .domain(["0", "1"])
-    .range(["#21918c", "#440154"])
+    .range(["#21918c", "#9D8420"])
 
- return {xScale, yScale, colorScale}
+ return { xScale, yScale, colorScale }
 }
 
 bart.drawPlot = function(data, scales, config){
-  let {width, height, margin, container, bodyHeight, bodyWidth} = config;
-  const {xScale, yScale, colorScale} = scales
+  let { width, height, margin, container, bodyHeight, bodyWidth } = config;
+  const { xScale, yScale, colorScale } = scales
   // console.log('Data into bart.drawPlot():', data)
 
   // add all plot elements as a group for ease of later removal
