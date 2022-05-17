@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/bart.css">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
 </head>
 <body>
   <main>
@@ -57,13 +57,18 @@
 
         <h2 id="bart-trigger-3">State 3: Linear regression</h2>
 
-        <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
+        <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. </p>
 
-        <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
+        <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.</p>
+        <br><br><br><br><br><br><br><br><br>
+
+        <h2 id="bart-trigger-4">State 4: Regression tree</h2>
+
+        <p>A single regression tree more closely recaptures the true response surface. But ... To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable </p>
 
         <br><br><br><br><br><br><br><br><br>
 
-        <h2 id="bart-trigger-4">State 4: BART</h2>
+        <h2 id="bart-trigger-5">State 5: BART</h2>
 
         <p><a id="bart-text">Your study had an ATE of ____.</a> Because we have access to our potential outcomes time-machine, we can also plot each runner's unobserved (counterfactual) outcomes. When looking at counterfactual outcomes we see the running times runners 2,3,5,6 and 8 would have had if they were wearing sStandard sShoes which fills in the missing y0's.  We also seeand the running times runners 1, 4, 7 and 9 would have had if they were wearing HyperShoes which fills in the missing y1s.</p>
 
@@ -99,6 +104,7 @@
             <button id="bart-functional-tab-none" class="bart-tab-button" onclick="bart.functional.showModel('none')">None</button>
             <button id="bart-functional-tab-diff" class="bart-tab-button" disabled onclick="bart.functional.showModel('diff')">Mean difference</button>
             <button id="bart-functional-tab-lm" class="bart-tab-button" disabled onclick="bart.functional.showModel('lm')">Linear regression</button>
+            <button id="bart-functional-tab-tree" class="bart-tab-button" disabled onclick="bart.functional.showModel('tree')">Regression tree</button>
             <button id="bart-functional-tab-bart" class="bart-tab-button" disabled onclick="bart.functional.showModel('bart')">BART</button>
           </div>
         </div>
@@ -117,11 +123,28 @@
       <!-- <div id="fundamental-slider-efficiency-container">
         <input type="text" id="fundamental-slider-efficiency" class="js-range-slider" value="0" />
       </div> -->
-      <button id="bart-trigger" onclick="bart.triggerPosteriorAnimation()">Animate</button>
+      <button id="bart-trigger" onclick="bart.triggerPosteriorAnimation()">Show posterior</button>
+      <div id='bart-plot-posterior1'></div>
+
+      <h2>New version</h2>
+      <p>Replace above animation with plot similar to slides and book chaper:the predicted treatment effect plot with vertical intervals</p>
+      <p>Why are the intervals inconsistent?</p>
+      <button id="bart-trigger-posterior" onclick="bart.posterior.triggerAnimation()">Show posterior</button>
       <div id='bart-plot-posterior'></div>
 
       <!-- <p><br></p> -->
 
+      <h2>Common support</h2>
+
+      <p>The previous plot could be easily extended to illustrate overlap by allowing the user to shift the distributions left-and-right.</p>
+
+      <p>Two plots connected showing scatter and posterior of treatment effect. Slider to go from "perfect-overlap" to "half-overlap" in 10 increments which are pre-generated</p> 
+
+      <!-- <a class="bart-slider-label">Overlap</a> -->
+      <div id="bart-slider-overlap-container" style="max-width: 400px">
+        <input type="text" id="bart-slider-overlap" class="js-range-slider"/>
+      </div>
+      <div id='bart-plot-overlap'></div>
 
     </div>
     </div>
@@ -134,12 +157,13 @@
 <script src="../src/jquery-3.3.1.slim.min.js"></script>
 <script src="../src/d3.v5.js"></script>
 <script src="../src/jstat.min.js"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
 <script src="js/namespace.js"></script>
 <script src="js/helpers.js"></script>
-<!-- <script src="js/slider.js"></script> -->
+<script src="js/slider.js"></script>
 <script src="js/animation.js"></script>
 <script src="js/functional.js"></script>
+<script src="js/posterior.js"></script>
 <script src="js/scrollPlot.js"></script>
 <script src="js/buildPlot.js"></script>
 <script src="js/init.js"></script>

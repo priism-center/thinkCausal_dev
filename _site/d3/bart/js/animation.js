@@ -1,5 +1,3 @@
-// namespace for posterior distribution plot
-bart.animation = {}
 
 bart.animation.getScales = function(data, config) {
   const { bodyWidth, bodyHeight } = config;
@@ -112,7 +110,7 @@ bart.animation.drawDistributionPlot = function(data, scales, config){
   
 // animate the posterior plot
 bart.triggerPosteriorAnimation = function(){
-  let container = bart.posterior.config.container
+  let container = bart.posterior1.config.container
 
   // scales for the interval distribution plot
   const { xScale, yScale } = bart.animation.scales

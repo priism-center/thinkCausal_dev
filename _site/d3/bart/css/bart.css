@@ -38,7 +38,7 @@ body {
   max-width: 540px;
 } */
 
-#bart-plot-posterior, #bart-plot-functional {
+#bart-plot-animated, #bart-plot-functional, #bart-plot-posterior, #bart-plot-posterior1 {
   max-width: 630px; /*900px * 0.7*/
   padding: 2em 2em 0 2em;
 }
@@ -178,6 +178,10 @@ button:active {
   /* justify-content: start; */
 }
 
+.bart-tab-group {
+  max-width: 80%;
+}
+
 .bart-tab-subgroup {
   height: 100%;
   display: flex;
@@ -193,6 +197,7 @@ button:active {
   font-size: 0.9em;
   border-top: transparent solid 2px;
   margin-top: 0px;
+  padding: 0.5em;
 }
 
 .bart-tab-button:disabled {

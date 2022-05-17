@@ -103,7 +103,13 @@ bart.drawPlot = function(data, scales, config){
   let containerLines = container.append('g').attr('class', 'bart-lines-group')
   bart.addLines(containerLines, data, "diffFit0", "diffFit1", scales);
   bart.addLines(containerLines, data, "lmFit0", "lmFit1", scales);
+  bart.addLines(containerLines, data, "treeFit0", "treeFit1", scales);
   bart.addLines(containerLines, data, "bartFit0", "bartFit1", scales);
+  bart.addLines(containerLines, data, "trueFit0", "trueFit1", scales);
+
+  // add posterior intervals
+  let containerIntervals = container.append('g').attr('class', 'bart-intervals-group')
+  bart.posterior.addLines(containerIntervals, data, scales);
   
   // add title
   bart.addTitle(container);
@@ -205,13 +211,12 @@ bart.showData = function(data) {
   bart.drawScrollyPlot(data, scales, config);
   config.container.selectAll('.bart-observations').style('opacity', 0)
 
-  // build posterior plot
-  bart.posterior = {}
-  const configPosterior = bart.getConfig("#bart-plot-posterior");
-  bart.posterior.config = configPosterior;
-  const scalesPosterior = bart.getScales(data, configPosterior);
-  bart.posterior.scales = scalesPosterior;
-  bart.drawPosteriorPlot(data, scalesPosterior, configPosterior);
+  // build animated posterior plot
+  const configPosterior1 = bart.getConfig("#bart-plot-posterior1");
+  bart.posterior1.config = configPosterior1;
+  const scalesPosterior1 = bart.getScales(data, configPosterior1);
+  bart.posterior1.scales = scalesPosterior1;
+  bart.drawPosteriorPlot(data, scalesPosterior1, configPosterior1);
 
   // build functional form plot
   const configFunctional = bart.getConfig("#bart-plot-functional");
@@ -219,4 +224,11 @@ bart.showData = function(data) {
   const scalesFunctional = bart.getScales(data, configFunctional);
   bart.functional.scales = scalesFunctional;
   bart.functional.drawPlot(data, scalesFunctional, configFunctional);
+
+  // build posterior plot
+  const configPosterior = bart.getConfig("#bart-plot-posterior");
+  bart.posterior.config = configPosterior;
+  const scalesPosterior = bart.getScales(data, configPosterior);
+  bart.posterior.scales = scalesPosterior;
+  bart.posterior.drawPlot(data, scalesPosterior, configPosterior);
 }
