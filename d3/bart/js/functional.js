@@ -1,6 +1,3 @@
-// namespace
-bart.functional = {}
-
 // draw functional plot
 bart.functional.drawPlot = function(data, scales, config){
     const { container, selector } = config;

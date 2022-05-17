@@ -70,6 +70,28 @@ bart.scrollytellState4 = function(){
 
     // resets
     container.selectAll('.bart-lines').style('display', 'none');
+    container.selectAll('.bart-lines-treeFit0, .bart-lines-treeFit1')
+        .style('display', null);
+
+    // de-emphasize points
+    container.selectAll('.bart-observations').style('opacity', 0.2)
+
+    // update vertical line
+    bart.updatePointerOnScroll(container, 'tree')
+
+    // adjust subtitle
+    container.select('.bart-subtitle').text('Regression tree')
+
+
+    bart.emphasizeText("#bart-trigger-4, #bart-trigger-4 + p")
+}
+
+bart.scrollytellState5 = function(){
+    let container = bart.config.container
+    // console.log('bartState5')
+
+    // resets
+    container.selectAll('.bart-lines').style('display', 'none');
     container.selectAll('.bart-lines-bartFit0, .bart-lines-bartFit1')
         .style('display', null);
 
@@ -82,7 +104,7 @@ bart.scrollytellState4 = function(){
     // adjust subtitle
     container.select('.bart-subtitle').text('Bayesian Additive Regression Trees (BART)')
         
-    bart.emphasizeText("#bart-trigger-4, #bart-trigger-4 + p")
+    bart.emphasizeText("#bart-trigger-5, #bart-trigger-5 + p")
 }
 
 bart.plotState = 1
@@ -94,8 +116,9 @@ bart.triggerScrollytellAnimation = function(){
     let trigger2Pos = $('#bart-trigger-2')[0].getBoundingClientRect().top
     let trigger3Pos = $('#bart-trigger-3')[0].getBoundingClientRect().top
     let trigger4Pos = $('#bart-trigger-4')[0].getBoundingClientRect().top
-    let positions = [trigger1Pos, trigger2Pos, trigger3Pos, trigger4Pos]
-    let scrollyFns = [bart.scrollytellState1, bart.scrollytellState2, bart.scrollytellState3, bart.scrollytellState4]
+    let trigger5Pos = $('#bart-trigger-5')[0].getBoundingClientRect().top
+    let positions = [trigger1Pos, trigger2Pos, trigger3Pos, trigger4Pos, trigger5Pos]
+    let scrollyFns = [bart.scrollytellState1, bart.scrollytellState2, bart.scrollytellState3, bart.scrollytellState4, bart.scrollytellState5]
 
     // make off page elements positive
     positions = positions.map(Math.abs)

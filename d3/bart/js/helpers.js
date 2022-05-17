@@ -244,12 +244,12 @@ bart.resetPosteriorPlot = function(){
   $('#bart-reset').remove()
 
   // remove existing
-  d3.select('#bart-plot-posterior > svg').remove()
+  d3.select('#bart-plot-posterior1 > svg').remove()
 
   // build posterior plot
-  const configPosterior = bart.getConfig("#bart-plot-posterior");
-  bart.posterior.config = configPosterior;
+  const configPosterior = bart.getConfig("#bart-plot-posterior1");
+  bart.posterior1.config = configPosterior;
   const scalesPosterior = bart.getScales(data, configPosterior);
-  bart.posterior.scales = scalesPosterior;
+  bart.posterior1.scales = scalesPosterior;
   bart.drawPosteriorPlot(data, scalesPosterior, configPosterior);
 }
