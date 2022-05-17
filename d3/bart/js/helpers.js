@@ -24,7 +24,7 @@ bart.clamp = function(x, min, max){
 bart.generateData = function(){
   let data = bart.functional.movedPoints
   let newData = JSON.parse(JSON.stringify(data)) // deep copy
-  let n = bart.data.observations.length / 2
+  let n = bart.data.observations.filter(d => d.z == '1').length
   let rangeX = bart.functional.scales.xScale.domain()
 
   // generate noise
@@ -78,22 +78,6 @@ bart.interpolateArray = function(data, fitCount) {
   newData[fitCount - 1] = data[data.length - 1]; // for new allocation
   return newData;
 };
-
-// fundamental.generateData = function(mean, sd){
-//   // let sd = 10 //30 //Math.max(...[0.5, Math.abs(mean) * 0.2]) 
-//   let n = 1000
-//   let distribution = d3.range(n).map(function(i){
-//     num = jStat.normal.sample(mean, sd)
-//     num = num.toString()
-//     return {'x': num, "index": i}
-//   })
-
-//   return distribution;
-// }
-
-// fundamental.sampleFrom = function(array){
-//   return array[Math.floor(Math.random() * array.length)];
-// }
 
 bart.emphasizeText = function(selectors){
   // de-emphasize this text
@@ -169,7 +153,7 @@ bart.addLegend = function(container, scales, config){
     .append('g')
     .attr("class", "bart-legend")
     .attr("transform", 
-          "translate(" + bodyWidth*7/9 + "," + (0 - (margin.bottom*3/5)) + ")")
+          "translate(" + bodyWidth*7/9 + "," + (0 - (margin.bottom)) + ")")
 
   legend.append("circle")
     .attr("cx", 0)
