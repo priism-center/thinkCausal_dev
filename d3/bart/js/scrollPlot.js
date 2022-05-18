@@ -107,6 +107,27 @@ bart.scrollytellState5 = function(){
     bart.emphasizeText("#bart-trigger-5, #bart-trigger-5 + p")
 }
 
+bart.scrollytellState6 = function(){
+    let container = bart.config.container
+    // console.log('bartState6')
+
+    // resets
+    container.selectAll('.bart-lines').style('display', 'none');
+    container.selectAll('.bart-lines-trueFit0, .bart-lines-trueFit1')
+        .style('display', null);
+
+    // de-emphasize points
+    container.selectAll('.bart-observations').style('opacity', 0.2)
+
+    // update vertical line
+    bart.updatePointerOnScroll(container, 'true')
+
+    // adjust subtitle
+    container.select('.bart-subtitle').text('Bayesian Additive Regression Trees (BART)')
+        
+    bart.emphasizeText("#bart-trigger-6, #bart-trigger-6 + p")
+}
+
 bart.plotState = 1
 bart.triggerScrollytellAnimation = function(){
     // trigger the closest animation
@@ -117,8 +138,9 @@ bart.triggerScrollytellAnimation = function(){
     let trigger3Pos = $('#bart-trigger-3')[0].getBoundingClientRect().top
     let trigger4Pos = $('#bart-trigger-4')[0].getBoundingClientRect().top
     let trigger5Pos = $('#bart-trigger-5')[0].getBoundingClientRect().top
-    let positions = [trigger1Pos, trigger2Pos, trigger3Pos, trigger4Pos, trigger5Pos]
-    let scrollyFns = [bart.scrollytellState1, bart.scrollytellState2, bart.scrollytellState3, bart.scrollytellState4, bart.scrollytellState5]
+    let trigger6Pos = $('#bart-trigger-6')[0].getBoundingClientRect().top
+    let positions = [trigger1Pos, trigger2Pos, trigger3Pos, trigger4Pos, trigger5Pos, trigger6Pos]
+    let scrollyFns = [bart.scrollytellState1, bart.scrollytellState2, bart.scrollytellState3, bart.scrollytellState4, bart.scrollytellState5, bart.scrollytellState6]
 
     // make off page elements positive
     positions = positions.map(Math.abs)

@@ -23,6 +23,11 @@ bart.posterior.drawPlot = function(data, scales, config){
 
 bart.posterior.triggerAnimation = function(){
     const { container } = bart.posterior.config
+
+    // replace button
+    let newButton = $('<button id="bart-posterior-reset" onclick="bart.posterior.reset()">Hide posterior</button>')
+    $('#bart-trigger-posterior').after(newButton)
+    $('#bart-trigger-posterior').remove()
     
     // show posterior lines
     container.selectAll('.bart-distribution-line')
@@ -34,6 +39,35 @@ bart.posterior.triggerAnimation = function(){
 
     // adjust title
     container.select('.bart-title').text('Posterior distribution')
+}
+
+bart.posterior.reset = function(){
+    const data = bart.data
+    const { container } = bart.posterior.config
+
+    // replace button
+    let newButton = $('<button id="bart-trigger-posterior" onclick="bart.posterior.triggerAnimation()">Show posterior</button>')
+    $('#bart-posterior-reset').after(newButton)
+    $('#bart-posterior-reset').remove()
+
+    // hide posterior lines
+    container.selectAll('.bart-distribution-line')
+        .transition()
+        .duration(1000)
+        .style('opacity', 0)
+
+    // adjust title
+    container.select('.bart-title').text('Heterogeneous treatment effects')
+  
+    // // remove existing
+    // d3.select('#bart-plot-posterior > svg').remove()
+  
+    // // build posterior plot
+    // const configPosterior = bart.getConfig("#bart-plot-posterior");
+    // bart.posterior.config = configPosterior;
+    // const scalesPosterior = bart.getScales(data, configPosterior);
+    // bart.posterior.scales = scalesPosterior;
+    // bart.posterior.drawPlot(data, scalesPosterior, configPosterior);
 }
 
 // add posterior credible intervals

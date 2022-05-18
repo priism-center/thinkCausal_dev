@@ -38,6 +38,10 @@ body {
   max-width: 540px;
 } */
 
+#bart-check-true {
+  position: relative;
+}
+
 #bart-plot-animated, #bart-plot-functional, #bart-plot-posterior, #bart-plot-posterior1 {
   max-width: 630px; /*900px * 0.7*/
   padding: 2em 2em 0 2em;
