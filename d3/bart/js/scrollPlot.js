@@ -123,7 +123,7 @@ bart.scrollytellState6 = function(){
     bart.updatePointerOnScroll(container, 'true')
 
     // adjust subtitle
-    container.select('.bart-subtitle').text('Bayesian Additive Regression Trees (BART)')
+    container.select('.bart-subtitle').text('True response surface')
         
     bart.emphasizeText("#bart-trigger-6, #bart-trigger-6 + p")
 }

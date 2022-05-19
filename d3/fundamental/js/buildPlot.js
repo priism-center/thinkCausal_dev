@@ -179,7 +179,7 @@ fundamental.updatePlot = function(value) {
   fundamental.data.trueMean = newMean
 
   // generate new distribution and study based on input
-  fundamental.data.distribution = fundamental.generateData(newMean, fundamental.data.trueSD);
+  fundamental.data.distribution = fundamental.generateData(newMean, fundamental.data.trueSD, fundamental.data.n);
   fundamental.data.studyLine = fundamental.setStudy();
   fundamental.data.sampleMean = d3.mean(fundamental.data.distribution, d => d.x);
   // fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
@@ -250,7 +250,8 @@ fundamental.showData = function() {
     fundamental.data = {}
     fundamental.data.trueMean = 0;
     fundamental.data.trueSD = 10;
-    fundamental.data.distribution = fundamental.generateData(fundamental.data.trueMean, fundamental.data.trueSD);
+    fundamental.data.n = 1000
+    fundamental.data.distribution = fundamental.generateData(fundamental.data.trueMean, fundamental.data.trueSD, fundamental.data.n);
     // fundamental.data.studyLine = fundamental.sampleFrom(fundamental.data.distribution).x;
     fundamental.data.studyLine = fundamental.setStudy()
     fundamental.data.distribution[0].x = fundamental.setFirstRepeat()
@@ -326,7 +327,8 @@ fundamental.buildEfficiencyPlot = function(){
 
   // calculate new kde
   let wideningFactor = 1.75
-  let data = fundamental.generateData(fundamental.data.trueMean, fundamental.data.trueSD * wideningFactor);
+  let n = 100000 // for additionally smoothing per Jennifer
+  let data = fundamental.generateData(fundamental.data.trueMean, fundamental.data.trueSD * wideningFactor, n);
 
   // duplicate current KDE
   container.select('.fundamental-kde')
@@ -410,21 +412,30 @@ fundamental.buildBiasPlot = function(){
   // add labels 
   container.append('text')
     .attr('class', 'fundamental-support-label fundamental-bias-label-old')
-    .attr("x", bodyWidth * 1/2)
+    .attr("x", bodyWidth * 0.47)
     .attr('y', 10)
     .attr('text-anchor', 'middle')
     .text('Unbiased')
   container.append('text')
-    .attr('class', 'fundamental-support-label fundamental-bias-label-new')
-    .attr("x", bodyWidth * 2.5/4)
+    .attr('class', 'fundamental-support-label fundamental-bias-label-low')
+    .attr("x", bodyWidth * 0.6)
     .attr('y', 10)
     .attr('text-anchor', 'middle')
-    .text('Biased')
+    .text('Low bias')
+    .style('opacity', 0)
+  container.append('text')
+    .attr('class', 'fundamental-support-label fundamental-bias-label-high')
+    .attr("x", bodyWidth * 0.7)
+    .attr('y', 10)
+    .attr('text-anchor', 'middle')
+    .text('High bias')
     .style('opacity', 0)
 
   // calculate new kde by shifting the current kde
-  let data = JSON.parse(JSON.stringify(fundamental.data.distribution)) // deep copy
-  data.forEach(d => d.x = +d.x + 7) // right shift
+  let dataMediumBias = JSON.parse(JSON.stringify(fundamental.data.distribution)) // deep copy
+  let dataHighBias = JSON.parse(JSON.stringify(fundamental.data.distribution)) // deep copy
+  dataMediumBias.forEach(d => d.x = +d.x + 7) // right shift
+  dataHighBias.forEach(d => d.x = +d.x + 20) // right shift
 
   // duplicate current KDE
   container.select('.fundamental-kde')
@@ -435,14 +446,15 @@ fundamental.buildBiasPlot = function(){
   // calculate new KDE
   let thresholds = xScale.ticks(30)
   let densityOld = kde(epanechnikov(7), thresholds, fundamental.data.distribution)
-  let densityNew = kde(epanechnikov(7), thresholds, data)
+  let densityMediumBias = kde(epanechnikov(7), thresholds, dataMediumBias)
+  let densityHighBias = kde(epanechnikov(7), thresholds, dataHighBias)
 
   // transitions to and fro new KDE
   let duration = 5000
-  function transitionToNewKDE(){
+  function transitionToLowKDE(){
     let stall = 1000
     container.select('.fundamental-kde') 
-      .datum(densityNew)
+      .datum(densityMediumBias)
       .transition()
       .duration(duration)
       .delay(stall)
@@ -452,21 +464,51 @@ fundamental.buildBiasPlot = function(){
         .y(d => yScale(d[1]))
       )
       // .ease(d3.easeQuadOut) //https://github.com/d3/d3-ease
-      .on('end', transitionToOldKDE)
+      .on('end', transitionToHighKDE)
 
     // update labels
-    container.select('.fundamental-bias-label-old')
-      .transition()
-      .duration(duration)
-      .delay(stall)
-      .ease(d3.easeExpOut)
-      .style('opacity', 0)
-    container.select('.fundamental-bias-label-new')
+    container.select('.fundamental-bias-label-low')
       .transition()
       .duration(duration)
       .delay(stall)
       .ease(d3.easeExpIn)
       .style('opacity', 1)
+    container.selectAll('.fundamental-bias-label-old, .fundamental-bias-label-high')
+      .transition()
+      .duration(duration)
+      .delay(stall)
+      .ease(d3.easeExpOut)
+      .style('opacity', 0)
+  }
+  function transitionToHighKDE(){
+    let stall = 3000
+    // update KDE
+    container.select('.fundamental-kde')
+      .datum(densityHighBias)
+      .transition()
+      .duration(duration)
+      .delay(stall)
+      .attr('d', d3.line()
+        .curve(d3.curveBasis)
+        .x(d => xScale(d[0]))
+        .y(d => yScale(d[1]))
+      )
+      // .ease(d3.easeQuadInOut) //https://github.com/d3/d3-ease
+      .on('end', transitionToOldKDE)
+
+    // update labels
+    container.select('.fundamental-bias-label-high')
+      .transition()
+      .duration(duration)
+      .delay(stall)
+      .ease(d3.easeExpIn)
+      .style('opacity', 1)
+    container.selectAll('.fundamental-bias-label-old, .fundamental-bias-label-low')
+      .transition()
+      .duration(duration)
+      .delay(stall)
+      .ease(d3.easeExpOut)
+      .style('opacity', 0)
   }
   function transitionToOldKDE(){
     let stall = 3000
@@ -482,7 +524,7 @@ fundamental.buildBiasPlot = function(){
         .y(d => yScale(d[1]))
       )
       // .ease(d3.easeQuadInOut) //https://github.com/d3/d3-ease
-      .on('end', transitionToNewKDE)
+      .on('end', transitionToLowKDE)
 
     // update labels
     container.select('.fundamental-bias-label-old')
@@ -491,7 +533,7 @@ fundamental.buildBiasPlot = function(){
       .delay(stall)
       .ease(d3.easeExpIn)
       .style('opacity', 1)
-    container.select('.fundamental-bias-label-new')
+    container.selectAll('.fundamental-bias-label-low, .fundamental-bias-label-high')
       .transition()
       .duration(duration)
       .delay(stall)
@@ -500,7 +542,7 @@ fundamental.buildBiasPlot = function(){
   }
 
   // initialize transition
-  transitionToNewKDE()
+  transitionToLowKDE()
 
   // wrap labels in a div
   // $('.fundamental-support-label').wrap("<div class='fundamental-support-label-bg'></div>")

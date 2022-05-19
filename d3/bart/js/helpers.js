@@ -229,7 +229,7 @@ bart.onMouseMove = function() {
   ATE = bart.roundNumber(ATE, 1)
   bart.tooltip
     .style('display', null)
-    .html(`<p style='font-weight: 500'>Average treatment effect: ${ATE}<br>Individual conditional average treatment effect: ${ICATE}`)
+    .html(`<p style='font-weight: 500'>Average treatment effect: ${ATE}<br>Conditional average treatment effect: ${ICATE}`)
     .style("left", (d3.event.layerX + 20) + "px")
     .style("top", (d3.event.layerY + 5) + "px")
 }

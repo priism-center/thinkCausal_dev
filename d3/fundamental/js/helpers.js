@@ -1,7 +1,7 @@
 
-fundamental.generateData = function(mean, sd){
+fundamental.generateData = function(mean, sd, n){
     // let sd = 10 //30 //Math.max(...[0.5, Math.abs(mean) * 0.2]) 
-    let n = 1000
+    // let n = 1000
     let distribution = d3.range(n).map(function(i){
       num = jStat.normal.sample(mean, sd)
       num = num.toString()
