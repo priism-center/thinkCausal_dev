@@ -8,14 +8,14 @@ bart.posterior.drawPlot = function(data, scales, config){
   
     // remove fitted lines besides BART
     let selectors = ".bart-lines-bartFit0, .bart-lines-bartFit1"
-    container.selectAll(`.bart-lines-group > :not(${selectors})`).remove()
+    // container.selectAll(`.bart-lines-group > :not(${selectors})`).remove()
     container.selectAll(selectors).style('display', null)
 
     // de-emphasize points
     container.selectAll('.bart-observations').transition().style('opacity', 0.2)
 
     // add title
-    container.select('.bart-subtitle').text('Bayesian Additive Regression Trees (BART)')
+    container.select('.bart-title').text('BART response surface')
 
     // add subtitle
     container.select('.bart-subtitle').text('Bayesian Additive Regression Trees (BART)')
@@ -36,9 +36,25 @@ bart.posterior.triggerAnimation = function(){
         .transition()
         .duration(1000)
         .style('opacity', 0.6)
+    
+    // hide bart lines
+    container.selectAll('.bart-lines-bartFit0, .bart-lines-bartFit1')
+        .transition()
+        .duration(1000)
+        .delay(2000)
+        .style('opacity', 0)
+
+    // show true fit
+    container.selectAll('.bart-lines-trueFit0, .bart-lines-trueFit1')
+        .style('opacity', 0)
+        .style('display', null)
+        .transition()
+        .duration(1000)
+        .delay(3000)
+        .style('opacity', 1)
 
     // adjust title
-    container.select('.bart-title').text('Posterior distribution')
+    container.select('.bart-title').text('BART posterior + true response surface')
 }
 
 bart.posterior.reset = function(){
@@ -51,13 +67,19 @@ bart.posterior.reset = function(){
     $('#bart-posterior-reset').remove()
 
     // hide posterior lines
-    container.selectAll('.bart-distribution-line')
+    container.selectAll('.bart-distribution-line, .bart-lines-trueFit0, .bart-lines-trueFit1')
         .transition()
         .duration(1000)
         .style('opacity', 0)
+    
+    // show bart lines
+    container.selectAll('.bart-lines-bartFit0, .bart-lines-bartFit1')
+        .transition()
+        .duration(1000)
+        .style('opacity', 1)
 
     // adjust title
-    container.select('.bart-title').text('Heterogeneous treatment effects')
+    container.select('.bart-title').text('BART response surface')
   
     // // remove existing
     // d3.select('#bart-plot-posterior > svg').remove()
