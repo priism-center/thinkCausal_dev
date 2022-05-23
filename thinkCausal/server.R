@@ -99,6 +99,36 @@ shinyServer(function(input, output, session) {
   store <- server_results(store = store, id = isolate(store$module_ids$analysis$results), global_session = session)
   
 
+  # analysis footer ---------------------------------------------------------
+
+  observeEvent(input$nav, {
+    
+    # display footer when in analysis section
+    current_page <- input$nav
+    footer_id <- paste0('progress-footer-', current_page)
+    is_analysis <- stringr::str_detect(current_page, "^analysis")
+    if (isTRUE(is_analysis)) {
+      shinyjs::runjs(
+        '$(".progress-footer-tab").show()'
+      )
+    } else {
+      shinyjs::runjs(
+        '$(".progress-footer-tab").hide()'
+      )
+    }
+    
+    # highlight current footer
+    shinyjs::runjs(
+      paste0(
+        '$(".progress-footer-tab").css("font-weight", "");',
+        '$("#',
+        footer_id,
+        '").css("font-weight", 600)'
+      )
+    )
+  })
+  
+
   # moderators  -------------------------------------------------------------
 
   # render plot type options

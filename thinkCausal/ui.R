@@ -70,17 +70,10 @@ shinyUI(
         
         # add footer elements
         tags$footer(
-            div(
-              class = 'left-align',
-              a(href="https://steinhardt.nyu.edu/priism", "New York University")
-            ),
-            div(
-              class = 'right-align',
-              a(onclick = 'openHelp()', style = 'cursor: pointer', "Help")
-            ),
+          progress_footer,
             
-            # load custom JavaScript files
-            map(list.files('www/js', pattern = "*.js"), function(file) tags$script(src = file.path('js', file)))
+          # load custom JavaScript files
+          map(list.files('www/js', pattern = "*.js"), function(file) tags$script(src = file.path('js', file)))
           )
     )
 )

@@ -446,6 +446,10 @@ fundamental.buildBiasPlot = function(){
   // calculate new KDE
   let thresholds = xScale.ticks(30)
   let densityOld = kde(epanechnikov(7), thresholds, fundamental.data.distribution)
+  // let densityMediumBias = JSON.parse(JSON.stringify(densityOld))
+  // let densityHighBias = JSON.parse(JSON.stringify(densityOld))
+  // densityMediumBias.map(d => d['0'] = d['0'] + 7)
+  // densityHighBias.map(d => d['0'] = d['0'] + 20)
   let densityMediumBias = kde(epanechnikov(7), thresholds, dataMediumBias)
   let densityHighBias = kde(epanechnikov(7), thresholds, dataHighBias)
 
