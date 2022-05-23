@@ -77,6 +77,8 @@ plot_exploration <- function(.data,
   if (isTRUE(.size == "None")) .size <- NULL
   if (isTRUE(.shape == "None")) .shape <- NULL
   if (length(.levels) > 1) .data <- clean_dummies_to_categorical(df = .data, group_names = c(.x, .levels), new_name = .x) 
+  if (length(.levels) > 1 & .groups != 'None') .data <- clean_dummies_to_categorical(df = .data, group_names = c(.groups, .levels), new_name = .groups) 
+  
 
   # create base ggplot object
   p <- ggplot(.data, aes_string(x = sym(.x)))

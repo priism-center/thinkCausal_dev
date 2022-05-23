@@ -50,7 +50,6 @@ server_design <- function(store, id, global_session){
       
       observeEvent(input$analysis_design_button_next, {
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$data)
-        updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Upload")
       })
 
       return(store)

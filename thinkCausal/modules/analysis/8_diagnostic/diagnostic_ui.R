@@ -2,7 +2,7 @@
 ui_diagnostic <- function(store, id){
   ns <- NS(id)
   tabPanel(
-    title = "Model diagnostics",
+    title = "Check Diagnostics",
     value = id,
     tabPanel(
       title = "Model diagnostics",

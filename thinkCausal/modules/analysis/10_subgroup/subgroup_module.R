@@ -9,6 +9,6 @@
 
 # source ui and server functions ------------------------------------------
 
-source('modules/analysis/6_results/results_ui.R')
-source('modules/analysis/6_results/results_server.R')
+source('modules/analysis/10_subgroup/subgroup_ui.R')
+source('modules/analysis/10_subgroup/subgroup_server.R')
 

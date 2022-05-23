@@ -9,7 +9,7 @@
 #' @export
 fit_bart <- function(.data, support, ran.eff, .estimand){
   tryCatch({
-    if(ran.eff == 'None'){
+    if(ran.eff == 'No'){
         bartCause::bartc(
           response = .data[, 2], 
           treatment = .data[, 1], 

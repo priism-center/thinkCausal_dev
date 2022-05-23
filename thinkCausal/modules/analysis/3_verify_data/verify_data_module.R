@@ -9,6 +9,6 @@
 
 # source ui and server functions ------------------------------------------
 
-source('modules/analysis/5_diagnostic/diagnostic_ui.R')
-source('modules/analysis/5_diagnostic/diagnostic_server.R')
+source('modules/analysis/3_verify_data/verify_data_ui.R')
+source('modules/analysis/3_verify_data/verify_data_server.R')
 
