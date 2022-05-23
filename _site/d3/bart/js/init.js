@@ -29,6 +29,7 @@ bart.loadData = function(){
       bart.data.credibleIntervalsY0 = datasets[3];
       bart.data.credibleIntervalsY1 = datasets[4];
       bart.data.draggablePoints = datasets[5];
+      // bart.data.overlap.one = 
       console.log("Loaded bart data:", bart.data)
       return bart.data;
   })

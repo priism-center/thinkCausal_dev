@@ -9,6 +9,18 @@ bart.functional.drawPlot = function(data, scales, config){
     // remove lines and treated observations
     container.selectAll(".bart-lines-group, .bart-observations[treatment='1']").remove()
 
+    // update legend
+    d3.select(selector).selectAll('.bart-checkbox').remove()
+    container.selectAll('.bart-legend-text-true').text('True surface')
+    container.selectAll('.bart-legend').append("rect")
+        .attr('x', -3.5)
+        .attr('y', 30)
+        .attr('width', 7)
+        .attr('height', 10)
+        .style('fill', '#a269b5')
+        // .attr('class', 'bart-draggable')
+        // .attr('pointer-events', 'none')
+
     // add spline
     container.append('path')
         .datum(data.draggablePoints)

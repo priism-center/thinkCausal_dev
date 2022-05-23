@@ -133,7 +133,7 @@ bart.addTitle = function(container){
   containerTitle
     .append('text')
     .attr('x', 0)
-    .attr('y', -35)
+    .attr('y', -40)
     .text('Heterogeneous treatment effects')
     .attr('class', 'bart-title')
   
@@ -141,42 +141,85 @@ bart.addTitle = function(container){
   containerTitle
     .append('text')
     .attr('x', 0)
-    .attr('y', -15)
+    .attr('y', -20)
     .attr('class', 'bart-subtitle')
 }
 
 bart.addLegend = function(container, scales, config){
   const {xScale, yScale, colorScale} = scales
-  const {bodyWidth, bodyHeight, margin} = config
+  const {bodyWidth, bodyHeight, margin, selector} = config
   
   let legend = container
     .append('g')
     .attr("class", "bart-legend")
     .attr("transform", 
-          "translate(" + bodyWidth*7/9 + "," + (0 - (margin.bottom)) + ")")
+          "translate(" + bodyWidth*0.8 + "," + (0 - (margin.bottom)) + ")")
 
   legend.append("circle")
     .attr("cx", 0)
-    .attr("cy", 10)
+    .attr("cy", 0)
     .attr("r", 5)
     .style("fill", colorScale('0'))
   legend.append("circle")
     .attr("cx", 0)
-    .attr("cy", 30)
+    .attr("cy", 18)
     .attr("r", 5)
     .style("fill", colorScale('1'))
+  // legend.append("circle")
+  //   .attr("cx", 0)
+  //   .attr("cy", 36)
+  //   .attr("r", 5)
+  //   .style("fill", colorScale('true'))
   legend.append("text")
     .attr("x", 10)
-    .attr("y", 10)
+    .attr("y", 0)
     .text("Control")
     .attr("dominant-baseline", "middle")
     .attr('class', 'bart-legend-text')
   legend.append("text")
     .attr("x", 10)
-    .attr("y", 30)
+    .attr("y", 18)
     .text("Treatment")
     .attr("dominant-baseline", "middle")
     .attr('class', 'bart-legend-text')
+  legend.append("text")
+    .attr("x", 10)
+    .attr("y", 36)
+    .text("Show true surface")
+    .attr("dominant-baseline", "middle")
+    .attr('class', 'bart-legend-text bart-legend-text-true')
+  
+  // add checkbox (cannot append to svg)
+  // TODO: doesn't scale well (I think b/c config pixels are scaled to the viewbox)
+  let plotWidthPx = d3.select(selector + '> svg').node().getBoundingClientRect().width
+  let plotHeightPx = d3.select(selector + '> svg').node().getBoundingClientRect().height
+  d3.select(selector).append('input')
+    .attr('type', 'checkbox')
+    .attr('id', `${selector}-checkbox`.substring(1))
+    .attr('class', 'bart-checkbox')
+    .style('position', 'relative')
+    .style('bottom', `${plotHeightPx * 0.932}px`)
+    .style('left', `${plotWidthPx * 0.773}px`)
+  
+  // add listener to resize checkbox when window resizes
+  // doesn't work well because how position is set: use .offset() instead?
+  function resizeCheckbox(){
+    let newPlotWidthPx = d3.select(selector + '> svg').node().getBoundingClientRect().width
+    let newPlotHeightPx = d3.select(selector + '> svg').node().getBoundingClientRect().height
+    d3.select(`${selector}-checkbox`)
+      .style('bottom', `${newPlotHeightPx * 0.932}px`)
+      .style('left', `${newPlotWidthPx * 0.773}px`)
+      .style('transform', `scale(${newPlotWidthPx / plotWidthPx})`)
+  }
+  $(window).resize(resizeCheckbox)
+  
+  // add listener to checkbox
+  d3.select(`${selector}-checkbox`).on('change', function(){
+    let checked = d3.select(`${selector}-checkbox`).property('checked')
+    container.selectAll('.bart-lines-trueFit0, .bart-lines-trueFit1')
+      .style('display', checked ? null : 'none')
+      .style('opacity', checked ? 0.6 : 0)
+  })
 }
 
 // reset the pointer events for each scrollytell state

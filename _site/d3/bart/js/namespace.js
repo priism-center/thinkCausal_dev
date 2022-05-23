@@ -3,7 +3,7 @@
 // e.g. bart.myFunction = function(x){...}
 var bart = bart || {};
 bart.posterior = {};
-bart.posterior1 = {}; // old
+bart.posterior1 = {}; // old plot to be removed
 bart.animation = {};
 bart.animated = {};
 bart.functional = {};

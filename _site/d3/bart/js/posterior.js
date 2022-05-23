@@ -38,23 +38,23 @@ bart.posterior.triggerAnimation = function(){
         .style('opacity', 0.6)
     
     // hide bart lines
-    container.selectAll('.bart-lines-bartFit0, .bart-lines-bartFit1')
-        .transition()
-        .duration(1000)
-        .delay(2000)
-        .style('opacity', 0)
+    // container.selectAll('.bart-lines-bartFit0, .bart-lines-bartFit1')
+    //     .transition()
+    //     .duration(1000)
+    //     .delay(2000)
+    //     .style('opacity', 0)
 
     // show true fit
-    container.selectAll('.bart-lines-trueFit0, .bart-lines-trueFit1')
-        .style('opacity', 0)
-        .style('display', null)
-        .transition()
-        .duration(1000)
-        .delay(3000)
-        .style('opacity', 1)
+    // container.selectAll('.bart-lines-trueFit0, .bart-lines-trueFit1')
+    //     .style('opacity', 0)
+    //     .style('display', null)
+    //     .transition()
+    //     .duration(1000)
+    //     .delay(3000)
+    //     .style('opacity', 1)
 
     // adjust title
-    container.select('.bart-title').text('BART posterior + true response surface')
+    container.select('.bart-title').text('BART posterior')
 }
 
 bart.posterior.reset = function(){
@@ -67,7 +67,7 @@ bart.posterior.reset = function(){
     $('#bart-posterior-reset').remove()
 
     // hide posterior lines
-    container.selectAll('.bart-distribution-line, .bart-lines-trueFit0, .bart-lines-trueFit1')
+    container.selectAll('.bart-distribution-line') //, .bart-lines-trueFit0, .bart-lines-trueFit1')
         .transition()
         .duration(1000)
         .style('opacity', 0)
