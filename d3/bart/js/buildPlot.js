@@ -3,7 +3,7 @@ bart.getConfig = function(selector) {
   const width = 540; //900px is width of learning article * 0.6
   const height = 400;
   const margin = {
-      top: 50,
+      top: 60,
       bottom: 50,
       left: 60,
       right: 20
@@ -42,8 +42,8 @@ bart.getScales = function(data, config) {
     .range([bodyHeight, 0])
 
   const colorScale = d3.scaleOrdinal()
-    .domain(["0", "1"])
-    .range(["#21918c", "#9D8420"])
+    .domain(["0", "1", 'true'])
+    .range(["#21918c", "#9D8420", '#303030'])
 
  return { xScale, yScale, colorScale }
 }
@@ -106,6 +106,7 @@ bart.drawPlot = function(data, scales, config){
   bart.addLines(containerLines, data, "treeFit0", "treeFit1", scales);
   bart.addLines(containerLines, data, "bartFit0", "bartFit1", scales);
   bart.addLines(containerLines, data, "trueFit0", "trueFit1", scales);
+  containerLines.selectAll('.bart-lines-trueFit0, .bart-lines-trueFit1').style("stroke", colorScale('true'))
 
   // add posterior intervals
   let containerIntervals = container.append('g').attr('class', 'bart-intervals-group')
@@ -231,4 +232,11 @@ bart.showData = function(data) {
   const scalesPosterior = bart.getScales(data, configPosterior);
   bart.posterior.scales = scalesPosterior;
   bart.posterior.drawPlot(data, scalesPosterior, configPosterior);
+
+  // build overlap plot
+  const configOverlap = bart.getConfig("#bart-plot-overlap");
+  bart.overlap.config = configOverlap;
+  const scalesOverlap = bart.overlap.getScales(data, configOverlap);
+  bart.overlap.scales = scalesOverlap;
+  bart.overlap.drawPlot(data, scalesOverlap, configOverlap);
 }

@@ -327,7 +327,7 @@ fundamental.buildEfficiencyPlot = function(){
 
   // calculate new kde
   let wideningFactor = 1.75
-  let n = 100000 // for additionally smoothing per Jennifer
+  let n = 10000 // for additionally smoothing per Jennifer
   let data = fundamental.generateData(fundamental.data.trueMean, fundamental.data.trueSD * wideningFactor, n);
 
   // duplicate current KDE

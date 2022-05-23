@@ -1,3 +1,6 @@
+# TODO: use the dgp from the textbook
+# https://github.com/gperrett/BART_example/blob/master/simulate_univariate.R
+
 # data for scatter plot
 library(dplyr)
 library(ggplot2)
@@ -107,6 +110,9 @@ cred_int_y1 <- extract_credible_intervals(y1)
 x <- seq(0, 1000, length.out = 8)
 preds <- colMeans(predict(bartEstimate, tibble(zz = 1, caloriesConsumed = x)));
 draggable_points <- tibble(runningTime = preds, caloriesConsumed = x)
+
+# additional data for overlap plot
+# TODO: generate a duplicate version of bart.data for each overlap position and then rebuild the overlap plot
 
 # readr::write_csv(.data, 'd3/bart/data/observations.csv')
 # readr::write_csv(.data_fitted, 'd3/bart/data/fits.csv')
