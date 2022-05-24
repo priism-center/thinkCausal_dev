@@ -93,7 +93,10 @@ shinyServer(function(input, output, session) {
 
   store <- server_design(store = store, id = isolate(store$module_ids$analysis$design), global_session = session)
   store <- server_data(store = store, id = isolate(store$module_ids$analysis$data), global_session = session)
+  store <- server_verify(store = store, id = isolate(store$module_ids$analysis$verify), global_session = session)
   store <- server_eda(store = store, id = isolate(store$module_ids$analysis$eda), global_session = session)
+  store <- server_balance(store = store, id = isolate(store$module_ids$analysis$balance), global_session = session)
+  store <- server_overlap(store = store, id = isolate(store$module_ids$analysis$overlap), global_session = session)
   store <- server_model(store = store, id = isolate(store$module_ids$analysis$model), global_session = session)
   store <- server_diagnostic(store = store, id = isolate(store$module_ids$analysis$diagnostic), global_session = session)
   store <- server_results(store = store, id = isolate(store$module_ids$analysis$results), global_session = session)

@@ -6,6 +6,7 @@
 #' @param .plot_type  one of c('Scatter', 'Histogram', 'Density', 'Boxplot')
 #' @param .x 
 #' @param .y 
+#' @param .levels
 #' @param .fill 
 #' @param .fill_static 
 #' @param .size 
@@ -19,7 +20,7 @@
 #' @param .facet_second 
 #' @param .include_regression one of c("Include", "None")
 #' 
-#' @author Joe Marlo
+#' @author Joe Marlo and George Perrett
 #'
 #' @return
 #' @export
@@ -56,6 +57,7 @@ plot_exploration <- function(.data,
                              .plot_type = c('Scatter', 'Histogram', "Barplot", 'Density', 'Boxplot'),
                              .x,
                              .y,
+                             .levels, 
                              .fill,
                              .fill_static = "grey20",
                              .size,
@@ -74,7 +76,10 @@ plot_exploration <- function(.data,
   .color <- .fill 
   if (isTRUE(.size == "None")) .size <- NULL
   if (isTRUE(.shape == "None")) .shape <- NULL
+  if (length(.levels) > 1) .data <- clean_dummies_to_categorical(df = .data, group_names = c(.x, .levels), new_name = .x) 
+  if (length(.levels) > 1 & .groups != 'None') .data <- clean_dummies_to_categorical(df = .data, group_names = c(.groups, .levels), new_name = .groups) 
   
+
   # create base ggplot object
   p <- ggplot(.data, aes_string(x = sym(.x)))
   
