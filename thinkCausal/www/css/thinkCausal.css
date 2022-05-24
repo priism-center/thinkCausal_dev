@@ -491,7 +491,8 @@ footer a:hover {
 .progress-footer-tab {
   display: none;
   cursor: pointer;
-  width: 100px;
+/*   padding: 0 1.1em 0 1.1em; */
+  width: 7em;
   text-align: center;
 }
 

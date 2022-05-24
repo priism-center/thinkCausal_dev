@@ -30,10 +30,22 @@ progress_footer <- tagList(
       '4. Model'
     ),
     tags$div(
+      id = paste0('progress-footer-', module_ids$analysis$diagnostic),
+      class = 'progress-footer-tab',
+      onclick = paste0("go_to_shiny_page('", module_ids$analysis$diagnostic, "')"),
+      '5. Diagnostics'
+    ),
+    tags$div(
       id = paste0('progress-footer-', module_ids$analysis$results),
       class = 'progress-footer-tab',
       onclick = paste0("go_to_shiny_page('", module_ids$analysis$results, "')"),
-      '5. Results'
+      '6. Results'
+    ),
+    tags$div(
+      id = paste0('progress-footer-', module_ids$analysis$subgroup),
+      class = 'progress-footer-tab',
+      onclick = paste0("go_to_shiny_page('", module_ids$analysis$subgroup, "')"),
+      '7. Subgroup'
     ),
     tags$div(
       class = 'right-align',

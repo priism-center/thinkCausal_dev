@@ -106,7 +106,7 @@ shinyServer(function(input, output, session) {
     # display footer when in analysis section
     current_page <- input$nav
     footer_id <- paste0('progress-footer-', current_page)
-    is_analysis <- stringr::str_detect(current_page, "^analysis")
+    is_analysis <- current_page %in% module_ids$analysis
     if (isTRUE(is_analysis)) {
       shinyjs::runjs(
         '$(".progress-footer-tab").show()'
