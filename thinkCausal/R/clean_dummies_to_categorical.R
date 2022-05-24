@@ -1,69 +1,54 @@
 # 
-#' Convert dummies in the same group to a categorical variable in a dataframe 
+#' Identify levels of an indicator variable when data is has alredy been one hot encoded 
 #' For thinkCausal app development use
 #' 
-#' @param i an integer to indicate the ith group of dummies. Useful to keep track of each group when there are multiple categorical variables in a dataframe
-#' @param df dataframe
-#' @param group_names a vector of strings that are the names of dummies in the same group
-#' @param rename_group a string of the name for the categorical variable
-#' @param problematic_group_names a vector of strings to indicate which groups have empty names. Initialize it as an empty vector, c(), 
-#' and then the function will return the group number if `rename_group` is an empty string and NUll if `rename_group` is not an empty string
+#' @param x a string that corresponds to the name of a variable that may be part of a categorical variable
+#' @param cat_df dataframe of all non continuous confounders
+
+#' @author George Perrett
 #' 
-#' @author Junhui Yang
-#' 
-#' @return a list containing group number of problematic group names, a cleaned daatframe with dummies collapsed to a categorical variable, 
-#' and a list of categorical variables' names and their components
+#' @return a list that containing a vecotr best and a list possible. best is the most likely combination of levels while possible is all possible combinations of levels
 #' @export
 #'
 #' @examples
-#' df <- data.frame(
-#' momwhite = c(1,0,0,0,0,0,1),
-#' momblack = c(0,1,1,1,1,0,0),
-#' momhisp = c(0,0,0,0,0,0,0),
-#' y.obs = rnorm(7, 10, 3)
-#' )
-#' clean_dummies_to_categorical_internal(i = 1, df = df, 
-#'                                       group_names = c('momwhite', 'momblack', 'momhisp'), 
-#'                                       rename_group = 'race', problematic_group_names = c())
-#' 
-#' clean_dummies_to_categorical_internal(i = 1, df = df, 
-#'                                       group_names = c('momwhite', 'momblack', 'momhisp'), 
-#'                                       rename_group = '', problematic_group_names = c())
+#' cat_df <- data.frame(
+#'  momwhite = c(1,0,0,0,0,0,1),
+#'  momblack = c(0,1,1,1,1,0,0),
+#'  momhisp = c(0,0,0,0,0,0,0),
+#'  arc =c(1,0,0,0,1,0,1)
+#'  )
+#'identify_indicators(x = 'momwhite', cats = cat_df)
 
-clean_dummies_to_categorical_internal <- function(i, df, group_names, rename_group, problematic_group_names){
+
+identify_indicators <- function(x, cats){
   
-  # find the column indexes of dummy variables in the same group 
-  idx <- which(colnames(df) %in% group_names)
-  # a list to save group names and corresponding dummies if there are more than one dummy in a group
-  group_list <- list()
-  
-  # if there are more than one dummies in a group, convert the dummies to a categorical variable
-  if(length(idx) > 1){
-    tmp <- df[,idx]
+  transform_indicator_to_categorical <- function(.x, cat_df){
+    compare <- cat_df %>% 
+      select(-all_of(.x))
     
-    # if the sum of all the categories in a row is zero, then the reference group is missing for the categorical variable, filling with 'REFERENCE'
-    # otherwise, filling with the column name of the binary variable whose values is TRUE 
-    categorical <- apply(tmp, 1, function(x) ifelse(sum(x, na.rm = T) == 0, 'REFERENCE', colnames(tmp)[which(x == TRUE)]))
+    run_test <- lapply(1:length(compare), function(i){
+      tmp <- tibble(cat_df[[all_of(.x)]], compare[[i]])
+      rows <- tmp %>% 
+        mutate(rSum = rowSums(across())) %>% 
+        filter(rSum > 1) %>% 
+        nrow()
+      if(rows == 0) names(compare)[i]
+    })
     
-    # remove the multiple dummies
-    df <- df[,-idx, drop=FALSE]
-    
-    # add the new categorical variable into the dataset
-    df <- cbind(df, categorical)
-    
-    # clean the user input name
-    name <- clean_names(rename_group)
-    # check if user input variable name is empty
-    if(name == "" | grepl("blank", name, ignore.case = TRUE)) {
-      problematic_group_names <- c(problematic_group_names, paste0('Group', i))
-    }
-    colnames(df)[ncol(df)] <- name
-    groups <- c(group_list, list(c(name, colnames(tmp))))
+    out <- unlist(run_test)
+    out <- c(.x, out) 
+    out <- sort(out)
+    return(out)
+
+    return(out)
   }
   
-  return(list(problematic_group_names, df, groups))
+  run <- transform_indicator_to_categorical(.x = x, cat_df = cats)
+  eval <- lapply(run, function(i){transform_indicator_to_categorical(.x = i, cat_df = cats)})
+  probs <- table(match(eval, unique(eval)))/length(eval)
+  out <- list(best = eval[[which(probs == max(probs))]], possible = unique(eval))
+  return(out)
 }
-
 
 #' Convert dummies in a dataframe to a categorical variable
 #' For downloaded reproducible script use
@@ -87,7 +72,7 @@ clean_dummies_to_categorical_internal <- function(i, df, group_names, rename_gro
 #' race <- c("momwhite", "momblack", "momhisp")
 #' clean_dummies_to_categorical(df = df, group_names = race)
 
-clean_dummies_to_categorical <- function(df, group_names){
+clean_dummies_to_categorical <- function(df, group_names, new_name = 'categorical_var'){
   
   # find the column indexes of dummy variables in the same group 
   idx <- which(colnames(df) %in% group_names)
@@ -97,7 +82,7 @@ clean_dummies_to_categorical <- function(df, group_names){
   df <- df[,-idx, drop=FALSE]
   # add the new categorical variable into the dataset
   df <- cbind(df, categorical)
-  colnames(df)[ncol(df)] <- deparse(substitute(group_names))
+  names(df)[length(df)] <- new_name
   return(df)
   
 }

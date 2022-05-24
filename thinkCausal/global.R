@@ -46,8 +46,11 @@ module_ids <- list(
   ),
   analysis = list(
     design = 'analysis_design',
-    data = 'analysis_data',
+    data = 'analysis_upload_data',
+    verify = 'analysis_verify_data', 
     eda = 'analysis_eda',
+    balance = 'analysis_balance', 
+    overlap = 'analysis_overlap', 
     model = 'analysis_model',
     diagnostic = 'analysis_diagnostic',
     results = 'analysis_results',

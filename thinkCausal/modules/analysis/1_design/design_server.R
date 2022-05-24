@@ -40,6 +40,8 @@ server_design <- function(store, id, global_session){
         
         # save input to store
         store$analysis_design <- input$analysis_design
+        store$analysis_weights <- input$analysis_weights
+        store$analysis_random_effects <- input$analysis_random_intercept
         store$analysis$design$treatment_name <- input$treatment_name
         store$analysis$design$treatment_units <- input$treatment_units
         store$analysis$design$treatment_participants <- input$treatment_participants
@@ -50,7 +52,6 @@ server_design <- function(store, id, global_session){
       
       observeEvent(input$analysis_design_button_next, {
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$data)
-        updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Upload")
       })
 
       return(store)

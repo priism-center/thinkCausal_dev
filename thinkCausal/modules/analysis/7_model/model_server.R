@@ -7,8 +7,7 @@ server_model <- function(store, id, global_session){
       
       # back next button
       observeEvent(input$analysis_model_button_back, {
-        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$eda)
-        updateTabsetPanel(global_session, inputId = "analysis_plot_tabs", selected = "Balance Plots")
+        updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$overlap)
       })
       
       # update variables on the model page once the save button on the verify data page is clicked
@@ -19,13 +18,13 @@ server_model <- function(store, id, global_session){
         X_cols_categorical <- grep("^X_", cols_categorical, value = TRUE)
         cols_categorical_cleaned <- gsub("X_", '', X_cols_categorical)
         
-        # update options for random intercept
-        updateSelectInput(
-          session = session,
-          inputId = "analysis_random_intercept",
-          choices = c("None", cols_categorical_cleaned),
-          selected = "None"
-        )
+        # # update options for random intercept
+        # updateSelectInput(
+        #   session = session,
+        #   inputId = "analysis_random_intercept",
+        #   choices = c("None", cols_categorical_cleaned),
+        #   selected = "None"
+        # )
         
         # create moderator options
         cols_continuous <- store$column_types$continuous
@@ -105,10 +104,11 @@ server_model <- function(store, id, global_session){
         #     )
         #   }
         # )
+        
         store$model_results <- fit_bart(
           .data = store$verified_df,
           support = common_support_rule,
-          ran.eff = input$analysis_random_intercept,
+          ran.eff = store$column_assignments$ran_eff,
           .estimand = base::tolower(input$analysis_model_estimand)
         )
         

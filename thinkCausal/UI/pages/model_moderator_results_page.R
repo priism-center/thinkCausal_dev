@@ -1,5 +1,5 @@
 moderator_page <- tabPanel(
-  title = "Subgroup results",
+  title = "View Subgroup Results",
   tabsetPanel(
     id = "analysis_moderator_tabs",
     tabPanel(

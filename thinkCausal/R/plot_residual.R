@@ -111,7 +111,6 @@ plot_residual_observed_predicted <- function(.model, covariate = NULL){
 # plot_residual_observed_predicted(fit_atc, "momage")
 
 
-
 # plot density of residual (predicted y - observed y)
 plot_residual_density <- function(.model, covariate = NULL){
   

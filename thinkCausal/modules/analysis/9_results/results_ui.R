@@ -2,7 +2,7 @@
 ui_results <- function(store, id){
   ns <- NS(id)
   tabPanel(
-    title = "Results",
+    title = "View Results",
     value = id,
     tabPanel("Model Results",
              sidebarLayout(

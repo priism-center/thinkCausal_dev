@@ -9,6 +9,6 @@
 
 # source ui and server functions ------------------------------------------
 
-source('modules/analysis/3_eda/eda_ui.R')
-source('modules/analysis/3_eda/eda_server.R')
+source('modules/analysis/5_balance/balance_ui.R')
+source('modules/analysis/5_balance/balance_server.R')
 

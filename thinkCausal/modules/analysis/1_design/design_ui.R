@@ -2,7 +2,7 @@
 ui_design <- function(store, id){
   ns <- NS(id)
   tabPanel(
-    title = 'Design',
+    title = 'Describe Design',
     value = id,
     fluidRow(
       column(4,
@@ -34,7 +34,14 @@ ui_design <- function(store, id){
                                        "Unsure",
                                        'Observational',
                                        'Randomized treatment',
-                                       'Block randomized treatment'))
+                                       'Block randomized treatment')), 
+               selectInput(inputId = ns('analysis_weights'), 
+                           label = 'Do you have survey weights?', 
+                           choices = c("", "Unsure", "No", "Yes")), 
+               selectInput(ns('analysis_random_intercept'),
+                           # label = 'Random intercept',
+                           label = create_info_icon('Does your study have clustered or nested data?', 'Classes within schools or patients within medical practices are examples of clustered/nested data'),
+                           choices = c("", "Unsure", "No", "Yes")),
              )
       ),
       column(4,
