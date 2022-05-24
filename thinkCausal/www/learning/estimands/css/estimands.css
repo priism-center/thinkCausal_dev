@@ -1,0 +1,182 @@
+/*### scrollytell ###*/
+.estimands-text-along-d3,
+.estimands-d3-container {
+  background-color: #fff;
+}
+
+.estimands-text-along-d3 {
+  padding: 0px 50px 0 0;
+  width: 40%;
+}
+
+.estimands-d3-container {
+  width: 60%;
+  height: 650px; /* should match height of d3 plot or d3 plot plus appended table */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 30px;
+  padding: 20px 0 0 0;
+}
+
+/* @media (max-width: 768px) {
+  .estimands-text-along-d3 {
+    position: fixed;
+    width: 90%;
+    padding: 1em;
+    filter: opacity(0.8);
+    z-index: 999
+  }
+  .estimands-plot-container {
+    width: 100%;
+  }
+} */
+
+
+/*delete body and #estimands-plot-container chunks when moving to shiny */
+/*
+body {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  color: #404040;
+  margin: 2em;
+  max-width: 750px;
+} */
+/* #estimands-plot-container {
+  max-width: 540px;
+} */
+
+#estimands-plot-ATC, #estimands-plot-ATT {
+  max-width: 630px; /*900px * 0.7*/
+  padding: 2em;
+}
+
+/*### specific to d3 ###*/
+.estimands-ICElabel {
+  fill: #6e6e6e;
+  font-style: italic;
+  font-size: 0.8em;
+  z-index: 99;
+}
+
+.estimands-line-dashed, .estimands-mean-dashed {
+  stroke-dasharray: 4, 8;
+  stroke-width: 1em;
+}
+
+.estimands-table {
+  font-size: 0.85em;
+  table-layout: fixed;
+  width: auto;
+  max-width: auto;
+  padding: 0.5rem;
+  text-align: end;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#estimands-table-ATC, #estimands-table-ATT {
+  font-size: 0.95em;
+}
+
+.estimands-table td, .estimands-table th {
+  padding: 4px;
+  text-align: end;
+}
+
+.estimands-table tr:nth-child(even){background-color: #fafafa;}
+
+/* .estimands-table tr:hover {background-color: #ebebeb;} */
+
+.estimands-table th {
+  font-weight: 700;
+  border-bottom: 2px solid grey;
+}
+
+/* .colWidth_Runner {
+  width: 10%;
+}
+.colWidth_y0 {
+  width: 10%;
+}
+.colWidth_y1 {
+  width: 10%;
+}
+.colWidth_y {
+  width: 10%;
+}
+.colWidth_z {
+  width: 10%;
+}
+.colWidth_ICE {
+  width: 10%;
+} */
+
+/* .tooltip {
+  font-size: 0.8em;
+  background-color: white;
+  border: solid #394E48;
+  border-width: 2px;
+  border-radius: 2px;
+  padding: 0.5rem 0.5rem 0.3rem 0.5rem;
+  text-align: left;
+  position: absolute;
+  color: #666666;
+} */
+
+.estimands-axis > path {
+  stroke: #b5b5b5;
+}
+
+.estimands-axis > g > line {
+  stroke: #b5b5b5;
+}
+
+.estimands-axis > g > text {
+  fill: #666666;
+  font-size: 1.2em;
+}
+
+.estimands-axisLabel {
+  fill: #666666;
+  font-size: 0.85em;
+}
+
+.estimands-title {
+  font-size: 1.1em;
+  fill: #666666;
+}
+
+.estimands-subtitle {
+  font-size: 0.9em;
+  fill: #a1a1a1;
+}
+
+.estimands-legend > text {
+  fill: #666666;
+  font-size: 0.75em;
+}
+
+/* button {
+  width: 150px;
+  max-width: 100%;
+  background-color: #726078;
+  padding: 0.8em;
+  margin: 0.5em;
+  border-radius: 2px;
+  border: none;
+  color: white;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+button:hover {
+  filter: brightness(1.2);
+}
+button:active {
+  filter: brightness(0.7);
+} */
+
+#estimands-runner-text {
+  background: yellow;
+  padding: 0.2em 0.2em 0.1em 0.2em;
+  border-radius: 0.3em;
+  font-weight: 500;
+}

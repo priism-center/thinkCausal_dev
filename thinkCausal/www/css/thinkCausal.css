@@ -1,6 +1,7 @@
 /* 
 most of this CSS overrides the default bootstrap
 main color palette: #938497 #558B6E #D7837F #E6DFE8 #F5F5F5
+violet palette (unused): #5B5B71, #818092, #FEE8DE, #F4F4F4, #2B2A2A 
 */
 
 body {
@@ -8,6 +9,7 @@ body {
   font-family: "Roboto", Helvetica, Arial, sans-serif;
   color: #636363;
   font-weight: 300;
+  font-size: 1.6em;
 }
 
 .wrapper {
@@ -79,6 +81,7 @@ summary{
 .dropdown-menu > li > a {
   color: #525252;
   font-weight: 300;
+  border: none;
 }
 
 .dropdown-menu > li.active > a,
@@ -443,9 +446,9 @@ html {
 /*controls the cards on the design and model pages*/
 .card {
   min-height: 450px;
-  -webkit-box-shadow: 6px 10px 16px  rgba(74, 74, 74, 0.3);
+  /*-webkit-box-shadow: 6px 10px 16px  rgba(74, 74, 74, 0.3);
   -moz-box-shadow: 6px 10px 16px  rgba(74, 74, 74, 0.3);
-  box-shadow: 6px 10px 16px rgba(74, 74, 74, 0.3);
+  box-shadow: 6px 10px 16px rgba(74, 74, 74, 0.3);*/
   border-radius: 6px;
 }
 
@@ -463,21 +466,52 @@ header {
   border-bottom-style: solid;
 }
 
-footer {
+footer > div {
   position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
-  padding: 0.5em;
-  background-color: #9e9cb5;
+  padding: 0.3rem 2rem 0.3rem 2rem;
+  background-color: rgba(48, 47, 66, 1);
   color: white;
-  text-align: center;
   z-index: 1000;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 footer a, footer a:hover {
   color: white;
 }
+footer a:hover {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.progress-footer-tab {
+  display: none;
+  cursor: pointer;
+/*   padding: 0 1.1em 0 1.1em; */
+  width: 7em;
+  text-align: center;
+}
+
+.progress-footer-tab:hover {
+  font-weight: 600;
+}
+
+.left-align {
+  float: left;
+  margin-left: 0; 
+  margin-right: auto;
+}
+
+.right-align {
+  float: right;
+  margin-left: auto; 
+  margin-right: 0;
+}
+
 
 .bottom-shadow {
   position: sticky;
@@ -493,6 +527,7 @@ footer a, footer a:hover {
 
 .navbar  {
   margin-bottom: 4em;
+  border: none;
 }
 
 .navbar-brand{

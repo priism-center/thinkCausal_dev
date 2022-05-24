@@ -1,0 +1,92 @@
+
+/* wrapper on each learning page */
+@media only screen and (max-width: 769px) {
+  .learning-page {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/* controls the quiz */
+.quiz-container {
+  max-width: min(100%, 750px)
+}
+
+.quiz-container h3 {
+  color: #4d4d4d;
+  font-weight: 600;
+}
+
+.quiz-container hr {
+    border-top: 0.1em solid #cccccc !important;
+}
+
+.quiz-container .skip-button, .quiz-container .restart-button {
+  max-width: 90px !important;
+  font-size: 0.8em !important;
+  background: none !important;
+  color: grey !important;;
+  float: right;
+  border: 0px;
+}
+
+.quiz-container .skip-button:hover, .quiz-container .restart-button:hover {
+  background: none !important;
+  color: black !important;
+}
+
+.quiz-container .skip-button:active, .quiz-container .restart-button:active {
+  background: none !important;
+  -webkit-box-shadow: none;
+}
+
+.quiz-container .submit-button {
+  max-width: 150px;
+  float: right;
+  background-color: #302f42 !important;
+  color: white !important;
+}
+.quiz-container .submit-button:hover {
+  background-color: #424159 !important;
+}
+.quiz-container .submit-button:active {
+  background-color: #54536e !important;
+}
+
+.quiz-embedded {
+  padding: 4em;
+  margin: 1em;
+  border: 1em solid rgba(117, 115, 145, 0.6);
+  border-radius: 0.3em;
+}
+
+/* this lives outside of the .quiz-container */
+.learning-content {
+  display: none;
+  max-width: 750px;
+  /*font-size: 1.1em;*/
+}
+/* can also hide the entire quiz
+.quiz-container {
+  display: none;
+}
+*/
+
+.learning-content > h2 {
+  padding-top: 1.5em;
+}
+.learning-content > h3 {
+  padding-top: 1em;
+}
+
+/* blurs all content in the div */
+.learning-content-blur {
+  filter: blur(0.3em);
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  pointer-events: none;
+}

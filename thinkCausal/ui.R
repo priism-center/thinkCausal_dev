@@ -38,18 +38,18 @@ shinyUI(
         help_slideover,
         
         # add link to feedback form
-        tags$div(class = 'feedback-button',
-                 onclick = "window.open(
-                 'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
-                 '_blank')",
-                 'Feedback'
-        ),
+        # tags$div(class = 'feedback-button',
+        #          onclick = "window.open(
+        #          'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
+        #          '_blank')",
+        #          'Feedback'
+        # ),
         
         # add 'back to analysis' button
-        tags$div(class = 'back-to-analysis-button',
-                 actionButton(inputId = 'back_to_analysis_button',
-                              label = 'Back')
-                 ),
+        # tags$div(class = 'back-to-analysis-button',
+        #          actionButton(inputId = 'back_to_analysis_button',
+        #                       label = 'Back')
+        #          ),
 
         # add beta ribbon
         tags$div(class = 'cornerRibbon', 'BETA'),
@@ -70,11 +70,10 @@ shinyUI(
         
         # add footer elements
         tags$footer(
-            # link to priism
-            HTML('<a href="https://steinhardt.nyu.edu/priism">New York University</a>'),
+          progress_footer,
             
-            # load custom JavaScript files
-            map(list.files('www/js', pattern = "*.js"), function(file) tags$script(src = file.path('js', file)))
+          # load custom JavaScript files
+          map(list.files('www/js', pattern = "*.js"), function(file) tags$script(src = file.path('js', file)))
           )
     )
 )

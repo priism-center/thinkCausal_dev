@@ -11,6 +11,14 @@ ui_diagnostic <- function(store, id){
           h4('Model diagnostics'),
           p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
           br(),
+          conditionalPanel("input.analysis_diagnostics_tabs == 'Residual plot'", ns = ns,
+                           selectInput(
+                             inputId = ns("analysis_diagnostics_plot_residual_covariate"),
+                             label = "By covariate: ",
+                             multiple = FALSE,
+                             choices = NULL,
+                             selected = NULL
+                           )),
           create_link_to_help('Diagnostics', button_label = 'What are these plots telling me?'),
           br(),br(),
           downloadButton(ns('download_diagnostic_plot'), label = "Download plot"),
@@ -32,6 +40,12 @@ ui_diagnostic <- function(store, id){
               title = 'Common support',
               br(),
               plotOutput(ns('analysis_diagnostics_plot_support'),
+                         height = 600)
+            ),
+            tabPanel(
+              title = 'Residual plot',
+              br(),
+              plotOutput(ns('analysis_diagnostics_plot_residual'),
                          height = 600)
             )
           )

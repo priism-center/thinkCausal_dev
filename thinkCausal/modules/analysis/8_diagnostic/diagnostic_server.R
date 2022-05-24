@@ -45,6 +45,29 @@ server_diagnostic <- function(store, id, global_session){
         }
       })
       
+      # update variables on the residual plot page once the model is fitted
+      observe({
+        # stop here if model isn't fit yet
+        validate_model_fit(store)
+        
+        if(isTRUE(store$model_fit_good)){
+          # new_col_names <- colnames(store$verified_df)
+          # X_cols <- grep("^X_", new_col_names, value = TRUE)
+          # cols_categorical <- store$column_types$categorical
+          # cols_continuous <- store$column_types$continuous
+          dat <-  as.data.frame(store$model_results$data.rsp@x)
+          col_names <- colnames(dat)[-ncol(dat)]
+          
+          updateSelectInput(
+            session = session,
+            inputId = "analysis_diagnostics_plot_residual_covariate",
+            choices = c("None", col_names),
+            selected = "None"
+          )
+        }
+      })
+      
+      
       # trace plot
       analysis_diagnostics_plot_trace <- reactive({
         
@@ -67,11 +90,29 @@ server_diagnostic <- function(store, id, global_session){
         # stop here if model isn't fit yet
         validate_model_fit(store)
         
-        # plot it
-        p <- plotBart::plot_common_support(
-          .model = store$model_results,
-          rule = 'both'
-        )
+        total_delete_sd <- sum(store$model_results$sd.cf > max(store$model_results$sd.obs) + sd(store$model_results$sd.obs))
+        total_delete_chi <- sum((store$model_results$sd.cf / store$model_results$sd.obs) ** 2 > 3.841)
+        
+        if(total_delete_sd > 0 | total_delete_chi > 0){
+          # common support plot from plotbart
+          p1 <- plotBart::plot_common_support(
+            .model = store$model_results,
+            rule = 'both'
+          )
+          # plot classification tree on covariates in terms of overlap
+          p2 <- plot_overlap_covariate_tree(.model = store$model_results, rule = "sd")
+          p3 <- plot_overlap_covariate_tree(.model = store$model_results, rule = "chi")
+        
+          # patchwork package to combine the plots
+          p <- p1 | (p2 / p3)
+            
+        }else{
+          # plot it
+          p <- plotBart::plot_common_support(
+            .model = store$model_results,
+            rule = 'both'
+          )
+        }
         
         # add theme
         p <- p +
@@ -83,13 +124,40 @@ server_diagnostic <- function(store, id, global_session){
       })
       output$analysis_diagnostics_plot_support <- renderPlot(analysis_diagnostics_plot_support())
       
+      # residual plot
+      analysis_diagnostics_plot_residual <- reactive({
+        
+        # stop here if model isn't fit yet
+        validate_model_fit(store)
+        
+        # if "none" is selected, change it to NULL, otherwise remain the same
+        covariates_selection <- switch(input$analysis_diagnostics_plot_residual_covariate, "None" = NULL, input$analysis_diagnostics_plot_residual_covariate)
+        
+        # p1 <- plot_residual_observed_predicted(.model = store$model_results, 
+        #                                        covariate = covariates_selection)
+        p2 <- plot_residual_density(.model = store$model_results,
+                                    covariate = covariates_selection)
+        p3 <- plot_residual_observed_residual(.model = store$model_results,
+                                              covariate = covariates_selection)
+        
+        # patchwork package to combine the plots
+        p <- p2 / p3
+        
+        # add theme
+        p <- p + store$options$theme_custom
+        
+        return(p)
+      })
+      output$analysis_diagnostics_plot_residual <- renderPlot(analysis_diagnostics_plot_residual())
+      
       # download plot
       output$download_diagnostic_plot <- downloadHandler(
         filename = function() {
           switch(
             req(input$analysis_diagnostics_tabs),
             "Trace plot" = 'diagnostic_trace_plot.png',
-            "Common support" = 'diagnostic_common_support_plot.png'
+            "Common support" = 'diagnostic_common_support_plot.png',
+            "Residual plot" = 'diagnostic_residual_plot.png'
           )
         },
         content = function(file) {
@@ -98,7 +166,8 @@ server_diagnostic <- function(store, id, global_session){
           active_plot <- switch(
             req(input$analysis_diagnostics_tabs),
             'Trace plot' = analysis_diagnostics_plot_trace(),
-            'Common support' = analysis_diagnostics_plot_support()
+            'Common support' = analysis_diagnostics_plot_support(),
+            "Residual plot" = analysis_diagnostics_plot_residual()
           )
           
           # write out plot
