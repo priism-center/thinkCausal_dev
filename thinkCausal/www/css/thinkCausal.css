@@ -472,7 +472,7 @@ footer > div {
   bottom: 0;
   width: 100%;
   padding: 0.3rem 2rem 0.3rem 2rem;
-  background-color: #9e9cb5;
+  background-color: rgba(48, 47, 66, 1);
   color: white;
   z-index: 1000;
   display: flex;

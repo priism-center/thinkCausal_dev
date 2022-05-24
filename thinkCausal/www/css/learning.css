@@ -64,7 +64,7 @@
 .learning-content {
   display: none;
   max-width: 750px;
-  font-size: 1.8em;
+  /*font-size: 1.1em;*/
 }
 /* can also hide the entire quiz
 .quiz-container {
@@ -88,4 +88,5 @@
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
+  pointer-events: none;
 }
