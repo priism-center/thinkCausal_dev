@@ -20,7 +20,7 @@ ui_verify <- function(store, id) {
                div(
                  class = 'backNextContainer',
                  actionButton(
-                   inputId = ns("analysis_verify_data_select_button_back"),
+                   inputId = ns("analysis_verify_data_button_back"),
                    label = "Back"
                  ),
                  actionButton(

@@ -74,7 +74,7 @@ server_verify <- function(store, id, global_session){
         validate_columns_assigned(store)
 
         # get default data types
-        default_data_types <- convert_data_type_to_simple(store$col_assignment_df) #! input data changed to the result of group data
+        default_data_types <- convert_data_type_to_simple(store$col_assignment_df) 
         
         # add default column types to store
         store$current_simple_column_types <- default_data_types
@@ -86,7 +86,9 @@ server_verify <- function(store, id, global_session){
           default_data_types = default_data_types,
           ns_prefix = 'analysis_verify_data',
           design = store$analysis_design,
-          blocking_variables = store$column_assignments$blocks
+          blocking_variables = store$column_assignments$blocks, 
+          random_effect = store$column_assignments$ran_eff,
+          survey_weight = store$column_assignments$weight
         )
         
         return(UI_table)
@@ -189,7 +191,10 @@ server_verify <- function(store, id, global_session){
         old_col_names <- colnames(store$user_modified_df)
         new_col_names <- paste0(c('Z',
                                   'Y',
-                                  rep('X', length(old_col_names)-2)),
+                                  rep('B', length(store$column_assignments$blocks)),
+                                  rep('R', length(store$column_assignments$ran_eff)),
+                                  rep('W', length(store$column_assignments$weight)), 
+                                  rep('X', length(old_col_names)-2 + length(store$column_assignments$weight) + length(store$column_assignments$ran_eff) + length(store$column_assignments$blocks))),
                                 "_",
                                 old_col_names)
         

@@ -16,37 +16,37 @@
 #' #     ns_prefix = 'analysis_data_'
 #' #   )
 #' # })
-create_data_summary_grid <- function(ns, .data, default_data_types, ns_prefix, design, blocking_variables = NULL){
+create_data_summary_grid <- function(ns, .data, default_data_types, ns_prefix, design, blocking_variables = NULL, survey_weight = NULL, random_effect = NULL){
   
   # set indices to map over
   all_col_names <- colnames(.data)
   indices <- seq_along(all_col_names)
+  n_blocks <- length(blocking_variables)
+  n_weight <- length(survey_weight)
+  n_random_effects <- length(random_effect)
+  n_covariates <- length(all_col_names)-(2 + n_blocks + n_weight + n_random_effects)
+  
   
   # create vector of column type names and vector variable type choices (dependent on role)
-  if (design == 'Block randomized treatment'){
-    n_blocks <- length(blocking_variables)
-    n_covariates <- length(all_col_names)-(2 + n_blocks)
-    column_types <- c(
-      'Treatment', 
-      'Outcome', 
-      rep('Block', n_blocks), 
-      rep('Covariate', n_covariates)
-    )
-    variable_type_choices <- c(
-      list(c('Categorical', 'Binary')),
-      list(c('Continuous', 'Binary')),
-      lapply(1:n_blocks, function(x) c('Categorical', 'Binary')), 
-      lapply(1:n_covariates, function(x) c('Continuous', 'Categorical', 'Binary'))
-    )
-  } else {
-    column_types <- c('Treatment', 'Outcome', rep('Covariate', length(all_col_names)-2)) 
-    variable_type_choices <- c(
-      list(c('Categorical', 'Binary')),
-      list(c('Continuous', 'Binary')),
-      lapply(1:(length(column_types)-2), function(x) c('Continuous', 'Categorical', 'Binary'))
-    )
-  }
+  column_types <- c(
+    'Treatment', 
+    'Outcome', 
+    rep('Block', n_blocks), 
+    rep('Random Effect', n_random_effects), 
+    rep('Survey Weight', n_weight), 
+    rep('Covariate', n_covariates)
+  )
+  # order is very important see comment in verify_data_server.R
+  variable_type_choices <- c(
+    list(c('Categorical', 'Binary')),
+    list(c('Continuous', 'Binary')),
+    if(n_blocks > 0) lapply(1:n_blocks, function(x) c('Categorical', 'Binary')), 
+    if(n_random_effects > 0) lapply(1:n_random_effects, function(x) c('Categorical')), 
+    if(n_weight > 0) lapply(1:n_weight, function(x) c('Continuous')), 
+    lapply(1:n_covariates, function(x) c('Continuous', 'Categorical', 'Binary'))
+  )
   
+
   # render the header to the table
   UI_header <- fluidRow(
     column(2, h5(create_info_icon('Role', 'You already specified variable roles on the data upload page.'))),

@@ -9,7 +9,8 @@
 #' @export
 fit_bart <- function(.data, support, ran.eff, .estimand){
   tryCatch({
-    if(ran.eff == 'No'){
+    if(is_null(ran.eff)){
+      browser()
         bartCause::bartc(
           response = .data[, 2], 
           treatment = .data[, 1], 

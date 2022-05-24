@@ -113,7 +113,9 @@ server_data <- function(store, id, global_session){
         drag_drop_html <- create_drag_drop_roles(ns = ns, 
                                                  .data = store$uploaded_df,
                                                  ns_prefix = 'analysis_upload_data',
-                                                 design = store$analysis_design)
+                                                 design = store$analysis_design, 
+                                                 weights = store$analysis_weights, 
+                                                 ran_eff = store$analysis_random_effects)
         
         return(drag_drop_html)
       })
@@ -131,14 +133,13 @@ server_data <- function(store, id, global_session){
         # get user inputs
         cols_z <- input$analysis_upload_data_dragdrop_treatment
         cols_y <- input$analysis_upload_data_dragdrop_response
-        if(store$analysis_design == 'Block randomized treatment'){
-          cols_x <- c(input$analysis_upload_data_dragdrop_block, input$analysis_upload_data_dragdrop_covariates)
-        }
-        else{
-          cols_x <- input$analysis_upload_data_dragdrop_covariates
-        }
+        cols_x <- input$analysis_upload_data_dragdrop_covariates
+        cols_block <- input$analysis_upload_data_dragdrop_block
+        cols_weight <- input$analysis_upload_data_dragdrop_weight
+        cols_ran_eff <- input$analysis_upload_data_dragdrop_ran_eff
         
-        all_cols <- unlist(c(cols_z, cols_y, cols_x))
+        # the order of this is very important for create_data_summary_grid.R
+        all_cols <- unlist(c(cols_z, cols_y, cols_block,cols_ran_eff, cols_weight,cols_x))
         
         # are there duplicate selections?
         all_unique <- isTRUE(length(all_cols) == length(unique(all_cols)))
@@ -201,13 +202,18 @@ server_data <- function(store, id, global_session){
         store$column_assignments$z <- cols_z
         store$column_assignments$y <- cols_y
         store$column_assignments$x <- cols_x
-        store$column_assignments$blocks <- input$analysis_upload_data_dragdrop_block
+        store$column_assignments$blocks <- cols_block
+        store$column_assignments$weight <- cols_weight
+        store$column_assignments$ran_eff <- cols_ran_eff
         
         # add to log
         log_event <- paste0('Assigned columns to roles: \n',
                             '\ttreatment: ', cols_z, '\n',
                             '\tresponse: ', cols_y, '\n',
-                            '\tcovariates: ', paste0(cols_x, collapse = '; '))
+                            '\tcovariates: ', paste0(cols_x, collapse = '; '), 
+                            '\tblocking variable(s):', paste0(cols_block, collapse = '; '), 
+                            '\tsurvey weight:', cols_weight, 
+                            '\trandom intercepts:', paste0(cols_ran_eff, collapse = '; '))
         store$log <- append(store$log, log_event)
         
         # move to next page
