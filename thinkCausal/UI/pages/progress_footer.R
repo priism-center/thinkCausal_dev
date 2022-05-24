@@ -1,3 +1,5 @@
+# TODO: convert to https://codepen.io/william-goldsworthy/pen/JzVajj
+
 progress_footer <- tagList(
   tags$div(
     id = 'progress-footer',

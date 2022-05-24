@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.2",
+    "Version": "4.1.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -50,9 +50,7 @@
       "Requirements": [
         "Formula",
         "base64enc",
-        "cluster",
         "data.table",
-        "foreign",
         "ggplot2",
         "gridExtra",
         "gtable",
@@ -60,28 +58,8 @@
         "htmltools",
         "lattice",
         "latticeExtra",
-        "nnet",
         "rpart",
-        "survival",
         "viridis"
-      ]
-    },
-    "MASS": {
-      "Package": "MASS",
-      "Version": "7.3-55",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "c5232ffb549f6d7a04a152c34ca1353d",
-      "Requirements": []
-    },
-    "Matrix": {
-      "Package": "Matrix",
-      "Version": "1.4-0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "130c0caba175739d98f2963c6a407cf6",
-      "Requirements": [
-        "lattice"
       ]
     },
     "MatrixModels": {
@@ -90,9 +68,7 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "366a8838782928e398b8762c932a42a3",
-      "Requirements": [
-        "Matrix"
-      ]
+      "Requirements": []
     },
     "R6": {
       "Package": "R6",
@@ -125,7 +101,6 @@
       "Repository": "RSPM",
       "Hash": "ddfa72a87fdf4c80466a20818be91d00",
       "Requirements": [
-        "Matrix",
         "Rcpp"
       ]
     },
@@ -218,14 +193,6 @@
         "vctrs"
       ]
     },
-    "boot": {
-      "Package": "boot",
-      "Version": "1.3-28",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "0baa960e3b49c6176a4f42addcbacc59",
-      "Requirements": []
-    },
     "brio": {
       "Package": "brio",
       "Version": "1.1.3",
@@ -297,14 +264,10 @@
       "Repository": "CRAN",
       "Hash": "40e15704635050c063b1b26acce2051c",
       "Requirements": [
-        "MASS",
         "abind",
         "carData",
         "lme4",
         "maptools",
-        "mgcv",
-        "nlme",
-        "nnet",
         "pbkrtest",
         "quantreg"
       ]
@@ -354,14 +317,6 @@
       "Source": "Repository",
       "Repository": "RSPM",
       "Hash": "ebaa97ac99cc2daf04e77eecc7b781d7",
-      "Requirements": []
-    },
-    "cluster": {
-      "Package": "cluster",
-      "Version": "2.1.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "ce49bfe5bc0b3ecd43a01fe1b01c2243",
       "Requirements": []
     },
     "colorspace": {
@@ -635,14 +590,6 @@
         "tibble"
       ]
     },
-    "foreign": {
-      "Package": "foreign",
-      "Version": "0.8-82",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "32b25c97ce306a760c4d9f787991b5d9",
-      "Requirements": []
-    },
     "fs": {
       "Package": "fs",
       "Version": "1.5.2",
@@ -684,7 +631,6 @@
       "Repository": "CRAN",
       "Hash": "bd0785a22c1d8eb187df2d06fab4d906",
       "Requirements": [
-        "MASS",
         "ggplot2"
       ]
     },
@@ -695,7 +641,6 @@
       "Repository": "CRAN",
       "Hash": "4c64a588b497f8c088e1d308ddd40bc6",
       "Requirements": [
-        "MASS",
         "Rcpp",
         "RcppEigen",
         "ggplot2",
@@ -715,12 +660,10 @@
       "Repository": "RSPM",
       "Hash": "d7566c471c7b17e095dd023b9ef155ad",
       "Requirements": [
-        "MASS",
         "digest",
         "glue",
         "gtable",
         "isoband",
-        "mgcv",
         "rlang",
         "scales",
         "tibble",
@@ -1074,7 +1017,7 @@
       "Package": "lattice",
       "Version": "0.20-45",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Hash": "b64cdbb2b340437c4ee047a1f4c4377b",
       "Requirements": []
     },
@@ -1140,14 +1083,10 @@
       "Repository": "CRAN",
       "Hash": "4f55df530bfb9fe95fc42738fa55f183",
       "Requirements": [
-        "MASS",
-        "Matrix",
         "Rcpp",
         "RcppEigen",
-        "boot",
         "lattice",
         "minqa",
-        "nlme",
         "nloptr"
       ]
     },
@@ -1177,7 +1116,6 @@
       "Repository": "CRAN",
       "Hash": "e60a1728ad29c48a3491777e0c55a07d",
       "Requirements": [
-        "foreign",
         "lattice",
         "sp"
       ]
@@ -1191,17 +1129,6 @@
       "Requirements": [
         "mime",
         "xfun"
-      ]
-    },
-    "mgcv": {
-      "Package": "mgcv",
-      "Version": "1.8-38",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "be3c61ffbb1e3d3b3df214d192ac5444",
-      "Requirements": [
-        "Matrix",
-        "nlme"
       ]
     },
     "mime": {
@@ -1249,16 +1176,6 @@
         "colorspace"
       ]
     },
-    "nlme": {
-      "Package": "nlme",
-      "Version": "3.1-155",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "74ad940dccc9e977189a5afe5fcdb7ba",
-      "Requirements": [
-        "lattice"
-      ]
-    },
     "nloptr": {
       "Package": "nloptr",
       "Version": "2.0.0",
@@ -1268,14 +1185,6 @@
       "Requirements": [
         "testthat"
       ]
-    },
-    "nnet": {
-      "Package": "nnet",
-      "Version": "7.3-17",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "cb1d8d9f300a7e536b89c8a88c53f610",
-      "Requirements": []
     },
     "numDeriv": {
       "Package": "numDeriv",
@@ -1335,8 +1244,6 @@
       "Repository": "CRAN",
       "Hash": "b304ff5955f37b48bd30518faf582929",
       "Requirements": [
-        "MASS",
-        "Matrix",
         "broom",
         "dplyr",
         "knitr",
@@ -1551,7 +1458,6 @@
       "Repository": "CRAN",
       "Hash": "b7d49f60ce945abad300246d4766326a",
       "Requirements": [
-        "Matrix",
         "MatrixModels",
         "SparseM"
       ]
@@ -1685,16 +1591,6 @@
       "Repository": "CRAN",
       "Hash": "9787c1fcb680e655d062e7611cadf78e",
       "Requirements": []
-    },
-    "rpart.plot": {
-      "Package": "rpart.plot",
-      "Version": "3.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "587cfc04ea9ba4931777e9ddf4db5fed",
-      "Requirements": [
-        "rpart"
-      ]
     },
     "rprojroot": {
       "Package": "rprojroot",
@@ -1948,16 +1844,6 @@
         "glue",
         "magrittr",
         "stringi"
-      ]
-    },
-    "survival": {
-      "Package": "survival",
-      "Version": "3.2-13",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "6f0a0fadc63bc6570fe172770f15bbc4",
-      "Requirements": [
-        "Matrix"
       ]
     },
     "sys": {
