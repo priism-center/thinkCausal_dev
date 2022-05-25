@@ -121,7 +121,7 @@ show_popup_model_no_data_warning <- function(session, ns){
       style = "width:60%;display:inline-block;horizontal-align:center;",
       actionButton(inputId = ns('analysis_model_button_popup'),
                    class = 'nav-btn-focus',
-                   label = 'Take me to the Data tab')
+                   label = 'Take me to the Data page')
     )
   )
   show_popup(session = session, content, easyClose = TRUE)

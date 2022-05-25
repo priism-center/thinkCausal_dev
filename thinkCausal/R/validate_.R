@@ -2,13 +2,13 @@
 validate_data_uploaded <- function(store){
   # stop here if data hasn't been uploaded
   validate(need(nrow(store$uploaded_df) > 0,
-                "Data must be first uploaded. Please see the 'Analyze-Data-Upload' page"))
+                "Data must be first uploaded. Please see the 'Analyze-Data' page"))
 }
 
 validate_columns_assigned <- function(store){
   # stop here if columns haven't been assigned
   validate(need(nrow(store$col_assignment_df) > 0,
-                "Columns must first be assigned. Please see 'Analyze-Data-Upload' page."))
+                "Columns must first be assigned. Please see 'Analyze-Data' page."))
 }
 
 validate_data_grouped <- function(store){
@@ -20,7 +20,7 @@ validate_data_grouped <- function(store){
 validate_data_verified <- function(store){
   # stop here if data hasn't been uploaded and verified
   validate(need(is.data.frame(store$verified_df),
-                "Data must be first uploaded and verified. Please see 'Analyze-Data-Verify' page."))
+                "Data must be first uploaded and verified. Please see 'Analyze-Verify' page."))
 }
 
 validate_model_fit_ <- function(.model){
