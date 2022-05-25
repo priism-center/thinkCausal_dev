@@ -133,7 +133,7 @@ estimands.drawData = function(data, config, scales){
     //   .style('display', null)
 
     // make sure all other points are not shown
-    d3.selectAll('.estimands-showOnHover')
+    d3.select(selector).selectAll('.estimands-showOnHover')
       .style('display', 'none')
       .transition() // kill any transitions
 
@@ -141,13 +141,13 @@ estimands.drawData = function(data, config, scales){
     let pairID = d3.select(this).attr('pairID')
 
     // de-emphasize points not in pairing
-    d3.selectAll(".estimands-scatterPoints, .estimands-droppedPoints")
+    d3.select(selector).selectAll(".estimands-scatterPoints, .estimands-droppedPoints")
       .style('opacity', 0.2)
-    d3.selectAll(".estimands-scatterPoints[pairID='" + pairID + "']")
+    d3.select(selector).selectAll(".estimands-scatterPoints[pairID='" + pairID + "']")
       .style('opacity', 1)
       .attr('r', pointRadius*1.2)
       .style('filter', 'brightness(0.9)')
-    d3.selectAll(".estimands-droppedPoints[pairID='" + pairID + "']")
+    d3.select(selector).selectAll(".estimands-droppedPoints[pairID='" + pairID + "']")
       .style('opacity', 1)
       .attr('r', pointRadius*1.2*0.8)
       .style('filter', 'brightness(0.9)')
@@ -159,12 +159,12 @@ estimands.drawData = function(data, config, scales){
       .style('opacity', 0.05)
 
     // emphasize lines
-    d3.selectAll(".estimands-showOnHover[pairID='" + pairID + "']")
+    d3.select(selector).selectAll(".estimands-showOnHover[pairID='" + pairID + "']")
       .style('display', null)
       .style('opacity', 1)
     
     // emphasize table row
-    d3.selectAll(".estimands-table tr[pairID='" + pairID + "']")
+    d3.select(selector).selectAll(".estimands-table tr[pairID='" + pairID + "']")
       .style('font-weight', 700)
       .style('background-color', '#ebebeb')
     
@@ -194,11 +194,11 @@ estimands.drawData = function(data, config, scales){
     //   .style('fill', null)
 
     // re-emphasize other points
-    d3.selectAll('.estimands-scatterPoints')
+    d3.select(selector).selectAll('.estimands-scatterPoints')
       .style('opacity', pointOpacity)
       .style('filter', null)
       .attr('r', pointRadius)
-    d3.selectAll('.estimands-droppedPoints')
+    d3.select(selector).selectAll('.estimands-droppedPoints')
       .style('opacity', pointOpacity)
       .style('filter', null)
       .attr('r', pointRadius * 0.8)
