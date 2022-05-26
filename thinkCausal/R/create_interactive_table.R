@@ -18,6 +18,7 @@
 #' @param correct_answers a vector of the correct answers that map to the "?" rowwise (left-to-right then top-to-bottom)
 #' @param extra_header optional. A vector of column names
 #' @param extra_header_widths required only if extra_header is provided. A vector of column widths that sum to length(extra_header). I.e. 1 = width of one column; 2 = width of two columns, etc.
+#' @param button logical to inclde clear and submit button only set to false when using for estimands 
 #' @param table_id optional. A string to use as the html ID for the table. If none is provided, then 'table' + random 15 letters is used
 #' @param ns optional. A function defining the name space. To be used with shiny::NS
 #'
@@ -41,7 +42,7 @@
 #' html_string <- create_interactive_table(.data, correct_answers, extra_header, extra_header_widths)
 #' # HTML(html_string) within Shiny UI 
 #' # access the user inputs via get_table_values(<table_id>) within Shiny server
-create_interactive_table <- function(.data, correct_answers, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, ns = NULL){
+create_interactive_table <- function(.data, correct_answers, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), button = TRUE, table_id = NULL, ns = NULL){
   
   # TODO: issue with ? cell border getting cutoff when extra_header = NULL
   
@@ -136,6 +137,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
       style = 'max-width:40rem'
     )
   
+  
   # concatenate the code into one string
   html_code <- paste0(
     # js_downloads,
@@ -143,7 +145,7 @@ create_interactive_table <- function(.data, correct_answers, extra_header = NULL
     js_clear_input,
     html_table_header,
     html_table_body,
-    html_buttons
+    if(isTRUE(button))html_buttons
   )
   
   return(html_code)
@@ -303,9 +305,11 @@ get_table_values <- function(input, table_id, ns = NULL, convert_to_numeric = TR
 #' @param extra_header a vector of column names. If .data is provided, optional to specify; if .data is not provided, keep it equal NULL.
 #' @param extra_header_widths required only if extra_header is provided. A vector of column widths that sum to length(extra_header). I.e. 1 = width of one column; 2 = width of two columns, etc.
 #' @param table_id optional. A string to use as the html ID for the table. If none is provided, then 'table' + random 15 letters is used
+#' @param button logical to inclde clear and submit button only set to false when using for estimands 
 #' @param ns optional. A function defining the name space. To be used with shiny::NS
+#' @param id_unit optional. A string to set the name of the ID column: Student, Runner, Plant etc
 #'
-#' @author Joe Marlo, Junhui Yang
+#' @author Joe Marlo, Junhui Yang, George Perrett
 #'
 #' @return a string of JS and HTML code
 #' @export
@@ -314,7 +318,7 @@ get_table_values <- function(input, table_id, ns = NULL, convert_to_numeric = TR
 #' html_string <- create_table(n_rows = 10, y_min = 50, y_max = 100, ate = -10, po_question = T, ite_question = T)
 #' # HTML(html_string) within Shiny UI 
 #' # access the user inputs via get_table_values(<table_id>) within Shiny server
-create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min = 50, y_max = 100, ate = 10, po_question = TRUE, ite_question = TRUE, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, ns = NULL){
+create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min = 50, y_max = 100, ate = 10, po_question = TRUE, ite_question = TRUE, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, button = TRUE, ns = NULL, id_unit = NULL){
   
   # TODO: when po_question = FALSE and ite_question = TRUE, why are only three rows have '?'
   
@@ -325,31 +329,32 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
     if (!is.numeric(ate)) stop('ate must be a numeric')
     
     # 20 names that a table can randomly draw from
-    names <- c(
-        'Blake',
-        'Kennedy',
-        'Taylor',
-        'Jordan',
-        'John',
-        'Andrew',
-        'Billie',
-        'Charlie',
-        'Casey',
-        'Alex',
-        'Parker',
-        'Andi',
-        'Anthony',
-        'Katie',
-        'Zoe',
-        'Juan',
-        'Kevin',
-        'Pengfei',
-        'Ruohan',
-        'Yi'
-      )
+    # names <- c(
+    #     'Blake',
+    #     'Kennedy',
+    #     'Taylor',
+    #     'Jordan',
+    #     'John',
+    #     'Andrew',
+    #     'Billie',
+    #     'Charlie',
+    #     'Casey',
+    #     'Alex',
+    #     'Parker',
+    #     'Andi',
+    #     'Anthony',
+    #     'Katie',
+    #     'Zoe',
+    #     'Juan',
+    #     'Kevin',
+    #     'Pengfei',
+    #     'Ruohan',
+    #     'Yi'
+    #   )
+    names <- 1:20
     
-    # randomly draw n_row students' names  
-    Student <- sample(names, size = n_rows, replace = F)
+    
+    ID <- names[1:n_rows] #sample(names, size = n_rows, replace = F)
       
     # randomly assign treatment for the n_row students
     Z <- rbinom(n_rows, size = 1, prob = 0.5)
@@ -375,7 +380,8 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
     }
     
     # create the dataframe
-    df <- data.frame(Student, Z, Y0, Y1, Y, ITE)
+    df <- data.frame(ID, Z, Y0, Y1, Y, ITE)
+    if(!is_null(id_unit)) names(df)[1] <- id_unit
     df <- mutate(df, Y0 = as.character(Y0), Y1 = as.character(Y1), ITE = as.character(ITE))
     
     if (po_question == T & ite_question == T){ # generate questions ('?') for both potential outcomes (Y1 and Y0) and ITE
@@ -419,8 +425,9 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
       correct_answers <- df$ITE[idx]
       df$ITE[idx] <- '?'
       
-    } else { # if po_question == F & ite_question == F, ask for at least one of the argument set to be TRUE
-      stop('At least one of po_question and ite_question must be TRUE')
+    } else if(po_question == F & ite_question == F) { # if po_question == F & ite_question == F, this is a complete table used for estimands
+      idx <- 1:n_rows
+      
     }
     
     .data <- df
@@ -441,6 +448,7 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
     extra_header = extra_header,
     extra_header_widths = extra_header_widths,
     table_id = table_id,
+    button = button, 
     ns = ns
   )
   

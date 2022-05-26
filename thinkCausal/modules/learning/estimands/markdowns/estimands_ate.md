@@ -43,9 +43,11 @@ Notice the ATE is the same as when we averaged Individual Causal Effects of all 
 
 <h2 id="estimands-trigger-6">Potential outcomes table</h2>
 
-This potential outcomes table  displays the data in way that may be more conducive to making calculations by hand.
+We can also think of the ATE within a potential outcomes table, you can hover over the graph or the table for a closer look! Using a potential outcomes table has the benifit of displaying the data in way that may be more conducive to making calculations by hand.
 <br><br>
 The average treatment effect is a summary of the entire samples within person comparisons. Remember you can calculate the ATE by taking the average of all 10 runner Individual Causal Effects or by taking the difference of the average y1 and average y0.
+<br><br>
+Remember that calculating the ATE requiors knowing each runner's factual and counterfactual observations. For now, keep imagining that you have access to both potential outcomes (both y1 and y0) for all 10 runners.
 
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

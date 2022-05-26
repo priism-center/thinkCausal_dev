@@ -3,7 +3,7 @@ moderator_page <- tabPanel(
   tabsetPanel(
     id = "analysis_moderator_tabs",
     tabPanel(
-      title = 'ICATE',
+      title = 'Check',
       sidebarLayout(
         sidebarPanel(
           h4("Individual conditional average treatment effects"),
@@ -82,7 +82,7 @@ moderator_page <- tabPanel(
         )
       )),
     tabPanel(
-      title = 'Exploratory Subgroup Analyses',
+      title = 'Explore',
       sidebarLayout(
         sidebarPanel(
           h4("Subgroup analyses"),
@@ -123,7 +123,10 @@ moderator_page <- tabPanel(
           br(),
           plotOutput(outputId = "analysis_moderators_explore_plot",
                      height = 500)
-        )))
+        ))), 
+    tabPanel(
+      title = 'Test'
+    )
   )
 )
 

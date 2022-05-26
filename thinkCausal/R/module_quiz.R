@@ -227,7 +227,8 @@ quiz_set_state <- function(store, variable, value, state = NULL){
 #' @describeIn quiz_get_state check that an answer matches a response, agnostic of ordering
 quiz_is_answer_correct <- function(answer, key){
   if (length(answer) != length(key)) return(FALSE)
-  is_correct <- purrr::map2_lgl(answer, key, function(resp, key) base::setequal(resp, key))
+  if(!is.numeric(answer)) is_correct <- purrr::map2_lgl(answer, key, function(resp, key) base::setequal(resp, key))
+  if(is.numeric(answer)) is_correct <-  purrr::map2_lgl(answer, key, function(resp, key) between(resp, key-.1, key+.1))
   is_correct <- all(is_correct)
   return(is_correct)
 }

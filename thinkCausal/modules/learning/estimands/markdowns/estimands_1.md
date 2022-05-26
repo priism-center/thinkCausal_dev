@@ -1,40 +1,12 @@
 
-# Causal estimands
+# Average Treatment Effects
 
-Including *post-treatment variables* in models for both randomized and observational studies generally is not a good idea and shoud be avoided. By *post-treatment variables*, we mean variables that can be effected by the treatment and our measured after treatment assignment. When post-treatment variables are included as a predictor or input in a causal analysis [estimates]() of the treatment effect can be [biased]()
+Let's revisit the HyperShoe example from the potential outcomes module; a new high performance running shoe called the HyperShoe is released with the claim that wearing the shoe causes faster marathon running times than standard running shoes. We have collected data from 10 runners. 5 of the runners wore HyperShoes and 5 of the runners wore standard shoes.
+
+What might we want to learn about the effect of the shoes on these runners? Ideally we'd like to know, for each runner, if the Hypershoe would reduce their running time in a given race. But we have shown [[link to potential outcomes module]] that this is an extremely difficult task since for each person we only observe their running time either with or without the Hypershoe. What if we instead considered the effect of the HyperShoe across all ten runners?
+
+The **average treatment effect (ATE)** provides the average of all of the individual level causal effects of HyperShoes across all 10 of the runners in our sample. We saw in the potential outcomes module that there can be individual differences in the causal effect of HyperShoes. Some runners had a huge benefit from HyperShoes while others had no benefit at all. The average treatment effect masks these individual level differences and instead gives us an idea of the general trend. **The average treatment effect still relies on within-person comparisons.** This is different then simply comparing the average running times between the observed treatment group and the observed control group. We'll walk through calculating the ATE to make these ideas more concrete.
 
 <br>
 
-## Consider a simple example
-
-A farmer wants to know if a non-toxic environmentally friendly pest-control method will cause plants to grow taller. The farmer conducted an experiment by randomly assigning half of their 400 plants to revive pest-control and the other half to receive no pest-control. Each plants treatment assignment was recorded with the variable `pest_control` . 
-
-At the end of the growing season, 6 months later, the farmer measures the height of each plant with the variable `height` as well as whether or not there were any bug bites on each plant with the variable `bugs` (plant had no bugs = 0, plant had bugs = 1). The variable `bugs` is a post-treatment variable because it was measured after the treatment had been assigned and it is possible that values of `bugs` may be effected by reviving the pest-control treatment. 
-
-
-After all of the data is recorded, the farmers  data-set looks like this: 
-
-< INSERT DATATABLE >
-
-
-The farmer is unsure if they should control for `bugs` when analyzing the results of the experiment. Use the checkboxes below to compare the results of an analyses that control for the post-treatment variable `bugs` or do not control for the post-treatment variable `bugs`.
-
-When `bugs` **is not included** in the analysis, the causal effect of `pest_control` is a comparison between the average height of plants that received the pest-control (colored in red) against the average height and plants that did not receive the pest-control(colored in blue). 
-
-Plants that received the pest-control grew an average of 1.595 inches taller, than they would have grown had they not received the pest-control. 
-
-When `bugs` **is included** in the analysis, the causal effect of `pest_control` is a comparison between the average height of plants that received the pest-control (colored in red) against the average height and plants that did not receive the pest-control(colored in blue) **that is made within groups of plants that had bugs and did not have bugs**. 
-
-Plants that received the pest-control grew an average of -0.1778 inches taller, than they would have grown had they not received the pest-control. 
-
-Including *post-treatment variables* in models for both randomized and observational studies generally is not a good idea and shoud be avoided. By *post-treatment variables*, we mean variables that can be effected by the treatment and our measured after treatment assignment. When post-treatment variables are included as a predictor or input in a statistical model, they can bias[link] estmates of how effective the treatment is.
-
-## Consider a simple example: 
-
-A farmer wants to know if a non-toxic environmentally friendly pest-control method will cause plants to grow taller. The farmer conducted an experiment by randomly assigning half of their 400 plants to revive pest-control and the other half to receive no pest-control. Each plants treatment assignment was recorded with the variable `pest_control` (plan has pest-control = 1, plant has no pest control = 0). 
-
-At the end of the growing season, 6 months later, the farmer measures the height of each plant with the variable `height` as well as whether or not there were any bug bites on each plant with the variable `bugs` (plant had no bugs = 0, plant had bugs = 1). The variable `bugs` is a post-treatment variable because it was measured after the treatment had been assigned and it is possible that values of `bugs` may be effected by reciving the pest-control treatment. 
-
-
-After all of the data is recorded, the farmers  data-set looks like this: 
 

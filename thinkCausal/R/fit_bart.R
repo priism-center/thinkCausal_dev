@@ -7,14 +7,16 @@
 #'
 #' @return an object of class "bartcFit"
 #' @export
-fit_bart <- function(.data, support, ran.eff, .estimand){
+fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
+  ind <- 3 + length(weights) + length(ran_eff)
   tryCatch({
-    if(is_null(ran.eff)){
+    if(is_null(ran_eff)){
         bartCause::bartc(
           response = .data[, 2], 
           treatment = .data[, 1], 
-          confounders = clean_confounders_for_bart(.data[, 3:length(.data)]), 
+          confounders = clean_confounders_for_bart(.data[, ind:length(.data)]), 
           estimand = .estimand, 
+          weights = .weights, 
           commonSup.rule = support, 
           keepTrees = TRUE, 
           seed = 2
@@ -25,10 +27,11 @@ fit_bart <- function(.data, support, ran.eff, .estimand){
       bartCause::bartc(
         response = .data[[2]], 
         treatment = .data[[1]], 
-        confounders = clean_confounders_for_bart(.data[, 3:length(.data)]), 
+        confounders = clean_confounders_for_bart(.data[, ind:length(.data)]), 
         estimand = .estimand, 
-        group.by = ran.eff, 
-        group.effects = TRUE, 
+        weights = .weights, 
+        group.by = ran_eff, 
+        use.ranef = TRUE,  
         commonSup.rule = support, 
         keepTrees = TRUE,
         seed = 2

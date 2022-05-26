@@ -108,7 +108,9 @@ server_model <- function(store, id, global_session){
         store$model_results <- fit_bart(
           .data = store$verified_df,
           support = common_support_rule,
-          ran.eff = store$column_assignments$ran_eff,
+          block = store$column_assignments$block,
+          .weights = store$column_assignments$weight, 
+          ran_eff = store$column_assignments$ran_eff,
           .estimand = base::tolower(input$analysis_model_estimand)
         )
         
