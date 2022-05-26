@@ -217,8 +217,8 @@ server_eda <- function(store, id, global_session){
         
         # add theme
         p <- p + store$options$theme_custom
-        return(p)
         
+        return(p)
       })
       output$analysis_eda_plot <- renderPlot(descriptive_plot())
       

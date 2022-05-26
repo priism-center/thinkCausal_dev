@@ -17,15 +17,15 @@ store_l_estimands <- list()
 store_l_estimands$path_to_here <- file.path('modules', 'learning', 'estimands')
 
 # read in randomization df
-store_l_estimands$plants_df <- readr::read_csv(
-  file.path(store_l_estimands$path_to_here, 'data', 'plants_df.csv'),
-  col_types = readr::cols(
-    h1 = readr::col_double(),
-    z = readr::col_logical(),
-    bugs = readr::col_logical()
-  )
-)
-store_l_estimands$plants_df$z_as_text <- ifelse(store_l_estimands$plants_df$z, 'Treatment', 'Control')
+# store_l_estimands$plants_df <- readr::read_csv(
+#   file.path(store_l_estimands$path_to_here, 'data', 'plants_df.csv'),
+#   col_types = readr::cols(
+#     h1 = readr::col_double(),
+#     z = readr::col_logical(),
+#     bugs = readr::col_logical()
+#   )
+# )
+# store_l_estimands$plants_df$z_as_text <- ifelse(store_l_estimands$plants_df$z, 'Treatment', 'Control')
 
 
 # namespace ---------------------------------------------------------------

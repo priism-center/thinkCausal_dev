@@ -102,12 +102,12 @@ server_learning_potential_outcomes <- function(id, plot_theme = ggplot2::theme_g
       server_quiz(
         id = "quiz", # this should always be quiz
         id_parent = module_ids$learning$potential_outcomes,
-        question_texts = store_l_potential_outcomes$quiz()$question_texts,
-        question_prompts = store_l_potential_outcomes$quiz()$question_prompts,
-        correct_answers = store_l_potential_outcomes$quiz()$correct_answers,
-        message_correct = store_l_potential_outcomes$quiz()$message_correct,
-        message_wrong = store_l_potential_outcomes$quiz()$message_wrong,
-        message_skipped = store_l_potential_outcomes$quiz()$message_skipped,
+        question_texts = store_l_potential_outcomes$quiz$question_texts,
+        question_prompts = store_l_potential_outcomes$quiz$question_prompts,
+        correct_answers = store_l_potential_outcomes$quiz$correct_answers,
+        message_correct = store_l_potential_outcomes$quiz$message_correct,
+        message_wrong = store_l_potential_outcomes$quiz$message_wrong,
+        message_skipped = store_l_potential_outcomes$quiz$message_skipped,
         embed_quiz = TRUE
       )
       
