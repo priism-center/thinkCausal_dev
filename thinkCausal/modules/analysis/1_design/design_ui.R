@@ -51,7 +51,7 @@ ui_design <- function(store, id){
                br(),
                actionButton(inputId = ns("analysis_design_button_next"),
                             class = "nav-btn-focus",
-                            label = "Go to data"),
+                            label = "Save design"),
                br(), br(),
                create_link_to_help('Study design')
              )

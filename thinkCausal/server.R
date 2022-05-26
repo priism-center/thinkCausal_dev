@@ -108,7 +108,6 @@ shinyServer(function(input, output, session) {
     
     # display footer when in analysis section
     current_page <- input$nav
-    footer_id <- paste0('progress-footer-', current_page)
     is_analysis <- current_page %in% module_ids$analysis
     if (isTRUE(is_analysis)) {
       shinyjs::runjs(
@@ -121,12 +120,11 @@ shinyServer(function(input, output, session) {
     }
     
     # highlight current footer
+    footer_id <- paste0('progress-footer-', current_page)
     shinyjs::runjs(
       paste0(
         '$(".progress-footer-tab").css("font-weight", "");',
-        '$("#',
-        footer_id,
-        '").css("font-weight", 600)'
+        '$("#', footer_id, '").css("font-weight", 600)'
       )
     )
   })

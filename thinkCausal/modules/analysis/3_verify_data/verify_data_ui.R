@@ -26,7 +26,7 @@ ui_verify <- function(store, id) {
                  actionButton(
                    inputId = ns('analysis_verify_data_save'),
                    class = "nav-btn-focus",
-                   label = 'Save changes'
+                   label = 'Save data'
                  )
                )
                # br(),
