@@ -24,8 +24,8 @@ ui_overlap <- function(store, id) {
                                 ns = ns, 
                                 selectInput(
                                   inputId = ns("analysis_overlap_select_var"),
-                                  label = "Select variables for overlap check:",
-                                  multiple = TRUE,
+                                  label = "Select a variable for overlap check:",
+                                  multiple = FALSE,
                                   choices = NULL,
                                   selected = NULL
                                 )), 

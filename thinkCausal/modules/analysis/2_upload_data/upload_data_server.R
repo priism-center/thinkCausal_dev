@@ -139,7 +139,7 @@ server_data <- function(store, id, global_session){
         cols_ran_eff <- input$analysis_upload_data_dragdrop_ran_eff
         
         # the order of this is very important for create_data_summary_grid.R
-        all_cols <- unlist(c(cols_z, cols_y, cols_block,cols_ran_eff, cols_weight,cols_x))
+        all_cols <- unlist(c(cols_z, cols_y,cols_ran_eff, cols_weight,cols_block,cols_x))
         
         # are there duplicate selections?
         all_unique <- isTRUE(length(all_cols) == length(unique(all_cols)))
@@ -202,18 +202,20 @@ server_data <- function(store, id, global_session){
         store$column_assignments$z <- cols_z
         store$column_assignments$y <- cols_y
         store$column_assignments$x <- cols_x
-        store$column_assignments$blocks <- cols_block
         store$column_assignments$weight <- cols_weight
         store$column_assignments$ran_eff <- cols_ran_eff
+        store$column_assignments$blocks <- cols_block
+        
         
         # add to log
         log_event <- paste0('Assigned columns to roles: \n',
                             '\ttreatment: ', cols_z, '\n',
                             '\tresponse: ', cols_y, '\n',
                             '\tcovariates: ', paste0(cols_x, collapse = '; '), 
-                            '\tblocking variable(s):', paste0(cols_block, collapse = '; '), 
                             '\tsurvey weight:', cols_weight, 
-                            '\trandom intercepts:', paste0(cols_ran_eff, collapse = '; '))
+                            '\trandom intercepts:', paste0(cols_ran_eff, collapse = '; '), 
+                            '\tblocking variable(s):', paste0(cols_block, collapse = '; '))
+        
         store$log <- append(store$log, log_event)
         
         # move to next page

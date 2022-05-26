@@ -13,21 +13,24 @@ server_overlap <- function(store, id, global_session){
       })
       
       
-      # render default values when verified data is saved
-      observeEvent(store$analysis$data$verify$analysis_verify_data_save,{
+      # render varible options ordered by overlap problems
+      observeEvent(input$analysis_overlap_type,{
         
         # get covariates
         new_col_names <- colnames(store$verified_df)
-        cols_categorical <- store$column_types$categorical
-        cols_continuous <- store$column_types$continuous
         X_cols <- grep("^X_", new_col_names, value = TRUE)
-        X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
         
+        overlap_df <- data.frame(sd.cf = pscores()[[2]], store$verified_df[, X_cols])
+        tree <- rpart::rpart(sd.cf ~ ., data = overlap_df)
+        preds <- unique(rownames(tree$splits))
+        overlap <- c(preds, X_cols[X_cols %notin% preds])
+        
+    
         # send them off to the UI
         updateSelectInput(session = session,
                           inputId = 'analysis_overlap_select_var',
-                          choices = X_cols,
-                          selected = NULL
+                          choices = overlap,
+                          selected = overlap[1]
         )
         
       })
@@ -45,12 +48,17 @@ server_overlap <- function(store, id, global_session){
         response_col <- grep("^Y_", col_names, value = TRUE)
         confounder_cols <- grep("^X_", col_names, value = TRUE)
         
-        ps <- X[, c(treatment_col, confounder_cols)]
-       
          # calculate pscores
-        pscores <- dbarts::bart2(eval(parse(text = treatment_col)) ~ ., data = ps, seed = 2)
-        rm(ps)
-        pscores <- fitted(pscores)
+        fit <- fit_bart(
+          .data = store$verified_df,
+          block = store$column_assignments$block,
+          .weights = store$column_assignments$weight, 
+          ran_eff = store$column_assignments$ran_eff,
+          .estimand = 'ate', 
+          support = 'none'
+        )
+        
+        #pscores <- pscore_fit$p.score
         # pscores <- fitted(pscores)  
         #   plotBart:::propensity_scores(
         #   .data = X,
@@ -60,7 +68,8 @@ server_overlap <- function(store, id, global_session){
         #   seed = 44
         # )
         
-        return(pscores)
+        overlap_data <- list(p.score = fit$p.score, sd.cf = fit$sd.cf)
+        return(overlap_data)
       })
       
       # create the overlap plot
@@ -84,27 +93,25 @@ server_overlap <- function(store, id, global_session){
       
         # plot either the variables or the 1 dimension propensity scores
         if(input$analysis_overlap_type == 2){
-          p <- tryCatch(
-            plotBart::plot_overlap_vars(
+          if(plt_type == 'Density') validate(need(isFALSE(is.character(X[[input$analysis_overlap_select_var]])), 'Density plots are not avalable for categorical variables'))
+          
+          req(input$analysis_overlap_select_var)
+          
+          p <- temp_plot_overlap_vars(
               .data = X,
               treatment = treatment_col,
               confounders = input$analysis_overlap_select_var,
               plot_type = plt_type
-            ),
-            error = function(e) NULL
-          )
+            )
         }
         
-        # TODO: should pscores include all vars or what is just included in the select input?
         else if(input$analysis_overlap_type == 1){
           p <- tryCatch({
             plotBart::plot_overlap_pScores(
               .data = X,
               treatment = treatment_col,
-              response = response_col,
-              confounders = confounder_cols,
               plot_type = plt_type,
-              pscores = pscores()
+              pscores = pscores()[[1]]
             )
           },
           error = function(e) NULL

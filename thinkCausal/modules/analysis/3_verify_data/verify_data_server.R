@@ -86,9 +86,9 @@ server_verify <- function(store, id, global_session){
           default_data_types = default_data_types,
           ns_prefix = 'analysis_verify_data',
           design = store$analysis_design,
-          blocking_variables = store$column_assignments$blocks, 
           random_effect = store$column_assignments$ran_eff,
-          survey_weight = store$column_assignments$weight
+          survey_weight = store$column_assignments$weight,
+          blocking_variables = store$column_assignments$blocks
         )
         
         return(UI_table)

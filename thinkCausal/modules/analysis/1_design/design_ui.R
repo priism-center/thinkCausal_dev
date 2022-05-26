@@ -11,7 +11,7 @@ ui_design <- function(store, id){
                h4(create_info_icon('1. Describe your study', 'This information will be used to help interpret results later on.')),
                br(),
                textInput(ns('treatment_name'),
-                         label = 'What is the name of the treatment or intervention?',
+                         label = 'What is the name of the treatment?',
                          placeholder = 'treatment condition'),
                textInput(ns('treatment_units'),
                          label = 'What are the units of your outcome variable?',
