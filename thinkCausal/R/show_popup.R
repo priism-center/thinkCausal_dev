@@ -149,8 +149,8 @@ show_popup_welcome <- function(session){
       HTML(
         "Here are some tips to get started:
          <ul>
-          <li>{...Walk through the process}</li>
           <li>We do not save your data so if you leave and come back, you'll have to start from the beginning</li>
+          <li>The full analysis process is outlined at the bottom of the page</li>
           <li>thinkCausal is still in beta and we'll be making updates over the coming months</li>
           <li>Please feel free to reach out on the <a href='https://github.com/gperrett/thinkCausal_dev' target='_blank'>GitHub page</a> or email gp77@nyu.edu if you have any questions</li>
         </ul>

@@ -2,7 +2,7 @@
 # should return a list as outlined in this template
 # you can add as many questions as you like
 
-store_l_template$quiz <- function(){
+store_l_template$quiz <- local({
   
   # set the text for question 1
   question_1 <- tagList(
@@ -92,4 +92,4 @@ store_l_template$quiz <- function(){
   )
 
   return(quiz)
-}
+})

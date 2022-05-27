@@ -119,7 +119,7 @@ shinyServer(function(input, output, session) {
       )
     }
     
-    # highlight current footer
+    # highlight current footer item
     footer_id <- paste0('progress-footer-', current_page)
     shinyjs::runjs(
       paste0(
@@ -293,7 +293,7 @@ shinyServer(function(input, output, session) {
   )
 
   # subgroup plots
-  # TODO: this is a mess and prevents plot downloading; Joe to rewrite
+  # TODO: this is a mess and prevents plot downloading;
   # TODO: there's an issue where the if the user makes the plot but then goes back
   # and adjusts the data (therefore removing the model), this plot fails to render even
   # though there is a validate* function
@@ -470,10 +470,11 @@ shinyServer(function(input, output, session) {
     # change colors
     # theme_custom <- theme_custom %+replace% ggplot2::scale_color_brewer
 
+    # store it (this gets passed to the modules)
+    store$options$theme_custom <- theme_custom
+    
     return(theme_custom)
   })
-  
-  isolate(store$options$theme_custom <- theme_custom())
 
   # update plot theme preview
   output$settings_options_ggplot_preview <- renderPlot({
