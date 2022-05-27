@@ -35,5 +35,17 @@ ggplot2::ggplot(
   select(xName, yName, y, pair_id, treatment) %>% 
   tidyr::pivot_wider(names_from = y, values_from = c(xName, yName))
 
-# readr::write_csv(.dataLines, '../_site/d3/pairing/data/line-data.csv')
-# readr::write_csv(.dataLines, 'd3/scrollytell/data/line-data.csv')
+dat <- data.frame(
+pair_id = 1:10, 
+treatment = rep(c(0,1), 5), 
+xName_y0 = rep(0, 10), 
+xName_y1 = rep(1, 10)
+)
+
+dat$yName_y0 <- ifelse(dat$treatment == 1, rnorm(5, 140, 5), rnorm(5, 165, 5))
+dat$yName_y1 <- ifelse(dat$treatment == 1, rnorm(5, 135, 5), rnorm(5, 165, 5))
+.dataLines <- dat
+
+
+readr::write_csv(.dataLines, '../_site/d3/pairing/data/line-data.csv')
+readr::write_csv(.dataLines, 'd3/scrollytell/data/line-data.csv')
