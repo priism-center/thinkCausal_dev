@@ -9,7 +9,7 @@ library(bartCause)
 model_results <- fit_bart(
   .data = .data,
   support = "none",
-  ran.eff = NULL,
+  ran_eff = NULL,
   .estimand = "ate"
 )
 
