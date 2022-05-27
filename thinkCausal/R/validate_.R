@@ -51,11 +51,9 @@ remove_downstream_data <- function(store, page = NULL){
     store$user_modified_df <- NULL
     store$col_assignment_df <- NULL
     store$column_assignments <- NULL
+
   }
   
-  if (page == 'group'){
-    
-  }
   
   if (page == 'verify'){
     
@@ -66,6 +64,6 @@ remove_downstream_data <- function(store, page = NULL){
   store$column_types <- NULL
   store$model_results <- NULL
   store$model_fit_good <- NULL
-  
+
   return(store)
 }

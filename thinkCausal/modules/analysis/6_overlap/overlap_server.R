@@ -58,15 +58,6 @@ server_overlap <- function(store, id, global_session){
           support = 'none'
         )
         
-        #pscores <- pscore_fit$p.score
-        # pscores <- fitted(pscores)  
-        #   plotBart:::propensity_scores(
-        #   .data = X,
-        #   treatment = treatment_col,
-        #   response = response_col,
-        #   confounders = confounder_cols,
-        #   seed = 44
-        # )
         
         overlap_data <- list(p.score = fit$p.score, sd.cf = fit$sd.cf)
         return(overlap_data)

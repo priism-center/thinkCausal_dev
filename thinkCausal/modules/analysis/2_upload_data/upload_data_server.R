@@ -134,9 +134,12 @@ server_data <- function(store, id, global_session){
         cols_z <- input$analysis_upload_data_dragdrop_treatment
         cols_y <- input$analysis_upload_data_dragdrop_response
         cols_x <- input$analysis_upload_data_dragdrop_covariates
-        cols_block <- input$analysis_upload_data_dragdrop_block
-        cols_weight <- input$analysis_upload_data_dragdrop_weight
-        cols_ran_eff <- input$analysis_upload_data_dragdrop_ran_eff
+        if(store$analysis_design != "Block randomized treatment") cols_block <- NULL
+        else cols_block <- input$analysis_upload_data_dragdrop_block
+        if(store$analysis_weights == 'No') cols_weight <- NULL
+        else cols_weight <- input$analysis_upload_data_dragdrop_weight
+        if (store$analysis_random_effects == 'No') cols_ran_eff <- NULL
+        else cols_ran_eff <- input$analysis_upload_data_dragdrop_ran_eff
         
         # the order of this is very important for create_data_summary_grid.R
         all_cols <- unlist(c(cols_z, cols_y,cols_ran_eff, cols_weight,cols_block,cols_x))

@@ -1,19 +1,23 @@
 
-## ATT and ATC 
+## Subsetting by the treatment group
 
-Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable `bugs` is very close to the true treatment effect. The analysis that includes the post-treatment variable `bugs` is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!
+Sometimes researchers are only interested in summarizing causal effects for a particular set of observations. In observational studies, where the treatment is not randomly assigned, individuals that received the treatment are often very different from individuals that did not receive the treatment. It may make sense to focus on group that received the treatment.
+
+Let’s return to our original sample of 10 runners from the HyperShoe study. In our study, 5 runners received the treatment and wore HyperShoes while 5 did not receive the treatment and wore standard shoes. Suppose that all 5 runners that wore HyperShoes are semi-professional runners while only 2 of the 5 runners wearing standard shoes are semi-professionals and the remaining 3 are amateur-runners.
+
+The average treatment effect on the treated (ATT) is the average causal effect of the sample with received the treatment (where z = 1 and y = y1 in potential outcomes notation). In our example, the ATT is the average casual effect for the runners who wore HyperShoes for their factual outcome.
+
+We can calculate the ATT by taking averaging the individual causal effect of the 5 runners that received the treatment (z = 1) or by taking the difference between the average y1 and the average y0 for the group of runners that received the treatment (z = 1).
 
 
 <div id='estimands-plot-ATT'></div>
 
-When `bugs` **is not included** in the analysis, the causal effect of `pest_control` is a comparison between the average height of plants that received the pest-control (colored in red) against the average height and plants that did not receive the pest-control(colored in blue). 
+## Subsetting by the control group
 
-Plants that received the pest-control grew an average of 1.595 inches taller, than they would have grown had they not received the pest-control. 
+In our last example we were interested in a causal question that only pertained to the treated group. We can ask similar questions about the control group. Imagine a different scenario, the governing body that organized marathon races is concerned that runners without HyperShoes are put at a disadvantage. How would the governing body know if runners without HyperShoes would have ran faster had they worn HyperShoes?
 
-When `bugs` **is included** in the analysis, the causal effect of `pest_control` is a comparison between the average height of plants that received the pest-control (colored in red) against the average height and plants that did not receive the pest-control(colored in blue) **that is made within groups of plants that had bugs and did not have bugs**. 
+The average treatment effect on the control (ATC) is the average causal effect of the sample that did not receive the treatment (where z = 0). Calculating the ATC would answer if the runners without HyperShoes were at a disadvantage
+
+Why do we only care about comparisons within the control group? Here we want to know if the group of runners without HyperShoes is disadvantaged without using HyperShoes. It is possible that the HyperShoes only have an effect on the runners that happened to be in the treated group (z = 1) to see if the runners without HyperShoes were disadvantaged we would need to compare the factual and counterfactual outcomes (y1 and y0) for the runners without HyperShoes (z = 0).
 
 <div id='estimands-plot-ATC'></div>
-
-A farmer wants to know if a non-toxic environmentally friendly pest-control method will cause plants to grow taller. The farmer conducted an experiment by randomly assigning half of their 400 plants to revive pest-control and the other half to receive no pest-control. Each plants treatment assignment was recorded with the variable `pest_control` (plan has pest-control = 1, plant has no pest control = 0). 
-
-At the end of the growing season, 6 months later, the farmer measures the height of each plant with the variable `height` as well as whether or not there were any bug bites on each plant with the variable `bugs` (plant had no bugs = 0, plant had bugs = 1). The variable `bugs` is a post-treatment variable because it was measured after the treatment had been assigned and it is possible that values of `bugs` may be effected by reciving the pest-control treatment. 

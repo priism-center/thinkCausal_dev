@@ -112,7 +112,7 @@ question_1 <- tagList(
   p("Imagine your asked to determnie the average treatment effect of wearing HyperShoes (Z = 1) on 5k running times. The potential outcomes for a sample of 6 runners are shown below. Use this data to calculate the average treatment effect (ATE)."), 
   HTML(create_table(ate = -5, y_min = 30, y_max = 50, po_question = FALSE, ite_question = FALSE, id_unit = 'Runner', button = FALSE)), 
   br(), 
-  p("The Average Treatment Effect (ATE) for the 6 runners is:")
+  p("The Average Treatment Effect (ATE) for the sample of runners is:")
 )
 question_prompt_1 <- numericInput(
   inputId = store_l_estimands$ns_quiz('answers'),

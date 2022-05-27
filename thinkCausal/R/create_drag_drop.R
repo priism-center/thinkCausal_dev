@@ -41,8 +41,8 @@ create_drag_drop_roles <- function(ns, .data, ns_prefix, design, weights, ran_ef
       add_rank_list(
         input_id = ns(paste0(ns_prefix, "_dragdrop_weight")),
         text = strong("Survey weight"),
-        labels = NULL,
-        options = max_1_item_opts
+        labels = NULL, 
+        options = sortable_options(multiDrag = TRUE)
       )
       }, 
       if(ran_eff == 'Yes'){
