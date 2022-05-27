@@ -11,7 +11,7 @@ server_model <- function(store, id, global_session){
       })
       
       # update variables on the model page once the save button on the verify data page is clicked
-      observeEvent(store$analysis$data$verify$analysis_data_save, {
+      observeEvent(store$analysis$data$verify$analysis_verify_data_save, {
         
         # create list of moderator combinations on model page
         cols_categorical <- store$column_types$categorical
