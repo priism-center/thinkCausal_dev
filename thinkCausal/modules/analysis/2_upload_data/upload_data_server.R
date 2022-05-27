@@ -136,9 +136,9 @@ server_data <- function(store, id, global_session){
         cols_x <- input$analysis_upload_data_dragdrop_covariates
         if(store$analysis_design != "Block randomized treatment") cols_block <- NULL
         else cols_block <- input$analysis_upload_data_dragdrop_block
-        if(store$analysis_weights == 'No') cols_weight <- NULL
+        if(store$analysis_weights != 'Yes') cols_weight <- NULL
         else cols_weight <- input$analysis_upload_data_dragdrop_weight
-        if (store$analysis_random_effects == 'No') cols_ran_eff <- NULL
+        if (store$analysis_random_effects != 'Yes') cols_ran_eff <- NULL
         else cols_ran_eff <- input$analysis_upload_data_dragdrop_ran_eff
         
         # the order of this is very important for create_data_summary_grid.R

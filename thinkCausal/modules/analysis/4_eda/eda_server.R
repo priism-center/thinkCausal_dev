@@ -216,7 +216,7 @@ server_eda <- function(store, id, global_session){
         )
         
         # add theme
-        p <- p + theme_minimal() + store$options$theme_custom
+        p <- p + store$options$theme_custom
 
         return(p)
       })

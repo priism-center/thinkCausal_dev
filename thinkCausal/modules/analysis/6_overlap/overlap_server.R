@@ -58,7 +58,6 @@ server_overlap <- function(store, id, global_session){
           support = 'none'
         )
         
-        
         overlap_data <- list(p.score = fit$p.score, sd.cf = fit$sd.cf)
         return(overlap_data)
       })
@@ -84,7 +83,8 @@ server_overlap <- function(store, id, global_session){
       
         # plot either the variables or the 1 dimension propensity scores
         if(input$analysis_overlap_type == 2){
-          if(plt_type == 'Density') validate(need(isFALSE(is.character(X[[input$analysis_overlap_select_var]])), 'Density plots are not avalable for categorical variables'))
+          
+          if(plt_type == 'Density') validate(need((is.numeric(X[[input$analysis_overlap_select_var]])), 'Density plots are only avalable for continuous variables'))
           
           req(input$analysis_overlap_select_var)
           
