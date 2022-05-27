@@ -20,7 +20,13 @@ quiz_is_current_correct(store)
 
 quiz_is_all_correct(store)
 
-quiz_ui_quiz_complete(store, ns, message_correct, message_wrong)
+quiz_ui_quiz_complete(
+  store,
+  ns,
+  message_correct,
+  message_wrong,
+  message_skipped
+)
 
 quiz_ui_question(store, ns)
 }
@@ -73,7 +79,8 @@ store <- list(
   question_texts = question_texts,
   question_prompts = question_prompts,
   correct_answers = correct_answers,
-  responses = c('yes', NA, NA)
+  responses = c('yes', NA, NA),
+  skipped = FALSE
 )
 quiz_get_state(store, 'current-question')
 }

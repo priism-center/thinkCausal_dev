@@ -10,7 +10,9 @@ create_data_summary_grid(
   default_data_types,
   ns_prefix,
   design,
-  blocking_variables = NULL
+  blocking_variables = NULL,
+  survey_weight = NULL,
+  random_effect = NULL
 )
 }
 \arguments{

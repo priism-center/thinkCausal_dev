@@ -9,6 +9,7 @@ plot_exploration(
   .plot_type = c("Scatter", "Histogram", "Barplot", "Density", "Boxplot"),
   .x,
   .y,
+  .levels,
   .fill,
   .fill_static = "grey20",
   .size,
@@ -89,5 +90,5 @@ plot_exploration(
 \code{\link{clean_detect_plot_vars}}
 }
 \author{
-Joe Marlo
+Joe Marlo and George Perrett
 }

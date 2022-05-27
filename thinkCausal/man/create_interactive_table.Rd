@@ -9,6 +9,7 @@ create_interactive_table(
   correct_answers,
   extra_header = NULL,
   extra_header_widths = rep(1, length(extra_header)),
+  button = TRUE,
   table_id = NULL,
   ns = NULL
 )
@@ -21,6 +22,8 @@ create_interactive_table(
 \item{extra_header}{optional. A vector of column names}
 
 \item{extra_header_widths}{required only if extra_header is provided. A vector of column widths that sum to length(extra_header). I.e. 1 = width of one column; 2 = width of two columns, etc.}
+
+\item{button}{logical to inclde clear and submit button only set to false when using for estimands}
 
 \item{table_id}{optional. A string to use as the html ID for the table. If none is provided, then 'table' + random 15 letters is used}
 

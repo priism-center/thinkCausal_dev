@@ -4,16 +4,16 @@
 \alias{fit_bart}
 \title{Fit a BART model using a standardized interface}
 \usage{
-fit_bart(.data, support, ran.eff, .estimand)
+fit_bart(.data, support, block, .weights, ran_eff, .estimand)
 }
 \arguments{
 \item{.data}{the data. First column should be treatment, second column response.}
 
 \item{support}{one of c('ate', 'atc', 'att'). See bartCause::bartc}
 
-\item{ran.eff}{if not "None", then the name of the column within .data that represents the random effects}
-
 \item{.estimand}{the causal estimand. See bartCause::bartc}
+
+\item{ran.eff}{if not "None", then the name of the column within .data that represents the random effects}
 }
 \value{
 an object of class "bartcFit"

@@ -16,7 +16,9 @@ create_table(
   extra_header = NULL,
   extra_header_widths = rep(1, length(extra_header)),
   table_id = NULL,
-  ns = NULL
+  button = TRUE,
+  ns = NULL,
+  id_unit = NULL
 )
 }
 \arguments{
@@ -42,7 +44,11 @@ create_table(
 
 \item{table_id}{optional. A string to use as the html ID for the table. If none is provided, then 'table' + random 15 letters is used}
 
+\item{button}{logical to inclde clear and submit button only set to false when using for estimands}
+
 \item{ns}{optional. A function defining the name space. To be used with shiny::NS}
+
+\item{id_unit}{optional. A string to set the name of the ID column: Student, Runner, Plant etc}
 }
 \value{
 a string of JS and HTML code
@@ -56,5 +62,5 @@ html_string <- create_table(n_rows = 10, y_min = 50, y_max = 100, ate = -10, po_
 # access the user inputs via get_table_values(<table_id>) within Shiny server
 }
 \author{
-Joe Marlo, Junhui Yang
+Joe Marlo, Junhui Yang, George Perrett
 }

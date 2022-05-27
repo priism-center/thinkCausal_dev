@@ -11,7 +11,7 @@ create_link_to_help(
 )
 }
 \arguments{
-\item{header}{The header text within help.md to jump top}
+\item{header}{The h3 header text within help.md to jump to}
 
 \item{button_label}{Label text to included on the button}
 

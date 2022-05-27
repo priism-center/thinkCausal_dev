@@ -450,6 +450,7 @@ shinyServer(function(input, output, session) {
 
 
   # options -----------------------------------------------------------------
+  # set deafult theme
   
   # change plot theme, font size, and point size
   theme_custom <- reactive({
@@ -500,7 +501,7 @@ shinyServer(function(input, output, session) {
   isolate(store$options$settings_options_ggplotWidth <- input$settings_options_ggplotWidth)
 
 
-  # script ------------------------------------------------------------------
+    # script ------------------------------------------------------------------
 
   # reproducible script
   # TODO: this hasn't been tested

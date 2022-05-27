@@ -5,7 +5,7 @@
 \title{Convert dummies in a dataframe to a categorical variable
 For downloaded reproducible script use}
 \usage{
-clean_dummies_to_categorical(df, group_names)
+clean_dummies_to_categorical(df, group_names, new_name = "categorical_var")
 }
 \arguments{
 \item{df}{dataframe}

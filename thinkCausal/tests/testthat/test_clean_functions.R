@@ -89,31 +89,31 @@ test_that("clean_detect_plot_vars() output is correct", {
 
 # -------------------------------------------------------------------------
 
-x6 <- tibble(
-  test = 1:5,
-  to_dummy = c('level1', 'level1', 'level2', 'level2', 'level3'),
-  to_dummy2 = c('char1', 'char3', 'char3', 'char2', 'char1')
-)
-converted_x6 <- fastDummies::dummy_cols(x6)
-dummies_detected <- clean_detect_dummy_cols(converted_x6)
-test_that("clean_detect_dummy_cols() output is correct", {
-  expect_type(dummies_detected, 'list')
-  expect_true(dummies_detected$contains_dummy)
-  expect_equal(dummies_detected$dummy_columns[[1]],
-               c("to_dummy_level1", "to_dummy_level2", "to_dummy_level3"))
-  expect_equal(dummies_detected$dummy_columns[[2]],
-               c("to_dummy2_char1", "to_dummy2_char2", "to_dummy2_char3"))
-})
+# x6 <- tibble(
+#   test = 1:5,
+#   to_dummy = c('level1', 'level1', 'level2', 'level2', 'level3'),
+#   to_dummy2 = c('char1', 'char3', 'char3', 'char2', 'char1')
+# )
+# converted_x6 <- fastDummies::dummy_cols(x6)
+# dummies_detected <- clean_detect_dummy_cols(converted_x6)
+# test_that("clean_detect_dummy_cols() output is correct", {
+#   expect_type(dummies_detected, 'list')
+#   expect_true(dummies_detected$contains_dummy)
+#   expect_equal(dummies_detected$dummy_columns[[1]],
+#                c("to_dummy_level1", "to_dummy_level2", "to_dummy_level3"))
+#   expect_equal(dummies_detected$dummy_columns[[2]],
+#                c("to_dummy2_char1", "to_dummy2_char2", "to_dummy2_char3"))
+# })
 
 
 # -------------------------------------------------------------------------
 
-x7 <- data.frame(
-  momwhite = c(1,0,0,0,0,0,1),
-  momblack = c(0,1,1,1,1,0,0),
-  momhisp = c(0,0,0,0,0,0,0),
-  y.obs = rnorm(7, 10, 3)
-)
+# x7 <- data.frame(
+#   momwhite = c(1,0,0,0,0,0,1),
+#   momblack = c(0,1,1,1,1,0,0),
+#   momhisp = c(0,0,0,0,0,0,0),
+#   y.obs = rnorm(7, 10, 3)
+# )
 
 # cleaned_df_internal <- clean_dummies_to_categorical_internal(i = 1, df = x7,
 #                                                              group_names = c('momwhite', 'momblack', 'momhisp'),
@@ -125,11 +125,11 @@ x7 <- data.frame(
 #   expect_equal(cleaned_df_internal[[3]][[1]],
 #                c("race", "momwhite", "momblack", "momhisp"))
 # })
-
-race <- c("momwhite", "momblack", "momhisp")
-cleaned_df <- clean_dummies_to_categorical(x7, race)
-test_that("clean_dummies_to_categorical() output is correct", {
-  expect_equal(names(cleaned_df), c('y.obs','categorical_var'))
-  expect_s3_class(cleaned_df, 'data.frame')
-})
+# 
+# race <- c("momwhite", "momblack", "momhisp")
+# cleaned_df <- clean_dummies_to_categorical(x7, race)
+# test_that("clean_dummies_to_categorical() output is correct", {
+#   expect_equal(names(cleaned_df), c('y.obs','categorical_var'))
+#   expect_s3_class(cleaned_df, 'data.frame')
+# })
 

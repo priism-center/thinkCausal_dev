@@ -14,7 +14,7 @@ library(shinydisconnect) # for showing a popup when shiny crashes
 
 # for data munging and plotting
 library(dplyr)
-library(ggplot2)
+library(ggplot2);theme_set(theme_minimal_no_transparency())
 library(stringr)
 library(purrr)
 library(patchwork)
