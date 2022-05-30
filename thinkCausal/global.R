@@ -14,7 +14,7 @@ library(shinydisconnect) # for showing a popup when shiny crashes
 
 # for data munging and plotting
 library(dplyr)
-library(ggplot2);theme_set(theme_minimal_no_transparency())
+library(ggplot2)
 library(stringr)
 library(purrr)
 library(patchwork)
@@ -79,3 +79,5 @@ map(list.files(file.path('UI', 'headers')), function(file) source(file.path("UI"
 
 # make functions for each id and save them in the global environment
 # purrr::map(unlist(module_ids), make_namespace_function)
+
+theme_set(theme_minimal_no_transparency())

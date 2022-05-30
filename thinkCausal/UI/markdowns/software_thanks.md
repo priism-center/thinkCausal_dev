@@ -16,6 +16,6 @@ R and R packages:
 - **DT**: Yihui Xie, Joe Cheng and Xianying Tan (2021). DT: A Wrapper of the JavaScript Library 'DataTables'. R package version 0.18. https://CRAN.R-project.org/package=DT
 - **sortable**: Andrie de Vries, Barret Schloerke and Kenton Russell (2020). sortable: Drag-and-Drop in 'shiny' Apps with 'SortableJS'. R package version 0.4.4. https://CRAN.R-project.org/package=sortable
 - **rpart.plot**: Stephen Milborrow (2021). rpart.plot: Plot 'rpart' Models: An Enhanced Version of 'plot.rpart'. R package version 3.1.0. https://CRAN.R-project.org/package=rpart.plot
-- **plotBart**: Joseph Marlo and George Perrett (2021). plotBart: Plotting Functions to Supplement bartCause and thinkCausal packages. R package version 0.1.0.
+- **plotBart**: Joseph Marlo and George Perrett (2022). plotBart: Diagnostic and Plotting Functions to Supplement bartCause. R package version 0.1.7.
 - **bartCause**: Hill J (2011). “Bayesian Nonparametric Modeling for Causal Inference.” _Journal of Computational and Graphical Statistics_, *20*(1), 217-240. doi: 10.1198/jcgs.2010.08162 (URL: https://doi.org/10.1198/jcgs.2010.08162).
 
