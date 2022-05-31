@@ -49,10 +49,10 @@ estimands.getScales = function(data, config) {
 
   let yScale = d3.scaleLinear()
     //  .domain([minY, maxY])
-     .domain([0, maxY + yAxisBuffer])
+     .domain([minY - yAxisBuffer, maxY + yAxisBuffer])
      .range([bodyHeight, 0])
   let yScaleBottomPlot = d3.scaleLinear()
-    .domain([-(maxY - yAxisBuffer), 0])
+    .domain([-(10 - yAxisBuffer), 0 + yAxisBuffer])
     .range([bodyHeight*2, bodyHeight+65])
 
   let colorScale = d3.scaleOrdinal()
