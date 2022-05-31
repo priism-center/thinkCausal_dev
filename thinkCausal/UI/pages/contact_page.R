@@ -1,5 +1,5 @@
 contact_page <- tabPanel(
-  title = "Contact",
+  title = "About",
   style = "padding-left: 3rem;",
-  includeMarkdown(file.path("UI", "markdowns", 'contact_us.md'))
+  includeMarkdown(file.path("UI", "markdowns", 'about.md'))
 )
