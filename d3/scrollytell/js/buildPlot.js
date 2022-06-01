@@ -41,7 +41,7 @@ estimands.getScales = function(data, config) {
   let minY = d3.min(data, d => +d.yName);
 
   let xAxisBuffer = 0.2
-  let yAxisBuffer = 0.5
+  let yAxisBuffer = 3
 
   let xScale = d3.scaleLinear()
      .domain([minX - xAxisBuffer, maxX + xAxisBuffer])
@@ -306,10 +306,10 @@ estimands.drawData = function(data, config, scales){
     .data(data.line)
     .enter()
     .append('rect')
-      .attr('width', 50)
+      .attr('width', 125)
       .attr('height', 27)
-      .attr('x', d => xScale(meanX * 0.97))
-      .attr('y', d => yScale(((+d.yName_y0 + +d.yName_y1) / 2) + 0.2))
+      .attr('x', xScale(meanX * 0.70))
+      .attr('y', d => yScale(((+d.yName_y0 + +d.yName_y1) / 2) + 2))
       .style('fill', '#fff')
       .style('display', 'none')
       .attr('pairID', d => d.pair_id)
