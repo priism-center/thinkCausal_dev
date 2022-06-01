@@ -9,5 +9,5 @@ analysis_header <- navbarMenu(
   ui_model(id = module_ids$analysis$model),
   ui_diagnostic(id = module_ids$analysis$diagnostic),
   ui_results(id = module_ids$analysis$results),
-  moderator_page
+  ui_subgroup(id = module_ids$analysis$subgroup)
 )

@@ -9,7 +9,7 @@ server_results <- function(store, id, global_session){
       observeEvent(input$analysis_results_button_back, {
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$diagnostic)
       })
-      observeEvent(input$analysis_results_button_subgroup, {
+      observeEvent(input$analysis_results_button_next, {
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$subgroup)
       })
       

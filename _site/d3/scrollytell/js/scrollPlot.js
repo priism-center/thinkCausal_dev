@@ -251,7 +251,7 @@ estimands.scrollytellState5 = function(){
         .transition()
         .duration(1000)
         .attr('x', xScale(0))
-        .attr('y', yScale(0.5))
+        .attr('y', yScale(135))
         .delay(500)
         .text('MoD ATE: ' + estimands.roundNumber(estimands.ATE, 2))
 
@@ -276,7 +276,7 @@ estimands.scrollytellState5 = function(){
         .transition('move')
         .duration(1000)
         .attr('x', xScale(0.35))
-        .attr('y', yScale(0.5))
+        .attr('y', yScale(135))
         .text('= DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
         .delay(7000)
     d3.selectAll('#estimands-plot-ATE .estimands-meanLinesATEConnector.label.background')
