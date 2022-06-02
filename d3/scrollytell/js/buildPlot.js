@@ -39,6 +39,10 @@ estimands.getScales = function(data, config) {
   let minX = d3.min(data, d => +d.xName);
   let maxY = d3.max(data, d => +d.yName);
   let minY = d3.min(data, d => +d.yName);
+  let diffs = estimands.data.line.map(d => +d.yName_y1 - +d.yName_y0)
+  let minDiff = Math.min(...diffs)
+  let maxDiff = Math.max(...diffs)
+  let pxGap = 65
 
   let xAxisBuffer = 0.2
   let yAxisBuffer = 3
@@ -52,8 +56,8 @@ estimands.getScales = function(data, config) {
      .domain([minY - yAxisBuffer, maxY + yAxisBuffer])
      .range([bodyHeight, 0])
   let yScaleBottomPlot = d3.scaleLinear()
-    .domain([-(10 - yAxisBuffer), 0 + yAxisBuffer])
-    .range([bodyHeight*2, bodyHeight+65])
+    .domain([minDiff - 1, maxDiff + 1])
+    .range([bodyHeight*2, bodyHeight + pxGap])
 
   let colorScale = d3.scaleOrdinal()
       .domain(["0", "1"])
@@ -64,15 +68,15 @@ estimands.getScales = function(data, config) {
       .range(["#21918c", "#440154"])
   
   // store the scales
-  estimands.scales = {xScale, yScale, colorScale, strokeScale, yScaleBottomPlot}
+  estimands.scales = { xScale, yScale, colorScale, strokeScale, yScaleBottomPlot }
 
-  return {xScale, yScale, colorScale, strokeScale, yScaleBottomPlot}
+  return { xScale, yScale, colorScale, strokeScale, yScaleBottomPlot }
 }
 
 estimands.drawData = function(data, config, scales){
-  var {margin, container, bodyHeight, bodyWidth, width, height, selector} = config;
-  let {xScale, yScale, colorScale, strokeScale, yScaleBottomPlot} = scales;
-  console.log('Data into drawData():', data)
+  var { margin, container, bodyHeight, bodyWidth, width, height, selector } = config;
+  let { xScale, yScale, colorScale, strokeScale, yScaleBottomPlot } = scales;
+  console.log('Data into estimands.drawData():', data)
 
   let meanY = d3.mean(data.scatter, d => +d.yName);
   let meanX = d3.mean(data.scatter, d => +d.xName);
@@ -99,17 +103,16 @@ estimands.drawData = function(data, config, scales){
   xAxis.tickFormat((d, i) => tickLabels[i])
   container.append("g")
     .attr('class', "estimands-axis estimands-xAxis")
-    .attr("transform", "translate(0," + bodyHeight + ")")
+    .attr("transform", `translate(0,${bodyHeight})`)
     .call(xAxis);
 
   // add Y axis
   container.append("g")
     .attr('class', "estimands-axis estimands-yAxis")
-    .call(d3.axisLeft(yScale));
+    .call(d3.axisLeft(yScale).ticks(8));
   container.append('g')
     .attr('class', 'estimands-axis estimands-yAxisBottom')
     .call(d3.axisLeft(yScaleBottomPlot).ticks(6))
-
     .style('display', 'none')
   container.append('text')
     .attr('class', 'estimands-axisLabel estimands-yAxisLabel')
@@ -301,25 +304,29 @@ estimands.drawData = function(data, config, scales){
       .attr('pairID', d => d.pair_id)
 
   // add ICE label
-  container.append('g')
-    .selectAll('rect')
-    .data(data.line)
-    .enter()
-    .append('rect')
-      .attr('width', 125)
-      .attr('height', 27)
-      .attr('x', xScale(meanX * 0.70))
-      .attr('y', d => yScale(((+d.yName_y0 + +d.yName_y1) / 2) + 2))
-      .style('fill', '#fff')
-      .style('display', 'none')
-      .attr('pairID', d => d.pair_id)
-      .attr('class', 'estimands-ICElabel estimands-showOnHover')
+  // container.append('g')
+  //   .selectAll('rect')
+  //   .data(data.line)
+  //   .enter()
+  //   .append('rect')
+  //     .attr('width', 125)
+  //     .attr('height', 22)
+  //     .attr('x', xScale(meanX * 0.70))
+  //     .attr('y', d => yScale(((+d.yName_y0 + +d.yName_y1) / 2) + 2))
+  //     .style('fill', '#fff')
+  //     .style('display', 'none')
+  //     .attr('pairID', d => d.pair_id)
+  //     .attr('class', 'estimands-ICElabel estimands-showOnHover')
   container.append('g')
     .selectAll('text')
     .data(data.line)
     .enter()
     .append('text')
-      .attr('x', d => xScale(meanX * 0.75))
+      .attr('x', function(d){
+        let diff = d.yName_y1 - d.yName_y0
+        let position = (diff > 0) ? xScale(meanX * 0.3) : xScale(meanX * 1.05);
+        return position;
+      })
       .attr('y', d => yScale((+d.yName_y0 + +d.yName_y1) / 2))
       .text(function(d) {
         let diff = d.yName_y1 - d.yName_y0
@@ -395,9 +402,9 @@ estimands.drawData = function(data, config, scales){
   container.append('g')
     .append('line')
       .attr('x1', xScale(-0.1))
-      .attr('y1', yScale(estimands.ATE - estimands.bottomPlotOffset))
+      .attr('y1', yScaleBottomPlot(estimands.ATE))
       .attr('x2', xScale(1.1))
-      .attr('y2', yScale(estimands.ATE - estimands.bottomPlotOffset))
+      .attr('y2', yScaleBottomPlot(estimands.ATE))
       .style('stroke', "#333333")
       .style('stroke-width', 4)
       .style('display', 'none')
@@ -407,7 +414,7 @@ estimands.drawData = function(data, config, scales){
       .style('display', 'none')
       .attr('class', 'estimands-ICEATElabel')
       .attr('x', xScale(0.95))
-      .attr('y', (yScale(estimands.ATE - estimands.bottomPlotOffset)) * 0.98)
+      .attr('y', yScaleBottomPlot(estimands.ATE + 0.5))
       .text('ATE: ' + estimands.roundNumber(estimands.ATE, 2))
 
 
