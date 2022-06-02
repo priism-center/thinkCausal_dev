@@ -35,7 +35,7 @@
   float: right;
 }
 
-.helpSideBarContainer p, .helpSideBarContainer h1, .helpSideBarContainer h2, .helpSideBarContainer h3, .helpSideBarContainer h4, .helpSideBarContainer h5 {
+.helpSideBarContainer p, .helpSideBarContainer h1, .helpSideBarContainer h2, .helpSideBarContainer h3, .helpSideBarContainer h4, .helpSideBarContainer h5, .helpSideBarContainer li {
   color: #dbd7d7;
 }
 

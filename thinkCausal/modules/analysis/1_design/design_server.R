@@ -53,6 +53,15 @@ server_design <- function(store, id, global_session){
       observeEvent(input$analysis_design_button_next, {
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$data)
       })
+      
+      # open slide over if answer is unsure
+      dropdown_inputs <- c("analysis_design_estimand", "analysis_design", "analysis_weights", "analysis_random_intercept")
+      purrr::map(dropdown_inputs, function(input_id){
+        observeEvent(input[[input_id]], {
+          if (input[[input_id]] == "Unsure") shinyjs::runjs('openHelpSection("help-studydesign")')
+        })
+      })
+
 
       return(store)
     }

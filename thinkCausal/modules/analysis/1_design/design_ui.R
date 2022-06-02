@@ -19,6 +19,13 @@ ui_design <- function(store, id){
                textInput(ns('treatment_participants'),
                          label = 'Describe the participants in this study',
                          placeholder = 'participants'),
+               selectInput(ns('analysis_design_estimand'),
+                           label = 'Select causal estimand',
+                           choices = c("",
+                                       'Unsure',
+                                       'ATE - Average treatment effect' = 'ATE',
+                                       'ATC - Average treatment effect on the control' = 'ATC',
+                                       'ATT - Average treatment effect on the treated' = 'ATT')),
                h5('Example:'),
                htmlOutput(ns("analysis_design_text"))
              )
