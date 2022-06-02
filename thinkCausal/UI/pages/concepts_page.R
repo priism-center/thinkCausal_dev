@@ -2,17 +2,17 @@ concepts_page <- tabPanel(
   title = "All concepts",
   div(id = 'conceptsGrid1',
   class = 'conceptsGrid',
-  fluidRow(
-    column(
-      width = 12,
-      wellPanel(
-        actionLink('practice_test', img(src = 'thumbnails/practice_test.png')),
-        br(),
-        h3("Test Your Understanding"),
-        p("Take practice tests on causal inference concepts")
-      )
-    )
-  ),
+  # fluidRow(
+  #   column(
+  #     width = 12,
+  #     wellPanel(
+  #       actionLink('practice_test', img(src = 'thumbnails/practice_test.png')),
+  #       br(),
+  #       h3("Test Your Understanding"),
+  #       p("Take practice tests on causal inference concepts")
+  #     )
+  #   )
+  # ),
   fluidRow(
     column(
       width = 4,
