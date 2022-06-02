@@ -1,12 +1,12 @@
 /* controls the red ribbon in the top right corner */
 .cornerRibbon{
-  width: 200px;
+  width: 220px;
   background: #b0453e;
   position: fixed;
-  top: 25px;
-  right: -50px;
+  top: 10px;
+  right: -60px;
   text-align: center;
-  line-height: 50px;
+/*   line-height: 50px; */
   letter-spacing: 3px;
   font-size: 1.5em;
   font-weight: 700;
@@ -18,4 +18,17 @@
   -moz-box-shadow: 0 0 15px rgba(0,0,0,0.5);
   box-shadow: 0 0 15px rgba(0,0,0,0.5);
   z-index: 1000;
+  padding-top: 0.25em;
+}
+
+.cornerRibbon > div {
+  position: relative;
+  font-size: 0.5em;
+  letter-spacing: normal;
+  line-height: normal;
+  padding-bottom: 0.7em;
+}
+
+.cornerRibbon a {
+    color: #fff;
 }

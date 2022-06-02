@@ -52,7 +52,24 @@ shinyUI(
         #          ),
 
         # add beta ribbon
-        tags$div(class = 'cornerRibbon', 'BETA'),
+        tags$div(
+          class = 'cornerRibbon',
+          'BETA',
+          tags$div(
+            tags$a(
+              href = 'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
+              target = "_blank",
+              'Provide feedback'
+            )
+          )
+          # tags$div(
+          #   # class = 'feedback-button',
+          #   onclick = "window.open(
+          #                 'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
+          #                 '_blank')",
+          #   'Feedback'
+          # )
+        ), 
         
         # add header elements
         htmltools::singleton(tags$head(
