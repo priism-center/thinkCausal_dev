@@ -64,14 +64,15 @@ estimands.scrollytellState3 = function(){
         .attr("pointer-events", "all")
 
     // show example lines
-    d3.selectAll("#estimands-plot-ATE .estimands-showOnHover[pairID='" + 1 + "']")
+    let starting_runner = 1
+    d3.selectAll("#estimands-plot-ATE .estimands-showOnHover[pairID='" + starting_runner + "']")
         .style('display', null)
         .style('opacity', 0)
         .transition()
         .duration(1200)
         .delay(300)
         .style('opacity', 1)
-    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints[pairID='" + 1 + "']")
+    d3.selectAll("#estimands-plot-ATE .estimands-scatterPoints[pairID='" + starting_runner + "']")
         .transition()
         .duration(1200)
         .delay(300)
@@ -81,7 +82,7 @@ estimands.scrollytellState3 = function(){
 estimands.scrollytellState4 = function(){
     console.log('Estimands Scrollytell State 4')
 
-    let {xScale, yScale} = estimands.scales;
+    let {xScale, yScale, yScaleBottomPlot} = estimands.scales;
 
     // emphasize text and redraw plot
     estimands.emphasizeText("#estimands-trigger-4, #estimands-trigger-4 + p")
@@ -124,9 +125,9 @@ estimands.scrollytellState4 = function(){
         .transition()
         .duration(2500)
         .attr('x1', d => xScale(d.drop_x1))
-        .attr('y1', d => yScale(d.drop_y1))
+        .attr('y1', d => yScaleBottomPlot(d.drop_y1))
         .attr('x2', d => xScale(d.drop_x2))
-        .attr('y2', d => yScale((d.drop_y2)))
+        .attr('y2', d => yScaleBottomPlot((d.drop_y2)))
         .delay(d => delayFn(+d.pair_id+1 * 0.7))
     d3.selectAll('#estimands-plot-ATE .estimands-line-dashed')
         .transition('disappear')
@@ -142,7 +143,7 @@ estimands.scrollytellState4 = function(){
         .enter()
         .append("circle")
           .attr("cx", d => xScale(d.drop_x2))
-          .attr("cy", d => yScale(d.drop_y2))
+          .attr("cy", d => yScaleBottomPlot(d.drop_y2))
           .attr("r", 5)
           .style('fill', "#6e6e6e")
           .style('stroke', 'white')
@@ -177,7 +178,7 @@ estimands.scrollytellState4 = function(){
         .duration(1000)
         .delay(axisDelay)
         .style('opacity', null)
-        .attr("transform", "translate(0," + (estimands.config.bodyHeight + 65) + ")") // not sure why 65 works
+        .attr("transform", "translate(0," + (yScaleBottomPlot(0)) + ")")
     d3.selectAll('#estimands-plot-ATE .estimands-xAxisBottom text, #estimands-plot-ATE .estimands-xAxisBottom line').remove()
 
     // add new y axis
@@ -251,9 +252,9 @@ estimands.scrollytellState5 = function(){
         .transition()
         .duration(1000)
         .attr('x', xScale(0))
-        .attr('y', yScale(0.5))
+        .attr('y', yScale(135))
         .delay(500)
-        .text('MoD ATE: ' + estimands.roundNumber(estimands.ATE, 2))
+        .text('ATE: ' + estimands.roundNumber(estimands.ATE, 2))
 
     // show mean lines and difference lines
     d3.selectAll("#estimands-plot-ATE .estimands-meanLinesATE")
@@ -275,11 +276,11 @@ estimands.scrollytellState5 = function(){
     d3.selectAll('#estimands-plot-ATE .estimands-meanLinesATELabel')
         .transition('move')
         .duration(1000)
-        .attr('x', xScale(0.35))
-        .attr('y', yScale(0.5))
-        .text('= DoM ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
+        .attr('x', xScale(0.25))
+        .attr('y', yScale(135))
+        .text('= ATE: ' + estimands.roundNumber(estimands.data.DoMATE, 2))
         .delay(7000)
-    d3.selectAll('#estimands-plot-ATE .estimands-meanLinesATEConnector.background')
+    d3.selectAll('#estimands-plot-ATE .estimands-meanLinesATEConnector.label.background')
         .transition()
         .delay(7000)
         .style('display', 'none')

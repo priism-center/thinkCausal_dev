@@ -14,7 +14,7 @@
   height: 650px; /* should match height of d3 plot or d3 plot plus appended table */
   position: -webkit-sticky;
   position: sticky;
-  top: 30px;
+  top: 10px;
   padding: 20px 0 0 0;
 }
 
@@ -63,7 +63,7 @@ body {
 }
 
 .estimands-table {
-  font-size: 0.85em;
+  font-size: 0.95em;
   table-layout: fixed;
   width: auto;
   max-width: auto;
@@ -71,10 +71,6 @@ body {
   text-align: end;
   border-collapse: collapse;
   width: 100%;
-}
-
-#estimands-table-ATC, #estimands-table-ATT {
-  font-size: 0.95em;
 }
 
 .estimands-table td, .estimands-table th {
@@ -88,6 +84,7 @@ body {
 
 .estimands-table th {
   font-weight: 700;
+  font-size: 1.1em;
   border-bottom: 2px solid grey;
 }
 

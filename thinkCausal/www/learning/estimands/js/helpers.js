@@ -10,9 +10,9 @@ estimands.dropICE = function(){
     // calculates the end position for each ICE segment
     d3.map(estimands.data.line, function(d) {
         d.drop_x1 = (d.pair_id - 1) / 10
-        d.drop_y1 = 0 - estimands.bottomPlotOffset
+        d.drop_y1 = 0
         d.drop_x2 = (d.pair_id - 1) / 10
-        d.drop_y2 = (d.yName_y1 - d.yName_y0) - estimands.bottomPlotOffset
+        d.drop_y2 = (d.yName_y1 - d.yName_y0)
     })
 }
 
@@ -132,15 +132,15 @@ estimands.addMeanLines = function(container, meanYy0, meanYy1, estimandType){
         .style('display', 'none')
         .attr('class', classConnector + ' estimands-endCircle')
     // add label
-    container.append('g')
-      .append('rect')
-        .attr('width', 50)
-        .attr('height', 27)
-        .attr('x', xScale(meanX * 0.97))
-        .attr('y', yScale(meanY + 0.2))
-        .style('fill', '#fff')
-        .style('display', 'none')
-        .attr('class', classConnector + ' label background')
+    // container.append('g')
+    //   .append('rect')
+    //     .attr('width', 50)
+    //     .attr('height', 27)
+    //     .attr('x', xScale(meanX * 0.97))
+    //     .attr('y', yScale(meanY + 0.2))
+    //     .style('fill', '#fff')
+    //     .style('display', 'none')
+    //     .attr('class', classConnector + ' label background')
     container.append('g')
       .append('text')
         .attr('x', xScale(meanX * 0.75))
