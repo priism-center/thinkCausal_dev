@@ -514,6 +514,9 @@ estimands.plotATT = function(data, selector){
   d3.selectAll(meanLinesSelector)
     .style('display', null)
     .style('opacity', 0.9)
+  d3.select(selector)
+    .select('.estimands-meanLinesATTLabel')
+    .style('display', null)
 
 
   // add mouseover
@@ -543,6 +546,9 @@ estimands.plotATC = function(data, selector){
   // add meanLinesATC
   let meanLinesSelector = selector + ' .estimands-meanLinesATC, ' + selector + ' .estimands-meanLinesATCConnector, ' + selector + ' .estimands-meanLinesATCConnectorLabel'
   d3.selectAll(meanLinesSelector)
+    .style('display', null)
+  d3.select(selector)
+    .select('.estimands-meanLinesATCLabel')
     .style('display', null)
 
   // add mouseover
