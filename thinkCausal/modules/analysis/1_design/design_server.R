@@ -38,6 +38,8 @@ server_design <- function(store, id, global_session){
       # save input and remove downstream dataframes if study design changes
       observeEvent(input$analysis_design_button_next, {
         
+        # browser()
+        
         # save input to store
         store$analysis_design <- input$analysis_design
         store$analysis_weights <- input$analysis_weights
@@ -45,8 +47,10 @@ server_design <- function(store, id, global_session){
         store$analysis$design$treatment_name <- input$treatment_name
         store$analysis$design$treatment_units <- input$treatment_units
         store$analysis$design$treatment_participants <- input$treatment_participants
+        store$analysis$design$estimand <- input$analysis_design_estimand
         
         # remove saved dataframes if they exist
+        # TODO: error here if user goes back and changes the estimand then saves the design
         store <- remove_downstream_data(store, page = 'design')
       })
       

@@ -10,6 +10,14 @@ server_model <- function(store, id, global_session){
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$overlap)
       })
       
+      # update estimand dropdown based on selected value in the design section
+      observeEvent(store$analysis$design$estimand, {
+        updateSelectInput(
+          inputId = 'analysis_model_estimand',
+          selected = store$analysis$design$estimand
+        )
+      })
+      
       
       # update variables on the model page once the save button on the verify data page is clicked
       observeEvent(store$analysis$data$verify$analysis_verify_data_save, {
@@ -73,6 +81,9 @@ server_model <- function(store, id, global_session){
         # print(store$verified_df)
         # print('Column types of dataframe going into bartC: \n')
         # print(store$verified_df  %>% summarize_all(class))
+        
+        # save the estimand (again, also saved on the design page)
+        store$analysis$design$estimand <- input$analysis_model_estimand
         
         # remove current model if it exists
         store$model_results <- NULL
@@ -207,8 +218,16 @@ server_model <- function(store, id, global_session){
         store$analysis$model$analysis_model_estimand <- analysis_model_estimand()
       })
       
-      return(store = store)
       
+      # open slide over if answer is unsure
+      dropdown_inputs <- c("analysis_model_support", "analysis_model_moderator_yes_no")
+      purrr::map(dropdown_inputs, function(input_id){
+        observeEvent(input[[input_id]], {
+          if (input[[input_id]] == "Unsure") shinyjs::runjs('openHelpSection("help-model")')
+        })
+      })
+      
+      return(store = store)
     }
   )
   

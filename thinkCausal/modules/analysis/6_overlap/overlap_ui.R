@@ -30,7 +30,7 @@ ui_overlap <- function(store, id) {
                                   selected = NULL
                                 )), 
                br(),
-               create_link_to_help('EDA', button_label = 'What is this plot telling me?'),
+               create_link_to_help('Overlap', button_label = 'What is this plot telling me?'),
                br(),
                br(),
                downloadButton(ns('download_overlap_plot'), label = "Download plot"),

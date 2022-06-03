@@ -14,7 +14,7 @@ ui_verify <- function(store, id) {
                ),
                br(),
                br(),
-               create_link_to_help('Data'),
+               create_link_to_help('Verify data'),
                br(),
                br(),
                div(
@@ -29,8 +29,6 @@ ui_verify <- function(store, id) {
                    label = 'Save data'
                  )
                )
-               # br(),
-               # create_progress_bar(1/7*100)
              ),
              mainPanel(
                wellPanel(style = "overflow-y:scroll; max-height: 400px; background-color: transparent; padding: 15px 15px 0 15px;",

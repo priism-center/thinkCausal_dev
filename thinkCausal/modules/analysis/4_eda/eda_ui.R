@@ -161,8 +161,9 @@ ui_eda <- function(store, id) {
                  value = FALSE
                ),
                HTML('</details><br>'),
-               br(),
-               br(),
+               br(), br(),
+               # create_link_to_help('EDA', button_label = 'What should I be looking for?'),
+               # br(), br(),
                downloadButton(ns('download_descriptive_plot'), label = "Download plot"),
                br(),
                br(),
