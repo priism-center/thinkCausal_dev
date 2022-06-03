@@ -241,11 +241,13 @@ shinyServer(function(input, output, session) {
   # TODO: this hasn't been tested
   reproducible_script <- reactive({
 
-    # these probably should be stored in realtime and then extracted here
+    # TODO: these probably should be stored in realtime and then extracted here
     # this would prevent issues if user goes back and changes something but doesn't save it
+    
+    # browser()
 
     # file inputs
-    uploaded_file_name <- store$analysis$data$upload$analysis_data_upload$name
+    uploaded_file_name <- store$analysis$data$upload$analysis_data_upload$name #TODO: this doesn't exist
     uploaded_file_type <-  tools::file_ext(uploaded_file_name)
     uploaded_file_header <- store$analysis$data$upload$analysis_data_header
     uploaded_file_delim <- store$analysis$data$upload$analysis_data_delim_value
@@ -285,19 +287,24 @@ shinyServer(function(input, output, session) {
     common_support_rule <- store$analysis$model$analysis_over_ride_common_support
     if (store$analysis$model$analysis_model_support == 'No') common_support_rule <- 'none'
     
+    ran_eff <- store$analysis$model$analysis_random_intercept
+    if (is.null(ran_eff)) ran_eff <- NA
+    estimand <- base::tolower(store$analysis$model$analysis_model_estimand)
+    if (is.null(estimand)) estimand <- NA
+    
     BART_model <- 
       if(isTRUE(store$model_fit_good)){ # if a model successfully fitted
         
         if(!is.null(store$analysis$model$analysis_model_moderator_vars)){ # if moderators are specified
           data.frame(support = common_support_rule,
-                     ran.eff = store$analysis$model$analysis_random_intercept,
-                     estimand = base::tolower(store$analysis$model$analysis_model_estimand),
+                     ran.eff = ran_eff,
+                     estimand = estimand,
                      moderators = store$analysis$model$analysis_model_moderator_vars
           )
         }else{
           data.frame(support = common_support_rule,
-                     ran.eff = store$analysis$model$analysis_random_intercept,
-                     estimand = base::tolower(store$analysis$model$analysis_model_estimand),
+                     ran.eff = ran_eff,
+                     estimand = estimand,
                      moderators = NA
           )
         }
