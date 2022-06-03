@@ -1,5 +1,5 @@
 
-# Average Treatment Effects
+# Causal estimands
 
 Let's revisit the HyperShoe example from the potential outcomes module; a new high performance running shoe called the HyperShoe is released with the claim that wearing the shoe causes faster marathon running times than standard running shoes. We have collected data from 10 runners. 5 of the runners wore HyperShoes and 5 of the runners wore standard shoes.
 
