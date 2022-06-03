@@ -59,6 +59,11 @@
   border: 1em solid rgba(117, 115, 145, 0.6);
   border-radius: 0.3em;
 }
+/* can also hide the entire quiz
+.quiz-container {
+  display: none;
+}
+*/
 
 /* this lives outside of the .quiz-container */
 .learning-content {
@@ -67,11 +72,11 @@
   /*font-size: 1.1em;*/
   line-height: 1.75em;
 }
-/* can also hide the entire quiz
-.quiz-container {
-  display: none;
+
+.learning-content p {
+   margin-bottom: 2em
 }
-*/
+
 
 .learning-content > h2 {
   padding-top: 1.5em;

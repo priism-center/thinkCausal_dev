@@ -371,13 +371,12 @@ border 0 fixes the buttons moving around when you hover / click */
   margin-right: auto;
   object-fit: cover;
   border-radius: 0.3em;
+  transition: transform 0.25s, visibility 0.25s ease-in;
 }
 
-/* make consistent height of grid bricks on concepts page
-#conceptsGrid1 > .row > .col-sm-3 > .well {
-  height: 45rem;
+.conceptsGrid img:hover {
+  transform: scale(1.05);
 }
-*/
 
 .learning-card {
   background: none;
