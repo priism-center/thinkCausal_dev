@@ -88,7 +88,7 @@ ui_subgroup <- function(store, id){
         sidebarLayout(
           sidebarPanel(
             h4("Subgroup analyses"),
-            p("Text to come soon..."),
+            p("Id eu nisl nunc mi ipsum. Ut aliquam purus sit amet luctus venenatis lectus. Sed augue lacus viverra vitae. Mattis vulputate enim nulla aliquet porttitor. Risus quis varius quam quisque. Arcu odio ut sem nulla. Nunc sed id semper risus in hendrerit gravid"),
             br(),
             selectInput(inputId = ns('plotBart_moderator_vars'),
                         label = 'Choose a varaible for subgroup analysis:',
