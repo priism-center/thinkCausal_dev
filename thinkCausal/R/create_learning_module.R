@@ -81,7 +81,7 @@ create_learning_module <- function(article_name = 'Lorem ipsum', include_quiz = 
   cli::cli_alert_warning('Add `tabPanel(title = \'{article_name}\', ui_learning_{short_name}(id = module_ids$learning${short_name}))`')
   cli::cli_h3('Update /UI/pages/concepts_page.R?')
   link <- paste0("concepts_link_", tolower(gsub('-| ', '_', article_name)))
-  cli::cli_alert_warning("Add a new column() containing `actionLink('{link}', img(src = 'thumbnails/{short_name}.png'))`")
+  cli::cli_alert_warning("Add a new card using create_learning_card('{link}', '{short_name}.png', '{article_name}', 'your description'))`")
   cli::cli_h3('Other items to consider')
   cli::cli_alert_warning('Add a thumbnail image "{short_name}.png" to www/thumbnails')
   cli::cli_alert_warning("Store your data in {file.path(full_dir, 'data')} subdirectory")

@@ -65,6 +65,7 @@
   display: none;
   max-width: 750px;
   /*font-size: 1.1em;*/
+  line-height: 1.75em;
 }
 /* can also hide the entire quiz
 .quiz-container {

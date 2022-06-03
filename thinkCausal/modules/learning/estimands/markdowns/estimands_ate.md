@@ -50,4 +50,4 @@ The average treatment effect is a summary of the entire samples within person co
 Remember that calculating the ATE requiors knowing each runner's factual and counterfactual observations. For now, keep imagining that you have access to both potential outcomes (both y1 and y0) for all 10 runners.
 
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>

@@ -4,6 +4,7 @@
   justify-content: space-between;
   max-width: 1000px;
   min-width: 700px;
+  line-height: 1.75em;
 }
 
 .text-along-d3,

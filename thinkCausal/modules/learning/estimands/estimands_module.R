@@ -208,7 +208,7 @@ ui_learning_estimands <- function(id) {
       div(
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
-        br(),
+        br(),br(),br(),
         includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_2.md')),
         br()
       ),

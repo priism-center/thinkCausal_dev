@@ -1,76 +1,59 @@
 concepts_page <- tabPanel(
   title = "All concepts",
   div(id = 'conceptsGrid1',
-  class = 'conceptsGrid',
-  # fluidRow(
-  #   column(
-  #     width = 12,
-  #     wellPanel(
-  #       actionLink('practice_test', img(src = 'thumbnails/practice_test.png')),
-  #       br(),
-  #       h3("Test Your Understanding"),
-  #       p("Take practice tests on causal inference concepts")
-  #     )
-  #   )
-  # ),
-  fluidRow(
-    column(
-      width = 4,
-      wellPanel(
-        actionLink('concepts_link_post_treatment_variables', img(src = 'thumbnails/propensity.png')),
-        br(),
-        h3("Post-treatment variables"),
-        p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit.")
+    class = 'conceptsGrid',
+    # fluidRow(
+    #   column(
+    #     width = 12,
+    #     wellPanel(
+    #       actionLink('practice_test', img(src = 'thumbnails/practice_test.png')),
+    #       br(),
+    #       h3("Test Your Understanding"),
+    #       p("Take practice tests on causal inference concepts")
+    #     )
+    #   )
+    # ),
+    
+    fluidRow(
+      create_learning_card(
+        page_id = 'concepts_link_causal_estimands',
+        thumbnail_url = 'estimands.png',
+        title = "Causal estimands",
+        description = "BART allows for robust estimation of a wide variety of estimands. Learn how they differ and how to choose one."
+      ),
+      create_learning_card(
+        page_id = 'concepts_link_post_treatment_variables',
+        thumbnail_url = 'post-treatment.png',
+        title = "Post-treatment variables",
+        description = "Post-treatment variables are a class of variables that can be affected by the treatment and should be removed prior to modeling. Learn how to identify them to make sure you are not biasing your treatment effect estimates."
+      ),
+      create_learning_card(
+        page_id = 'concepts_link_potential_outcomes',
+        thumbnail_url = 'potential-outcomes.png',
+        title = "Potential outcomes",
+        description = "The potential outcomes framework is a methodology to estimate causal effects. Learn the theory foundations here."
       )
     ),
-    column(
-      width = 4,
-      wellPanel(
-        actionLink('concepts_link_randomization', img(src = 'thumbnails/propensity.png')),
-        br(),
-        h3("Randomization"),
-        p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit.")
+  
+    fluidRow(
+      create_learning_card(
+        page_id = 'concepts_link_randomization',
+        thumbnail_url = 'randomization.png',
+        title = "Randomization",
+        description = "Randomization balances groups on both observed and unobserved characteristics. Learn how this this mechnaism is exploited for causal inference."
+      ),
+      create_learning_card(
+        page_id = 'concepts_link_bias_and_efficiency',
+        thumbnail_url = 'balance.png',
+        title = "Bias and efficiency",
+        description = "Coming soon"
+      ),
+      create_learning_card(
+        page_id = 'concepts_link_lorem_ipsum',
+        thumbnail_url = 'decision_tree.png',
+        title = "Decision trees",
+        description = "Coming soon"
       )
-    ),
-    column(
-      width = 4,
-      wellPanel(
-        actionLink('concepts_link_potential_outcomes', img(src = 'thumbnails/potential_outcomes.png')),
-        br(),
-        h3("Potential outcomes"),
-        p("Molestie ligula proin tincidunt aptent rhoncus sapien consequat nisi conubia, vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu egestas blandit.")
-      )
-    )
-    ),
-
-  fluidRow(
-    column(
-      width = 4,
-      wellPanel(
-        actionLink('concepts_link_causal_estimands', img(src = 'thumbnails/balance.png')),
-        br(),
-        h3("Causal Estimands"),
-        p("Tincidunt pellentesque viverra ultrices bibendum mauris duis ad tempor, nam aliquet quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor elementum eget eleifend nisi cubilia.")
-      )
-    ),
-    column(
-      width = 4,
-      wellPanel(
-        actionLink('concepts_link_bias_and_efficiency', img(src = 'thumbnails/balance.png')),
-        br(),
-        h3("Bias and efficiency"),
-        p("Vitae montes hac diam a odio magnis ante, velit risus gravida fames nunc sociosqu  ad tempor, nam aliquet quis feugiat augue.")
-      )
-    ),
-    column(
-      width = 4,
-      wellPanel(
-        actionLink('concepts_link_lorem_ipsum', img(src = 'thumbnails/decision_tree.png')),
-        br(),
-        h3("Decision trees"),
-        p("Tincidunt pellentesque viverra ultrices bibendum mauris duis ad tempor, nam aliquet quis feugiat augue pretium vulputate dictumst montes, volutpat porttitor elementum eget eleifend nisi cubilia.")
-      )
-    )
     )
   )
 )
