@@ -209,16 +209,14 @@ server_data <- function(store, id, global_session){
         store$column_assignments$ran_eff <- cols_ran_eff
         store$column_assignments$blocks <- cols_block
         
-        
         # add to log
-        log_event <- paste0('Assigned columns to roles: \n',
-                            '\ttreatment: ', cols_z, '\n',
-                            '\tresponse: ', cols_y, '\n',
-                            '\tcovariates: ', paste0(cols_x, collapse = '; '), 
-                            '\tsurvey weight:', cols_weight, 
-                            '\trandom intercepts:', paste0(cols_ran_eff, collapse = '; '), 
-                            '\tblocking variable(s):', paste0(cols_block, collapse = '; '))
-        
+        log_event <- paste0('Assigned columns to roles: ',
+                            '\n\ttreatment: ', cols_z, 
+                            '\n\tresponse: ', cols_y, 
+                            '\n\tcovariates: ', paste0(cols_x, collapse = '; '), 
+                            '\n\tsurvey weight:', cols_weight, 
+                            '\n\trandom intercepts:', paste0(cols_ran_eff, collapse = '; '), 
+                            '\n\tblocking variable(s):', paste0(cols_block, collapse = '; '))
         store$log <- append(store$log, log_event)
         
         # move to next page

@@ -77,6 +77,10 @@
   padding: 1rem 3rem 0.3rem 3rem;
 }
 
+.markdownContainer img {
+  border-radius: 0.4em;
+}
+
 .helpSubHeader {
   position: -webkit-sticky;
   position: sticky;
