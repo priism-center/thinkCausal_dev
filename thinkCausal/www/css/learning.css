@@ -73,7 +73,7 @@
   line-height: 1.75em;
 }
 
-.learning-content p {
+.learning-content > p {
    margin-bottom: 2em
 }
 
