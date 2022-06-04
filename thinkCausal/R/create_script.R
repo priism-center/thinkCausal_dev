@@ -37,7 +37,7 @@ create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_
   "##### BETA -- work-in-progress #####", "\n\n", 
   "library(tidyverse)", "\n",
   "library(bartCause)", "\n",
-  "library(plotBart) # remotes::install_github('joemarlo/plotBart', ref = '0.1.3')", "\n",
+  "library(plotBart)", "\n",
   "\n",
   '# set the working directory to where this script is saved', '\n',
   'setwd("<user/your/path/to/this/file>")', '\n',

@@ -51,7 +51,7 @@ concepts_page <- tabPanel(
       create_learning_card(
         page_id = 'concepts_link_lorem_ipsum',
         thumbnail_url = 'decision_tree.png',
-        title = "Decision trees",
+        title = "Bayesian Additive Regression Trees",
         description = "Coming soon"
       )
     )

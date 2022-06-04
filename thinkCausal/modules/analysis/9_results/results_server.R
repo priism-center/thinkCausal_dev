@@ -21,7 +21,7 @@ server_results <- function(store, id, global_session){
         
         # extract estimates and format
         # TODO: unclear if credible interval is 80 or 95
-        tab <- summary(store$model_results, ci.style = 'quant')$estimates %>%
+        tab <- summary(store$analysis$model$model, ci.style = 'quant')$estimates %>%
           as.data.frame() %>%
           mutate(rownames = rownames(.)) %>%
           dplyr::select(' ' = rownames, 1:4) %>%
@@ -36,7 +36,7 @@ server_results <- function(store, id, global_session){
         # stop here if model isn't fit yet
         validate_model_fit(store)
         
-        text_out <- create_interpretation(.model = store$model_results,
+        text_out <- create_interpretation(.model = store$analysis$model$model,
                                           type = input$interpretation,
                                           treatment = store$analysis$design$treatment_name,
                                           units = store$analysis$design$treatment_units,
@@ -63,7 +63,7 @@ server_results <- function(store, id, global_session){
         
         # create plot
         p <- plotBart::plot_PATE(
-          .model = store$model_results,
+          .model = store$analysis$model$model,
           type = input$plot_result_style,
           ci_80 = sum(input$show_interval == 0.80) > 0,
           ci_95 = sum(input$show_interval == 0.95) > 0,

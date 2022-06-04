@@ -16,8 +16,6 @@ concepts_header <- navbarMenu(
   #          PotentialOutcomesUI(id = "concepts_potentialoutcomes")),
   tabPanel(title = 'Randomization', 
            ui_learning_randomization(id = module_ids$learning$randomization))
-  # tabPanel(title = 'Decision trees', 
-  #          decision_trees_concept),
   # tabPanel(title = 'PO Test', 
   #          poUI(id = 'potential_outcomes_test')),
   # tabPanel(title = "Fundamental problem",

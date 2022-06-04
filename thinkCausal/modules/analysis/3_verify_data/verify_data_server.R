@@ -18,7 +18,7 @@ server_verify <- function(store, id, global_session){
         req(input$analysis_verify_data_1_changeDataType)
         
         # use assigned dataframe as the template
-        user_modified_df <- store$col_assignment_df
+        user_modified_df <- store$analysis$data$col_assignment_df
         
         # get input indices and current input values
         indices <- seq_along(user_modified_df)
@@ -37,19 +37,19 @@ server_verify <- function(store, id, global_session){
         user_modified_df <- convert_data_types(.data = user_modified_df, new_data_types = new_data_types)
         
         # save the data to the store
-        store$user_modified_df <- user_modified_df
+        store$analysis$verify$user_modified_df <- user_modified_df
       })
       
       # reset dataframe back to original when user clicks button
       observeEvent(input$analysis_verify_data_button_reset, {
         
         # reset dataframe
-        store$user_modified_df <- store$col_assignment_df
+        store$analysis$verify$user_modified_df <- store$analysis$data$col_assignment_df
         
         ## reset UI
         # set indices to map over
-        all_col_names <- colnames(store$col_assignment_df)
-        default_data_types <- convert_data_type_to_simple(store$col_assignment_df)
+        all_col_names <- colnames(store$analysis$data$col_assignment_df)
+        default_data_types <- convert_data_type_to_simple(store$analysis$data$col_assignment_df)
         indices <- seq_along(all_col_names)
         
         # update the inputs
@@ -74,7 +74,7 @@ server_verify <- function(store, id, global_session){
         validate_columns_assigned(store)
 
         # get default data types
-        default_data_types <- convert_data_type_to_simple(store$col_assignment_df) 
+        default_data_types <- convert_data_type_to_simple(store$analysis$data$col_assignment_df) 
         
         # add default column types to store
         store$current_simple_column_types <- default_data_types
@@ -82,10 +82,10 @@ server_verify <- function(store, id, global_session){
         # create UI table
         UI_table <- create_data_summary_grid(
           ns = ns,
-          .data = store$col_assignment_df,
+          .data = store$analysis$data$col_assignment_df,
           default_data_types = default_data_types,
           ns_prefix = 'analysis_verify_data',
-          design = store$analysis_design,
+          design = store$analysis$design$design,
           random_effect = store$column_assignments$ran_eff,
           survey_weight = store$column_assignments$weight,
           blocking_variables = store$column_assignments$blocks
@@ -95,17 +95,17 @@ server_verify <- function(store, id, global_session){
       })
       
       # update percentNAs fields with actual data
-      observeEvent(store$user_modified_df, {
+      observeEvent(store$analysis$verify$user_modified_df, {
         
         # stop here if columns haven't been assigned and grouped
         validate_columns_assigned(store)
 
         # original data column indices
-        indices <- seq_along(colnames(store$user_modified_df))
+        indices <- seq_along(colnames(store$analysis$verify$user_modified_df))
         
         # update the percent NA
         lapply(X = indices, function(i) {
-          percent_NA_num <- mean(is.na(store$user_modified_df[[i]]))
+          percent_NA_num <- mean(is.na(store$analysis$verify$user_modified_df[[i]]))
           percent_NA <- paste0(round(percent_NA_num, 3) * 100, "%")
           updateTextInput(
             session = session,
@@ -141,12 +141,12 @@ server_verify <- function(store, id, global_session){
         # this works because colnames of user_modified_df is overwritten by the UI
         # which defaults to an empty string before it renders
         validate(need(
-          unique(colnames(store$user_modified_df)) != '',
+          unique(colnames(store$analysis$verify$user_modified_df)) != '',
           'Loading...'
         ))
         
         # create JS datatable
-        tab <- store$user_modified_df %>%
+        tab <- store$analysis$verify$user_modified_df %>%
           na.omit() %>%
           create_datatable(selection = "none", pageLength = 10)
         
@@ -157,11 +157,11 @@ server_verify <- function(store, id, global_session){
       output$analysis_verify_data_text_na <- renderUI({
         
         # stop if previous steps aren't completed
-        req(store$user_modified_df)
+        req(store$analysis$verify$user_modified_df)
         
         # calculate stats
-        n_rows_original <- nrow(store$user_modified_df)
-        n_rows_removed <- n_rows_original - nrow(na.omit(store$user_modified_df))
+        n_rows_original <- nrow(store$analysis$verify$user_modified_df)
+        n_rows_removed <- n_rows_original - nrow(na.omit(store$analysis$verify$user_modified_df))
         n_rows_percent <- scales::percent_format(0.1)(n_rows_removed / n_rows_original)
         n_rows_removed_text <- scales::comma_format()(n_rows_removed)
         
@@ -178,17 +178,17 @@ server_verify <- function(store, id, global_session){
         return(html_out)
       })
       
-      # when user hits 'save column assignments', create a new dataframe from store$uploaded_df
+      # when user hits 'save column assignments', create a new dataframe from store$analysis$data$uploaded_df
       # with the new columns
       # create updated options for plotting and modeling pages
       observeEvent(input$analysis_verify_data_save, {
-        req(store$user_modified_df)
+        req(store$analysis$verify$user_modified_df)
         
         # remove saved dataframes if they exist
         store <- remove_downstream_data(store, 'verify')
         
         # new column names
-        old_col_names <- colnames(store$user_modified_df)
+        old_col_names <- colnames(store$analysis$verify$user_modified_df)
         new_col_names <- paste0(c('Z',
                                   'Y',
                                   rep('B', length(store$column_assignments$blocks)),
@@ -202,7 +202,7 @@ server_verify <- function(store, id, global_session){
         store$verified_df_original_names <- old_col_names
         
         # create new dataframe of just the selected vars and rename them
-        store$verified_df <- store$user_modified_df
+        store$verified_df <- store$analysis$verify$user_modified_df
         colnames(store$verified_df) <- new_col_names
         
         # remove rows with NAs

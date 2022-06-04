@@ -2,7 +2,7 @@
 #'
 #' Fit single regression tree on bartc() icates to produce variable importance plot & table.
 #'
-#' @param .model a model produced by bartCause::bartc(). Typically store$model_results
+#' @param .model a model produced by bartCause::bartc(). Typically store$analysis$model$model
 #' @param confounders matrix of confounders
 #' @author George Perrett
 #' @return a list containing variable importance plot & ordered table of confounders by scaled importance

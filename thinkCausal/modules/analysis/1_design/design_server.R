@@ -41,9 +41,9 @@ server_design <- function(store, id, global_session){
         # browser()
         
         # save input to store
-        store$analysis_design <- input$analysis_design
-        store$analysis_weights <- input$analysis_weights
-        store$analysis_random_effects <- input$analysis_random_intercept
+        store$analysis$design$design <- input$analysis_design
+        store$analysis$design$weights <- input$analysis_weights
+        store$analysis$design$random_effects <- input$analysis_random_intercept
         store$analysis$design$treatment_name <- input$treatment_name
         store$analysis$design$treatment_units <- input$treatment_units
         store$analysis$design$treatment_participants <- input$treatment_participants

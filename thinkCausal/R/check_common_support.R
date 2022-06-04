@@ -1,6 +1,6 @@
 #' Check for common support via the standard deviation and chi-square rules
 #'
-#' @param .model a model produced by bartCause::bartc(). Typically store$model_results
+#' @param .model a model produced by bartCause::bartc(). Typically store$analysis$model$model
 #'
 #' @author Vince Dorie, George Perrett, Joe Marlo
 #'

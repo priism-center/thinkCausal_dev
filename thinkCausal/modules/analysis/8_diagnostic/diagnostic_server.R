@@ -16,7 +16,7 @@ server_diagnostic <- function(store, id, global_session){
       # render either both the back and next buttons or just the back if its a bad
       # model fit
       output$analysis_diagnosis_buttons_ui <- renderUI({
-        if (isTRUE(store$model_fit_good)){
+        if (isTRUE(store$analysis$model$fit_good)){
           tagList(
             div(
               class = 'backNextContainer',
@@ -50,12 +50,12 @@ server_diagnostic <- function(store, id, global_session){
         # stop here if model isn't fit yet
         validate_model_fit(store)
         
-        if(isTRUE(store$model_fit_good)){
+        if(isTRUE(store$analysis$model$fit_good)){
           # new_col_names <- colnames(store$verified_df)
           # X_cols <- grep("^X_", new_col_names, value = TRUE)
           # cols_categorical <- store$column_types$categorical
           # cols_continuous <- store$column_types$continuous
-          dat <-  as.data.frame(store$model_results$data.rsp@x)
+          dat <- as.data.frame(store$analysis$model$model$data.rsp@x)
           col_names <- colnames(dat)[-ncol(dat)]
           
           updateSelectInput(
@@ -75,7 +75,7 @@ server_diagnostic <- function(store, id, global_session){
         validate_model_fit(store)
         
         # call function
-        p <- plotBart::plot_trace(.model = store$model_results)
+        p <- plotBart::plot_trace(.model = store$analysis$model$model)
         
         # add theme
         p <- p + store$options$theme_custom
@@ -90,18 +90,19 @@ server_diagnostic <- function(store, id, global_session){
         # stop here if model isn't fit yet
         validate_model_fit(store)
         
-        total_delete_sd <- sum(store$model_results$sd.cf > max(store$model_results$sd.obs) + sd(store$model_results$sd.obs))
-        total_delete_chi <- sum((store$model_results$sd.cf / store$model_results$sd.obs) ** 2 > 3.841)
+        bart_model <- store$analysis$model$model
+        total_delete_sd <- sum(bart_model$sd.cf > max(bart_model$sd.obs) + sd(bart_model$sd.obs))
+        total_delete_chi <- sum((bart_model$sd.cf / bart_model$sd.obs) ** 2 > 3.841)
         
         if(total_delete_sd > 0 | total_delete_chi > 0){
           # common support plot from plotbart
           p1 <- plotBart::plot_common_support(
-            .model = store$model_results,
+            .model = bart_model,
             rule = 'both'
           )
           # plot classification tree on covariates in terms of overlap
-          p2 <- plot_overlap_covariate_tree(.model = store$model_results, rule = "sd")
-          p3 <- plot_overlap_covariate_tree(.model = store$model_results, rule = "chi")
+          p2 <- plot_overlap_covariate_tree(.model = bart_model, rule = "sd")
+          p3 <- plot_overlap_covariate_tree(.model = bart_model, rule = "chi")
         
           # patchwork package to combine the plots
           p <- p1 | (p2 / p3)
@@ -109,7 +110,7 @@ server_diagnostic <- function(store, id, global_session){
         }else{
           # plot it
           p <- plotBart::plot_common_support(
-            .model = store$model_results,
+            .model = bart_model,
             rule = 'both'
           )
         }
@@ -133,11 +134,12 @@ server_diagnostic <- function(store, id, global_session){
         # if "none" is selected, change it to NULL, otherwise remain the same
         covariates_selection <- switch(input$analysis_diagnostics_plot_residual_covariate, "None" = NULL, input$analysis_diagnostics_plot_residual_covariate)
         
-        # p1 <- plot_residual_observed_predicted(.model = store$model_results, 
+        bart_model <- store$analysis$model$model
+        # p1 <- plot_residual_observed_predicted(.model = bart_model, 
         #                                        covariate = covariates_selection)
-        p2 <- plot_residual_density(.model = store$model_results,
+        p2 <- plot_residual_density(.model = bart_model,
                                     covariate = covariates_selection)
-        p3 <- plot_residual_observed_residual(.model = store$model_results,
+        p3 <- plot_residual_observed_residual(.model = bart_model,
                                               covariate = covariates_selection)
         
         # patchwork package to combine the plots

@@ -86,8 +86,8 @@ server_model <- function(store, id, global_session){
         store$analysis$design$estimand <- input$analysis_model_estimand
         
         # remove current model if it exists
-        store$model_results <- NULL
-        store$model_fit_good <- NULL
+        store$analysis$model$model <- NULL
+        store$analysis$model$fit_good <- NULL
         
         # insert popup to notify user of model fit process
         # TODO: estimate the time remaining empirically?
@@ -104,7 +104,7 @@ server_model <- function(store, id, global_session){
         if (input$analysis_model_support == 'No') common_support_rule <- 'none'
         
         # run model
-        # store$model_results <- withProgress(
+        # store$analysis$model$model <- withProgress(
         #   message = 'Fitting BART model',
         #   session = session,
         #   {
@@ -117,7 +117,7 @@ server_model <- function(store, id, global_session){
         #   }
         # )
         
-        store$model_results <- fit_bart(
+        bart_model <- fit_bart(
           .data = store$verified_df,
           support = common_support_rule,
           block = store$column_assignments$block,
@@ -125,6 +125,7 @@ server_model <- function(store, id, global_session){
           ran_eff = store$column_assignments$ran_eff,
           .estimand = base::tolower(input$analysis_model_estimand)
         )
+        store$analysis$model$model <- bart_model
         
         # close the alert
         # shinyWidgets::closeSweetAlert()
@@ -133,9 +134,9 @@ server_model <- function(store, id, global_session){
         # error handling
         # TODO: refine the popup; probably should pass the bart error to the popup somehow
         # TODO: is there a better way to detect if the model fit?
-        did_model_fit <- !isTRUE(is.null(store$model_results))
+        did_model_fit <- !isTRUE(is.null(bart_model))
         if (!did_model_fit){
-          store$model_fit_good <- FALSE
+          store$analysis$model$fit_good <- FALSE
           show_popup(session = session,
                      'Model did not fit',
                      close_button = shiny::actionButton(
@@ -150,7 +151,7 @@ server_model <- function(store, id, global_session){
         
         # store the results
         # TODO: need way to test if actually have a good fit
-        store$model_fit_good <- TRUE
+        store$analysis$model$fit_good <- TRUE
         
         # update select on moderators page
         updateSelectInput(session = global_session,
@@ -167,12 +168,12 @@ server_model <- function(store, id, global_session){
           '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
           '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
           '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
-          '\t', 'Good model fit: ', store$model_fit_good
+          '\t', 'Good model fit: ', store$analysis$model$fit_good
         )
         store$log <- append(store$log, log_event)
         
         # common support warning
-        common_support_check <- check_common_support(store$model_results)
+        common_support_check <- check_common_support(bart_model)
         
         # display popup if any observations would be removed
         any_points_removed <- common_support_check$proportion_removed_sd > 0 | common_support_check$proportion_removed_chi > 0

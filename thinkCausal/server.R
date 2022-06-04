@@ -3,7 +3,6 @@ shinyServer(function(input, output, session) {
 
   # initialize list to store variables
   store <- reactiveValues(
-    uploaded_df = data.frame(), 
     log = list(as.character(Sys.time())),
     module_ids = module_ids,
     page_history = NULL,
@@ -253,8 +252,8 @@ shinyServer(function(input, output, session) {
     uploaded_file_delim <- store$analysis$data$upload$analysis_data_delim_value
     
     # get the selected columns and names
-    selected_columns <- colnames(store$col_assignment_df)
-    column_names <- colnames(store$user_modified_df)
+    selected_columns <- colnames(store$analysis$data$col_assignment_df)
+    column_names <- colnames(store$analysis$verify$user_modified_df)
     
     # data type changes
     change_data_type <- store$analysis$data$group$group_list
@@ -293,7 +292,7 @@ shinyServer(function(input, output, session) {
     if (is.null(estimand)) estimand <- NA
     
     BART_model <- 
-      if(isTRUE(store$model_fit_good)){ # if a model successfully fitted
+      if(isTRUE(store$analysis$model$fit_good)){ # if a model successfully fitted
         
         if(!is.null(store$analysis$model$analysis_model_moderator_vars)){ # if moderators are specified
           data.frame(support = common_support_rule,

@@ -77,7 +77,7 @@ server_data <- function(store, id, global_session){
       observeEvent(uploaded_df(), {
         
         # remove any previous dataframes from the store
-        store$uploaded_df <- NULL
+        store$analysis$data$uploaded_df <- NULL
         store <- remove_downstream_data(store, page = 'upload')
         
         # stop here if uploaded data seems invalid
@@ -100,7 +100,7 @@ server_data <- function(store, id, global_session){
         auto_cleaned_df <- clean_auto_convert_integers(auto_cleaned_df)
         
         # add to store
-        store$uploaded_df <- auto_cleaned_df
+        store$analysis$data$uploaded_df <- auto_cleaned_df
       })
       
       # render the drag and drop UI
@@ -111,11 +111,11 @@ server_data <- function(store, id, global_session){
         
         # render the drag-drop UI
         drag_drop_html <- create_drag_drop_roles(ns = ns, 
-                                                 .data = store$uploaded_df,
+                                                 .data = store$analysis$data$uploaded_df,
                                                  ns_prefix = 'analysis_upload_data',
-                                                 design = store$analysis_design, 
-                                                 weights = store$analysis_weights, 
-                                                 ran_eff = store$analysis_random_effects)
+                                                 design = store$analysis$design$design, 
+                                                 weights = store$analysis$design$weights, 
+                                                 ran_eff = store$analysis$design$random_effects)
         
         return(drag_drop_html)
       })
@@ -124,7 +124,7 @@ server_data <- function(store, id, global_session){
       observeEvent(input$analysis_upload_data_button_columnAssignSave, {
         
         validate_design(store)
-        req(store$uploaded_df)
+        req(store$analysis$data$uploaded_df)
         
         # remove any previous dataframes from the store
         #TODO check this
@@ -134,11 +134,11 @@ server_data <- function(store, id, global_session){
         cols_z <- input$analysis_upload_data_dragdrop_treatment
         cols_y <- input$analysis_upload_data_dragdrop_response
         cols_x <- input$analysis_upload_data_dragdrop_covariates
-        if(store$analysis_design != "Block randomized treatment") cols_block <- NULL
+        if(store$analysis$design$design != "Block randomized treatment") cols_block <- NULL
         else cols_block <- input$analysis_upload_data_dragdrop_block
-        if(store$analysis_weights != 'Yes') cols_weight <- NULL
+        if(store$analysis$design$weights != 'Yes') cols_weight <- NULL
         else cols_weight <- input$analysis_upload_data_dragdrop_weight
-        if (store$analysis_random_effects != 'Yes') cols_ran_eff <- NULL
+        if (store$analysis$design$random_effects != 'Yes') cols_ran_eff <- NULL
         else cols_ran_eff <- input$analysis_upload_data_dragdrop_ran_eff
         
         # the order of this is very important for create_data_summary_grid.R
@@ -152,7 +152,7 @@ server_data <- function(store, id, global_session){
         
         # is treatment binary?
         is_treatment_binary <- tryCatch({
-          treatment <- store$uploaded_df[[cols_z[1]]]
+          treatment <- store$analysis$data$uploaded_df[[cols_z[1]]]
           is_binary <- isTRUE(clean_detect_logical(treatment))
           is_binary
         },
@@ -162,7 +162,7 @@ server_data <- function(store, id, global_session){
         
         # is response continuous or binary?
         is_response_cont_binary <- tryCatch({
-          response <- store$uploaded_df[[cols_y[[1]]]]
+          response <- store$analysis$data$uploaded_df[[cols_y[[1]]]]
           is_cont_binary <- clean_detect_continuous_or_logical(response)
           is_cont_binary
         },
@@ -172,9 +172,9 @@ server_data <- function(store, id, global_session){
         
         # is blocking variable categorical?
         is_block_categorical <- TRUE
-        if (store$analysis_design == 'Block randomized treatment'){
+        if (store$analysis$design$design == 'Block randomized treatment'){
           is_block_categorical <- purrr::map_lgl(input$analysis_upload_data_dragdrop_block, function(var){
-            is_cat_or_logical(store$uploaded_df[[var]])
+            is_cat_or_logical(store$analysis$data$uploaded_df[[var]])
           })
           is_block_categorical <- all(is_block_categorical)
         }
@@ -198,7 +198,7 @@ server_data <- function(store, id, global_session){
         validate(need(all_good, "There is an issue with column assignment"))
         
         # store the new dataframe using the uploaded df as the template
-        store$col_assignment_df <- store$uploaded_df[, all_cols]
+        store$analysis$data$col_assignment_df <- store$analysis$data$uploaded_df[, all_cols]
         
         # save columns assignments
         store$column_assignments <- NULL

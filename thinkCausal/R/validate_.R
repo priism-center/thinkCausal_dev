@@ -1,20 +1,14 @@
 
 validate_data_uploaded <- function(store){
   # stop here if data hasn't been uploaded
-  validate(need(nrow(store$uploaded_df) > 0,
+  validate(need(nrow(store$analysis$data$uploaded_df) > 0,
                 "Data must be first uploaded. Please see the 'Analyze-Data' page"))
 }
 
 validate_columns_assigned <- function(store){
   # stop here if columns haven't been assigned
-  validate(need(nrow(store$col_assignment_df) > 0,
+  validate(need(nrow(store$analysis$data$col_assignment_df) > 0,
                 "Columns must first be assigned. Please see 'Analyze-Data' page."))
-}
-
-validate_data_grouped <- function(store){
-  # stop here if data hasn't been grouped
-  validate(need(nrow(store$grouped_df) > 0,
-                "Data must be first grouped. Please see 'Analyze-Data-Group' page."))
 }
 
 validate_data_verified <- function(store){
@@ -30,12 +24,12 @@ validate_model_fit_ <- function(.model){
 }
 
 validate_model_fit <- function(store){
-  validate_model_fit_(store$model_results)
+  validate_model_fit_(store$analysis$model$model)
 }
 
 validate_design <- function(store){
   # stop here if design hasn't been specified
-  validate(need(store$analysis_design %in% c('Observational', 'Randomized treatment', 'Block randomized treatment'),
+  validate(need(store$analysis$design$design %in% c('Observational', 'Randomized treatment', 'Block randomized treatment'),
                 "Study design must first be specified on the 'Analyze-Design' page"))
 }
 
@@ -47,9 +41,8 @@ remove_downstream_data <- function(store, page = NULL){
   # if (page %notin% page_order) stop(paste0('page must be one of ', page_order))
   
   if (page %in% c('design', 'upload')){
-    store$grouped_df <- NULL
     store$user_modified_df <- NULL
-    store$col_assignment_df <- NULL
+    store$analysis$data$col_assignment_df <- NULL
     store$column_assignments <- NULL
 
   }
@@ -62,8 +55,8 @@ remove_downstream_data <- function(store, page = NULL){
   # always remove these
   store$verified_df <- NULL
   store$column_types <- NULL
-  store$model_results <- NULL
-  store$model_fit_good <- NULL
+  store$analysis$model$model <- NULL
+  store$analysis$model$fit_good <- NULL
 
   return(store)
 }

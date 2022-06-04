@@ -71,7 +71,7 @@ server_subgroup <- function(store, id, global_session){
         
         if(input$check_type == 'histogram'){
           p <- plotBart::plot_ICATE(
-            store$model_results,
+            store$analysis$model$model,
             n_bins = input$plotBart_ICATE_n_bins)
           # add theme
           p <- p + store$options$theme_custom 
@@ -80,7 +80,7 @@ server_subgroup <- function(store, id, global_session){
         if(input$check_type == 'ordered'){
           # plot it
           p <- plotBart::plot_waterfall(
-            .model = store$model_results
+            .model = store$analysis$model$model
           )
           
           # add theme
@@ -128,7 +128,7 @@ server_subgroup <- function(store, id, global_session){
       
       # plot explore tab regression tree
       analysis_moderator_explore_plot <- reactive({
-        p <- plotBart::plot_moderator_search(store$model_results, max_depth = input$plotBart_tree_depth)
+        p <- plotBart::plot_moderator_search(store$analysis$model$model, max_depth = input$plotBart_tree_depth)
         return(p)
       })
       
@@ -168,7 +168,7 @@ server_subgroup <- function(store, id, global_session){
         
         # make plot
         moderator_vars <- input$analysis_moderator_vars
-        p <- plot_continuous_sub(.model = store$model_results,
+        p <- plot_continuous_sub(.model = store$analysis$model$model,
                                  grouped_on = moderator_vars)
         
         # add theme
@@ -212,7 +212,7 @@ server_subgroup <- function(store, id, global_session){
               show_message_updating(div_id)
               
               p <- plotBart::plot_moderator_d_density(
-                .model = store$model_results,
+                .model = store$analysis$model$model,
                 moderator = store$verified_df[[paste0('X_', selected_moderator)]]
               )
               
@@ -230,7 +230,7 @@ server_subgroup <- function(store, id, global_session){
               show_message_updating(div_id)
               
               p <- plotBart::plot_moderator_d_linerange(
-                .model = store$model_results,
+                .model = store$analysis$model$model,
                 moderator = store$verified_df[[paste0('X_', selected_moderator)]]
               )
               p <- p + store$options$theme_custom 
@@ -250,7 +250,7 @@ server_subgroup <- function(store, id, global_session){
               div_id <- 'analysis_moderators_test_plot'
               show_message_updating(div_id)
               p <- plotBart::plot_moderator_c_loess(
-                .model = store$model_results,
+                .model = store$analysis$model$model,
                 moderator = store$verified_df[[paste0('X_', selected_moderator)]]
               )
               p <- p + store$options$theme_custom 
@@ -266,7 +266,7 @@ server_subgroup <- function(store, id, global_session){
               div_id <- 'analysis_moderators_test_plot'
               show_message_updating(div_id)
               p <- plotBart::plot_moderator_c_pd(
-                .model = store$model_results,
+                .model = store$analysis$model$model,
                 moderator = store$verified_df[[paste0('X_', selected_moderator)]]
               )
               p <- p + store$options$theme_custom 
