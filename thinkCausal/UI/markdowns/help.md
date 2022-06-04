@@ -53,6 +53,8 @@ Upload files are limited to 10mb.
 #### Upload data
 Each column of your dataset must be matched to one of these roles depending on study design: Covariate, Treatment, Outcome, Block, Post-treatment, or Exclude. These roles are auto-populated based on the column name and column values. You can change the roles by dragging-and-dropping the column names to each respective bucket. Treatment and Response should contain only one column respectively. Please exclude any ID columns or other irrelevant columns from your dataset.
 
+ID, index, and post-treatment variables are excluded from the analysis.
+
 <a onclick="go_to_shiny_page('Post-treatment variables');">
   <span class="glyphicon glyphicon-info-sign"></span>  Learn more about post-treatment variables
 </a>

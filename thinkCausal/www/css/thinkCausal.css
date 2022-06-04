@@ -511,9 +511,12 @@ header {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
 }
 
-/* cards on home page */
-#conceptsGridHome .well {
-  min-height: 350px;
+#conceptsGridHome {
+  line-height: 1.75em;
+}
+#conceptsGridHome p {
+  margin-bottom: 2em;
+  font-size: 1.1em;
 }
 
 #back_to_analysis_button {

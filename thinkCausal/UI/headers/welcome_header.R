@@ -1,45 +1,41 @@
 welcome_header <- tabPanel(
-  title = 'Welcome', 
+  title = icon('home'),  
+  value = 'Welcome',
   mainPanel(
     width = 12,
-    #h2("thinkCausal"),
-    h3('Getting Started'),
-    p("Welcome to thinkCausal! Learn the foundations of causal inference through interactive tools. Analyze causal inference data through a point and click interface."),
     br(),
     div(id = 'conceptsGridHome',
         class = 'conceptsGrid',
         fluidRow(
-          column(6, 
-                 wellPanel(
-                   actionLink("welcome_link_concepts", img(src = 'thumbnails/randomization.png')),
-                   br(),
-                   h3("Learn"),
-                   p("Interactively learn the foundational concepts of casual inference.")
-                 )
+          column(
+            5,
+            h2('Welcome to thinkCausal'),
+            p("Learn the foundations of causal inference through interactive tools. Analyze your causal inference data through a point and click interface."),
+            # p("thinkCausal is "),
+            p("Explore the learning modules to gain a deeper understanding of the methods and underlying assumptions -- from causal estimands to the Bayesian Additive Regression Tree (BART) algorithm. Our library of learning modules provides the foundational concepts of causal inference and is expanding monthly."),
+            p("Or conduct your own analysis in a scaffolded and visual process. Estimate the treatment effects of your own study by fitting a BART model to your data. Leverage the built-in diagnostics to understand the fit and performance.")
           ),
-          # column(4, 
-          #        wellPanel(
-          #          actionLink("concepts_link_Fundamental problem", img(src = 'thumbnails/fundamental_problem.png')),
-          #          br(),
-          #          h3("Practice"),
-          #          p("Test your understanding of causal inference. Build confidence and identify opurtunities for growth.")
-          #        )
-          # ),
-          column(6, 
-                 wellPanel(
-                   actionLink("welcome_link_Analysis", img(src = 'thumbnails/assumptions.png')),
-                   br(),
-                   h3("Analyze"),
-                   p("Unlock modern causal inference methods. Easily implement Bayesian Additive Regression Trees")
-                 )
+          column(
+            7,
+            fluidRow(
+              create_learning_card(
+                width = 12,
+                page_id = 'welcome_link_concepts',
+                thumbnail_url = 'randomization.png',
+                title = "Learn",
+                description = "Interactively learn the foundational concepts of casual inference."
+              )
+            ),
+            fluidRow(
+              create_learning_card(
+                width = 12,
+                page_id = 'welcome_link_Analysis',
+                thumbnail_url = 'assumptions.png',
+                title = "Analyze",
+                description = "Utilize modern causal inference methods. Easily implement Bayesian Additive Regression Trees.")
+            )
           )
         )
-        ),
-    # actionButton('test_popup', 'pop up'),
-    # verbatimTextOutput('testytest'),
-    # HTML(interactive_table),
-    br()
-    # h3("What is thinkCausal?"),
-    # includeMarkdown('UI/markdowns/landing.md')
     )
+  )
 )

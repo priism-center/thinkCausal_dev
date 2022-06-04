@@ -4,6 +4,7 @@
 #' @param thumbnail_url the url of the thumbnail image
 #' @param title title to display
 #' @param description description to display under the title
+#' @param width
 #'
 #' @return
 #' @export
@@ -15,9 +16,9 @@
 #'   title = "Causal estimands",
 #'   description = "BART allows ..."
 #' )
-create_learning_card <- function(page_id, thumbnail_url, title, description){
+create_learning_card <- function(page_id, thumbnail_url, title, description, width = 4){
   shiny::column(
-    width = 4,
+    width = width,
     shiny::wellPanel(
       class = 'learning-card',
       shiny::actionLink(
