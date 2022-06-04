@@ -40,7 +40,7 @@ concepts_page <- tabPanel(
         page_id = 'concepts_link_randomization',
         thumbnail_url = 'randomization.png',
         title = "Randomization",
-        description = "Randomization balances groups on both observed and unobserved characteristics. Learn how this this mechnaism is exploited for causal inference."
+        description = "Randomization balances groups on both observed and unobserved characteristics. Learn how this mechanism is exploited for causal inference."
       ),
       create_learning_card(
         page_id = 'concepts_link_bias_and_efficiency',
