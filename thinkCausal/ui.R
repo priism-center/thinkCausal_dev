@@ -59,7 +59,7 @@ shinyUI(
             tags$a(
               href = 'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
               target = "_blank",
-              'Provide feedback'
+              'Have feedback?'
             )
           )
         ), 
