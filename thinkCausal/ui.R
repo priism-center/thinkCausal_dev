@@ -37,14 +37,6 @@ shinyUI(
         # add help slideover
         help_slideover,
         
-        # add link to feedback form
-        # tags$div(class = 'feedback-button',
-        #          onclick = "window.open(
-        #          'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
-        #          '_blank')",
-        #          'Feedback'
-        # ),
-        
         # add 'back to analysis' button
         # tags$div(class = 'back-to-analysis-button',
         #          actionButton(inputId = 'back_to_analysis_button',

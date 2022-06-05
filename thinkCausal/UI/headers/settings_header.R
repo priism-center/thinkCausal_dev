@@ -1,5 +1,5 @@
 settings_header <- tabPanel(
-  title = icon('gear'), 
+  title = icon('gear', verify_fa = FALSE), 
   value = 'Settings',
   navlistPanel(
     widths = c(2, 10),

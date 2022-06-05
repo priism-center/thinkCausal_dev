@@ -17,7 +17,7 @@ concepts_page <- tabPanel(
     fluidRow(
       create_learning_card(
         page_id = 'concepts_link_causal_estimands',
-        thumbnail_url = 'estimands.png',
+        thumbnail_url = 'estimands-cloud.png',
         title = "Causal estimands",
         description = "BART allows for robust estimation of a wide variety of estimands. Learn how they differ and how to choose one."
       ),

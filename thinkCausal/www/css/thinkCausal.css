@@ -375,7 +375,7 @@ border 0 fixes the buttons moving around when you hover / click */
 }
 
 .conceptsGrid img:hover {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .learning-card {
