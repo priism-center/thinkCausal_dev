@@ -71,6 +71,24 @@ server_model <- function(store, id, global_session){
           })
         }
         
+        # make sure required inputs have values
+        local({
+          req_inputs <- c(
+            'analysis_model_support',
+            'analysis_model_moderator_yes_no'
+          )
+          req_values <- reactiveValuesToList(input)[req_inputs]
+          
+          # trigger animation if any inputs is unsure or blank
+          inputs_to_animate <- req_inputs[which(req_values == 'Unsure' | req_values == '')]
+          inputs_to_animate_selectors <- paste0("#", ns(inputs_to_animate), "+ div", collapse = ', ')
+          runjs(glue::glue('$("<<inputs_to_animate_selectors>>").effect("shake", {times: 4, distance: 3})',
+                           .open = "<<", .close = ">>"))
+          
+          # stop here if any unsures or blank inputs
+          req(!isTRUE(length(inputs_to_animate) > 0))
+        })
+        
         # stop here if data hasn't been uploaded and selected
         validate_data_verified(store)
         

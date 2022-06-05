@@ -67,7 +67,8 @@ shinyUI(
           
           # load d3.js
           tags$script(src = c(href = "https://d3js.org/d3.v5.js")),
-          tags$script(src = c(href = "https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"))
+          tags$script(src = c(href = "https://cdn.jsdelivr.net/jstat/latest/jstat.min.js")),
+          tags$script(src = c(href = "//code.jquery.com/ui/1.12.1/jquery-ui.js"))
         )),
         
         # add footer elements

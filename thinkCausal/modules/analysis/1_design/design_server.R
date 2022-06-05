@@ -40,6 +40,26 @@ server_design <- function(store, id, global_session){
         
         # browser()
         
+        # make sure required inputs have values 
+        local({
+          req_inputs <- c(
+            'analysis_design_estimand',
+            'analysis_design',
+            'analysis_weights',
+            'analysis_random_intercept'
+          )
+          req_values <- reactiveValuesToList(input)[req_inputs]
+          
+          # trigger animation if any inputs is unsure or blank
+          inputs_to_animate <- req_inputs[which(req_values == 'Unsure' | req_values == '')]
+          inputs_to_animate_selectors <- paste0("#", ns(inputs_to_animate), "+ div", collapse = ', ')
+          runjs(glue::glue('$("<<inputs_to_animate_selectors>>").effect("shake", {times: 4, distance: 3})',
+                           .open = "<<", .close = ">>"))
+          
+          # stop here if any unsures or blank inputs
+          req(!isTRUE(length(inputs_to_animate) > 0))
+        })
+
         # save input to store
         store$analysis$design$design <- input$analysis_design
         store$analysis$design$weights <- input$analysis_weights
@@ -52,9 +72,8 @@ server_design <- function(store, id, global_session){
         # remove saved dataframes if they exist
         # TODO: error here if user goes back and changes the estimand then saves the design
         store <- remove_downstream_data(store, page = 'design')
-      })
-      
-      observeEvent(input$analysis_design_button_next, {
+        
+        # update page
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$data)
       })
       
