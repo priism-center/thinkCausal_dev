@@ -246,10 +246,10 @@ shinyServer(function(input, output, session) {
     # browser()
 
     # file inputs
-    uploaded_file_name <- store$analysis$data$upload$analysis_data_upload$name #TODO: this doesn't exist
+    uploaded_file_name <- store$analysis$data$filename
     uploaded_file_type <-  tools::file_ext(uploaded_file_name)
-    uploaded_file_header <- store$analysis$data$upload$analysis_data_header
-    uploaded_file_delim <- store$analysis$data$upload$analysis_data_delim_value
+    uploaded_file_header <- store$analysis$data$header
+    uploaded_file_delim <- store$analysis$data$delim
     
     # get the selected columns and names
     selected_columns <- colnames(store$analysis$data$col_assignment_df)

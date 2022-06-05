@@ -90,6 +90,11 @@ server_data <- function(store, id, global_session){
         log_event <- paste0('Uploaded ', input$analysis_upload_data_upload$name)
         store$log <- append(store$log, log_event)
         
+        # add to store
+        store$analysis$data$filename <- input$analysis_upload_data_upload$name
+        store$analysis$data$header <- input$analysis_upload_data_header
+        store$analysis$data$delim <- input$analysis_upload_data_delim_value
+        
         # retrieve the raw uploaded data frame
         uploaded_df <- uploaded_df()
         

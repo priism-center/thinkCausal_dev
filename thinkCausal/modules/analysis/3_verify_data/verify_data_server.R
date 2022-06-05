@@ -279,9 +279,9 @@ server_verify <- function(store, id, global_session){
       
       observeEvent(input$analysis_verify_data_save, {
         #store$analysis$data$group$group_list <- group_list_data()
-        store$analysis$data$upload$analysis_verify_data_upload$name <- analysis_verify_data_upload_name()
-        store$analysis$data$upload$analysis_verify_data_header <- analysis_verify_data_header()
-        store$analysis$data$upload$analysis_verify_data_delim_value <- analysis_verify_data_delim_value()
+        # store$analysis$data$upload$analysis_verify_data_upload$name <- analysis_verify_data_upload_name()
+        # store$analysis$data$upload$analysis_verify_data_header <- analysis_verify_data_header()
+        # store$analysis$data$upload$analysis_verify_data_delim_value <- analysis_verify_data_delim_value()
         store$analysis$data$verify$analysis_verify_data_save <- analysis_verify_data_save()
       })
       
