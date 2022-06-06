@@ -11,10 +11,10 @@ server_model <- function(store, id, global_session){
       })
       
       # update estimand dropdown based on selected value in the design section
-      observeEvent(store$analysis$design$estimand, {
+      observeEvent(store$analysis_design_estimand, {
         updateSelectInput(
           inputId = 'analysis_model_estimand',
-          selected = store$analysis$design$estimand
+          selected = store$analysis_design_estimand
         )
       })
       
@@ -101,7 +101,7 @@ server_model <- function(store, id, global_session){
         # print(store$verified_df  %>% summarize_all(class))
         
         # save the estimand (again, also saved on the design page)
-        store$analysis$design$estimand <- input$analysis_model_estimand
+        store$analysis_design_estimand <- input$analysis_model_estimand
         
         # remove current model if it exists
         store$analysis$model$model <- NULL

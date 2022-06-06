@@ -1,15 +1,13 @@
 
 validate_data_uploaded <- function(store){
   # stop here if data hasn't been uploaded
-  validate(need(nrow(store$analysis$data$uploaded_df) > 0,
+  validate(need(nrow(store$analysis_data_uploaded_df) > 0,
                 "Data must be first uploaded. Please see the 'Analyze-Data' page"))
 }
 
 validate_columns_assigned <- function(store){
   # stop here if columns haven't been assigned
-  # validate(need(nrow(store$analysis$data$col_assignment_df) > 0,
-  #               "Columns must first be assigned. Please see 'Analyze-Data' page."))
-  validate(need(nrow(store$col_assignment_df) > 0,
+  validate(need(nrow(store$analysis_data_assigned_df) > 0,
                 "Columns must first be assigned. Please see 'Analyze-Data' page."))
 }
 
@@ -31,7 +29,7 @@ validate_model_fit <- function(store){
 
 validate_design <- function(store){
   # stop here if design hasn't been specified
-  validate(need(store$analysis$design$design %in% c('Observational', 'Randomized treatment', 'Block randomized treatment'),
+  validate(need(store$analysis_design_design %in% c('Observational', 'Randomized treatment', 'Block randomized treatment'),
                 "Study design must first be specified on the 'Analyze-Design' page"))
 }
 
@@ -47,8 +45,8 @@ remove_downstream_data <- function(store, page = NULL){
     store$analysis$data$col_assignment_df <- NULL
     store$column_assignments <- NULL
     
-    store$analysis$verify
-    store$analysis$model
+    store$analysis$verify <- NULL
+    store$analysis$model <- NULL
   }
   
   

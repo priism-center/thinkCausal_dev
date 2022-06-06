@@ -19,7 +19,7 @@ server_verify <- function(store, id, global_session){
         
         # use assigned dataframe as the template
         # user_modified_df <- store$analysis$data$col_assignment_df
-        user_modified_df <- store$col_assignment_df
+        user_modified_df <- store$analysis_data_assigned_df
         
         # get input indices and current input values
         indices <- seq_along(user_modified_df)
@@ -47,14 +47,14 @@ server_verify <- function(store, id, global_session){
 
         # reset dataframe
         # store$analysis$verify$user_modified_df <- store$analysis$data$col_assignment_df
-        store$analysis$verify$user_modified_df <- store$col_assignment_df
+        store$analysis$verify$user_modified_df <- store$analysis_data_assigned_df
         
         ## reset UI
         # set indices to map over
         # all_col_names <- colnames(store$analysis$data$col_assignment_df)
         # default_data_types <- convert_data_type_to_simple(store$analysis$data$col_assignment_df)
-        all_col_names <- colnames(store$col_assignment_df)
-        default_data_types <- convert_data_type_to_simple(store$col_assignment_df)
+        all_col_names <- colnames(store$analysis_data_assigned_df)
+        default_data_types <- convert_data_type_to_simple(store$analysis_data_assigned_df)
         indices <- seq_along(all_col_names)
         
         # update the inputs
@@ -80,7 +80,7 @@ server_verify <- function(store, id, global_session){
 
         # data to derive table from
         # .data <- store$analysis$data$col_assignment_df
-        .data <- store$col_assignment_df
+        .data <- store$analysis_data_assigned_df
         
         # get default data types
         default_data_types <- convert_data_type_to_simple(.data) 
@@ -94,7 +94,7 @@ server_verify <- function(store, id, global_session){
           .data = .data,
           default_data_types = default_data_types,
           ns_prefix = 'analysis_verify_data',
-          design = store$analysis$design$design,
+          design = store$analysis_design_design,
           random_effect = store$column_assignments$ran_eff,
           survey_weight = store$column_assignments$weight,
           blocking_variables = store$column_assignments$blocks
@@ -187,7 +187,7 @@ server_verify <- function(store, id, global_session){
         return(html_out)
       })
       
-      # when user hits 'save column assignments', create a new dataframe from store$analysis$data$uploaded_df
+      # when user hits 'save column assignments', create a new dataframe from store$$uploaded_df
       # with the new columns
       # create updated options for plotting and modeling pages
       observeEvent(input$analysis_verify_data_save, {

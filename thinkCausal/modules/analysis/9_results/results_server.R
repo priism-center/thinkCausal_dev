@@ -38,9 +38,9 @@ server_results <- function(store, id, global_session){
         
         text_out <- create_interpretation(.model = store$analysis$model$model,
                                           type = input$interpretation,
-                                          treatment = store$analysis$design$treatment_name,
-                                          units = store$analysis$design$treatment_units,
-                                          participants = store$analysis$design$treatment_participants)
+                                          treatment = store$analysis_design_treatment_name,
+                                          units = store$analysis_design_treatment_units,
+                                          participants = store$analysis_design_treatment_participants)
 
         return(text_out)
       })
