@@ -38,8 +38,6 @@ server_design <- function(store, id, global_session){
       # save input and remove downstream dataframes if study design changes
       observeEvent(input$analysis_design_button_next, {
         
-        # browser()
-        
         # make sure required inputs have values 
         local({
           req_inputs <- c(

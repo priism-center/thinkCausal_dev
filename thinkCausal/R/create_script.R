@@ -16,6 +16,66 @@
 #' )
 create_script <- function(uploaded_file_name, uploaded_file_type, uploaded_file_header, uploaded_file_delim, selected_columns, column_names, change_data_type, descriptive_plot, overlap_plot, balance_plot, BART_model){
 
+  ################ hot fix for demo   ################ 
+  script <- paste0(
+    "##### BETA -- work-in-progress #####", "\n\n", 
+    "library(tidyverse)", "\n",
+    "library(bartCause)", "\n",
+    "library(plotBart)", "\n",
+    "\n",
+    '# set the working directory to where this script is saved', '\n',
+    'setwd("<user/your/path/to/this/file>")', '\n',
+    '\n',
+    '# load the neccessary functions', "\n",
+    "source('clean_auto_convert_logicals.R')", "\n",
+    "source('clean_dummies_to_categorical.R')", "\n",
+    "source('plot_exploration.R')", "\n",
+    "source('clean_detect_column_types.R')", "\n",
+    "source('clean_confounders_for_bart.R')", "\n",
+    "\n\n",
+    "# select columns and rename", "\n",
+    "X <- readr::read_csv(file)", "\n",
+    "X <- X[, 2:6]", "\n",
+    "X <- clean_auto_convert_logicals(X)",
+    "\n\n",
+    '# check overlap',
+    'plotBart::plot_overlap_vars(', '\n',
+    '  .data = X,', '\n',
+    '  treatment = treatment_col,', '\n',
+    '  confounders = overlap_select_var,', '\n',
+    '  plot_type = "density"', '\n',
+    ')', '\n',
+    '# fit model',
+    "treatment_v <- X[, 1]", "\n",
+    "response_v <- X[, 2]", "\n",
+    "confounders_mat <- clean_confounders_for_bart(X[, 3:ncol(X)])", "\n",
+    "model_results <- bartCause::bartc(", "\n",
+    "  response = response_v,", "\n",
+    "  treatment = treatment_v,", "\n",
+    "  confounders = confounders_mat,", "\n",
+    "  estimand = 'ate',\n", 
+    "  commonSup.rule = 'none',\n",
+    "  keepTrees = T,", "\n",
+    "  seed = 2", "\n",
+    ")",
+    "\n\n",
+    "# plot results and diagnostics", "\n",
+    "plotBart::plot_PATE(", "\n",
+    "  .model = model_results,", "\n",
+    "  type = 'Density',", "\n",
+    "  ci_80 = 'none',", "\n",
+    "  ci_95 = 'none',", "\n",
+    "  .mean = T,", "\n",
+    "  .median = F,", "\n",
+    "  reference = NULL", "\n",
+    ")","\n\n",
+    "plotBart::plot_trace(model_results)", "\n\n"
+  )
+  
+  return(script)
+  
+  #################################################### 
+  
   # choose which file readr was used
   file_readr <- switch(
     uploaded_file_type,

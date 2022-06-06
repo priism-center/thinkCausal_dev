@@ -146,7 +146,7 @@ server_data <- function(store, id, global_session){
         else cols_ran_eff <- input$analysis_upload_data_dragdrop_ran_eff
         
         # the order of this is very important for create_data_summary_grid.R
-        all_cols <- unlist(c(cols_z, cols_y,cols_ran_eff, cols_weight,cols_block,cols_x))
+        all_cols <- unlist(c(cols_z, cols_y, cols_ran_eff, cols_weight, cols_block, cols_x))
         
         # are there duplicate selections?
         all_unique <- isTRUE(length(all_cols) == length(unique(all_cols)))
