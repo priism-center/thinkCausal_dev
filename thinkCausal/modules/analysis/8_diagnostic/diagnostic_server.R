@@ -139,7 +139,7 @@ server_diagnostic <- function(store, id, global_session){
         #                                        covariate = covariates_selection)
         p2 <- plot_residual_density(.model = bart_model,
                                     covariate = covariates_selection)
-        p3 <- plot_residual_observed_residual(.model = bart_model,
+        p3 <- plot_residual_predicted_residual(.model = bart_model,
                                               covariate = covariates_selection)
         
         # patchwork package to combine the plots

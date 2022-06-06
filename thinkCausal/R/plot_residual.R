@@ -47,8 +47,8 @@ clean_detect_logical <- function(x){
 # read data for testing functions
 # df <- read.csv("./data/IHDP_observational.csv") %>%
 #   select(-c(yc0hat, yc1hat))
-# fit_ate <- bartc(y.obs, treat, ., data = df, estimand = "ate")
-# fit_att <- bartc(y.obs, treat, ., data = df, estimand = "att")
+# fit_ate <- bartc(y.obs, treat, ., data = df, estimand = "ate", commonSup.rule = 'sd')
+# fit_att <- bartc(y.obs, treat, ., data = df, estimand = "att", commonSup.rule = 'sd')
 # fit_atc <- bartc(y.obs, treat, ., data = df, estimand = "atc")
 
 
@@ -167,49 +167,63 @@ plot_residual_density <- function(.model, covariate = NULL){
 
 
 
-# plot residual vs observed y 
-plot_residual_observed_residual <- function(.model, covariate = NULL){
+# plot residual vs predicted y 
+plot_residual_predicted_residual <- function(.model, covariate = NULL){
   
   # ensure model is a of class bartcFit
   validate_model_(.model)
   
   # extract the covariates
   dat <-  as.data.frame(.model$data.rsp@x)
+  
   # add observed y
   dat$y.obs <- .model$data.rsp@y
-  # add predicted y
-  dat$y.hat.mean <- .model$fit.rsp$yhat.train.mean
-  # add residual
-  dat$residual <- dat$y.hat.mean - dat$y.obs
   
-  if(.model$estimand == "att"){
+  # filter to estimand
+    if(.model$estimand == "att"){
     dat <- dat[.model$trt == 1, ]
   }else if(.model$estimand == "atc"){
     dat <- dat[.model$trt == 0, ]
   }
   
-  if(is.null(covariate)){
-    p <- ggplot(data = dat, aes(x = y.obs, y = residual)) + 
+
+  # add predicted y
+  dat$y.hat.mean <- apply(bartCause::extract(.model, 'mu.obs'), 2, mean)
+  
+  # add residual
+  dat$residual <- dat$y.hat.mean - dat$y.obs
+
+    if(is.null(covariate)){
+    p <- ggplot(data = dat, aes(x = y.hat.mean, y = residual)) + 
       geom_point()
   }else{
     # ensure the input variable is within the dataset
     index <- which(colnames(dat) == covariate)
     if (!isTRUE(index > 0)) stop('Cannot find variable in original data. Is variable within the original dataframe used to fit the .model?')
     
-    categorical <- isTRUE(is_categorical(dat[[covariate]]))
-    binary <- isTRUE(clean_detect_logical(dat[[covariate]]))
-    
-    if(categorical | binary){ # color by a categorical or logical variable
-      p <- ggplot(data = dat, aes(x = y.obs, y = residual)) + 
-        geom_point(aes(colour = factor(!!rlang::sym(covariate))))
-    }else{ # color by a continuous variable in gradient
-      p <- ggplot(data = dat, aes(x = y.obs, y = residual)) + 
-        geom_point(aes(colour = !!rlang::sym(covariate)))
-    }
+    p <- ggplot(data = dat, aes(x = !!rlang::sym(covariate), y = residual)) + 
+        geom_point()
+      
+    # categorical <- isTRUE(is_categorical(dat[[covariate]]))
+    # binary <- isTRUE(clean_detect_logical(dat[[covariate]]))
+    # 
+    # if(categorical | binary){ # color by a categorical or logical variable
+    #   p <- ggplot(data = dat, aes(x = y.hat.mean, y = residual)) + 
+    #     geom_point(aes(colour = factor(!!rlang::sym(covariate))))
+    # }else{ # color by a continuous variable in gradient
+    #   p <- ggplot(data = dat, aes(x = y.hat.mean, y = residual)) + 
+    #     geom_point(aes(colour = !!rlang::sym(covariate)))
+    # }
   }
+  if(is_null(covariate)){
   p <- p + geom_hline(yintercept = 0) + 
-    labs(x = "Observed Y", y = "Residual") + 
+    labs(x = "Predicted Y", y = "Residual") + 
     theme_minimal() 
+  }else{
+    p <- p + geom_hline(yintercept = 0) + 
+      labs(x = covariate, y = "Residual") + 
+      theme_minimal() 
+  }
   return(p)
 }
 
@@ -217,7 +231,7 @@ plot_residual_observed_residual <- function(.model, covariate = NULL){
 # plot_residual_observed_residual(fit_ate, "sex")
 # plot_residual_observed_residual(fit_ate, "momage")
 # 
-# plot_residual_observed_residual(fit_att)
+#plot_residual_observed_residual(fit_att)
 # plot_residual_observed_residual(fit_att, "sex")
 # plot_residual_observed_residual(fit_att, "momage")
 # 

@@ -42,7 +42,7 @@ server_verify <- function(store, id, global_session){
       
       # reset dataframe back to original when user clicks button
       observeEvent(input$analysis_verify_data_button_reset, {
-        
+        browser()
         # reset dataframe
         store$analysis$verify$user_modified_df <- store$analysis$data$col_assignment_df
         

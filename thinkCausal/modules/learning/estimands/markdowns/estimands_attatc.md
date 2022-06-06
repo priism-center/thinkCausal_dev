@@ -1,5 +1,16 @@
 
-## Subsetting by the treatment group
+## Subsetting by treatment assignment
+
+Sometimes researchers are only interested in summarizing causal effects for a particular set of observations. For instance, it may make sense to focus on groups deemed most likely to receive the treatment or on observations where we have the most data for estimating a treatment effect. In observational studies, where the treatment is not randomly assigned, individuals that received the treatment are often very different from individuals that did not receive the treatment. These differences may influence average causal effects!
+
+### The Average Treatment Effect on the Treated (ATT)
+
+Lets return to our original sample of 10 runners. Imagine that the 5 runners who wore HyperShoes (colored in purple) were all professional runners. This explains why 
+
+You may have noticed that the runners who wore HyperShoes as their factual outcome 
+
+
+were noticeably faster than the runners who did not wear HyperShoes. This is true for both of there potential outcomes y0 and y1! 
 
 Sometimes researchers are only interested in summarizing causal effects for a particular set of observations. In observational studies, where the treatment is not randomly assigned, individuals that received the treatment are often very different from individuals that did not receive the treatment. It may make sense to focus on group that received the treatment.
 
