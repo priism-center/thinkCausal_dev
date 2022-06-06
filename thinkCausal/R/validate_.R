@@ -46,12 +46,14 @@ remove_downstream_data <- function(store, page = NULL){
     store$user_modified_df <- NULL
     store$analysis$data$col_assignment_df <- NULL
     store$column_assignments <- NULL
-
+    
+    store$analysis$verify
+    store$analysis$model
   }
   
   
   if (page == 'verify'){
-    
+    store$analysis$model
   }
 
   # always remove these

@@ -32,7 +32,7 @@ convert_data_types <- function(.data, new_data_types){
 
 # TODO: need to test this with factors
 convert_data_types_ <- function(x, new_data_type){
-  if (new_data_type %notin% c('Categorical', 'Binary', 'Continuous')) stop("old_data_type must be one of c('Categorical', 'Binary', 'Continuous')")
+  if (new_data_type %notin% c('Categorical', 'Binary', 'Continuous')) stop("new_data_type must be one of c('Categorical', 'Binary', 'Continuous')")
   
   convert_f <- switch(
     new_data_type,

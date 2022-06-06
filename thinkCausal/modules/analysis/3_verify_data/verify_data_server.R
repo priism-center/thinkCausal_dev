@@ -35,6 +35,7 @@ server_verify <- function(store, id, global_session){
         
         # change data types
         new_data_types <- as.character(current_values[paste0('analysis_verify_data_', indices, '_changeDataType')])
+        req(all(new_data_types %in% c('Categorical', 'Binary', 'Continuous')))
         user_modified_df <- convert_data_types(.data = user_modified_df, new_data_types = new_data_types)
         
         # save the data to the store
