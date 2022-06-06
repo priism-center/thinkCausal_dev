@@ -203,7 +203,8 @@ server_data <- function(store, id, global_session){
         validate(need(all_good, "There is an issue with column assignment"))
         
         # store the new dataframe using the uploaded df as the template
-        store$analysis$data$col_assignment_df <- store$analysis$data$uploaded_df[, all_cols]
+        # store$analysis$data$col_assignment_df <- store$analysis$data$uploaded_df[, all_cols]
+        store$col_assignment_df <- store$analysis$data$uploaded_df[, all_cols]
         
         # save columns assignments
         store$column_assignments <- NULL

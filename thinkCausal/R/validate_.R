@@ -7,7 +7,9 @@ validate_data_uploaded <- function(store){
 
 validate_columns_assigned <- function(store){
   # stop here if columns haven't been assigned
-  validate(need(nrow(store$analysis$data$col_assignment_df) > 0,
+  # validate(need(nrow(store$analysis$data$col_assignment_df) > 0,
+  #               "Columns must first be assigned. Please see 'Analyze-Data' page."))
+  validate(need(nrow(store$col_assignment_df) > 0,
                 "Columns must first be assigned. Please see 'Analyze-Data' page."))
 }
 

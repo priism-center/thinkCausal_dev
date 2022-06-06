@@ -18,7 +18,8 @@ server_verify <- function(store, id, global_session){
         req(input$analysis_verify_data_1_changeDataType)
         
         # use assigned dataframe as the template
-        user_modified_df <- store$analysis$data$col_assignment_df
+        # user_modified_df <- store$analysis$data$col_assignment_df
+        user_modified_df <- store$col_assignment_df
         
         # get input indices and current input values
         indices <- seq_along(user_modified_df)
@@ -42,14 +43,17 @@ server_verify <- function(store, id, global_session){
       
       # reset dataframe back to original when user clicks button
       observeEvent(input$analysis_verify_data_button_reset, {
-        browser()
+
         # reset dataframe
-        store$analysis$verify$user_modified_df <- store$analysis$data$col_assignment_df
+        # store$analysis$verify$user_modified_df <- store$analysis$data$col_assignment_df
+        store$analysis$verify$user_modified_df <- store$col_assignment_df
         
         ## reset UI
         # set indices to map over
-        all_col_names <- colnames(store$analysis$data$col_assignment_df)
-        default_data_types <- convert_data_type_to_simple(store$analysis$data$col_assignment_df)
+        # all_col_names <- colnames(store$analysis$data$col_assignment_df)
+        # default_data_types <- convert_data_type_to_simple(store$analysis$data$col_assignment_df)
+        all_col_names <- colnames(store$col_assignment_df)
+        default_data_types <- convert_data_type_to_simple(store$col_assignment_df)
         indices <- seq_along(all_col_names)
         
         # update the inputs
@@ -73,8 +77,12 @@ server_verify <- function(store, id, global_session){
         # stop here if columns haven't been assigned
         validate_columns_assigned(store)
 
+        # data to derive table from
+        # .data <- store$analysis$data$col_assignment_df
+        .data <- store$col_assignment_df
+        
         # get default data types
-        default_data_types <- convert_data_type_to_simple(store$analysis$data$col_assignment_df) 
+        default_data_types <- convert_data_type_to_simple(.data) 
         
         # add default column types to store
         store$current_simple_column_types <- default_data_types
@@ -82,7 +90,7 @@ server_verify <- function(store, id, global_session){
         # create UI table
         UI_table <- create_data_summary_grid(
           ns = ns,
-          .data = store$analysis$data$col_assignment_df,
+          .data = .data,
           default_data_types = default_data_types,
           ns_prefix = 'analysis_verify_data',
           design = store$analysis$design$design,
