@@ -74,7 +74,7 @@ server_diagnostic <- function(store, id, global_session){
         }
       })
       
-      
+  
       # trace plot
       analysis_diagnostics_plot_trace <- reactive({
         
@@ -169,13 +169,11 @@ server_diagnostic <- function(store, id, global_session){
         bart_model <- store$analysis$model$model
         # p1 <- plot_residual_observed_predicted(.model = bart_model, 
         #                                        covariate = covariates_selection)
-        p2 <- plot_residual_density(.model = bart_model,
-                                    covariate = covariates_selection)
         p3 <- plot_residual_predicted_residual(.model = bart_model,
                                               covariate = covariates_selection)
         
         # patchwork package to combine the plots
-        p <- p2 / p3
+        p <- p3
         
         # add theme
         p <- p + store$options$theme_custom
@@ -184,6 +182,20 @@ server_diagnostic <- function(store, id, global_session){
       })
       output$analysis_diagnostics_plot_residual <- renderPlot(analysis_diagnostics_plot_residual())
       
+      analysis_diagnostics_plot_normal <- reactive({
+        bart_model <- store$analysis$model$model
+        p <- plot_residual_density(.model = bart_model,
+                                    covariate = covariates_selection)
+        
+        p <- p + store$options$theme_custom + theme(legend.position = 'top', legend.title = element_blank())
+        
+        return(p)
+      })
+      
+      output$analysis_diagnostics_plot_normal <- renderPlot(analysis_diagnostics_plot_normal())
+      
+     
+      
       # download plot
       output$download_diagnostic_plot <- downloadHandler(
         filename = function() {
@@ -191,7 +203,8 @@ server_diagnostic <- function(store, id, global_session){
             req(input$analysis_diagnostics_tabs),
             "Trace plot" = 'diagnostic_trace_plot.png',
             "Common support" = 'diagnostic_common_support_plot.png',
-            "Residual plot" = 'diagnostic_residual_plot.png'
+            "Residual vs fit" = 'diagnostic_residual_fit_plot.png',
+            "Residual normality" = 'diagnostic_residual_normal_plot.png'
           )
         },
         content = function(file) {
@@ -201,7 +214,8 @@ server_diagnostic <- function(store, id, global_session){
             req(input$analysis_diagnostics_tabs),
             'Trace plot' = analysis_diagnostics_plot_trace(),
             'Common support' = analysis_diagnostics_plot_support(),
-            "Residual plot" = analysis_diagnostics_plot_residual()
+            "Residual vs fit" = analysis_diagnostics_plot_residual(), 
+            'Residual normality' = analysis_diagnostics_plot_normal()
           )
           
           # write out plot

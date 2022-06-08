@@ -4,8 +4,6 @@ ui_diagnostic <- function(store, id){
   tabPanel(
     title = "Check Diagnostics",
     value = id,
-    tabPanel(
-      title = "Model diagnostics",
       sidebarLayout(
         sidebarPanel(
           h4('Model diagnostics'),
@@ -14,11 +12,11 @@ ui_diagnostic <- function(store, id){
           conditionalPanel("input.analysis_diagnostics_tabs == 'Overlap'", ns = ns, 
                            selectInput(
                              inputId = ns("analysis_diagnostics_plot_overlap_covariate"), 
-                             label = "By covariate", 
+                             label = "By covariate:", 
                              choices = NULL, 
                              selected = NULL
                            )),
-          conditionalPanel("input.analysis_diagnostics_tabs == 'Residual plot'", ns = ns,
+          conditionalPanel("input.analysis_diagnostics_tabs == 'Residual vs fit'", ns = ns,
                            selectInput(
                              inputId = ns("analysis_diagnostics_plot_residual_covariate"),
                              label = "By covariate: ",
@@ -50,14 +48,19 @@ ui_diagnostic <- function(store, id){
                          height = 600)
             ),
             tabPanel(
-              title = 'Residual plot',
+              title = 'Residual vs fit',
               br(),
               plotOutput(ns('analysis_diagnostics_plot_residual'),
+                         height = 600)
+            ), 
+            tabPanel(
+              title = 'Residual normality', 
+              br(), 
+              plotOutput(ns('analysis_diagnostics_plot_normal'), 
                          height = 600)
             )
           )
         )
-      )
     ))
   
 }

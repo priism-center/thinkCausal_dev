@@ -26,7 +26,7 @@ show_popup_waiting <- function(session){
 show_popup_common_support_warning <- function(session, common_support_check, ns){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
-    h3('Common Support Warning'),
+    h3('Lack of Ocerlap Warning'),
     h5(HTML(common_support_check$message)),
     br(),
     h5('How would you like to proceed?'),

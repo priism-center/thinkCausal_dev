@@ -73,7 +73,7 @@ plot_common_support_temp <- function(.model, .x = 'Propensity Score',  rule = c(
     geom_point(alpha = 0.7) +
     scale_color_manual(values = c(1, 2)) +
     facet_wrap(~support_rule_text, ncol = 1, scales = 'free_y') +
-    labs(title ="Common support checks",
+    labs(title ="Overlap checks",
          x = .x,
          y = 'Predicted counterfactual standard deviation',
          color = NULL) +

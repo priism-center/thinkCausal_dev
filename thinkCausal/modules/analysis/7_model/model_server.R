@@ -67,7 +67,6 @@ server_model <- function(store, id, global_session){
           observeEvent(input$analysis_model_button_popup, {
             close_popup(session = session)
             updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$data)
-            updateTabsetPanel(global_session, inputId = "analysis_data_tabs", selected = "Upload")
           })
         }
         
@@ -200,7 +199,16 @@ server_model <- function(store, id, global_session){
         }
         
         # nav buttons within the popup
-        # TODO: the 'see common support diagnostics doesn't go anywhere
+        observeEvent(input$common_support_opt3, {
+          updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$diagnostic)
+          updateTabsetPanel(global_session, inputId = "analysis_diagnostic-analysis_diagnostics_tabs", selected = "Overlap")
+          close_popup(session = session)
+        })
+
+        observeEvent(input$common_support_opt2, {
+              shinyjs::runjs('openHelpSection("help-model")')
+        })
+        
         observeEvent(input$common_support_new_rule, {
           updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$model)
           close_popup(session = session)

@@ -122,7 +122,8 @@ plot_residual_density <- function(.model, covariate = NULL){
   # add observed y
   dat$y.obs <- .model$data.rsp@y
   # add predicted y
-  dat$y.hat.mean <- .model$fit.rsp$yhat.train.mean
+  dat$y.hat.mean <- apply(bartCause::extract(.model, "mu.obs"), 2, mean)
+
   # add residual
   dat$residual <- dat$y.hat.mean - dat$y.obs
   
@@ -132,27 +133,18 @@ plot_residual_density <- function(.model, covariate = NULL){
     dat <- dat[.model$trt == 0, ]
   }
   
-  if(is.null(covariate)){
-    p <- ggplot(data = dat, aes(x = residual)) + 
-      geom_density()
-  }else{
-    # ensure the input variable is within the dataset
-    index <- which(colnames(dat) == covariate)
-    if (!isTRUE(index > 0)) stop('Cannot find variable in original data. Is variable within the original dataframe used to fit the .model?')
-    
-    categorical <- isTRUE(is_categorical(dat[[covariate]]))
-    binary <- isTRUE(clean_detect_logical(dat[[covariate]]))
-    
-    if(categorical | binary){ # color by a categorical or logical variable
-      p <- ggplot(data = dat, aes(x = residual, colour = factor(!!rlang::sym(covariate)))) + 
-        geom_density()
-    }else{ 
-      p <- ggplot(data = dat, aes(x = residual)) + 
-        geom_density()
-    }
-  }
+  dat$reference <- rnorm(n = nrow(dat), 0, sd(dat$residual))
+  
+  dat <- dat %>% 
+    pivot_longer(cols = c('residual', 'reference'))
+  
+  p <- ggplot(data = dat, aes(x = value, color = name)) + 
+    geom_density() + 
+    scale_color_manual(values = c(2, 1))
+  
+  
   p <- p + labs(x = "Residual", y = "Density") + 
-    theme_minimal()
+    theme_minimal() 
   return(p)
 }
 
