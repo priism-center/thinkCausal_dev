@@ -52,19 +52,18 @@ plot_common_support_temp <- function(.model, .x = 'Propensity Score',  rule = c(
     mutate(prop = n/sum(n)*100) %>% 
     filter(removed == 'Removed') %>% 
     arrange(support_rule) %>% 
-    ungroup() %>% 
-    select(prop) %>% 
-    as_vector() %>% 
-    round(2)
+    ungroup()
   
+  percent_out <- as_vector(prop$prop)
+  names(percent_out) <- prop$support_rule
   # orderd alphabetically
-  if(is.na(prop[1])) prop[1] <- 0
-  if(is.na(prop[2])) prop[2] <- 0
+  if(is.na(percent_out['sd'])) percent_out['sd'] <- 0
+  if(is.na(percent_out['chi'])) percent_out['chi'] <- 0
   
   dat <- dat %>% 
     mutate(support_rule_text = if_else(support_rule == 'chi', 
-                                       paste0('Chi-squared rule: ', prop[1], "% of cases would have been removed"), 
-                                       paste0('Standard deviation rule: ', prop[2], "% of cases would have been removed")))
+                                       paste0('Chi-squared rule: ', round(percent_out['chi'], 2), "% of cases would have been removed"), 
+                                       paste0('Standard deviation rule: ', round(percent_out['sd'], 2), "% of cases would have been removed")))
 
   # plot it
   p <- dat %>%

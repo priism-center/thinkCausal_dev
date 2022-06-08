@@ -40,6 +40,11 @@ plot_overlap_covariate_tree <- function(.model, rule){
     tmp <- .data
     # calculate overlap binary variable based on chi rule
     tmp$removed <- ifelse((.model$sd.cf / .model$sd.obs) ** 2 > 3.841, 1, 0)
+    
+    # adjust for estimand
+    if(.model$estimand == 'att') tmp <- tmp[.model$trt == 1, ]
+    if(.model$estimand == 'atc') tmp <- tmp[.model$trt == 0, ]
+    
     # fit regression tree
     cart <- rpart::rpart(removed ~ ., data = tmp, maxdepth = 3)
     # p <- rpart.plot::rpart.plot(cart, type = 2, branch = 1, box.palette = 0)

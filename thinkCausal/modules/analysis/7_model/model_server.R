@@ -106,6 +106,10 @@ server_model <- function(store, id, global_session){
         store$analysis$model$model <- NULL
         store$analysis$model$fit_good <- NULL
         
+        # save prespecified moderators 
+        store$analysis$results$prespecified_subgroups <- input$analysis_model_moderator_vars
+        if(is_null(input$analysis_model_moderator_yes_no)) store$analysis$results$prespecified_subgroups <- NULL
+        
         # insert popup to notify user of model fit process
         # TODO: estimate the time remaining empirically?
         # TODO: show console redirect
@@ -170,11 +174,13 @@ server_model <- function(store, id, global_session){
         # TODO: need way to test if actually have a good fit
         store$analysis$model$fit_good <- TRUE
         
-        # update select on moderators page
+        # update exploratory moderators
         updateSelectInput(session = global_session,
                           inputId = 'analysis_moderator_vars',
                           choices = input$analysis_model_moderator_vars,
                           selected = input$analysis_model_moderator_vars[1])
+        
+      
         
         # add to log
         log_event <- paste0(
@@ -193,7 +199,7 @@ server_model <- function(store, id, global_session){
         common_support_check <- check_common_support(bart_model)
         
         # display popup if any observations would be removed
-        any_points_removed <- common_support_check$proportion_removed_sd > 0 | common_support_check$proportion_removed_chi > 0
+        any_points_removed <- common_support_check$proportion_removed_sd > 5 | common_support_check$proportion_removed_chi > 5
         if(any_points_removed & input$analysis_model_support == 'No'){
           show_popup_common_support_warning(session = session, common_support_check = common_support_check, ns = ns)
         }

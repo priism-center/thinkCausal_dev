@@ -20,7 +20,7 @@ ui_model <- function(store, id){
                            choices = c('', 'Unsure', 'Yes', 'No')),
                HTML('<details><summary>Advanced modeling options</summary>'),
                selectInput(ns("analysis_over_ride_common_support"),
-                           label = 'Common support rule:',
+                           label = 'Overlap rule:',
                            choices = c('Standard deviation' = 'sd', 'Chi squared' = 'chisq'))
              )
       ),
@@ -33,9 +33,10 @@ ui_model <- function(store, id){
                            label = 'Would you like to pre-specify subgroup analyses?',
                            choices = c("No", "Yes",'Unsure')),
                conditionalPanel(condition = "input.analysis_model_moderator_yes_no == 'Yes'", ns = ns,
-                                selectInput(ns('analysis_model_moderator_vars'),
-                                            label = 'Select moderator(s)',
+                                selectizeInput(ns('analysis_model_moderator_vars'),
+                                            label = 'Create subgroups by:',
                                             choices = NULL,
+                                            options = list(maxItems = 3),
                                             multiple = TRUE)),
              )
       ),

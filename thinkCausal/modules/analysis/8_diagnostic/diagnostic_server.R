@@ -99,32 +99,34 @@ server_diagnostic <- function(store, id, global_session){
         
         bart_model <- store$analysis$model$model
         
-        # number removed from sd rule
-        sd.cut = c(trt = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt > 0]), ctl = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt <= 0])) + sd(bart_model$sd.obs[!bart_model$missingRows])
-        total_delete_sd<- switch (bart_model$estimand,
-                            ate = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]) + sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2]),
-                            att = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]),
-                            atc = sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2])
-        )
-        
-        # number removed from chi square rule 
-        total_delete_chi <- sum((bart_model$sd.cf / bart_model$sd.obs) ** 2 > 3.841)
-        
         inference_group <- switch (bart_model$estimand,
                                    ate = length(bart_model$sd.obs[!bart_model$missingRows]),
                                    att = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 1),
                                    atc = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 0)
         )
         
+        # calculate summary stats
+        sd.cut = c(trt = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt > 0]), ctl = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt <= 0])) + sd(bart_model$sd.obs[!bart_model$missingRows])
+        total_sd <- switch (bart_model$estimand,
+                            ate = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]) + sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2]),
+                            att = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]),
+                            atc = sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2])
+        )
         
-        prop_sd <- round((total_delete_sd / inference_group)*100 , 2)
-        text_sd <- paste0('Standard deviation rule: ', prop_sd, "% of cases would have been removed")
         
-        prop_chi <- round((total_delete_chi / inference_group)*100, 2)
-        text_chi <- paste0('Chi-squared rule: ', prop_chi, "% of cases would have been removed")
+        # calculate chisqr rule
+        total_chi <-  switch (bart_model$estimand,
+                              ate = sum((bart_model$sd.cf / bart_model$sd.obs) ** 2 > 3.841),
+                              att = sum((bart_model$sd.cf[bart_model$trt ==1] / bart_model$sd.obs[bart_model$trt ==1]) ** 2 > 3.841),
+                              atc = sum((bart_model$sd.cf[bart_model$trt ==0] / bart_model$sd.obs[bart_model$trt ==0]) ** 2 > 3.841)
+        )
         
+        # calculate sd rule
+        prop_sd <- round((total_sd / inference_group)*100 , 2)
+        prop_chi <- round((total_chi / inference_group)*100, 2)
         
-        if(total_delete_sd > 0 | total_delete_chi > 0){
+     
+        if(total_sd > 0 & total_chi > 0){
           # common support plot from plotbart
           p1 <- plot_common_support_temp(
             .model = bart_model,

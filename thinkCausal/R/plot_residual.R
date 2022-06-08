@@ -121,11 +121,6 @@ plot_residual_density <- function(.model, covariate = NULL){
   dat <-  as.data.frame(.model$data.rsp@x)
   # add observed y
   dat$y.obs <- .model$data.rsp@y
-  # add predicted y
-  dat$y.hat.mean <- apply(bartCause::extract(.model, "mu.obs"), 2, mean)
-
-  # add residual
-  dat$residual <- dat$y.hat.mean - dat$y.obs
   
   if(.model$estimand == "att"){
     dat <- dat[.model$trt == 1, ]
@@ -133,8 +128,15 @@ plot_residual_density <- function(.model, covariate = NULL){
     dat <- dat[.model$trt == 0, ]
   }
   
-  dat$reference <- rnorm(n = nrow(dat), 0, sd(dat$residual))
+
+  # add predicted y
+  dat$y.hat.mean <- apply(bartCause::extract(.model, "mu.obs"), 2, mean)
   
+  # add residual
+  dat$residual <- dat$y.hat.mean - dat$y.obs
+  
+  dat$reference <- rnorm(n = nrow(dat), 0, sd(dat$residual))
+
   dat <- dat %>% 
     pivot_longer(cols = c('residual', 'reference'))
   
