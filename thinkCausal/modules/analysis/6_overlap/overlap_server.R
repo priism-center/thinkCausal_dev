@@ -20,8 +20,8 @@ server_overlap <- function(store, id, global_session){
         new_col_names <- colnames(store$verified_df)
         X_cols <- grep("^X_", new_col_names, value = TRUE)
         
-        overlap_df <- data.frame(sd.cf = pscores()[[2]], store$verified_df[, X_cols])
-        tree <- rpart::rpart(sd.cf ~ ., data = overlap_df)
+        overlap_df <- data.frame(sd.cf = pscores()[[2]], sd.obs = pscores()[[3]], store$verified_df[, X_cols])
+        tree <- rpart::rpart(sd.cf/sd.obs ~ ., data = overlap_df)
         preds <- unique(rownames(tree$splits))
         overlap <- c(preds, X_cols[X_cols %notin% preds])
         
@@ -58,7 +58,7 @@ server_overlap <- function(store, id, global_session){
           support = 'none'
         )
         
-        overlap_data <- list(p.score = fit$p.score, sd.cf = fit$sd.cf)
+        overlap_data <- list(p.score = fit$p.score, sd.cf = fit$sd.cf, sd.obs = fit$sd.obs)
         return(overlap_data)
       })
       

@@ -6,10 +6,10 @@ validate_model_ <- function(.model){
   if (!inherits(.model, "bartcFit")) stop(".model must be of class 'bartcFit'")
 }
 
-# read data for testing functions
+# # read data for testing functions
 # df <- read.csv("./data/IHDP_observational.csv") %>%
 #   select(-c(yc0hat, yc1hat))
-# fit <- bartc(y.obs, treat, ., data = df)
+# fit <- bartc(y.obs, treat, ., data = df, estimand = 'att')
 
 
 plot_overlap_covariate_tree <- function(.model, rule){
@@ -20,25 +20,28 @@ plot_overlap_covariate_tree <- function(.model, rule){
   
   # pull data from model 
   .data <- as.data.frame(.model$data.rsp@x)[, -1] %>% select(-ps)
-  tmp <- .data
 
   if(rule == "sd"){
+    tmp <- .data
     # calculate overlap binary variable based on sd rule
-    tmp$overlap_sd <- ifelse(.model$sd.cf > max(.model$sd.obs) + sd(.model$sd.obs), 0, 1)
-    # fit logistic regression to get the probability of overlap 
-    fit_sd <- glm(overlap_sd ~ ., data = tmp, family = binomial(link = "logit"))
-    .data$overlap_prob_sd <- predict(fit_sd, type = 'response')
+    sd.cut = c(trt = max(.model$sd.obs[!.model$missingRows & .model$trt > 0]), ctl = max(.model$sd.obs[!.model$missingRows & .model$trt <= 0])) + sd(.model$sd.obs[!.model$missingRows])
+    tmp$cut <- ifelse(.model$trt ==1,  sd.cut[1], sd.cut[2]) 
+    tmp$removed <- ifelse(.model$sd.cf > tmp$cut, 1, 0)
+    
+    # adjust for estimand
+    if(.model$estimand == 'att') tmp <- tmp[.model$trt == 1, ]
+    if(.model$estimand == 'atc') tmp <- tmp[.model$trt == 0, ]
+    
     # fit regression tree
-    cart <- rpart::rpart(overlap_prob_sd ~ ., data = .data, maxdepth = 3)
+    cart <- rpart::rpart(removed ~ . - cut, data = tmp, maxdepth = 3)
     # p <- rpart.plot::rpart.plot(cart, type = 2, branch = 1, box.palette = 0)
     p_gg <- rpart_ggplot_overlap(cart)
   }else if(rule == "chi"){
+    tmp <- .data
     # calculate overlap binary variable based on chi rule
-    tmp$overlap_chi <- ifelse((.model$sd.cf / .model$sd.obs) ** 2 > 3.841, 0, 1)
-    fit_chi <- glm(overlap_chi ~ ., data = tmp, family = binomial(link = "logit"))
-    .data$overlap_prob_chi <- predict(fit_chi, type = 'response')
+    tmp$removed <- ifelse((.model$sd.cf / .model$sd.obs) ** 2 > 3.841, 1, 0)
     # fit regression tree
-    cart <- rpart::rpart(overlap_prob_chi ~ ., data = .data, maxdepth = 3)
+    cart <- rpart::rpart(removed ~ ., data = tmp, maxdepth = 3)
     # p <- rpart.plot::rpart.plot(cart, type = 2, branch = 1, box.palette = 0)
     # create dendrogram
     p_gg <- rpart_ggplot_overlap(cart)

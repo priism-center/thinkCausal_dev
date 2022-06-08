@@ -16,7 +16,7 @@ ui_model <- function(store, id){
                                        'ATC - Average treatment effect on the control' = 'ATC',
                                        'ATT - Average treatment effect on the treated' = 'ATT')),
                selectInput(ns('analysis_model_support'),
-                           label = 'Remove observations with weak common support',
+                           label = 'Remove observations without overlap',
                            choices = c('', 'Unsure', 'Yes', 'No')),
                HTML('<details><summary>Advanced modeling options</summary>'),
                selectInput(ns("analysis_over_ride_common_support"),

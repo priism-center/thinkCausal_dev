@@ -1,3 +1,5 @@
+options(warn = -1) # becuase version 4.2 is trash
+
 library(shiny)
 
 # for reading data
@@ -66,7 +68,7 @@ map(list.files('R', recursive = TRUE), function(file) source(file.path('R', file
 
 # modules
 path_modules <- list.files('modules', pattern = "(_module.R)$", recursive = TRUE, full.names = TRUE)
-map(path_modules, function(file) source(file))
+lapply(1:length(path_modules), function(i){source(path_modules[i])})
 rm(path_modules)
 
 # UI 
