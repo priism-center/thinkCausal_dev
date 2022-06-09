@@ -14,7 +14,7 @@ server_overlap <- function(store, id, global_session){
       
       
       # render varible options ordered by overlap problems
-      observeEvent(input$analysis_balance_button_next,{
+      observeEvent(input$analysis_overlap_type,{
       
         # get covariates
         new_col_names <- colnames(store$verified_df)
