@@ -31,40 +31,92 @@ server_subgroup <- function(store, id, global_session){
       })
       
       
-      # render plot type options
-      observeEvent(input$plotBart_moderator_vars, {
-        if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$categorical)){
-          output$sub_group_ui <- renderUI({
-            
-            selectInput('categorical_exploratory_choice',
-                        label = 'Choose a plot type:',
-                        choices = c('','Overlaid density', 'Vertical intervals'))
-            
-          })
-          
-          output$sub_group_pannel <- renderUI({
-            radioButtons(inputId = 'panel', 
-                         label = 'Panel plots:', 
-                         choices = c('Yes', 'No'), 
-                         selected = 'No', 
-                         inline = T)
-            
-          })
-          
-          
+      
+      # update pre-specifed moderators 
+      observeEvent(store$analysis$subgroup$prespecified_subgroups, {
+        options <- store$analysis$subgroup$prespecified_subgroups
+        updateSelectInput(session = global_session, 
+                          inputId = ns('analysis_subgroup_prespecifed'), 
+                          choices = options, 
+                          selected = options[1])
+      })
+      
+      
+      
+      # pre-specifed subgroups 
+      analysis_pre_specified_moderators <- reactive({
+        validate_model_fit(store)
+        validate_prespecifed_moderators(store)
+        
+        # clean input text 
+        cols_categorical <- gsub('X_', '',store$column_types$categorical)
+        cols_continuous <- gsub('X_', '', store$column_types$continuous)
+        
+        # add overlay
+        div_id <- 'analysis_results_plot_prespecifed'
+        show_message_updating(div_id)
+        
+        if(input$analysis_results_prespecifed %in% cols_categorical){
+          p <- plot_moderator_d_density(store$analysis$model$model, 
+                                        moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_prespecifed)]])
+        }else{
+          p <- plot_moderator_c_loess(store$analysis$model$model, 
+                                      moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_prespecifed)]])
         }
         
-        if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$continuous)){
-          output$sub_group_ui <- renderUI({
-            selectInput('continuous_exploratory_choice',
-                        label = 'Choose a plot type:',
-                        choices = c('','Loess', 'Partial dependency'))})
-        }
+        p <- p + store$options$theme_custom
+        
+        # remove overlay
+        close_message_updating(div_id)
+        return(p)
         
       })
       
+      output$analysis_subgroup_prespecified_plot <- renderPlot(analysis_pre_specified_moderators())
+      
+      # exploratory moderators 
+      
+      # pre-specifed subgroups 
+      observeEvent(input$analysis_model_button_next, {
+        updateSelectInput(inputId = ns('analysis_subgroup_explore'), 
+                          label = 'Subgroup results by:',
+                          choices = gsub("X_", '',grep("^X_", colnames(store$verified_df), value = TRUE)), 
+                          selected = NULL
+        )  
+      })
+    
+      
+      
+      analysis_explore_moderators <- reactive({
+        validate_model_fit(store)
+        validate(need(!is_null(nput$analysis_subgroup_explore), "Choose a variable for exploratory subgroup analysis"))
+        
+        
+        # add overlay
+        div_id <- 'analysis_results_plot_exploratory'
+        show_message_updating(div_id)
+        
+        if(input$analysis_results_prespecifed %in% cols_categorical){
+          p <- plot_moderator_d_density(store$analysis$model$model, 
+                                        moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_explore)]])
+        }else{
+          p <- plot_moderator_c_loess(store$analysis$model$model, 
+                                      moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_explore)]])
+        }
+        
+        p <- p + store$options$theme_custom
+        
+        # remove overlay
+        close_message_updating(div_id)
+        return(p)
+        
+      })
+      
+      output$analysis_subgroup_explore_plot <- renderPlot(analysis_explore_moderators())
+      
+      
       # ICATE plots
-      analysis_moderators_check_plot <- reactive({
+      analysis_moderators_icate_plot <- reactive({
         
         # stop here if model isn't fit yet
         validate_model_fit(store)
@@ -91,48 +143,50 @@ server_subgroup <- function(store, id, global_session){
       })
       
       
-      output$analysis_moderators_check_plot <- renderPlot(analysis_moderators_check_plot())
+      output$analysis_moderators_icate_plot <- renderPlot(analysis_moderators_check_plot())
       
-      output$download_ICATE_plot <- downloadHandler(
-        filename = function(){
-          switch(
-            input$check_type,
-            "tree" = "ICATE_tree_plot.png",
-            "histogram" = "ICATE_histogram_plot.png",
-            "ordered" = "ICATE_ordered_plot.png"
-          )
-        },
-        content = function(file) {
-          
-          if (input$icate_type == 'tree'){
-            # TODO: this doesn't work
-            grDevices::png(
-              filename = file,
-              height = input$settings_options_ggplotHeight,
-              width = input$settings_options_ggplotWidth,
-              units = 'in',
-              res = 300
-            )
-            analysis_moderators_check_plot()
-            dev.off()
-          } else {
-            ggsave(file,
-                   plot = analysis_moderators_check_plot(),
-                   height = input$settings_options_ggplotHeight,
-                   width = input$settings_options_ggplotWidth,
-                   units = 'in',
-                   device = 'png')
-          }
-        }
-      )
-      
+      # 
+      # output$download_ICATE_plot <- downloadHandler(
+      #   filename = function(){
+      #     switch(
+      #       input$check_type,
+      #       "tree" = "ICATE_tree_plot.png",
+      #       "histogram" = "ICATE_histogram_plot.png",
+      #       "ordered" = "ICATE_ordered_plot.png"
+      #     )
+      #   },
+      #   content = function(file) {
+      #     
+      #     if (input$icate_type == 'tree'){
+      #       # TODO: this doesn't work
+      #       grDevices::png(
+      #         filename = file,
+      #         height = input$settings_options_ggplotHeight,
+      #         width = input$settings_options_ggplotWidth,
+      #         units = 'in',
+      #         res = 300
+      #       )
+      #       analysis_moderators_check_plot()
+      #       dev.off()
+      #     } else {
+      #       ggsave(file,
+      #              plot = analysis_moderators_check_plot(),
+      #              height = input$settings_options_ggplotHeight,
+      #              width = input$settings_options_ggplotWidth,
+      #              units = 'in',
+      #              device = 'png')
+      #     }
+      #   }
+      # )
+      # 
       # plot explore tab regression tree
-      analysis_moderator_explore_plot <- reactive({
+      analysis_subgroup_search_plot <- reactive({
+        validate_model_fit(store)
         p <- plotBart::plot_moderator_search(store$analysis$model$model, max_depth = input$plotBart_tree_depth)
         return(p)
       })
       
-      output$analysis_moderator_explore_plot <- renderPlot(analysis_moderator_explore_plot())
+      output$analysis_subgroup_search_plot <- renderPlot(analysis_subgroup_search_plot())
       
       
       output$download_moderator_explore_plot <- downloadHandler(
@@ -201,6 +255,8 @@ server_subgroup <- function(store, id, global_session){
         
         # stop here if model isn't fit yet
         validate_model_fit(store)
+        
+        
         
         selected_moderator <- input$plotBart_moderator_vars
         #output$analysis_moderators_explore_plot <- renderPlot({

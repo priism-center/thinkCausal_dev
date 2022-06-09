@@ -26,7 +26,7 @@ When we have both potential outcomes (a y1 and a y0) we can calculate a runners 
 
 <h2 id="estimands-trigger-4">The ATE is the average of ICEs</h2>
 
-One way of calculating the ATE is by taking the average of all 10 runners Individual Causal Effect's. After averaging all 10 Individual Causal Effects we see that the ATE is -1.33.
+One way of calculating the ATE is by taking the average of all 10 runners Individual Causal Effect's. After averaging all 10 Individual Causal Effects we see that the ATE is -4.
 <br><br>
 You can hover over any point to explore a runner's Individual Causal Effect and how it related the the ATE.
 

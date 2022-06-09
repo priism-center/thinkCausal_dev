@@ -31,12 +31,12 @@ server_eda <- function(store, id, global_session){
           inputId = "analysis_eda_select_plot_type",
           selected = store$analysis$data$verify$plot_vars$plot_type
         )
-        updateSelectInput(
-          session = session,
-          inputId = "analysis_eda_variable_x",
-          choices = new_col_names,
-          selected = store$analysis$data$verify$plot_vars$X
-        )
+        # updateSelectInput(
+        #   session = session,
+        #   inputId = "analysis_eda_variable_x",
+        #   choices = new_col_names,
+        #   selected = store$analysis$data$verify$plot_vars$X
+        # )
         updateSelectInput(
           session = session,
           inputId = "analysis_eda_variable_y",
@@ -73,21 +73,21 @@ server_eda <- function(store, id, global_session){
           choices = c("None", cols_categorical)
         )
         
-        # update selects on balance plots
-        X_cols <- grep("^X_", new_col_names, value = TRUE)
-        X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
-        
-        # update options for balance
-        updateSelectInput(session = session,
-                          inputId = 'analysis_plot_balance_select_var',
-                          choices = X_cols_continuous,
-                          selected = X_cols_continuous
-        )
-        updateSelectInput(session = session,
-                          inputId = 'analysis_plot_overlap_select_var',
-                          choices = X_cols_continuous,
-                          selected = X_cols_continuous
-        )
+        # # update selects on balance plots
+        # X_cols <- grep("^X_", new_col_names, value = TRUE)
+        # X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
+        # 
+        # # update options for balance
+        # updateSelectInput(session = session,
+        #                   inputId = 'analysis_plot_balance_select_var',
+        #                   choices = X_cols_continuous,
+        #                   selected = X_cols_continuous
+        # )
+        # updateSelectInput(session = session,
+        #                   inputId = 'analysis_plot_overlap_select_var',
+        #                   choices = X_cols_continuous,
+        #                   selected = X_cols_continuous
+        # )
       })
       
       # only show continuous variables if histogram, density, or boxplot is selected
@@ -145,7 +145,7 @@ server_eda <- function(store, id, global_session){
           label = "X: ",
           multiple = FALSE,
           choices = new_col_names,
-          selected = NULL
+          selected = store$analysis$data$verify$plot_vars$X
         )
       })
       

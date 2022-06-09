@@ -33,10 +33,9 @@ ui_model <- function(store, id){
                            label = 'Would you like to pre-specify subgroup analyses?',
                            choices = c("No", "Yes",'Unsure')),
                conditionalPanel(condition = "input.analysis_model_moderator_yes_no == 'Yes'", ns = ns,
-                                selectizeInput(ns('analysis_model_moderator_vars'),
+                                selectInput(ns('analysis_model_moderator_vars'),
                                             label = 'Create subgroups by:',
                                             choices = NULL,
-                                            options = list(maxItems = 3),
                                             multiple = TRUE)),
              )
       ),

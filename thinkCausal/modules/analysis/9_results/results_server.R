@@ -45,43 +45,18 @@ server_results <- function(store, id, global_session){
         return(text_out)
       })
       
-      # update pre-specifed moderators 
-      observeEvent(store$analysis$results$prespecified_subgroups, {
-        browser()
-        options <- store$analysis$results$prespecified_subgroups
-        updateSelectInput(session = global_session, 
-                          inputId = 'analysis_results_prespecifed', 
-                          choices = options, 
-                          selected = options[1])
-      })
-      
-      
-      
-      # pre-specifed subgroups 
-      analysis_pre_specified_moderators <- reactive({
-        validate_model_fit(store)
-        
-        moderators <- store$analysis$model$prespecified_subgroups
-        #TODO move to validate functions at some point 
-        # add validation code
-        
-        
-        
-      })
-      
       # PATE plot
       analysis_results_plot_PATE <- reactive({
         
         # stop here if model isn't fit yet
         validate_model_fit(store)
+        # add overlay
+        div_id <- 'analysis_results_plot_PATE'
+        show_message_updating(div_id)
         
         # get value for reference bar
         reference_bar <- NULL
         if (input$show_reference == 'Yes') reference_bar <- req(input$reference_bar)
-        
-        # add overlay
-        div_id <- 'analysis_results_plot_PATE'
-        show_message_updating(div_id)
         
         # create plot
         p <- plotBart::plot_PATE(
@@ -108,7 +83,8 @@ server_results <- function(store, id, global_session){
       
       
       output$analysis_results_plot_PATE <- renderPlot(analysis_results_plot_PATE())
-      output$download_PATE_plot <- downloadHandler(
+     
+       output$download_PATE_plot <- downloadHandler(
         filename = "PATE_plot.png",
         content = function(file) {
           ggsave(file,

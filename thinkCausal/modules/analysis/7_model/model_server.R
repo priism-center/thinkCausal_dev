@@ -26,30 +26,23 @@ server_model <- function(store, id, global_session){
         cols_categorical <- store$column_types$categorical
         X_cols_categorical <- grep("^X_", cols_categorical, value = TRUE)
         cols_categorical_cleaned <- gsub("X_", '', X_cols_categorical)
-        
-        # # update options for random intercept
-        # updateSelectInput(
-        #   session = session,
-        #   inputId = "analysis_random_intercept",
-        #   choices = c("None", cols_categorical_cleaned),
-        #   selected = "None"
-        # )
-        
+
         # create moderator options
         cols_continuous <- store$column_types$continuous
         X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
-        X_cols <- grep("^X_", colnames(store$verified_df), value = TRUE)
-        X_mods <- combn(X_cols, m = 2) %>% t() %>% as.data.frame()
-        remove <- X_mods[X_mods$V1 %in% X_cols_continuous & X_mods$V2 %in% X_cols_continuous,]
-        X_mods <- anti_join(X_mods, remove)
-        X_mods <- mutate(X_mods,
-                         V1 = gsub("X_", '', V1),
-                         V2 = gsub("X_", '', V2))
-        X_mods <- X_mods %>%
-          mutate(mod = paste(V1, V2, sep = ' x ')) %>%
-          pull(mod)
-        X_mods <- c(gsub("X_", '', X_cols), X_mods)
         
+        X_cols <- gsub("X_", '',grep("^X_", colnames(store$verified_df), value = TRUE))
+        X_mods <- X_cols
+        #TODO update plot bart to allow for 3 way interactions 
+        # X_mods <- combn(X_cols, m = 2) %>% t() %>% as.data.frame()
+        # remove <- X_mods[X_mods$V1 %in% X_cols_continuous & X_mods$V2 %in% X_cols_continuous,]
+        # X_mods <- anti_join(X_mods, remove)
+        # X_mods <- mutate(X_mods,
+        #                  V1 = gsub("X_", '', V1),
+        #                  V2 = gsub("X_", '', V2))
+        # X_mods <- X_mods %>%
+        #   mutate(mod = paste(V1, V2, sep = ' x ')) %>%
+        #   pull(mod)
         updateSelectInput(session = session,
                           inputId = 'analysis_model_moderator_vars',
                           choices = X_mods,
@@ -107,7 +100,7 @@ server_model <- function(store, id, global_session){
         store$analysis$model$fit_good <- NULL
         
         # save prespecified moderators 
-        store$analysis$results$prespecified_subgroups <- input$analysis_model_moderator_vars
+        store$analysis$subgroup$prespecified_subgroups <- input$analysis_model_moderator_vars
         if(is_null(input$analysis_model_moderator_yes_no)) store$analysis$results$prespecified_subgroups <- NULL
         
         # insert popup to notify user of model fit process

@@ -54,7 +54,7 @@ ui_design <- function(store, id){
       column(4,
              wellPanel(
                class = 'card',
-               h4('3. Upload data'),
+               h4('3. Save design and continue'),
                br(),
                actionButton(inputId = ns("analysis_design_button_next"),
                             class = "nav-btn-focus",

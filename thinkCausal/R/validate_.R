@@ -33,6 +33,11 @@ validate_design <- function(store){
                 "Study design must first be specified on the 'Analyze-Design' page"))
 }
 
+validate_prespecifed_moderators <- function(store){
+  validate(need(!is_null(store$analysis$subgroup$prespecified_subgroups), 
+                "No subgroup analyses were prespecifed."))
+}
+
 remove_downstream_data <- function(store, page = NULL){
   # remove downstream data so validate_* functions stop any processes naturally
   # usage: store <- remove_downstream_data(store, page = 'group)
