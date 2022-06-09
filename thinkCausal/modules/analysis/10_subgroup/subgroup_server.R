@@ -96,7 +96,7 @@ server_subgroup <- function(store, id, global_session){
         cols_categorical <- gsub('X_', '',store$column_types$categorical)
         cols_continuous <- gsub('X_', '', store$column_types$continuous)
         
-        if(input$analysis_results_prespecifed %in% cols_categorical){
+        if(input$analysis_subgroup_prespecifed %in% cols_categorical){
           p <- plot_moderator_d_density(store$analysis$model$model, 
                                         moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_explore)]])
         }else{
