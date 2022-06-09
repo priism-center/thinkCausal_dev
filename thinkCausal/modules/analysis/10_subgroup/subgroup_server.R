@@ -62,7 +62,6 @@ server_subgroup <- function(store, id, global_session){
       
       # explore subgroups 
       observeEvent(store$analysis$model$model, {
-        browser()
         options <- gsub("X_", '',grep("^X_", colnames(store$verified_df), value = TRUE))
         updateSelectInput(session = global_session,
           inputId = ns('analysis_subgroup_explore'), 

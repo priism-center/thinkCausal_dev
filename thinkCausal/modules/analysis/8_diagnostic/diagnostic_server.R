@@ -197,7 +197,6 @@ server_diagnostic <- function(store, id, global_session){
       output$analysis_diagnostics_plot_normal <- renderPlot(analysis_diagnostics_plot_normal())
       
      
-      
       # download plot
       output$download_diagnostic_plot <- downloadHandler(
         filename = function() {
