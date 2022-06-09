@@ -145,7 +145,7 @@ server_eda <- function(store, id, global_session){
           label = "X: ",
           multiple = FALSE,
           choices = new_col_names,
-          selected = store$analysis$data$verify$plot_vars$X
+          selected = 'X_bw' #store$analysis$data$verify$plot_vars$X
         )
       })
       
