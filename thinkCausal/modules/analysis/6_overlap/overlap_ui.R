@@ -12,7 +12,7 @@ ui_overlap <- function(store, id) {
                  choices = c("By Propensity Score" = 1, 
                              "By Variables" = 2
                  ),
-                 selected = 1
+                 selected = 2
                ),
                selectInput(
                  inputId = ns("analysis_overlap_method"),

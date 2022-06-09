@@ -13,14 +13,14 @@ server_overlap <- function(store, id, global_session){
       })
       
       
-      # render varible options ordered by overlap problems
-      observeEvent(input$analysis_overlap_type,{
       
+      # render varible options ordered by overlap problems
+      observeEvent(store$analysis$overlap$pscore,{
         # get covariates
         new_col_names <- colnames(store$verified_df)
         X_cols <- grep("^X_", new_col_names, value = TRUE)
         
-        overlap_df <- data.frame(sd.cf = pscores()[[2]], sd.obs = pscores()[[3]], store$verified_df[, X_cols])
+        overlap_df <- data.frame(sd.cf = store$analysis$overlap$pscore[[2]], sd.obs = store$analysis$overlap$pscore[[3]], store$verified_df[, X_cols])
         tree <- rpart::rpart(sd.cf/sd.obs ~ ., data = overlap_df)
         preds <- unique(rownames(tree$splits))
         overlap <- c(preds, X_cols[X_cols %notin% preds])
@@ -61,17 +61,17 @@ server_overlap <- function(store, id, global_session){
         overlap_data <- list(p.score = fit$p.score, sd.cf = fit$sd.cf, sd.obs = fit$sd.obs)
         return(overlap_data)
       })
-      
+
       # create the overlap plot
       overlap_plot <- reactive({
 
         # stop here if data hasn't been uploaded and selected
         validate_data_verified(store)
-        
+
         # stop here if there are no numeric columns selected
         # validate(need(length(input$analysis_overlap_select_var) > 0,
         #               "No continuous columns available or currently selected"))
-        
+
         # get variables for input into plotting functions
         X <- store$verified_df
         col_names <- colnames(X)
@@ -80,14 +80,17 @@ server_overlap <- function(store, id, global_session){
         cols_continuous <- store$column_types$continuous
         confounder_cols <- grep("^X_", cols_continuous, value = TRUE)
         plt_type <- input$analysis_overlap_method
-      
+        store$analysis$overlap$pscore <- pscores()
+        
         # plot either the variables or the 1 dimension propensity scores
         if(input$analysis_overlap_type == 2){
-          
+
           if(plt_type == 'Density') validate(need((is.numeric(X[[input$analysis_overlap_select_var]])), 'Density plots are only avalable for continuous variables'))
           
+          pscore <- pscores()
+          req(store$analysis$overlap$pscore)
           req(input$analysis_overlap_select_var)
-          
+
           p <- temp_plot_overlap_vars(
               .data = X,
               treatment = treatment_col,
@@ -95,54 +98,54 @@ server_overlap <- function(store, id, global_session){
               plot_type = plt_type
             )
         }
-        
+
         else if(input$analysis_overlap_type == 1){
           p <- tryCatch({
             plotBart::plot_overlap_pScores(
               .data = X,
               treatment = treatment_col,
               plot_type = plt_type,
-              pscores = pscores()[[1]]
+              pscores = store$analysis$overlap$pscore[[1]]
             )
           },
           error = function(e) NULL
           )
         }
-        
+
         # add theme
         p <- p + store$options$theme_custom
-        
+
         return(p)
       })
       output$analysis_overlap_plot <- renderPlot({
-        
+
         # stop here if data hasn't been uploaded and selected
         validate_data_verified(store)
-        
+
         # stop here if there are no numeric columns selected
         # validate(need(length(input$analysis_overlap_select_var) > 0,
         #               "No continuous columns available or currently selected"))
-        
+
         # add overlay
         div_id <- 'analysis_overlap_plot'
         show_message_updating(div_id)
-        
+
         # build plot
         p <- overlap_plot()
-        
+
         # remove overlay
         close_message_updating(div_id)
-        
+
         # stop if p is not a plot
         validate(need(
           inherits(p, 'ggplot'),
           'Error in building plot. Error likely occured in propensity score calculation.'
         ))
-        
+
         return(p)
       })
-      
-      # to save the parameters of downloaded overlap plots for reproducible script
+
+      #to save the parameters of downloaded overlap plots for reproducible script
       downloaded_overlap_plot_parameters <- reactiveValues(df = list())
       
       # parameters of current overlap plot
