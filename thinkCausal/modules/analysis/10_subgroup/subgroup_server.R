@@ -121,7 +121,7 @@ server_subgroup <- function(store, id, global_session){
         # stop here if model isn't fit yet
         validate_model_fit(store)
         
-        if(input$check_type == 'histogram'){
+        if(input$icate_plot_type == 'Histogram'){
           p <- plotBart::plot_ICATE(
             store$analysis$model$model,
             n_bins = input$plotBart_ICATE_n_bins)
@@ -129,7 +129,7 @@ server_subgroup <- function(store, id, global_session){
           p <- p + store$options$theme_custom 
         }
         
-        if(input$check_type == 'ordered'){
+        if(input$icate_plot_type == 'Waterfall'){
           # plot it
           p <- plotBart::plot_waterfall(
             .model = store$analysis$model$model
@@ -143,7 +143,7 @@ server_subgroup <- function(store, id, global_session){
       })
       
       
-      output$analysis_moderators_icate_plot <- renderPlot(analysis_moderators_check_plot())
+      output$analysis_moderators_icate_plot <- renderPlot(analysis_moderators_icate_plot())
       
       # 
       # output$download_ICATE_plot <- downloadHandler(

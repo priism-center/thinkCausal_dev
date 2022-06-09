@@ -29,9 +29,25 @@ ui_subgroup <- function(store, id) {
                                 selectInput(inputId = ns('analysis_subgroup_explore'), 
                                             label = 'Subgroup results by:',
                                             choices = NULL, 
-                                            selected = NULL
-                                )  
+                                            selected = NULL)  
                                 ), 
+               conditionalPanel(condition = "input.analysis_subgroup_tabs == 'ICATE'", ns = ns, 
+                                h4("ICATE plots"), 
+                                p('Check for heterogenety in the treatment effect by exploring the variation of ICATEs.'), 
+                                selectInput(inputId = ns('icate_plot_type'), 
+                                            label = 'Plot type:', 
+                                            choices = c('Histogram', 'Waterfall'), 
+                                            selected = 'Histogram'), 
+                                conditionalPanel(condition = "input.icate_plot_type == 'Histogram'", ns = ns, 
+                                                  sliderInput(
+                                                    inputId = ns("plotBart_ICATE_n_bins"),
+                                                    label = "Number of bins: ",
+                                                    min = 5,
+                                                    max = 100,
+                                                    value = 30,
+                                                    step = 5
+                                                  ))
+                                ),
                br(), br(),
                create_link_to_help('Subgroup analyses', button_label = 'What is this plot telling me?'),
                br(),br(),
@@ -64,7 +80,9 @@ ui_subgroup <- function(store, id) {
                                       height = 500)
                            ), 
                   tabPanel(title = 'ICATE', 
-                           br())
+                           br(), 
+                           plotOutput(outputId = ns('analysis_moderators_icate_plot'), 
+                                      height = 500))
                          
                   
                   )
