@@ -51,7 +51,7 @@ ui_subgroup <- function(store, id) {
                br(), br(),
                create_link_to_help('Subgroup analyses', button_label = 'What is this plot telling me?'),
                br(),br(),
-               downloadButton('download_ESA_plot', label = "Download plot"),
+               downloadButton('download_subgroup_plot', label = "Download plot"),
                br(), br(),
                div(class = 'backNextContainer',
                actionButton(inputId = ns('analysis_moderator_analyses_button_results'),

@@ -3,29 +3,15 @@ server_subgroup <- function(store, id, global_session){
   moduleServer(
     id, 
     function(input, output, session) {
-      # snavagation 
+      # navagation 
       observeEvent(input$analysis_moderator_check_button_back, {
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$results)
       })
-      observeEvent(input$analysis_moderator_check_button_next, {
-        updateTabsetPanel(global_session, inputId = "analysis_moderator_tabs", selected = "Explore")
-      })
-      
-      observeEvent(input$analysis_moderator_explore_button_back, {
-        updateTabsetPanel(global_session, inputId = "analysis_moderator_tabs", selected = "Check")
-      })
-      
-      observeEvent(input$analysis_moderator_explore_button_next, {
-        updateTabsetPanel(global_session, inputId = "analysis_moderator_tabs", selected = "Test")
-      })
-      
-      observeEvent(input$analysis_moderator_test_button_back, {
-        updateTabsetPanel(global_session, inputId = "analysis_moderator_tabs", selected = "Explore")
-      })
-      
+
       observeEvent(input$analysis_moderator_analyses_button_results, {
         updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$results)
       })
+      
       observeEvent(input$analysis_moderator_analyses_button_reproduce, {
         updateNavbarPage(global_session, inputId = "nav", selected = "Reproduce")
       })
@@ -75,10 +61,13 @@ server_subgroup <- function(store, id, global_session){
       output$analysis_subgroup_prespecified_plot <- renderPlot(analysis_pre_specified_moderators())
       
       # explore subgroups 
-      observeEvent(input$analysis_model_button_next, {
-        updateSelectInput(inputId = ns('analysis_subgroup_explore'), 
+      observeEvent(store$analysis$model$model, {
+        browser()
+        options <- gsub("X_", '',grep("^X_", colnames(store$verified_df), value = TRUE))
+        updateSelectInput(session = global_session,
+          inputId = ns('analysis_subgroup_explore'), 
                           label = 'Subgroup results by:',
-                          choices = c('', gsub("X_", '',grep("^X_", colnames(store$verified_df), value = TRUE))), 
+                          choices = c('', options), 
                           selected = 1)  
       })
     
@@ -86,7 +75,7 @@ server_subgroup <- function(store, id, global_session){
       
       analysis_explore_moderators <- reactive({
         validate_model_fit(store)
-        validate(need(input$analysis_subgroup_explore  == '', "Choose a variable for exploratory subgroup analysis"))
+        validate(need(input$analysis_subgroup_explore  != '', "Choose a variable for exploratory subgroup analysis"))
         
         
         # add overlay
@@ -96,7 +85,7 @@ server_subgroup <- function(store, id, global_session){
         cols_categorical <- gsub('X_', '',store$column_types$categorical)
         cols_continuous <- gsub('X_', '', store$column_types$continuous)
         
-        if(input$analysis_subgroup_prespecifed %in% cols_categorical){
+        if(input$analysis_subgroup_explore %in% cols_categorical){
           p <- plot_moderator_d_density(store$analysis$model$model, 
                                         moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_explore)]])
         }else{
@@ -146,39 +135,6 @@ server_subgroup <- function(store, id, global_session){
       output$analysis_moderators_icate_plot <- renderPlot(analysis_moderators_icate_plot())
       
       # 
-      # output$download_ICATE_plot <- downloadHandler(
-      #   filename = function(){
-      #     switch(
-      #       input$check_type,
-      #       "tree" = "ICATE_tree_plot.png",
-      #       "histogram" = "ICATE_histogram_plot.png",
-      #       "ordered" = "ICATE_ordered_plot.png"
-      #     )
-      #   },
-      #   content = function(file) {
-      #     
-      #     if (input$icate_type == 'tree'){
-      #       # TODO: this doesn't work
-      #       grDevices::png(
-      #         filename = file,
-      #         height = input$settings_options_ggplotHeight,
-      #         width = input$settings_options_ggplotWidth,
-      #         units = 'in',
-      #         res = 300
-      #       )
-      #       analysis_moderators_check_plot()
-      #       dev.off()
-      #     } else {
-      #       ggsave(file,
-      #              plot = analysis_moderators_check_plot(),
-      #              height = input$settings_options_ggplotHeight,
-      #              width = input$settings_options_ggplotWidth,
-      #              units = 'in',
-      #              device = 'png')
-      #     }
-      #   }
-      # )
-      # 
       # plot explore tab regression tree
       analysis_subgroup_search_plot <- reactive({
         validate_model_fit(store)
@@ -188,154 +144,41 @@ server_subgroup <- function(store, id, global_session){
       
       output$analysis_subgroup_search_plot <- renderPlot(analysis_subgroup_search_plot())
       
-      
-      output$download_moderator_explore_plot <- downloadHandler(
-        filename = function(){
-          "ICATE_tree_plot.png"
+    
+      # download plot
+      output$download_subgroup_plot <- downloadHandler(
+        filename = function() {
+          switch(
+            req(input$analysis_subgroup_tabs),
+            "Pre-specified Subgroup Analysis" = 'pre_specified_subgroup_plot.png',
+            "Search" = 'subgroup_regression_tree.png',
+            "Exploratory Subgroup Analysis" = 'exploratory_subgroup_plot.png',
+            "ICATE" = 'ICATE_plot.png'
+          )
         },
         content = function(file) {
-          grDevices::png(
-            filename = file,
-            height = input$settings_options_ggplotHeight,
-            width = input$settings_options_ggplotWidth,
-            units = 'in',
-            res = 300
+          
+          # get the plot that is on the active tab
+          active_plot <- switch(
+            req(input$analysis_subgroup_tabs),
+            'Pre-specified Subgroup Analysis' = analysis_pre_specified_moderators(),
+            'Search' = analysis_subgroup_search_plot(),
+            "Exploratory Subgroup Analysis" = analysis_explore_moderators(), 
+            'ICATE' = analysis_moderators_icate_plot()
           )
-          analysis_moderator_explore_plot()
-          dev.off()
-        }
-      )
-      
-      
-      # plot the moderators
-      analysis_moderators_test_plot <- reactive({
-        
-        # stop here if model isn't fit yet
-        validate_model_fit(store)
-        
-        # stop here if no variables selected in dropdown
-        validate(need(input$analysis_moderator_vars, "Please select a variable to group by"))
-        
-        # add overlay
-        div_id <- 'analysis_moderators_test_plot'
-        show_message_updating(div_id)
-        
-        # make plot
-        moderator_vars <- input$analysis_moderator_vars
-        p <- plot_continuous_sub(.model = store$analysis$model$model,
-                                 grouped_on = moderator_vars)
-        
-        # add theme
-        p <- p + store$options$theme_custom 
-        
-        # remove overlay
-        close_message_updating(div_id)
-        
-        return(p)
-      })
-      output$analysis_moderators_test_plot <- renderPlot(analysis_moderators_test_plot())
-      output$download_ESA_plot <- downloadHandler(
-        filename = "moderators_plot.png",
-        content = function(file) {
+          
+          # write out plot
           ggsave(file,
-                 plot = analysis_moderators_test_plot(),
-                 height = input$settings_options_ggplotHeight,
-                 width = input$settings_options_ggplotWidth,
+                 plot = active_plot,
+                 height = store$options$settings_options_ggplotHeight,
+                 width = store$options$settings_options_ggplotWidth,
                  units = 'in',
                  device = 'png')
         }
       )
       
-      # subgroup plots
-      # TODO: this is a mess and prevents plot downloading;
-      # TODO: there's an issue where the if the user makes the plot but then goes back
-      # and adjusts the data (therefore removing the model), this plot fails to render even
-      # though there is a validate* function
-      observeEvent(input$analysis_moderator_fit, {
-        
-        # stop here if model isn't fit yet
-        validate_model_fit(store)
-        
-        
-        
-        selected_moderator <- input$plotBart_moderator_vars
-        #output$analysis_moderators_explore_plot <- renderPlot({
-        # categorical plots
-        if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$categorical)){
-          if(input$categorical_exploratory_choice == 'Overlaid density'){
-            output$analysis_moderators_test_plot <- renderPlot({
-              div_id <- 'analysis_moderators_test_plot'
-              show_message_updating(div_id)
-              
-              p <- plotBart::plot_moderator_d_density(
-                .model = store$analysis$model$model,
-                moderator = store$verified_df[[paste0('X_', selected_moderator)]]
-              )
-              
-              p <- p + store$options$theme_custom  
-              
-              # remove overlay
-              close_message_updating(div_id)
-              
-              return(p)
-            })
-          }
-          if(input$categorical_exploratory_choice == 'Vertical intervals'){
-            output$analysis_moderators_test_plot <- renderPlot({
-              div_id <- 'analysis_moderators_test_plot'
-              show_message_updating(div_id)
-              
-              p <- plotBart::plot_moderator_d_linerange(
-                .model = store$analysis$model$model,
-                moderator = store$verified_df[[paste0('X_', selected_moderator)]]
-              )
-              p <- p + store$options$theme_custom 
-              
-              # remove overlay
-              close_message_updating(div_id)
-              
-              return(p)
-            })
-          }
-          
-        } # end of categorical block
-        # continuous plots
-        if(input$plotBart_moderator_vars %in% gsub('X_', '', store$column_types$continuous)){
-          if(input$continuous_exploratory_choice == 'Loess'){
-            output$analysis_moderators_test_plot <- renderPlot({
-              div_id <- 'analysis_moderators_test_plot'
-              show_message_updating(div_id)
-              p <- plotBart::plot_moderator_c_loess(
-                .model = store$analysis$model$model,
-                moderator = store$verified_df[[paste0('X_', selected_moderator)]]
-              )
-              p <- p + store$options$theme_custom 
-              
-              # remove overlay
-              close_message_updating(div_id)
-              
-              return(p)
-            })
-          }
-          if(input$continuous_exploratory_choice == 'Partial dependency'){
-            output$analysis_moderators_test_plot <- renderPlot({
-              div_id <- 'analysis_moderators_test_plot'
-              show_message_updating(div_id)
-              p <- plotBart::plot_moderator_c_pd(
-                .model = store$analysis$model$model,
-                moderator = store$verified_df[[paste0('X_', selected_moderator)]]
-              )
-              p <- p + store$options$theme_custom 
-              
-              # remove overlay
-              close_message_updating(div_id)
-              
-              return(p)
-            })
-          }
-        }
-        #})
-      })
+      
+      
       
       return(store)
     }
