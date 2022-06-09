@@ -56,7 +56,7 @@ server_subgroup <- function(store, id, global_session){
         div_id <- 'analysis_results_plot_prespecifed'
         show_message_updating(div_id)
         
-        if(input$analysis_results_prespecifed %in% cols_categorical){
+        if(input$analysis_subgroup_prespecifed %in% cols_categorical){
           p <- plot_moderator_d_density(store$analysis$model$model, 
                                         moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_prespecifed)]])
         }else{
@@ -74,22 +74,19 @@ server_subgroup <- function(store, id, global_session){
       
       output$analysis_subgroup_prespecified_plot <- renderPlot(analysis_pre_specified_moderators())
       
-      # exploratory moderators 
-      
       # pre-specifed subgroups 
       observeEvent(input$analysis_model_button_next, {
         updateSelectInput(inputId = ns('analysis_subgroup_explore'), 
                           label = 'Subgroup results by:',
                           choices = gsub("X_", '',grep("^X_", colnames(store$verified_df), value = TRUE)), 
-                          selected = NULL
-        )  
+                          selected = gsub("X_", '',grep("^X_", colnames(store$verified_df), value = TRUE))[1])  
       })
     
       
       
       analysis_explore_moderators <- reactive({
         validate_model_fit(store)
-        validate(need(!is_null(nput$analysis_subgroup_explore), "Choose a variable for exploratory subgroup analysis"))
+        validate(need(!is_null(input$analysis_subgroup_explore), "Choose a variable for exploratory subgroup analysis"))
         
         
         # add overlay
