@@ -29,8 +29,8 @@ server_overlap <- function(store, id, global_session){
         # send them off to the UI
         updateSelectInput(session = session,
                           inputId = 'analysis_overlap_select_var',
-                          choices = c('X_bw', overlap),
-                          selected = 'X_bw' #overlap[1]
+                          choices = overlap,
+                          selected = overlap[1]
         )
         
       })
