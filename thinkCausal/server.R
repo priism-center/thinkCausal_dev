@@ -26,40 +26,6 @@ shinyServer(function(input, output, session) {
     # print(paste("is on mobile: ", store$js$is_on_mobile))
   })
 
-  
-  # back next buttons -------------------------------------------------------
-
-  # observeEvent(input$analysis_model_button_popup, {
-  #   updateNavbarPage(session, inputId = "nav", selected = "Data")
-  #   updateTabsetPanel(session, inputId = "analysis_data_tabs", selected = "Load")
-  #   shinyWidgets::closeSweetAlert()
-  # })
-
-  # subgroup/moderators page
-
-  
-  # store the page history
-  # show/hide back button
-  # observeEvent(input$nav, {
-  #   
-  #   # store history
-  #   store$page_history <- append(store$page_history, input$nav)
-  #   
-  #   # trigger icon if leaving analysis page
-  #   if (!stringr::str_detect(input$nav, "^analysis") && 
-  #       !identical(get_nav_previous_analysis_page(store), character(0))){
-  #     shinyjs::show(selector = '.back-to-analysis-button')
-  #   } else {
-  #     shinyjs::hide(selector = '.back-to-analysis-button')
-  #   }
-  # })
-  
-  # move to new page when button is clicked
-  # observeEvent(input$back_to_analysis_button, {
-  #   new_page <- get_nav_previous_analysis_page(store)
-  #   updateNavbarPage(session, inputId = "nav", selected = new_page)
-  # })
-
 
   # design text  ------------------------------------------------------------
   
@@ -90,30 +56,8 @@ shinyServer(function(input, output, session) {
 
   # analysis footer ---------------------------------------------------------
 
-  observeEvent(input$nav, {
+  observeEvent(input$nav, update_nav_footer(store, input))
     
-    # display footer when in analysis section
-    current_page <- input$nav
-    is_analysis <- current_page %in% module_ids$analysis
-    if (isTRUE(is_analysis)) {
-      shinyjs::runjs(
-        '$(".progress-footer-tab").show()'
-      )
-    } else {
-      shinyjs::runjs(
-        '$(".progress-footer-tab").hide()'
-      )
-    }
-    
-    # highlight current footer item
-    footer_id <- paste0('progress-footer-', current_page)
-    shinyjs::runjs(
-      paste0(
-        '$(".progress-footer-tab").css("font-weight", "");',
-        '$("#', footer_id, '").css("font-weight", 600)'
-      )
-    )
-  })
   
   # learning modules ----------------------------------------------------------------
 
