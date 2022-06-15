@@ -1,0 +1,152 @@
+/*### scrollytell ###*/
+.scrollytell-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.overlap-text-along-d3,
+.overlap-d3-container {
+  background-color: #fff;
+}
+
+.overlap-text-along-d3 {
+  padding: 0px 50px 0 0;
+  width: 35%;
+}
+
+.overlap-d3-container {
+  width: 65%;
+  height: 400px; /* should match height of d3 plot */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 30px;
+  padding: 20px 0 0 0;
+}
+
+
+
+/*delete body and #overlap-plot-container chunks when moving to shiny */
+body {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  color: #666666;
+  margin: 2em;
+  line-height: 1.5em;
+  /* background-color: #fff; */
+  max-width: 900px; /*same as learning container*/
+}
+/* #overlap-plot-container {
+  max-width: 540px;
+} */
+
+
+
+
+
+
+
+
+
+
+
+.overlap-axis > path {
+  display: none;
+}
+
+.overlap-axis .tick > line {
+  stroke: #e7e7e7;
+}
+
+.overlap-legend-text {
+  font-size: 0.8em;
+  /* font-weight: 500; */
+}
+
+.overlap-slider-label {
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: rgb(216, 65, 65);
+}
+
+.overlap-lines {
+  stroke-width: 0.2rem;
+}
+
+.overlap-support-label {
+  /* font-weight: 300; */
+  font-size:0.9rem;
+  fill: rgb(95, 95, 95);
+}
+
+.overlap-verticalLine {
+  stroke: #232323;
+  stroke-dasharray: 6, 6;
+  stroke-width: 2px;
+}
+
+.overlap-axis > path {
+  stroke: #b5b5b5;
+}
+
+.overlap-axis > g > line {
+  stroke: #b5b5b5;
+}
+
+.overlap-axis > g > text {
+  fill: #666666;
+}
+
+.overlap-axisLabel {
+  fill: #666666;
+  font-size: 0.65em;
+}
+
+.overlap-title {
+  font-size: 1.1em;
+  fill: #666666;
+}
+
+.overlap-subtitle {
+  font-size: 0.9em;
+  fill: #a1a1a1;
+}
+
+.overlap-legend > text {
+  fill: #666666;
+  font-size: 0.75em;
+}
+
+.overlap-dist-label {
+  fill: #666666;
+}
+
+.overlap-tooltip {
+  width: 190px;
+  font-size: 0.8em;
+  background-color: white;
+  border: solid #394E48;
+  border-width: 2px;
+  border-radius: 2px;
+  padding: 0.01rem 0.7rem 0.01rem 0.7rem;
+  text-align: left;
+  position: absolute;
+  color: #666666;
+}
+
+button {
+  width: 150px;
+  max-width: 100%;
+  background-color: #726078;
+  padding: 0.8em;
+  margin: 0.5em;
+  border-radius: 2px;
+  border: none;
+  color: white;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+button:hover {
+  filter: brightness(1.2);
+}
+button:active {
+  filter: brightness(0.7);
+}
