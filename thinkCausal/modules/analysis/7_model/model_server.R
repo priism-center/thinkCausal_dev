@@ -190,7 +190,6 @@ server_model <- function(store, id, global_session){
         
         # common support warning
         common_support_check <- check_common_support(bart_model)
-        
         # display popup if any observations would be removed
         any_points_removed <- common_support_check$proportion_removed_sd > 5 | common_support_check$proportion_removed_chi > 5
         if(any_points_removed & input$analysis_model_support == 'No'){

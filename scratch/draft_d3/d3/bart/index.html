@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/bart.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+</head>
+<body>
+  <main>
+    <div><h1>Section before scrollytell</h2>
+
+      <p>Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable <code>bugs</code> is very close to the true treatment effect. The analysis that includes the post-treatment variable <code>bugs</code> is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!</p>
+
+      <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
+
+      <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.In real contexts, we would not have access to both <a href="">potential outcomes</a> but we can imagine them for the purposes of this example. Notice that two individuals differ in <code>z</code> but have the same value for <code>gym</code> despite haviving different <a href="">potential outcomes</a>. Controlling for <code>gym</code> is not a fair comparison of <code>strength</code> because we are not accounting for how <code>z</code> changes the value of <code>gym</code>. This is not a problem for pre-treatment varibales becuase thier value can not be changed or influenced by <code>z</code>. </p>
+
+      <h2>Notes</h2>
+      <p>This is mostly just a UX experiment; causal definitions are loosely interpreted</p>
+      <p>Add single tree and true response curve?</p>
+
+      <br><br><br>
+    </div>
+    <div class="scrollytell-container">
+      <div class="bart-text-along-d3">
+
+        <!-- <input id='input-study-result' value="30">Study result</input>
+        <br><br> -->
+        <!-- <input id='input-distribution-mean' value="0">True mean</input> -->
+        <!-- <br><br>
+        <button id="generate-study">Get study results</button>
+        <br><br>
+        <button id="generateDistribution">Get many study results</button> -->
+
+        <!-- <h1>Average treatment effects</h2> -->
+        <h2 id="bart-trigger-1">State 1: Observations</h2>
+
+        <p>We can plot the observed (factual) running timesoutcomes of all 9 runners in our study. In our study, rRunners 1, 4, 7 and 9 wore standard shoes while runners 2, 3, 5, 6, and 8 wore HyperShoes. </p>
+
+        <!-- <input id='input-distribution-mean' type="range" min="-50" max="50" step="5"><label>True mean</label> -->
+        <!-- <a class="fundamental-slider-label">True mean</a>
+        <input type="text" id="fundamental-slider-distribution-mean" class="js-range-slider" value="0" /> -->
+        
+        <p><br></p>
+
+        <br><br><br><br>
+
+        <h2 id="bart-trigger-2">State 2: Mean diff</h2>
+
+        <p><a id="bart-text">Your study had an ATE of ____.</a> Because we have access to our potential outcomes time-machine, we can also plot each runner's unobserved (counterfactual) outcomes. When looking at counterfactual outcomes we see the running times runners 2,3,5,6 and 8 would have had if they were wearing sStandard sShoes which fills in the missing y0's.  We also seeand the running times runners 1, 4, 7 and 9 would have had if they were wearing HyperShoes which fills in the missing y1s.</p>
+
+        <br><br><br><br><br><br><br><br><br>
+
+        <h2 id="bart-trigger-3">State 3: Linear regression</h2>
+
+        <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. </p>
+
+        <p>Post-treatment variables, like <code>gym</code>, have different <a href="">potential outcomes</a> that depend on the treatment variable. This is the primary problem of controlling for post-treatment variables. The table below shows the <a href="">potential outcomes</a> and observed outcomes of <code>gym</code> for 2 individuals from our exercise study.</p>
+        <br><br><br><br><br><br><br><br><br>
+
+        <h2 id="bart-trigger-4">State 4: Regression tree</h2>
+
+        <p>A single regression tree more closely recaptures the true response surface. But ... To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable </p>
+
+        <br><br><br><br><br><br><br><br><br>
+
+        <h2 id="bart-trigger-5">State 5: BART</h2>
+
+        <p><a id="bart-text">Your study had an ATE of ____.</a> Because we have access to our potential outcomes time-machine, we can also plot each runner's unobserved (counterfactual) outcomes. When looking at counterfactual outcomes we see the running times runners 2,3,5,6 and 8 would have had if they were wearing sStandard sShoes which fills in the missing y0's.  We also seeand the running times runners 1, 4, 7 and 9 would have had if they were wearing HyperShoes which fills in the missing y1s.</p>
+
+        <br><br><br><br><br><br><br><br><br>
+
+        <!-- <h2 id="bart-trigger-6">State 6: True response surface</h2>
+
+        <p>Because we have access to our potential outcomes time-machine, we can also plot each runner's unobserved (counterfactual) outcomes. When looking at counterfactual outcomes we see the running times runners 2,3,5,6 and 8 would have had if they were wearing sStandard sShoes which fills in the missing y0's.  We also seeand the running times runners 1, 4, 7 and 9 would have had if they were wearing HyperShoes which fills in the missing y1s.</p>
+
+        <br><br><br><br><br><br><br><br><br> -->
+
+        </div>
+      
+      <div id="bart-plot-container" class="bart-d3-container">
+        <!-- <button id="trigger" onclick="triggerAnimation(store.scatter, scales)">Build histogram</button> -->
+        <div id='bart-plot'></div>
+      </div>
+    </div>
+    <br><br><br><br><br>
+    <div><h2>Next section after scrollytell</h2>
+
+      <p>Including post-treatment variables can drastically impact the results of experiments. The data for this example was simulated so we know that, on average, the pest-control caused plants to grow 1.52 inches taller than they would have grown without the pest-control. We can see that the analysis without the post-treatment variable <code>bugs</code> is very close to the true treatment effect. The analysis that includes the post-treatment variable <code>bugs</code> is far off from the true treatment effect and would lead an incorrect assessment of the non-toxic environmentally friendly pest-control!</p>
+
+      <p><br></p>
+
+      <h2>Functional form</h2>
+
+      <p>BART performs well across various functional forms. Drag the <a style="color: #c96de8; font-weight: 500;">handles</a> (<i class="fa-solid fa-hand-pointer" style="color: #c96de8;"></i>) to adjust the treatment group's functional form and then refit the models.</p>
+
+      <div id='bart-plot-functional'></div>
+      <div class="bart-button-group">
+        <div class="bart-generate-group">
+          <p>Generate points</p>
+          <button id="bart-functional-fit" onclick="bart.functional.runModel()">Generate</button>
+        </div>
+        <div class="bart-tab-group">
+          <p>Choose model</p>
+          <div class="bart-tab-subgroup">
+            <button id="bart-functional-tab-none" class="bart-tab-button" onclick="bart.functional.showModel('none')">None</button>
+            <button id="bart-functional-tab-diff" class="bart-tab-button" disabled onclick="bart.functional.showModel('diff')">Mean difference</button>
+            <button id="bart-functional-tab-lm" class="bart-tab-button" disabled onclick="bart.functional.showModel('lm')">Linear regression</button>
+            <button id="bart-functional-tab-tree" class="bart-tab-button" disabled onclick="bart.functional.showModel('tree')">Regression tree</button>
+            <button id="bart-functional-tab-bart" class="bart-tab-button" disabled onclick="bart.functional.showModel('bart')">BART</button>
+          </div>
+        </div>
+      </div>
+      <br><br>
+      Add div here showing summary stats?
+
+      <p><br></p>
+
+      <h2>BART posterior</h2>
+
+      <p>To demonstrate how adjusting for post-treatment variables introduces bias, consider another hypothetical example: does an exercise program increase muscle strength? The treatment variable <code>z</code> records whether or not an individual participated in the exercise program, the pre-treatment variable. Mid-way through the study, weekly trips to the gym was recorded for each individual with the post-treatment variable <code>gym</code>. </p>
+
+      <!-- [Plot should animate between wide and narrow distribution; use distribution, study, and true mean from above; have slider animate which causes plot to animate]<br> -->
+
+      <!-- <div id="fundamental-slider-efficiency-container">
+        <input type="text" id="fundamental-slider-efficiency" class="js-range-slider" value="0" />
+      </div> -->
+      <button id="bart-trigger" onclick="bart.triggerPosteriorAnimation()">Show posterior</button>
+      <div id='bart-plot-posterior1'></div>
+
+      <h2>New version</h2>
+      <p>Replace above animation with plot similar to slides and book chaper:the predicted treatment effect plot with vertical intervals</p>
+      <p>Why are the intervals inconsistent?</p>
+      <button id="bart-trigger-posterior" onclick="bart.posterior.triggerAnimation()">Show posterior</button>
+      <div id='bart-plot-posterior'></div>
+
+      <!-- <p><br></p> -->
+
+      <h2>Common support</h2>
+
+      <p>The previous plot could be easily extended to illustrate overlap by allowing the user to shift the distributions left-and-right.</p>
+
+      <p>Two plots connected showing scatter and posterior of treatment effect. Slider to go from "perfect-overlap" to "half-overlap" in 10 increments which are pre-generated</p> 
+
+      <!-- <a class="bart-slider-label">Overlap</a> -->
+      <div id="bart-slider-overlap-container" style="max-width: 400px">
+        <input type="text" id="bart-slider-overlap" class="js-range-slider"/>
+      </div>
+      <div id='bart-plot-overlap'></div>
+
+    </div>
+    </div>
+  </main>
+</body>
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="https://cdn.jsdelivr.net/jstat/latest/jstat.min.js"></script> -->
+<!-- <script src="https://unpkg.com/d3-regression@1.3.10/dist/d3-regression.min.js"></script> -->
+<script src="../src/jquery-3.3.1.slim.min.js"></script>
+<script src="../src/d3.v5.js"></script>
+<script src="../src/jstat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+<script src="js/namespace.js"></script>
+<script src="js/helpers.js"></script>
+<script src="js/overlap.js"></script>
+<script src="js/animation.js"></script>
+<script src="js/functional.js"></script>
+<script src="js/posterior.js"></script>
+<script src="js/scrollPlot.js"></script>
+<script src="js/buildPlot.js"></script>
+<script src="js/init.js"></script>
+</html>
