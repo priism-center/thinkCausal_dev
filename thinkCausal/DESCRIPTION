@@ -1,6 +1,29 @@
 Package: thinkCausal
-Version: 0.2.0
-RoxygenNote: 7.1.2
-Encoding: UTF-8
+Title: Point-and-click bartCause analysis and causal inference education
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Joseph", "Marlo", , "jpm770@nyu.edu", role = c("aut", "cre")),
+    person("George", "Perrett", , "gp77@nyu.edu", role = "aut")
+  )
+Description: A federally funded project devoted to building scaffolded
+    causal inference software implementing Bayesian Additive Regression
+    Trees.
+License: MIT + file LICENSE
+URL: https://priism-center.github.io/thinkCausal/
+Imports: 
+    bs4Dash,
+    config (>= 0.3.1),
+    glue,
+    golem (>= 0.3.2),
+    shiny (>= 1.7.1)
 Suggests: 
-    testthat
+    knitr,
+    rmarkdown,
+    spelling,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-US
+LazyData: true
+RoxygenNote: 7.2.0
+VignetteBuilder: knitr

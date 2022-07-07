@@ -1,0 +1,57 @@
+
+#sideBarMenu {
+  background: #302F42;
+
+}
+
+#sideBarMenu .nav-link {
+  color: #fff !important;;
+}
+.nav-link.active {
+  background: #7a789c !important;
+}
+
+.btn-circle, .btn-circle:hover, .btn-circle:active {
+  background: #7a789c !important;
+  border: none;
+}
+.btn-circle:hover {
+  filter: brightness(0.9)
+}
+
+footer {
+  padding: 0.6em !important;
+}
+footer > a{
+  color: #a1a1a1;
+}
+footer > a:hover{
+  filter: brightness(70%);
+  color: #a1a1a1 !important;
+}
+
+/* controls the red ribbon in the bottom left corner */
+.corner-ribbon{
+  width: 200px;
+  background: #b81b11;
+  position: fixed;
+  bottom: 25px;
+  left: -50px;
+  text-align: center;
+  line-height: 50px;
+  letter-spacing: 3px;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #f0f0f0;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+  -webkit-box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  z-index: 9999;
+}
+
+.tab-pane > h1 {
+  margin-bottom: 0.7em;
+}
