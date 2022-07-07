@@ -1,4 +1,10 @@
 
+body {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  color: #636363;
+  font-weight: 300;
+}
+
 #sideBarMenu {
   background: #302F42;
 
@@ -8,11 +14,11 @@
   color: #fff !important;;
 }
 .nav-link.active {
-  background: #7a789c !important;
+  background: #ae4ec2 !important;
 }
 
 .btn-circle, .btn-circle:hover, .btn-circle:active {
-  background: #7a789c !important;
+  background: #ae4ec2 !important;
   border: none;
 }
 .btn-circle:hover {
@@ -54,4 +60,22 @@ footer > a:hover{
 
 .tab-pane > h1 {
   margin-bottom: 0.7em;
+}
+
+/* help side bar menu */
+#controlbar-toggle > i {
+  color: #fff;
+}
+#controlbar-toggle:hover {
+  filter: brightness(0.7)
+}
+#controlbar-toggle:active {
+  filter: brightness(0.5)
+}
+#controlbar-toggle {
+  background: #ae4ec2;
+  border-radius: 0.3em;
+}
+#help-slideover {
+  padding: 1rem;
 }

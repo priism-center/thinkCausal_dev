@@ -15,23 +15,34 @@
 
 ## Dependencies ----
 ## Amend DESCRIPTION with dependencies read from package code parsing
-attachment::att_amend_desc()
+# attachment::att_amend_desc()
+usethis::use_package('ggplot2')
+usethis::use_package('dplyr')
 
 ## Add modules ----
 ## Create a module infrastructure in R/
 golem::add_module(name = "home", with_test = FALSE) # Name of the module
 golem::add_module(name = "learn", with_test = FALSE)
-golem::add_module(name = "analysis_design", with_test = TRUE)
-golem::add_module(name = "analysis_upload_data", with_test = TRUE)
 golem::add_module(name = "reproduce", with_test = FALSE)
 golem::add_module(name = "settings_options", with_test = FALSE)
 golem::add_module(name = "settings_about", with_test = FALSE)
 golem::add_module(name = "settings_reference", with_test = FALSE)
+golem::add_module(name = "help", with_test = FALSE)
+
+# analysis modules
+golem::add_module(name = "analysis_design", with_test = TRUE)
+golem::add_module(name = "analysis_upload_data", with_test = TRUE)
+
+## learning modules
+golem::add_module(name = "learning_estimands", with_test = FALSE)
+golem::add_css_file("learning-estimands")
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
 golem::add_fct("ui", with_test = FALSE)
-golem::add_utils("helpers", with_test = TRUE)
+golem::add_utils('global', with_test = FALSE)
+golem::add_fct('plot', with_test = FALSE)
+golem::add_fct('validate', with_test = FALSE)
 
 ## External resources
 ## Creates .js and .css files at inst/app/www
@@ -47,55 +58,3 @@ golem::add_css_file("thinkCausal")
 ## Tests ----
 ## Add one line by test you want to create
 # usethis::use_test("app")
-
-# Documentation
-
-## Vignette ----
-# usethis::use_vignette("thinkCausal")
-# devtools::build_vignettes()
-
-## Code Coverage----
-## Set the code coverage service ("codecov" or "coveralls")
-usethis::use_coverage()
-
-# Create a summary readme for the testthat subdirectory
-covrpage::covrpage()
-
-## CI ----
-## Use this part of the script if you need to set up a CI
-## service for your application
-##
-## (You'll need GitHub there)
-usethis::use_github()
-
-# GitHub Actions
-usethis::use_github_action()
-# Chose one of the three
-# See https://usethis.r-lib.org/reference/use_github_action.html
-usethis::use_github_action_check_release()
-usethis::use_github_action_check_standard()
-usethis::use_github_action_check_full()
-# Add action for PR
-usethis::use_github_action_pr_commands()
-
-# Travis CI
-# usethis::use_travis()
-# usethis::use_travis_badge()
-
-# AppVeyor
-# usethis::use_appveyor()
-# usethis::use_appveyor_badge()
-
-# Circle CI
-# usethis::use_circleci()
-# usethis::use_circleci_badge()
-
-# Jenkins
-# usethis::use_jenkins()
-
-# GitLab CI
-# usethis::use_gitlab_ci()
-
-# You're now set! ----
-# go to dev/03_deploy.R
-rstudioapi::navigateToFile("dev/03_deploy.R")

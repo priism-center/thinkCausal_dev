@@ -21,9 +21,9 @@ mod_home_ui <- function(id){
         p("Or conduct your own analysis in a scaffolded and visual process. Estimate the treatment effects of your own study by fitting a BART model to your data. Leverage the built-in diagnostics to understand the fit and performance.")
       ),
       column(
-        8,
+        4,
         bs4Dash::box(
-          width = 6,
+          width = 12,
           tagList(
             img(src = 'www/img/thumbnails/randomization.png',
                 width = '100%'),
@@ -32,8 +32,11 @@ mod_home_ui <- function(id){
           ),
           collapsible = FALSE
         ),
+      ),
+      column(
+        4,
         bs4Dash::box(
-          width = 6,
+          width = 12,
           tagList(
             img(src = 'www/img/thumbnails/assumptions.png',
                 width = '100%'),
@@ -42,6 +45,7 @@ mod_home_ui <- function(id){
           ),
           collapsible = FALSE
         )
+      )
 
         # fluidRow(
         #   create_learning_card(
@@ -61,7 +65,7 @@ mod_home_ui <- function(id){
         #     description = "Utilize modern causal inference methods. Easily implement Bayesian Additive Regression Trees."
         #   )
         # )
-      )
+      # )
     )
 
   )

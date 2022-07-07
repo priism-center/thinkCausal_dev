@@ -1,4 +1,4 @@
-#' settings_about UI Function
+#' help UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -7,17 +7,17 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_settings_about_ui <- function(id){
+mod_help_ui <- function(id){
   ns <- NS(id)
   tagList(
-    includeMarkdown(app_sys('assets', 'about.md'))
+    includeMarkdown(app_sys('assets/help.md'))
   )
 }
 
-#' settings_about Server Functions
+#' help Server Functions
 #'
 #' @noRd
-mod_settings_about_server <- function(id){
+mod_help_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -25,7 +25,7 @@ mod_settings_about_server <- function(id){
 }
 
 ## To be copied in the UI
-# mod_settings_about_ui("settings_about_1")
+# mod_help_ui("help_1")
 
 ## To be copied in the server
-# mod_settings_about_server("settings_about_1")
+# mod_help_server("help_1")

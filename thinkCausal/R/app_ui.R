@@ -159,29 +159,26 @@ app_ui <- function(request) {
             icon = icon('gear', verify_fa = FALSE),
             bs4Dash::menuSubItem(
               text = 'Options',
-              tabName = 'settings_options',
-              icon = icon('circle-thin', verify_fa = FALSE)
+              tabName = 'settings_options'
             ),
             bs4Dash::menuSubItem(
               text = 'About',
-              tabName = 'settings_about',
-              icon = icon('circle-thin', verify_fa = FALSE)
+              tabName = 'settings_about'
             ),
             bs4Dash::menuSubItem(
               text = 'Reference',
-              tabName = 'settings_reference',
-              icon = icon('circle-thin', verify_fa = FALSE)
+              tabName = 'settings_reference'
             )
           )
         )
       ),
 
-      # # TODO: use this instead of shiny widget for data filtering?
-      # controlbar = bs4Dash::dashboardControlbar(
-      #   mod_data_ui('data_1'),
-      #   id = 'data-slideover',
-      #   width = 400
-      # ),
+      # help menu
+      controlbar = bs4Dash::dashboardControlbar(
+        mod_help_ui('help'),
+        id = 'help-slideover',
+        width = 450
+      ),
 
       # TODO: this is a placeholder
       footer = bs4Dash::dashboardFooter(
@@ -212,8 +209,14 @@ golem_add_external_resources <- function() {
       path = app_sys("app/www"),
       app_title = "thinkCausal"
     ),
+
     # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert()
-    tags$script(src = 'www/ui.js')
+    tags$script(src = 'www/ui.js'),
+
+    # download roboto font
+    tags$link(rel = "stylesheet", type = "text/css", href = "//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic"),
+
+    # load jquery UI
+    tags$script(src = c(href = "//code.jquery.com/ui/1.12.1/jquery-ui.js"))
   )
 }
