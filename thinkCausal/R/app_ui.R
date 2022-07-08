@@ -32,16 +32,20 @@ app_ui <- function(request) {
 
           bs4Dash::tabItem(
             tabName = 'home',
-            mod_home_ui("home_1")
+            mod_home_ui("home")
           ),
 
           bs4Dash::tabItem(
             tabName = 'learn',
-            mod_learn_ui("learn_1")
+            mod_learn_ui("learn")
           ),
           bs4Dash::tabItem(
-            tabName = 'estimands',
-            mod_learn_ui("estimands_1")
+            tabName = 'learn_estimands',
+            mod_learn_estimands_ui("learn_estimands")
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_post_treatment',
+            mod_learn_post_treatment_ui("learn_post_treatment")
           ),
 
           bs4Dash::tabItem(
@@ -55,7 +59,7 @@ app_ui <- function(request) {
 
           bs4Dash::tabItem(
             tabName = 'reproduce',
-            mod_reproduce_ui("reproduce_1")
+            mod_reproduce_ui("reproduce")
           ),
 
           bs4Dash::tabItem(
@@ -76,9 +80,10 @@ app_ui <- function(request) {
       ),
 
       sidebar = bs4Dash::dashboardSidebar(
-        id = 'sideBarMenu',
+        id = 'sideBarContainer',
         skin = 'dark',
         bs4Dash::sidebarMenu(
+          id = 'sidebar',
 
           bs4Dash::menuItem(
             text = 'thinkCausal',
@@ -88,8 +93,20 @@ app_ui <- function(request) {
 
           bs4Dash::menuItem(
             text = 'Learn',
-            tabName = 'learn',
-            icon = icon("book")
+            icon = icon("book"),
+            bs4Dash::menuSubItem(
+              text = 'All articles',
+              tabName = 'learn',
+              icon = icon("table")
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Causal estimands',
+              tabName = 'learn_estimands'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Post treatment variables',
+              tabName = 'learn_post_treatment'
+            )
           ),
 
           bs4Dash::menuItem(
@@ -113,17 +130,17 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Visualize data',
               tabName = 'visualize_data',
-              icon = icon('chart-line')
+              icon = icon('chart-bar')
             ),
             bs4Dash::menuSubItem(
               text = 'Check balance',
               tabName = 'check_balance',
-              icon = icon('chart-line')
+              icon = icon('chart-bar')
             ),
             bs4Dash::menuSubItem(
               text = 'Check overlap',
               tabName = 'check_overlap',
-              icon = icon('chart-line')
+              icon = icon('chart-bar')
             ),
             bs4Dash::menuSubItem(
               text = 'Fit model',

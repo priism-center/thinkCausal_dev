@@ -22,8 +22,13 @@ mod_reproduce_ui <- function(id){
       style = 'max-width: 300px'
     ),
     br(), br(),
-    verbatimTextOutput(
-      outputId = 'settings_log_text'
+    bs4Dash::box(
+      width = 6,
+      collapsible = FALSE,
+      title = 'Log',
+      verbatimTextOutput(
+        outputId = 'settings_log_text'
+      )
     )
 
   )

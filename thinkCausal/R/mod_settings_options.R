@@ -12,59 +12,63 @@ mod_settings_options_ui <- function(id){
   tagList(
 
     fluidRow(
-      column(width = 6,
-             h3("Plot settings"),
-             radioButtons(
-               inputId = ns("ggplot_theme"),
-               label = "Plot aesthetic",
-               choices = c("Minimal", "Simple", "Classic", "Gray")
-             ),
-             br(),
-             sliderInput(
-               inputId = ns("ggplot_text_size"),
-               label = "Plot font size",
-               min = 8,
-               max = 20,
-               value = 14,
-               step = 1
-             ),
-             br(),
-             sliderInput(
-               inputId = ns("ggplot_point_size"),
-               label = "Plot point size",
-               min = 1,
-               max = 10,
-               value = 3,
-               step = 1
-             ),
-             br(),
-             numericInput(
-               inputId = ns('ggplot_height'),
-               label = 'Plot download height',
-               min = 1,
-               max = 15,
-               value = 8,
-               step = 1
-             ),
-             numericInput(
-               inputId = ns('ggplot_width'),
-               label = 'Plot download width',
-               min = 1,
-               max = 15,
-               value = 8,
-               step = 1
-             )
-             # br(),
-             # radioButtons(
-             #   inputId = "ggplot_color",
-             #   label = "Plot colors",
-             #   choices = c("Color blind friendly", "Standard", "Grayscale")
-             # ),
+      bs4Dash::box(
+        width = 6,
+        collapsible = FALSE,
+        title = 'Plot settings',
+         radioButtons(
+           inputId = ns("ggplot_theme"),
+           label = "Plot aesthetic",
+           choices = c("Minimal", "Simple", "Classic", "Gray")
+         ),
+         br(),
+         sliderInput(
+           inputId = ns("ggplot_text_size"),
+           label = "Plot font size",
+           min = 8,
+           max = 20,
+           value = 14,
+           step = 1
+         ),
+         br(),
+         sliderInput(
+           inputId = ns("ggplot_point_size"),
+           label = "Plot point size",
+           min = 1,
+           max = 10,
+           value = 3,
+           step = 1
+         ),
+         br(),
+         numericInput(
+           inputId = ns('ggplot_height'),
+           label = 'Plot download height',
+           min = 1,
+           max = 15,
+           value = 8,
+           step = 1
+         ),
+         numericInput(
+           inputId = ns('ggplot_width'),
+           label = 'Plot download width',
+           min = 1,
+           max = 15,
+           value = 8,
+           step = 1
+         )
+         # br(),
+         # radioButtons(
+         #   inputId = "ggplot_color",
+         #   label = "Plot colors",
+         #   choices = c("Color blind friendly", "Standard", "Grayscale")
+         # ),
       ),
-      column(width = 6,
-             br(),
-             plotOutput(outputId = ns('ggplot_preview'),
-                        height = '400px')
+      bs4Dash::box(
+        width = 6,
+        collapsible = FALSE,
+        title = 'Example plot',
+        plotOutput(outputId = ns('ggplot_preview'),
+                   height = '400px')
       )
     )
 

@@ -5,12 +5,12 @@ body {
   font-weight: 300;
 }
 
-#sideBarMenu {
+#sideBarContainer {
   background: #302F42;
 
 }
 
-#sideBarMenu .nav-link {
+#sideBarContainer .nav-link {
   color: #fff !important;;
 }
 .nav-link.active {
@@ -78,4 +78,7 @@ footer > a:hover{
 }
 #help-slideover {
   padding: 1rem;
+  -webkit-box-shadow: -20px 0px 50px rgba(74, 74, 74, 0.5);
+  -moz-box-shadow: -20px 0px 50px rgba(74, 74, 74, 0.5);
+  box-shadow: -20px 0px 50px rgba(74, 74, 74, 0.5);
 }

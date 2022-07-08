@@ -10,6 +10,7 @@
 mod_learn_ui <- function(id){
   ns <- NS(id)
   tagList(
+    shinyjs::useShinyjs(),
 
     div(id = 'conceptsGrid1',
         class = 'conceptsGrid',
@@ -18,8 +19,11 @@ mod_learn_ui <- function(id){
           bs4Dash::box(
             width = 4,
             tagList(
-              img(src = 'www/img/thumbnails/estimands-cloud.png',
-                  width = '90%'),
+              shiny::actionLink(
+                inputId = ns('learn_estimands_img'),
+                img(src = 'www/img/thumbnails/estimands-cloud.png',
+                    width = '90%'),
+              ),
               h3('Causal estimands'),
               "BART allows for robust estimation of a wide variety of estimands. Learn how they differ and how to choose one."
             ),
@@ -28,8 +32,11 @@ mod_learn_ui <- function(id){
           bs4Dash::box(
             width = 4,
             tagList(
-              img(src = 'www/img/thumbnails/post-treatment.png',
-                  width = '90%'),
+              shiny::actionLink(
+                inputId = ns('learn_post_treatment_img'),
+                img(src = 'www/img/thumbnails/post-treatment.png',
+                    width = '90%'),
+              ),
               h3('Post treatment variables'),
               "Post-treatment variables are a class of variables that can be affected by the treatment and should be removed prior to modeling. Learn how to identify them to make sure you are not biasing your treatment effect estimates."
             ),
@@ -96,7 +103,6 @@ mod_learn_ui <- function(id){
 mod_learn_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-
   })
 }
 

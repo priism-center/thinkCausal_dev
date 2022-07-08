@@ -1,6 +1,6 @@
-### Coming soon...
+### Help
 
-This help section is still under development
+This is still under development
 
 <br><br><br>
 
@@ -131,7 +131,7 @@ Etiam erat velit scelerisque in dictum non. Tristique nulla aliquet enim tortor 
 Trace plot shows the estimated effect over each iteration of the model fit. This is used to visually assess the convergence of Markov chain Monte Carlo (MCMC) sampling. Chains should be well mixed such that no single color is notably separate from others like the example below.
 
 <p align="center">
-<img src="img/example_trace.png" width=90%>
+<img src="www/img/example_trace.png" width=90%>
 </p>
 
 <br>
@@ -140,7 +140,7 @@ Trace plot shows the estimated effect over each iteration of the model fit. This
 Id eu nisl nunc mi ipsum. Ut aliquam purus sit amet luctus venenatis lectus. Sed augue lacus viverra vitae. Mattis vulputate enim nulla aliquet porttitor. Risus quis varius quam quisque. Arcu odio ut sem nulla. Nunc sed id semper risus in hendrerit gravid
 
 <p align="center">
-<img src="img/example_common_support.png" width=90%>
+<img src="www/img/example_common_support.png" width=90%>
 </p>
 
 <br>

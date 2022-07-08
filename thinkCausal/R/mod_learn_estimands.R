@@ -1,4 +1,4 @@
-#' learning_estimands UI Function
+#' learn_estimands UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -7,17 +7,17 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
-mod_learning_estimands_ui <- function(id){
+mod_learn_estimands_ui <- function(id){
   ns <- NS(id)
   tagList(
  
   )
 }
     
-#' learning_estimands Server Functions
+#' learn_estimands Server Functions
 #'
 #' @noRd 
-mod_learning_estimands_server <- function(id){
+mod_learn_estimands_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
  
@@ -25,7 +25,7 @@ mod_learning_estimands_server <- function(id){
 }
     
 ## To be copied in the UI
-# mod_learning_estimands_ui("learning_estimands_1")
+# mod_learn_estimands_ui("learn_estimands_1")
     
 ## To be copied in the server
-# mod_learning_estimands_server("learning_estimands_1")
+# mod_learn_estimands_server("learn_estimands_1")

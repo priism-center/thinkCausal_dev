@@ -34,8 +34,10 @@ golem::add_module(name = "analysis_design", with_test = TRUE)
 golem::add_module(name = "analysis_upload_data", with_test = TRUE)
 
 ## learning modules
-golem::add_module(name = "learning_estimands", with_test = FALSE)
-golem::add_css_file("learning-estimands")
+golem::add_module(name = "learn_estimands", with_test = FALSE)
+golem::add_css_file("learn-estimands")
+golem::add_module(name = "learn_post_treatment", with_test = FALSE)
+golem::add_css_file("learn-post-treatment")
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
@@ -49,6 +51,7 @@ golem::add_fct('validate', with_test = FALSE)
 golem::add_js_file("ui")
 # golem::add_js_handler("handlers")
 golem::add_css_file("thinkCausal")
+golem::add_css_file('info-icon')
 # golem::add_sass_file("custom")
 
 ## Add internal datasets ----
