@@ -12,91 +12,92 @@ mod_learn_ui <- function(id){
   tagList(
     shinyjs::useShinyjs(),
 
-    div(id = 'conceptsGrid1',
-        class = 'conceptsGrid',
-
-        fluidRow(
-          bs4Dash::box(
-            width = 4,
-            tagList(
-              shiny::actionLink(
-                inputId = ns('learn_estimands_img'),
-                img(src = 'www/img/thumbnails/estimands-cloud.png',
-                    width = '90%'),
-              ),
-              h3('Causal estimands'),
-              "BART allows for robust estimation of a wide variety of estimands. Learn how they differ and how to choose one."
+    div(
+      class = 'learn-grid',
+      fluidRow(
+        bs4Dash::box(
+          width = 4,
+          collapsible = FALSE,
+          title = 'Causal estimands',
+          tagList(
+            shiny::actionLink(
+              inputId = ns('learn_estimands_img'),
+              img(src = 'www/img/thumbnails/estimands-cloud.png',
+                  width = '100%'),
             ),
-            collapsible = FALSE
-          ),
-          bs4Dash::box(
-            width = 4,
-            tagList(
-              shiny::actionLink(
-                inputId = ns('learn_post_treatment_img'),
-                img(src = 'www/img/thumbnails/post-treatment.png',
-                    width = '90%'),
-              ),
-              h3('Post treatment variables'),
-              "Post-treatment variables are a class of variables that can be affected by the treatment and should be removed prior to modeling. Learn how to identify them to make sure you are not biasing your treatment effect estimates."
-            ),
-            collapsible = FALSE
-          ),
-          bs4Dash::box(
-            width = 4,
-            tagList(
-              img(src = 'www/img/thumbnails/potential-outcomes.png',
-                  width = '90%'),
-              h3('Potential outcomes'),
-              "The potential outcomes framework is a methodology to estimate causal effects. Learn the theory foundations here."
-            ),
-            collapsible = FALSE
+            "BART allows for robust estimation of a wide variety of estimands. Learn how they differ and how to choose one."
           )
         ),
-
-        fluidRow(
-          bs4Dash::box(
-            width = 4,
-            tagList(
-              shiny::actionLink(
-                inputId = ns('learn_randomization_img'),
-                img(src = 'www/img/thumbnails/randomization.png',
-                    width = '90%'),
-              ),
-              h3('Post treatment variables'),
-              "Randomization balances groups on both observed and unobserved characteristics. Learn how this mechanism is exploited for causal inference."
+        bs4Dash::box(
+          width = 4,
+          collapsible = FALSE,
+          title = 'Post treatment variables',
+          tagList(
+            shiny::actionLink(
+              inputId = ns('learn_post_treatment_img'),
+              img(src = 'www/img/thumbnails/post-treatment.png',
+                  width = '100%'),
             ),
-            collapsible = FALSE
-          ),
-          bs4Dash::box(
-            width = 4,
-            tagList(
-              shiny::actionLink(
-                inputId = ns('learn_balance_img'),
-                img(src = 'www/img/thumbnails/balance.png',
-                    width = '90%'),
-              ),
-              h3('Bias and efficiency'),
-              "Coming soon"
+            "Post-treatment variables are a class of variables that can be affected by the treatment and should be removed prior to modeling. Learn how to identify them to make sure you are not biasing your treatment effect estimates."
+          )
+        ),
+        bs4Dash::box(
+          width = 4,
+          collapsible = FALSE,
+          title = 'Potential outcomes',
+          tagList(
+            shiny::actionLink(
+              inputId = ns('learn_potential_outcomes_img'),
+              img(src = 'www/img/thumbnails/potential-outcomes.png',
+                  width = '100%'),
             ),
-            collapsible = FALSE
-          ),
-          bs4Dash::box(
-            width = 4,
-            tagList(
-              shiny::actionLink(
-                inputId = ns('learn_bart_img'),
-                img(src = 'www/img/thumbnails/decision_tree.png',
-                    width = '90%'),
-              ),
-              h3('Bayesian Additive Regression Trees'),
-              "Coming soon"
-            ),
-            collapsible = FALSE
+            "The potential outcomes framework is a methodology to estimate causal effects. Learn the theory foundations here."
           )
         )
-    )
+      ),
 
+      fluidRow(
+        bs4Dash::box(
+          width = 4,
+          collapsible = FALSE,
+          title = 'Post treatment variables',
+          tagList(
+            shiny::actionLink(
+              inputId = ns('learn_randomization_img'),
+              img(src = 'www/img/thumbnails/randomization.png',
+                  width = '100%'),
+            ),
+            "Randomization balances groups on both observed and unobserved characteristics. Learn how this mechanism is exploited for causal inference."
+          )
+        ),
+        bs4Dash::box(
+          width = 4,
+          collapsible = FALSE,
+          title = 'Bias and efficiency',
+          tagList(
+            shiny::actionLink(
+              inputId = ns('learn_balance_img'),
+              img(src = 'www/img/thumbnails/balance.png',
+                  width = '100%'),
+            ),
+            "Coming soon"
+          )
+        ),
+        bs4Dash::box(
+          width = 4,
+          collapsible = FALSE,
+          title = 'Bayesian Additive Regression Trees',
+          tagList(
+            shiny::actionLink(
+              inputId = ns('learn_bart_img'),
+              img(src = 'www/img/thumbnails/decision_tree.png',
+                  width = '100%'),
+            ),
+            "Coming soon"
+          )
+        )
+      )
+    )
   )
 }
 

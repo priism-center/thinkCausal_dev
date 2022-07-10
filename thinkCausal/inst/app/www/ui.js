@@ -3,5 +3,5 @@ $( document ).ready(function() {
   $(".navbar-nav > .custom-switch").remove()
 
   // replace slideover icon
-  $("#controlbar-toggle > i").removeClass('fa-th').addClass('fa-info')
+  $("#controlbar-toggle > i").removeClass('fa-th').addClass('fa-question')
 });

@@ -22,6 +22,7 @@ usethis::use_package('dplyr')
 ## Add modules ----
 ## Create a module infrastructure in R/
 golem::add_module(name = "home", with_test = FALSE) # Name of the module
+golem::add_css_file('home')
 golem::add_module(name = "learn", with_test = FALSE)
 golem::add_module(name = "reproduce", with_test = FALSE)
 golem::add_module(name = "settings_options", with_test = FALSE)
@@ -42,6 +43,7 @@ golem::add_module(name = "analysis_results", with_test = TRUE)
 golem::add_module(name = "analysis_subgroup", with_test = TRUE)
 
 ## learning modules
+golem::add_css_file('learn')
 golem::add_module(name = "learn_estimands", with_test = FALSE)
 golem::add_css_file("learn-estimands")
 golem::add_module(name = "learn_post_treatment", with_test = FALSE)
