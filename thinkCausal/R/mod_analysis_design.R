@@ -145,7 +145,6 @@ mod_analysis_design_server <- function(id, store){
       store <- remove_downstream_data(store, page = 'design')
 
       # update page
-      # updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$data)
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_upload')
     })
 
@@ -161,9 +160,3 @@ mod_analysis_design_server <- function(id, store){
     return(store)
   })
 }
-
-## To be copied in the UI
-# mod_analysis_design_ui("analysis_design_1")
-
-## To be copied in the server
-# mod_analysis_design_server("analysis_design_1")
