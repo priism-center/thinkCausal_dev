@@ -10,6 +10,7 @@ app_server <- function(input, output, session) {
 
   # initialize list to store variables
   store <- reactiveValues(
+    session_global = session,
     log = list(as.character(Sys.time())),
     module_ids = module_ids,
     page_history = NULL,
@@ -20,10 +21,13 @@ app_server <- function(input, output, session) {
   # modules -----------------------------------------------------------------
 
   # other
+  mod_home_server('home', store)
   store <- mod_settings_options_server('settings_options', store)
+  mod_settings_reference_server('settings_reference')
+  mod_settings_about_server('settings_about')
 
   # learn
-  mod_learn_server('learn')
+  mod_learn_server(id = 'learn', store = store)
   mod_learn_estimands_server('learn_estimands')
   mod_learn_post_treatment_server('learn_post_treatment')
 
@@ -38,27 +42,5 @@ app_server <- function(input, output, session) {
   store <- mod_analysis_diagnostics_server("analysis_diagnostics", store)
   store <- mod_analysis_results_server("analysis_results", store)
   store <- mod_analysis_subgroup_server("analysis_subgroup", store)
-
-
-  # links -------------------------------------------------------------------
-
-  # example of how to change tabs from the server
-  # bs4Dash::updateTabItems(session, inputId = 'sidebar', selected = 'learn_estimands')
-
-  # links from home to learn home page and analysis
-  observeEvent(input[[NS('home')('learn_img')]], {
-    bs4Dash::updateTabItems(session, inputId = 'sidebar', selected = 'learn')
-  })
-  observeEvent(input[[NS('home')('analysis_img')]], {
-    bs4Dash::updateTabItems(session, inputId = 'sidebar', selected = 'describe')
-  })
-
-  # links from learn home page to each learn article
-  selectors <- c('learn_estimands', 'learn_post_treatment')
-  purrr::map(selectors, function(sel){
-    observeEvent(input[[NS('learn')(glue::glue('{sel}_img'))]], {
-      bs4Dash::updateTabItems(session, inputId = 'sidebar', selected = sel)
-    })
-  })
 
 }

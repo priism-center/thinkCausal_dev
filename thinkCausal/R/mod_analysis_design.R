@@ -122,7 +122,6 @@ mod_analysis_design_server <- function(id, store){
         req_values <- reactiveValuesToList(input)[req_inputs]
 
         # trigger animation if any inputs is unsure or blank
-        # TODO: this no longer shakes but does shake from the JS console
         inputs_to_animate <- req_inputs[which(req_values == 'Unsure' | req_values == '')]
         inputs_to_animate_selectors <- paste0("#", ns(inputs_to_animate), " + div", collapse = ', ')
         shinyjs::runjs(glue::glue('$("<<inputs_to_animate_selectors>>").effect("shake", {times: 4, distance: 3})',
@@ -147,6 +146,7 @@ mod_analysis_design_server <- function(id, store){
 
       # update page
       # updateNavbarPage(global_session, inputId = "nav", selected = store$module_ids$analysis$data)
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_upload')
     })
 
     # # open slide over if answer is unsure

@@ -52,44 +52,47 @@ mod_learn_ui <- function(id){
             ),
             collapsible = FALSE
           )
-          # create_learning_card(
-          #   page_id = 'concepts_link_causal_estimands',
-          #   thumbnail_url = 'estimands-cloud.png',
-          #   title = "Causal estimands",
-          #   description = "BART allows for robust estimation of a wide variety of estimands. Learn how they differ and how to choose one."
-          # ),
-          # create_learning_card(
-          #   page_id = 'concepts_link_post_treatment_variables',
-          #   thumbnail_url = 'post-treatment.png',
-          #   title = "Post-treatment variables",
-          #   description = "Post-treatment variables are a class of variables that can be affected by the treatment and should be removed prior to modeling. Learn how to identify them to make sure you are not biasing your treatment effect estimates."
-          # ),
-          # create_learning_card(
-          #   page_id = 'concepts_link_potential_outcomes',
-          #   thumbnail_url = 'potential-outcomes.png',
-          #   title = "Potential outcomes",
-          #   description = "The potential outcomes framework is a methodology to estimate causal effects. Learn the theory foundations here."
-          # )
         ),
 
         fluidRow(
-          create_learning_card(
-            page_id = 'concepts_link_randomization',
-            thumbnail_url = 'randomization.png',
-            title = "Randomization",
-            description = "Randomization balances groups on both observed and unobserved characteristics. Learn how this mechanism is exploited for causal inference."
+          bs4Dash::box(
+            width = 4,
+            tagList(
+              shiny::actionLink(
+                inputId = ns('learn_randomization_img'),
+                img(src = 'www/img/thumbnails/randomization.png',
+                    width = '90%'),
+              ),
+              h3('Post treatment variables'),
+              "Randomization balances groups on both observed and unobserved characteristics. Learn how this mechanism is exploited for causal inference."
+            ),
+            collapsible = FALSE
           ),
-          create_learning_card(
-            page_id = 'concepts_link_bias_and_efficiency',
-            thumbnail_url = 'balance.png',
-            title = "Bias and efficiency",
-            description = "Coming soon"
+          bs4Dash::box(
+            width = 4,
+            tagList(
+              shiny::actionLink(
+                inputId = ns('learn_balance_img'),
+                img(src = 'www/img/thumbnails/balance.png',
+                    width = '90%'),
+              ),
+              h3('Bias and efficiency'),
+              "Coming soon"
+            ),
+            collapsible = FALSE
           ),
-          create_learning_card(
-            page_id = 'concepts_link_lorem_ipsum',
-            thumbnail_url = 'decision_tree.png',
-            title = "Bayesian Additive Regression Trees",
-            description = "Coming soon"
+          bs4Dash::box(
+            width = 4,
+            tagList(
+              shiny::actionLink(
+                inputId = ns('learn_bart_img'),
+                img(src = 'www/img/thumbnails/decision_tree.png',
+                    width = '90%'),
+              ),
+              h3('Bayesian Additive Regression Trees'),
+              "Coming soon"
+            ),
+            collapsible = FALSE
           )
         )
     )
@@ -100,9 +103,21 @@ mod_learn_ui <- function(id){
 #' learn Server Functions
 #'
 #' @noRd
-mod_learn_server <- function(id){
+mod_learn_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    # TODO: this prevents a bug in the observeEvent that somehow overrides store with ns()
+    store
+
+    # links from learn home page to each learn article
+    selectors <- c('learn_estimands', 'learn_post_treatment')
+    purrr::map(selectors, function(sel){
+      observeEvent(input[[glue::glue('{sel}_img')]], {
+        bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = sel)
+      })
+    })
+
   })
 }
 
