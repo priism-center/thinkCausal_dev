@@ -35,6 +35,7 @@ app_ui <- function(request) {
             mod_home_ui("home")
           ),
 
+          # learning articles
           bs4Dash::tabItem(
             tabName = 'learn',
             mod_learn_ui("learn")
@@ -48,14 +49,48 @@ app_ui <- function(request) {
             mod_learn_post_treatment_ui("learn_post_treatment")
           ),
 
+          # analysis pages
           bs4Dash::tabItem(
-            tabName = 'describe_data',
+            tabName = 'analysis_describe',
             mod_analysis_design_ui("analysis_design")
           ),
           bs4Dash::tabItem(
-            tabName = 'upload_data',
-            mod_analysis_upload_data_ui("analysis_upload_data")
+            tabName = 'analysis_upload',
+            mod_analysis_upload_ui("analysis_upload")
           ),
+          bs4Dash::tabItem(
+            tabName = 'analysis_verify',
+            mod_analysis_verify_ui("analysis_verify")
+          ),
+          bs4Dash::tabItem(
+            tabName = 'analysis_visualize',
+            mod_analysis_visualize_ui("analysis_visualize")
+          ),
+          bs4Dash::tabItem(
+            tabName = 'analysis_balance',
+            mod_analysis_balance_ui("analysis_balance")
+          ),
+          bs4Dash::tabItem(
+            tabName = 'analysis_overlap',
+            mod_analysis_overlap_ui("analysis_overlap")
+          ),
+          bs4Dash::tabItem(
+            tabName = 'analysis_model',
+            mod_analysis_model_ui("analysis_model")
+          ),
+          bs4Dash::tabItem(
+            tabName = 'analysis_diagnostics',
+            mod_analysis_diagnostics_ui("analysis_diagnostics")
+          ),
+          bs4Dash::tabItem(
+            tabName = 'analysis_results',
+            mod_analysis_results_ui("analysis_results")
+          ),
+          bs4Dash::tabItem(
+            tabName = 'analysis_subgroup',
+            mod_analysis_subgroup_ui("analysis_subgroup")
+          ),
+
 
           bs4Dash::tabItem(
             tabName = 'reproduce',
@@ -109,57 +144,58 @@ app_ui <- function(request) {
             )
           ),
 
+          # analysis pages
           bs4Dash::menuItem(
             text = 'Analyze',
             icon = icon("chart-line"),
             bs4Dash::menuSubItem(
               text = 'Describe data',
-              tabName = 'describe_data',
+              tabName = 'analysis_describe',
               icon = icon("table")
             ),
             bs4Dash::menuSubItem(
               text = 'Upload data',
-              tabName = 'upload_data',
+              tabName = 'analysis_upload',
               icon = icon("upload")
             ),
             bs4Dash::menuSubItem(
               text = 'Verify data types',
-              tabName = 'verify_data',
+              tabName = 'analysis_verify',
               icon = icon("check")
             ),
             bs4Dash::menuSubItem(
               text = 'Visualize data',
-              tabName = 'visualize_data',
+              tabName = 'analysis_visualize',
               icon = icon('chart-bar')
             ),
             bs4Dash::menuSubItem(
               text = 'Check balance',
-              tabName = 'check_balance',
+              tabName = 'analysis_balance',
               icon = icon('chart-bar')
             ),
             bs4Dash::menuSubItem(
               text = 'Check overlap',
-              tabName = 'check_overlap',
+              tabName = 'analysis_overlap',
               icon = icon('chart-bar')
             ),
             bs4Dash::menuSubItem(
               text = 'Fit model',
-              tabName = 'fit_model',
+              tabName = 'analysis_model',
               icon = icon('code')
             ),
             bs4Dash::menuSubItem(
               text = 'Check diagnostics',
-              tabName = 'check_diagnostics',
+              tabName = 'analysis_diagnostics',
               icon = icon('stethoscope')
             ),
             bs4Dash::menuSubItem(
               text = 'View results',
-              tabName = 'results',
+              tabName = 'analysis_results',
               icon = icon('chart-area')
             ),
             bs4Dash::menuSubItem(
               text = 'View subgroup results',
-              tabName = 'subgroup_results',
+              tabName = 'analysis_subgroup',
               icon = icon('code-branch')
             )
           ),

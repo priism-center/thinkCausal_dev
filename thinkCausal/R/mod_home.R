@@ -25,8 +25,11 @@ mod_home_ui <- function(id){
         bs4Dash::box(
           width = 12,
           tagList(
-            img(src = 'www/img/thumbnails/randomization.png',
-                width = '100%'),
+            shiny::actionLink(
+              inputId = ns('learn_img'),
+              img(src = 'www/img/thumbnails/randomization.png',
+                  width = '90%'),
+            ),
             h3('Learn'),
             "Interactively learn the foundational concepts of casual inference."
           ),
@@ -38,8 +41,11 @@ mod_home_ui <- function(id){
         bs4Dash::box(
           width = 12,
           tagList(
-            img(src = 'www/img/thumbnails/assumptions.png',
-                width = '100%'),
+            shiny::actionLink(
+              inputId = ns('analysis_img'),
+              img(src = 'www/img/thumbnails/assumptions.png',
+                  width = '90%'),
+            ),
             h3('Analyze'),
             "Utilize modern causal inference methods. Easily implement Bayesian Additive Regression Trees."
           ),

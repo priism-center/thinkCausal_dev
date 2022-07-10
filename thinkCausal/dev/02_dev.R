@@ -31,7 +31,15 @@ golem::add_module(name = "help", with_test = FALSE)
 
 # analysis modules
 golem::add_module(name = "analysis_design", with_test = TRUE)
-golem::add_module(name = "analysis_upload_data", with_test = TRUE)
+golem::add_module(name = "analysis_upload", with_test = TRUE)
+golem::add_module(name = "analysis_verify", with_test = TRUE)
+golem::add_module(name = "analysis_visualize", with_test = TRUE)
+golem::add_module(name = "analysis_balance", with_test = TRUE)
+golem::add_module(name = "analysis_overlap", with_test = TRUE)
+golem::add_module(name = "analysis_model", with_test = TRUE)
+golem::add_module(name = "analysis_diagnostics", with_test = TRUE)
+golem::add_module(name = "analysis_results", with_test = TRUE)
+golem::add_module(name = "analysis_subgroup", with_test = TRUE)
 
 ## learning modules
 golem::add_module(name = "learn_estimands", with_test = FALSE)
