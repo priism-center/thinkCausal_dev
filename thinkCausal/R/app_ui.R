@@ -27,7 +27,20 @@ app_ui <- function(request) {
       ),
 
       body = bs4Dash::dashboardBody(
-        tags$div(class = 'corner-ribbon', 'BETA'),
+
+        # add beta ribbon
+        tags$div(
+          class = 'cornerRibbon',
+          'BETA',
+          tags$div(
+            tags$a(
+              href = 'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
+              target = "_blank",
+              'Have feedback?'
+            )
+          )
+        ),
+
         bs4Dash::tabItems(
 
           bs4Dash::tabItem(
@@ -270,6 +283,9 @@ golem_add_external_resources <- function() {
     tags$link(rel = "stylesheet", type = "text/css", href = "//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic"),
 
     # load jquery UI
-    tags$script(src = c(href = "//code.jquery.com/ui/1.12.1/jquery-ui.js"))
+    tags$script(src = c(href = "//code.jquery.com/ui/1.12.1/jquery-ui.js")),
+
+    # make all links open in a new tab
+    tags$base(target = "_blank")
   )
 }

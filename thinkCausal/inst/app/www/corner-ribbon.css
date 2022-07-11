@@ -1,0 +1,39 @@
+/* controls the red ribbon in the bottom left corner */
+.cornerRibbon{
+  width: 275px;
+  background: #9c342d;
+  position: fixed;
+  bottom: 20px;
+  left: -80px;
+  text-align: center;
+  line-height: 30px;
+  letter-spacing: 3px;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #f0f0f0;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+  -webkit-box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  z-index: 9999;
+  padding-top: 0.25em;
+}
+
+.cornerRibbon > div {
+  position: relative;
+  font-size: 0.5em;
+  letter-spacing: normal;
+  line-height: normal;
+  padding-bottom: 0.7em;
+}
+
+.cornerRibbon a {
+  color: #fff;
+  font-weight: 300;
+}
+
+.cornerRibbon a:hover {
+  text-decoration: underline;
+}

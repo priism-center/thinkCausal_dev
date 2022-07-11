@@ -5,6 +5,10 @@ body {
   font-weight: 300;
 }
 
+a {
+  color: #84119c;
+}
+
 #sideBarContainer {
   background: #302F42;
 
@@ -25,6 +29,34 @@ body {
   filter: brightness(0.9)
 }
 
+.btn {
+  background-color: rgba(48, 47, 66, 0) !important;
+  border-radius: 3;
+  box-shadow: none;
+  border: 1px solid gray;
+  color: rgba(48, 47, 66, 1) !important;
+  font-weight: 300;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
+  display: inline-block;
+  padding: 10px;
+  width: 100%;
+  margin: 0.4em 0 0.4em 0;
+}
+.btn.nav-path {
+  background-color: #302f42 !important;
+  color: white !important;
+  border: 0px
+}
+.btn.nav-path:hover {
+  background-color: #424159 !important;
+}
+.btn.nav-path:active {
+  background-color: #54536e !important;
+}
+
 footer {
   padding: 0.6em !important;
 }
@@ -34,28 +66,6 @@ footer > a{
 footer > a:hover{
   filter: brightness(70%);
   color: #a1a1a1 !important;
-}
-
-/* controls the red ribbon in the bottom left corner */
-.corner-ribbon{
-  width: 200px;
-  background: #b81b11;
-  position: fixed;
-  bottom: 25px;
-  left: -50px;
-  text-align: center;
-  line-height: 50px;
-  letter-spacing: 3px;
-  font-size: 1.5em;
-  font-weight: 700;
-  color: #f0f0f0;
-  -webkit-transform: rotate(45deg);
-  -moz-transform: rotate(45deg);
-  transform: rotate(45deg);
-  -webkit-box-shadow: 0 0 15px rgba(0,0,0,0.5);
-  -moz-box-shadow: 0 0 15px rgba(0,0,0,0.5);
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
-  z-index: 9999;
 }
 
 .tab-pane > h1 {

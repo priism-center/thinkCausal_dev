@@ -1,0 +1,10 @@
+ .home-grid img {
+  margin: 0em 0 1em 0;
+  object-fit: cover;
+  height: 200px;
+  transition: transform 0.07s;
+}
+
+.home-grid img:hover {
+  transform: scale(1.03);
+}

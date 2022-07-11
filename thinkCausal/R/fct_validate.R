@@ -29,7 +29,7 @@ validate_model_fit <- function(store){
 validate_design <- function(store){
   # stop here if design hasn't been specified
   validate(need(store$analysis_design_design %in% c('Observational', 'Randomized treatment', 'Block randomized treatment'),
-                "Study design must first be specified on the 'Analyze-Design' page"))
+                "Study design must first be specified on the 'Analyze-Describe' page"))
 }
 
 validate_prespecifed_moderators <- function(store){

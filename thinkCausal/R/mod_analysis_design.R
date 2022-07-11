@@ -62,7 +62,7 @@ mod_analysis_design_ui <- function(id){
         collapsible = FALSE,
         title = '3. Save design and continue',
         actionButton(inputId = ns("analysis_design_button_next"),
-                     class = "nav-btn-focus",
+                     class = "nav-path",
                      label = "Save design"),
         br(), br()
         # create_link_to_help('Study design')

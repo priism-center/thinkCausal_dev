@@ -33,6 +33,7 @@ golem::add_module(name = "help", with_test = FALSE)
 # analysis modules
 golem::add_module(name = "analysis_design", with_test = TRUE)
 golem::add_module(name = "analysis_upload", with_test = TRUE)
+golem::add_css_file('analysis_upload')
 golem::add_module(name = "analysis_verify", with_test = TRUE)
 golem::add_module(name = "analysis_visualize", with_test = TRUE)
 golem::add_module(name = "analysis_balance", with_test = TRUE)
@@ -55,6 +56,8 @@ golem::add_fct("ui", with_test = FALSE)
 golem::add_utils('global', with_test = FALSE)
 golem::add_fct('plot', with_test = FALSE)
 golem::add_fct('validate', with_test = FALSE)
+golem::add_fct('clean', with_test = TRUE)
+golem::add_fct('create', with_test = TRUE)
 
 ## External resources
 ## Creates .js and .css files at inst/app/www
@@ -62,6 +65,9 @@ golem::add_js_file("ui")
 # golem::add_js_handler("handlers")
 golem::add_css_file("thinkCausal")
 golem::add_css_file('info-icon')
+golem::add_css_file('slider')
+golem::add_css_file('corner-ribbon')
+golem::add_css_file('sortable')
 # golem::add_sass_file("custom")
 
 ## Add internal datasets ----

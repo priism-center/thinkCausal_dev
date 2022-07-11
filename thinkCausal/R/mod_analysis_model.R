@@ -49,7 +49,7 @@ mod_analysis_model_ui <- function(id){
         collapsible = FALSE,
         title = '3. Fit model',
         actionButton(inputId = ns("analysis_model_button_next"),
-                     class = "nav-btn-focus",
+                     class = "nav-path",
                      label = "Fit model"),
         br(), br(),
         # create_link_to_help('Model'),
