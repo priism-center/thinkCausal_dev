@@ -49,8 +49,6 @@ mod_analysis_upload_ui <- function(id){
         ),
         br(),
         # create_link_to_help('Data'),
-        br(),
-        br(),
         div(
           class = 'backNextContainer',
           actionButton(
