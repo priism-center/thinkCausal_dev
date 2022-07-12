@@ -3,7 +3,7 @@ $( document ).ready(function() {
    // remove dark mode switch
   $(".navbar-nav > .custom-switch").remove()
 
-  // remove attribute that forces link to open in new tab
+  // remove attribute from fullscreen toggle that forces link to open in new tab
   $(".navbar-nav .nav-link").removeAttr('href')
 
   // replace slideover icon

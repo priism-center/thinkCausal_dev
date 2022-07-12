@@ -21,28 +21,28 @@ app_server <- function(input, output, session) {
   # modules -----------------------------------------------------------------
 
   # other
-  mod_home_server('home', store)
-  mod_reproduce_server('reproduce', store)
-  store <- mod_settings_options_server('settings_options', store)
-  mod_settings_reference_server('settings_reference')
-  mod_settings_about_server('settings_about')
+  mod_home_server(module_ids$home, store)
+  mod_reproduce_server(module_ids$reproduce, store)
+  store <- mod_settings_options_server(module_ids$settings$options, store)
+  mod_settings_reference_server(module_ids$settings$reference)
+  mod_settings_about_server(module_ids$settings$about)
 
   # learn
-  mod_learn_server(id = 'learn', store)
-  mod_learn_estimands_server('learn_estimands')
-  mod_learn_post_treatment_server('learn_post_treatment')
+  mod_learn_server(module_ids$learn$home, store)
+  mod_learn_estimands_server(module_ids$learn$estimands)
+  mod_learn_post_treatment_server(module_ids$learn$post_treatment)
 
   # analysis
-  store <- mod_analysis_design_server('analysis_design', store)
-  store <- mod_analysis_upload_server("analysis_upload", store)
-  store <- mod_analysis_verify_server("analysis_verify", store)
-  store <- mod_analysis_visualize_server("analysis_visualize", store)
-  store <- mod_analysis_balance_server("analysis_balance", store)
-  store <- mod_analysis_overlap_server("analysis_overlap", store)
-  store <- mod_analysis_model_server("analysis_model", store)
-  store <- mod_analysis_diagnostics_server("analysis_diagnostics", store)
-  store <- mod_analysis_results_server("analysis_results", store)
-  store <- mod_analysis_subgroup_server("analysis_subgroup", store)
+  store <- mod_analysis_design_server(module_ids$analysis$design, store)
+  store <- mod_analysis_upload_server(module_ids$analysis$upload, store)
+  store <- mod_analysis_verify_server(module_ids$analysis$verify, store)
+  store <- mod_analysis_visualize_server(module_ids$analysis$visualize, store)
+  store <- mod_analysis_balance_server(module_ids$analysis$balance, store)
+  store <- mod_analysis_overlap_server(module_ids$analysis$overlap, store)
+  store <- mod_analysis_model_server(module_ids$analysis$model, store)
+  store <- mod_analysis_diagnostics_server(module_ids$analysis$diagnostics, store)
+  store <- mod_analysis_results_server(module_ids$analysis$results, store)
+  store <- mod_analysis_subgroup_server(module_ids$analysis$subgroup, store)
 
 
   # toggle side bar help menu

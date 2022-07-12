@@ -35,7 +35,7 @@ mod_analysis_model_ui <- function(id){
         title = '2. Specify secondary analyses',
         selectInput(ns('analysis_model_moderator_yes_no'),
                     label = 'Would you like to pre-specify subgroup analyses?',
-                    choices = c("No", "Yes",'Unsure')),
+                    choices = c("No", "Yes", 'Unsure')),
         conditionalPanel(
           condition = "input.analysis_model_moderator_yes_no == 'Yes'",
           ns = ns,
