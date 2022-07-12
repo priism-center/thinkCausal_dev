@@ -14,7 +14,8 @@ app_server <- function(input, output, session) {
     log = list(as.character(Sys.time())),
     # module_ids = module_ids,
     page_history = NULL,
-    js = NULL
+    js = NULL,
+    options = list(theme_custom = theme_minimal_no_transparency())
   )
 
 

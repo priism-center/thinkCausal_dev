@@ -52,9 +52,7 @@ mod_analysis_model_ui <- function(id){
                      class = "nav-path",
                      label = "Fit model"),
         actionButton(inputId = ns('analysis_model_help'),
-                     label = 'Help me'),
-        actionButton(inputId = ns("analysis_model_button_back"),
-                     label = "Back")
+                     label = 'Help me')
         )
       )
     )
@@ -72,12 +70,9 @@ mod_analysis_model_server <- function(id, store){
       open_help_sidebar(store, 'Model')
     })
 
+
+
     return(store)
   })
 }
 
-## To be copied in the UI
-# mod_analysis_model_ui("analysis_model_1")
-
-## To be copied in the server
-# mod_analysis_model_server("analysis_model_1")

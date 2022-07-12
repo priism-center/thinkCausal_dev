@@ -134,6 +134,7 @@ clean_detect_logical <- function(x){
 #'
 #' @return a vector of class factor
 #' @export
+#' @noRd
 #'
 #' @examples
 #' x <- data.frame(
@@ -186,6 +187,7 @@ clean_detect_integers <- function(x, n_levels_threshold = 15){
 #'
 #' @return a list denoting which column names are Z, Y, X, and ID
 #' @export
+#' @noRd
 #'
 #' @examples
 #' .data <- data.frame(

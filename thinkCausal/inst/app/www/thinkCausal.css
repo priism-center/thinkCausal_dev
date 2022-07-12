@@ -92,3 +92,19 @@ footer > a:hover{
   -moz-box-shadow: -20px 0px 50px rgba(74, 74, 74, 0.5);
   box-shadow: -20px 0px 50px rgba(74, 74, 74, 0.5);
 }
+
+.dimmed {
+  position: relative;
+  filter: blur(2px);
+}
+.dimmed:after {
+  content: " ";
+  z-index: 10;
+  display: block;
+  position: absolute;
+  height: max(100%, 200px);
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+}

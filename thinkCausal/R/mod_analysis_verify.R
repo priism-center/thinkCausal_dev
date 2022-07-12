@@ -193,7 +193,6 @@ mod_analysis_verify_server <- function(id, store){
     })
 
     # table of selected dataset
-    # output$analysis_verify_data_table <- DT::renderDataTable({
     output$analysis_verify_data_table <- reactable::renderReactable({
 
       # stop here if columns haven't been assigned and grouped
@@ -211,7 +210,6 @@ mod_analysis_verify_server <- function(id, store){
       tab <- store$analysis$verify$user_modified_df %>%
         na.omit() %>%
         reactable::reactable()
-        # create_datatable(selection = "none", pageLength = 10)
 
       return(tab)
     })
