@@ -45,63 +45,63 @@ app_ui <- function(request) {
 
           bs4Dash::tabItem(
             tabName = 'home',
-            mod_home_ui("home")
+            mod_home_ui(module_ids$home)
           ),
 
           # learning articles
           bs4Dash::tabItem(
             tabName = 'learn',
-            mod_learn_ui("learn")
+            mod_learn_ui(module_ids$learn$home)
           ),
           bs4Dash::tabItem(
             tabName = 'learn_estimands',
-            mod_learn_estimands_ui("learn_estimands")
+            mod_learn_estimands_ui(module_ids$learn$estimands)
           ),
           bs4Dash::tabItem(
             tabName = 'learn_post_treatment',
-            mod_learn_post_treatment_ui("learn_post_treatment")
+            mod_learn_post_treatment_ui(module_ids$learn$post_treatment)
           ),
 
           # analysis pages
           bs4Dash::tabItem(
             tabName = 'analysis_describe',
-            mod_analysis_design_ui("analysis_design")
+            mod_analysis_design_ui(module_ids$analysis$design),
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_upload',
-            mod_analysis_upload_ui("analysis_upload")
+            mod_analysis_upload_ui(module_ids$analysis$upload)
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_verify',
-            mod_analysis_verify_ui("analysis_verify")
+            mod_analysis_verify_ui(module_ids$analysis$verify)
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_visualize',
-            mod_analysis_visualize_ui("analysis_visualize")
+            mod_analysis_visualize_ui(module_ids$analysis$visualize)
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_balance',
-            mod_analysis_balance_ui("analysis_balance")
+            mod_analysis_balance_ui(module_ids$analysis$balance)
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_overlap',
-            mod_analysis_overlap_ui("analysis_overlap")
+            mod_analysis_overlap_ui(module_ids$analysis$overlap)
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_model',
-            mod_analysis_model_ui("analysis_model")
+            mod_analysis_model_ui(module_ids$analysis$model)
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_diagnostics',
-            mod_analysis_diagnostics_ui("analysis_diagnostics")
+            mod_analysis_diagnostics_ui(module_ids$analysis$diagnostics)
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_results',
-            mod_analysis_results_ui("analysis_results")
+            mod_analysis_results_ui(module_ids$analysis$results)
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_subgroup',
-            mod_analysis_subgroup_ui("analysis_subgroup")
+            mod_analysis_subgroup_ui(module_ids$analysis$subgroup)
           ),
 
 
@@ -112,15 +112,15 @@ app_ui <- function(request) {
 
           bs4Dash::tabItem(
             tabName = 'settings_options',
-            mod_settings_options_ui("settings_options")
+            mod_settings_options_ui(module_ids$settings$options)
           ),
           bs4Dash::tabItem(
             tabName = 'settings_about',
-            mod_settings_about_ui("settings_about")
+            mod_settings_about_ui(module_ids$settings$about)
           ),
           bs4Dash::tabItem(
             tabName = 'settings_reference',
-            mod_settings_reference_ui("settings_reference")
+            mod_settings_reference_ui(module_ids$settings$reference)
           )
 
 
