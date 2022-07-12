@@ -12,12 +12,12 @@ mod_reproduce_ui <- function(id){
   tagList(
 
     downloadButton(
-      outputId = 'analysis_results_button_download',
+      outputId = ns('analysis_results_button_download'),
       label = 'Download script',
       style = 'max-width: 300px'
     ),
     downloadButton(
-      outputId = 'settings_log_download',
+      outputId = ns('settings_log_download'),
       label = 'Download log',
       style = 'max-width: 300px'
     ),
@@ -27,10 +27,9 @@ mod_reproduce_ui <- function(id){
       collapsible = FALSE,
       title = 'Log',
       verbatimTextOutput(
-        outputId = 'settings_log_text'
+        outputId = ns('settings_log_text')
       )
     )
-
   )
 }
 

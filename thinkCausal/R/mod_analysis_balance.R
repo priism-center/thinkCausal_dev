@@ -21,6 +21,7 @@ mod_analysis_balance_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    return(store)
   })
 }
 

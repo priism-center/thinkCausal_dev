@@ -23,22 +23,12 @@ mod_analysis_verify_ui <- function(id){
           inputId = ns('analysis_verify_data_button_reset'),
           label = 'Reset variable changes'
         ),
-        br(),
-        br(),
-        # create_link_to_help('Verify data'),
-        br(),
-        br(),
-        div(
-          class = 'backNextContainer',
-          actionButton(
-            inputId = ns("analysis_verify_data_button_back"),
-            label = "Back"
-          ),
-          actionButton(
-            inputId = ns('analysis_verify_data_save'),
-            class = "nav-path",
-            label = 'Save data'
-          )
+        actionButton(inputId = ns('analysis_verify_help'),
+                     label = 'Help me'),
+        actionButton(
+          inputId = ns('analysis_verify_data_save'),
+          class = "nav-path",
+          label = 'Save data'
         )
       ),
       bs4Dash::box(
@@ -66,8 +56,9 @@ mod_analysis_verify_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    observeEvent(input$analysis_verify_data_button_back, {
-      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_upload')
+    # open help on button click
+    observeEvent(input$analysis_verify_help, {
+      open_help_sidebar(store, 'Verify data')
     })
 
     # maintain a user modified dataframe that is continuously updated
@@ -330,15 +321,15 @@ mod_analysis_verify_server <- function(id, store){
       X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
       cols_categorical_cleaned <- gsub("X_", '', X_cols_categorical)
       cols_continuous_cleaned <- gsub("X_", '', X_cols_continuous)
-      updateSelectInput(session = global_session, inputId = "plotBart_waterfall_order",
+      updateSelectInput(session = store$session_global, inputId = "plotBart_waterfall_order",
                         choices = c("ICATE", cols_continuous_cleaned))
-      updateSelectInput(session = global_session, inputId = "plotBart_waterfall_color",
+      updateSelectInput(session = store$session_global, inputId = "plotBart_waterfall_color",
                         choices = c("None", cols_categorical_cleaned))
-      updateSelectInput(session = global_session, inputId = "plotBart_ICATE_color",
+      updateSelectInput(session = store$session_global, inputId = "plotBart_ICATE_color",
                         choices = c("None", cols_categorical_cleaned))
       moderator_options <- gsub("X_", '', names(store$verified_df)[3:length(names(store$verified_df))])
-      updateSelectInput(session = global_session, inputId = "plotBart_moderator_vars",
-                        choices = c('',moderator_options))
+      updateSelectInput(session = store$session_global, inputId = "plotBart_moderator_vars",
+                        choices = c('', moderator_options))
     })
 
     # save into store for reproducible script

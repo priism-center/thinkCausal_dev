@@ -47,19 +47,12 @@ mod_analysis_upload_ui <- function(id){
           label = "Data contains a header row",
           value = TRUE
         ),
-        br(),
-        # create_link_to_help('Data'),
-        div(
-          class = 'backNextContainer',
-          actionButton(
-            inputId = ns("analysis_upload_data_button_back"),
-            label = "Back"
-          ),
-          actionButton(
-            inputId = ns('analysis_upload_data_button_columnAssignSave'),
-            class = 'nav-path',
-            label = 'Save role assignments'
-          )
+        actionButton(inputId = ns('analysis_upload_help'),
+                     label = 'Help me'),
+        actionButton(
+          inputId = ns('analysis_upload_data_button_columnAssignSave'),
+          class = 'nav-path',
+          label = 'Save role assignments'
         )
       ),
       bs4Dash::box(
@@ -81,8 +74,9 @@ mod_analysis_upload_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    observeEvent(input$analysis_upload_data_button_back, {
-      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_describe')
+    # open help on button click
+    observeEvent(input$analysis_upload_help, {
+      open_help_sidebar(store, 'Data')
     })
 
     # read in the uploaded file

@@ -1,6 +1,6 @@
 Package: thinkCausal
 Title: Point-and-click bartCause analysis and causal inference education
-Version: 0.0.0.9000
+Version: 0.3.0
 Authors@R: c(
   person('Joseph', 'Marlo', email = 'jpm770@nyu.edu', role = c('cre', 'aut')),
   person("George", "Perrett", email = "gp77@nyu.edu", role = "aut")
@@ -15,7 +15,10 @@ Imports:
     ggplot2,
     glue,
     golem (>= 0.3.2),
-    shiny (>= 1.7.1)
+    readr,
+    shiny (>= 1.7.1),
+    shinyjs,
+    stringr
 Suggests: 
     knitr,
     rmarkdown,

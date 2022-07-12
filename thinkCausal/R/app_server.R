@@ -12,7 +12,7 @@ app_server <- function(input, output, session) {
   store <- reactiveValues(
     session_global = session,
     log = list(as.character(Sys.time())),
-    module_ids = module_ids,
+    # module_ids = module_ids,
     page_history = NULL,
     js = NULL
   )
@@ -22,12 +22,13 @@ app_server <- function(input, output, session) {
 
   # other
   mod_home_server('home', store)
+  mod_reproduce_server('reproduce', store)
   store <- mod_settings_options_server('settings_options', store)
   mod_settings_reference_server('settings_reference')
   mod_settings_about_server('settings_about')
 
   # learn
-  mod_learn_server(id = 'learn', store = store)
+  mod_learn_server(id = 'learn', store)
   mod_learn_estimands_server('learn_estimands')
   mod_learn_post_treatment_server('learn_post_treatment')
 
@@ -43,4 +44,7 @@ app_server <- function(input, output, session) {
   store <- mod_analysis_results_server("analysis_results", store)
   store <- mod_analysis_subgroup_server("analysis_subgroup", store)
 
+
+  # toggle side bar help menu
+  # bs4Dash::updateControlbar(id = "help-slideover", session = session)
 }

@@ -4,7 +4,7 @@
 #'
 #' @param .data a dataframe
 #'
-#' @return
+#' @return a character vector of column types
 #' @export
 #' @noRd
 #'

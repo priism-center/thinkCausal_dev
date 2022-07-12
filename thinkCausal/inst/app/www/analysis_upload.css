@@ -1,4 +1,4 @@
- .form-control {
+ #upload_file_div .form-control {
   background-color: rgba(48, 47, 66, 0) !important;
   border-radius: 3;
   box-shadow: none;
@@ -11,7 +11,6 @@
   white-space: normal;
   display: inline-block;
   padding: 10px;
-  width: 100%;
   height: 46px;
   margin: 0.4em 0 0.4em 0;
 }

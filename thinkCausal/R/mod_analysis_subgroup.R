@@ -21,6 +21,7 @@ mod_analysis_subgroup_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    return(store)
   })
 }
 

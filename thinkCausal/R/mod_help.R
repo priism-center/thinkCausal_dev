@@ -10,7 +10,7 @@
 mod_help_ui <- function(id){
   ns <- NS(id)
   tagList(
-    includeMarkdown(app_sys('assets/help.md'))
+    includeMarkdown(app_sys('app', 'www', 'md', 'help.md'))
   )
 }
 

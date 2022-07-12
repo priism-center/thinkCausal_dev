@@ -65,9 +65,6 @@ mod_home_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    # TODO: this prevents a bug in the observeEvent that somehow overrides store with ns()
-    store
-
     # links from home to learn home page and analysis
     observeEvent(input$learn_img, {
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'learn')

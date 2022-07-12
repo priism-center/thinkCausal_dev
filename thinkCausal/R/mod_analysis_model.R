@@ -51,9 +51,8 @@ mod_analysis_model_ui <- function(id){
         actionButton(inputId = ns("analysis_model_button_next"),
                      class = "nav-path",
                      label = "Fit model"),
-        br(), br(),
-        # create_link_to_help('Model'),
-        br(), br(),
+        actionButton(inputId = ns('analysis_model_help'),
+                     label = 'Help me'),
         actionButton(inputId = ns("analysis_model_button_back"),
                      label = "Back")
         )
@@ -68,6 +67,12 @@ mod_analysis_model_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    # open help on button click
+    observeEvent(input$analysis_model_help, {
+      open_help_sidebar(store, 'Model')
+    })
+
+    return(store)
   })
 }
 

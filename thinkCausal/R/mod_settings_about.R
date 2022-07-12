@@ -10,7 +10,7 @@
 mod_settings_about_ui <- function(id){
   ns <- NS(id)
   tagList(
-    includeMarkdown(app_sys('assets', 'about.md'))
+    includeMarkdown(app_sys('app', 'www', 'md', 'about.md'))
   )
 }
 

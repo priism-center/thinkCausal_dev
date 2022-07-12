@@ -108,9 +108,6 @@ mod_learn_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    # TODO: this prevents a bug in the observeEvent that somehow overrides store with ns()
-    store
-
     # links from learn home page to each learn article
     selectors <- c('learn_estimands', 'learn_post_treatment')
     purrr::map(selectors, function(sel){

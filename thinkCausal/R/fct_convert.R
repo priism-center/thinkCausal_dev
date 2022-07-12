@@ -5,7 +5,7 @@
 #' @param .data
 #' @param new_data_types
 #'
-#' @return
+#' @return data frame
 #' @export
 #' @noRd
 #'
@@ -30,18 +30,18 @@ convert_data_types <- function(.data, new_data_types){
   return(.data)
 }
 
-# TODO: need to test this with factors
+#' @describeIn convert_data_types converts x to the new_data_type
 convert_data_types_ <- function(x, new_data_type){
   if (new_data_type %notin% c('Categorical', 'Binary', 'Continuous')) stop("new_data_type must be one of c('Categorical', 'Binary', 'Continuous')")
 
-  convert_f <- switch(
+  convert_fn <- switch(
     new_data_type,
     "Categorical" = as.character,
     'Binary' = coerce_to_logical,
     "Continuous" = as.numeric
   )
 
-  x <- convert_f(x)
+  x <- convert_fn(x)
 
   return(x)
 }

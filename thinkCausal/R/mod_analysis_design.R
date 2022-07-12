@@ -64,8 +64,8 @@ mod_analysis_design_ui <- function(id){
         actionButton(inputId = ns("analysis_design_button_next"),
                      class = "nav-path",
                      label = "Save design"),
-        br(), br()
-        # create_link_to_help('Study design')
+        actionButton(inputId = ns('analysis_design_help'),
+                     label = 'Help me')
       )
     )
   )
@@ -77,6 +77,11 @@ mod_analysis_design_ui <- function(id){
 mod_analysis_design_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    # open help on button click
+    observeEvent(input$analysis_design_help, {
+      open_help_sidebar(store, 'Study Design')
+    })
 
     # render example language
     output$analysis_design_text <- renderText({

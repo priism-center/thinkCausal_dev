@@ -18,6 +18,9 @@
 # attachment::att_amend_desc()
 usethis::use_package('ggplot2')
 usethis::use_package('dplyr')
+usethis::use_package('readr')
+usethis::use_package('stringr')
+usethis::use_package('shinyjs')
 
 ## Add modules ----
 ## Create a module infrastructure in R/
