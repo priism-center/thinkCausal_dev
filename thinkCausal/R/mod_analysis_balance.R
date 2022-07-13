@@ -13,7 +13,7 @@ mod_analysis_balance_ui <- function(id){
 
     fluidRow(
       bs4Dash::box(
-        width = 4,
+        width = 3,
         collapsible = FALSE,
         title = 'Visualize balance between treatment and control',
         selectInput(
@@ -35,7 +35,7 @@ mod_analysis_balance_ui <- function(id){
       ),
 
       bs4Dash::box(
-        width = 8,
+        width = 9,
         collapsible = FALSE,
         title = 'Balance plot',
         plotOutput(

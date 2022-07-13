@@ -133,7 +133,8 @@ mod_analysis_design_server <- function(id, store){
                          .open = "<<", .close = ">>"))
 
         # stop here if any unsures or blank inputs
-        req(!isTRUE(length(inputs_to_animate) > 0))
+        all_complete <- !isTRUE(length(inputs_to_animate) > 0)
+        req(all_complete)
       })
 
       # save input to store
@@ -157,7 +158,7 @@ mod_analysis_design_server <- function(id, store){
     # dropdown_inputs <- c("analysis_design_estimand", "analysis_design", "analysis_weights", "analysis_random_intercept")
     # purrr::map(dropdown_inputs, function(input_id){
     #   observeEvent(input[[input_id]], {
-    #     if (input[[input_id]] == "Unsure") shinyjs::runjs('openHelpSection("help-studydesign")')
+    #     if (input[[input_id]] == "Unsure") Sys.sleep(0.2); open_help_sidebar(store, 'Study Design') #shinyjs::runjs('openHelpSection("help-studydesign")')
     #   })
     # })
 

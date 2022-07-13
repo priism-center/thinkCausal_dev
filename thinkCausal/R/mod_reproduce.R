@@ -23,7 +23,7 @@ mod_reproduce_ui <- function(id){
     ),
     br(), br(),
     bs4Dash::box(
-      width = 6,
+      width = 8,
       collapsible = FALSE,
       title = 'Log',
       verbatimTextOutput(
@@ -148,7 +148,7 @@ mod_reproduce_server <- function(id, store){
         # go to a temp dir to avoid permission issues
         owd <- setwd(tempdir())
         on.exit(setwd(owd))
-        files <- NULL;
+        files <- NULL
 
         # create README
         fileConn <- file("README.txt")

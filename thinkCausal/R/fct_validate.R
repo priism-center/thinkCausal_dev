@@ -10,20 +10,22 @@ validate_columns_assigned <- function(store){
                 "Columns must first be assigned. Please see 'Analyze - Upload Data' page."))
 }
 
-validate_data_verified <- function(store){
+validate_data_verified <- function(store, req_only = FALSE){
   # stop here if data hasn't been uploaded and verified
+  if (req_only) req(is.data.frame(store$verified_df))
   validate(need(is.data.frame(store$verified_df),
                 "Data must be first uploaded and verified. Please see 'Analyze - Verify data types' page."))
 }
 
-validate_model_fit_ <- function(.model){
+validate_model_fit_ <- function(.model, req_only = FALSE){
   # stop here if model isn't fit yet
+  if (req_only) req(inherits(.model, 'bartcFit'))
   validate(need(inherits(.model, "bartcFit"),
                 "Model must first be fitted on the 'Analyze - Fit model' page"))
 }
 
-validate_model_fit <- function(store){
-  validate_model_fit_(store$analysis$model$model)
+validate_model_fit <- function(store, req_only = FALSE){
+  validate_model_fit_(store$analysis$model$model, req_only = req_only)
 }
 
 validate_design <- function(store){

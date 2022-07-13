@@ -207,3 +207,185 @@ plot_exploration <- function(.data,
 
   return(p)
 }
+
+# plot density of residual (predicted y - observed y)
+plot_residual_density <- function(.model, covariate = NULL){
+
+  # ensure model is a of class bartcFit
+  validate_model_fit_(.model)
+
+  # extract the covariates
+  dat <- as.data.frame(.model$data.rsp@x)
+  # add observed y
+  dat$y.obs <- .model$data.rsp@y
+
+  if(.model$estimand == "att"){
+    dat <- dat[.model$trt == 1, ]
+  }else if(.model$estimand == "atc"){
+    dat <- dat[.model$trt == 0, ]
+  }
+
+
+  # add predicted y
+  dat$y.hat.mean <- apply(bartCause::extract(.model, "mu.obs"), 2, mean)
+
+  # add residual
+  dat$residual <- dat$y.hat.mean - dat$y.obs
+
+  dat$reference <- rnorm(n = nrow(dat), 0, sd(dat$residual))
+
+  dat <- dat %>%
+    tidyr::pivot_longer(cols = c('residual', 'reference'))
+
+  p <- ggplot2::ggplot(data = dat, ggplot2::aes(x = value, color = name)) +
+    ggplot2::geom_density() +
+    ggplot2::scale_color_manual(values = c(2, 1)) +
+    ggplot2::labs(x = "Residual", y = "Density")
+
+  return(p)
+}
+
+# plot residual vs predicted y
+plot_residual_predicted_residual <- function(.model, covariate = NULL){
+
+  # ensure model is a of class bartcFit
+  validate_model_fit_(.model)
+
+  # extract the covariates
+  dat <-  as.data.frame(.model$data.rsp@x)
+
+  # add observed y
+  dat$y.obs <- .model$data.rsp@y
+
+  # filter to estimand
+  if(.model$estimand == "att"){
+    dat <- dat[.model$trt == 1, ]
+  }else if(.model$estimand == "atc"){
+    dat <- dat[.model$trt == 0, ]
+  }
+
+
+  # add predicted y
+  dat$y.hat.mean <- apply(bartCause::extract(.model, 'mu.obs'), 2, mean)
+
+  # add residual
+  dat$residual <- dat$y.hat.mean - dat$y.obs
+
+  if(is.null(covariate)){
+    p <- ggplot(data = dat, aes(x = y.hat.mean, y = residual)) +
+      geom_point()
+  }else{
+    # ensure the input variable is within the dataset
+    index <- which(colnames(dat) == covariate)
+    if (!isTRUE(index > 0)) stop('Cannot find variable in original data. Is variable within the original dataframe used to fit the .model?')
+
+    p <- ggplot(data = dat, aes(x = !!rlang::sym(covariate), y = residual)) +
+      geom_point()
+
+    # categorical <- isTRUE(is_categorical(dat[[covariate]]))
+    # binary <- isTRUE(clean_detect_logical(dat[[covariate]]))
+    #
+    # if(categorical | binary){ # color by a categorical or logical variable
+    #   p <- ggplot(data = dat, aes(x = y.hat.mean, y = residual)) +
+    #     geom_point(aes(colour = factor(!!rlang::sym(covariate))))
+    # }else{ # color by a continuous variable in gradient
+    #   p <- ggplot(data = dat, aes(x = y.hat.mean, y = residual)) +
+    #     geom_point(aes(colour = !!rlang::sym(covariate)))
+    # }
+  }
+  if(rlang::is_null(covariate)){
+    p <- p + geom_hline(yintercept = 0) +
+      labs(x = "Predicted Y", y = "Residual") +
+      theme_minimal()
+  }else{
+    p <- p + geom_hline(yintercept = 0) +
+      labs(x = covariate, y = "Residual") +
+      theme_minimal()
+  }
+  return(p)
+}
+
+
+plot_common_support_temp <- function(.model, .x = 'Propensity Score',  rule = c('both', 'sd', 'chi')){
+
+  # ensure model is a of class bartcFit
+  validate_model_fit_(.model)
+
+  rule <- rule[1]
+  if (rule %notin% c('both', 'sd', 'chi')) stop('rule must be one of c("both", "sd", "chi")')
+  if (rule == 'both') rule <- c('sd', 'chi')
+
+  # calculate summary stats
+  sd.cut = c(trt = max(.model$sd.obs[!.model$missingRows & .model$trt > 0]), ctl = max(.model$sd.obs[!.model$missingRows & .model$trt <= 0])) + sd(.model$sd.obs[!.model$missingRows])
+  total_sd <- switch (.model$estimand,
+                      ate = sum(.model$sd.cf[.model$trt==1] > sd.cut[1]) + sum(.model$sd.cf[.model$trt==0] > sd.cut[2]),
+                      att = sum(.model$sd.cf[.model$trt==1] > sd.cut[1]),
+                      atc = sum(.model$sd.cf[.model$trt==0] > sd.cut[2])
+  )
+
+  inference_group <- switch (.model$estimand,
+                             ate = length(.model$sd.obs[!.model$missingRows]),
+                             att = length(.model$sd.obs[!.model$missingRows] & .model$trt == 1),
+                             atc = length(.model$sd.obs[!.model$missingRows] & .model$trt == 0)
+  )
+
+
+  # create dataframe of the sd and chi values
+  dat <- as_tibble(.model$data.rsp@x) %>%
+    rename(`Propensity Score` = ps)
+
+  dat.sd <- dat %>%
+    mutate(sd.cut = if_else(.model$trt == 1, sd.cut[1], sd.cut[2]),
+           removed = if_else(.model$sd.cf > sd.cut, 'Removed', 'Included'),
+           support_rule = 'sd',
+           stat = .model$sd.cf,
+           sd.cf = .model$sd.cf) %>%
+    select(-sd.cut)
+
+
+  dat.chi <- dat %>%
+    mutate(removed = if_else((.model$sd.cf / .model$sd.obs) ** 2 > 3.841, 'Removed', 'Included'),
+           support_rule = 'chi',
+           stat = (.model$sd.cf / .model$sd.obs) ** 2,
+           sd.cf = .model$sd.cf)
+
+  dat <- rbind(dat.sd, dat.chi)
+
+  if(.model$estimand == 'att') dat <- dat[rep(.model$trt, 2) == 1,]
+  if(.model$estimand == 'atc') dat <- dat[rep(.model$trt, 2) == 0,]
+
+  prop <- dat %>%
+    group_by(support_rule) %>%
+    count(removed) %>%
+    mutate(prop = n/sum(n)*100) %>%
+    filter(removed == 'Removed') %>%
+    arrange(support_rule) %>%
+    ungroup()
+
+  percent_out <- purrr::as_vector(prop$prop)
+  names(percent_out) <- prop$support_rule
+  # orderd alphabetically
+  if(is.na(percent_out['sd'])) percent_out['sd'] <- 0
+  if(is.na(percent_out['chi'])) percent_out['chi'] <- 0
+
+  dat <- dat %>%
+    mutate(support_rule_text = if_else(support_rule == 'chi',
+                                       paste0('Chi-squared rule: ', round(percent_out['chi'], 2), "% of cases would have been removed"),
+                                       paste0('Standard deviation rule: ', round(percent_out['sd'], 2), "% of cases would have been removed")))
+
+  # plot it
+  p <- dat %>%
+    filter(support_rule %in% rule) %>%
+    ggplot(aes(x = !!rlang::sym(.x), y = sd.cf, color = removed)) +
+    geom_point(alpha = 0.7) +
+    scale_color_manual(values = c(1, 2)) +
+    facet_wrap(~support_rule_text, ncol = 1, scales = 'free_y') +
+    labs(title ="Overlap checks",
+         x = .x,
+         y = 'Predicted counterfactual standard deviation',
+         color = NULL) +
+    theme(legend.position = 'bottom',
+          strip.text = element_text(hjust = 0))
+
+  return(p)
+}

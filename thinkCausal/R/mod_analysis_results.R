@@ -13,7 +13,7 @@ mod_analysis_results_ui <- function(id){
 
     fluidRow(
       column(
-        width = 4,
+        width = 3,
         bs4Dash::box(
           width = 12,
           collapsible = FALSE,
@@ -59,7 +59,7 @@ mod_analysis_results_ui <- function(id){
          )
       ),
       column(
-        width = 8,
+        width = 9,
         fluidRow(
           bs4Dash::box(
             width = 12,
@@ -102,7 +102,7 @@ mod_analysis_results_server <- function(id, store){
     output$analysis_results_table_summary <- reactable::renderReactable({
 
       # stop here if model isn't fit yet
-      validate_model_fit(store)
+      validate_model_fit(store, req_only = TRUE)
 
       # extract estimates and format
       # TODO: unclear if credible interval is 80 or 95

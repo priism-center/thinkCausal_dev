@@ -13,7 +13,7 @@ mod_analysis_overlap_ui <- function(id){
 
     fluidRow(
       bs4Dash::box(
-        width = 4,
+        width = 3,
         collapsible = FALSE,
         title = 'Check overlap',
         selectInput(
@@ -51,7 +51,7 @@ mod_analysis_overlap_ui <- function(id){
       ),
 
       bs4Dash::box(
-        width = 8,
+        width = 9,
         collapsible = FALSE,
         title = 'Overlap plot',
         plotOutput(

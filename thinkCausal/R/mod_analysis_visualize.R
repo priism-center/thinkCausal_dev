@@ -456,7 +456,7 @@ mod_analysis_visualize_server <- function(id, store){
     output$analysis_eda_brush_text <- renderText({
 
       if (input$analysis_eda_variable_facet == "None" & input$analysis_eda_select_plot_type == 'Scatter') {
-        txt <- "<h4>Highlight data points on the above plot to view their information below</h4>"
+        txt <- "<h6>Highlight data points on the above plot to view their information below</h6>"
       } else {
         txt <- NULL
       }
@@ -468,7 +468,7 @@ mod_analysis_visualize_server <- function(id, store){
     output$analysis_eda_brush_info <- reactable::renderReactable({
 
       # stop here if data hasn't been uploaded and selected
-      validate_data_verified(store)
+      validate_data_verified(store, req_only = TRUE)
 
       # show only if there isn't faceting
       if (input$analysis_eda_variable_facet == "None" & input$analysis_eda_select_plot_type == 'Scatter') {

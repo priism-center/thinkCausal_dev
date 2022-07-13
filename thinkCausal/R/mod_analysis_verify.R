@@ -32,7 +32,7 @@ mod_analysis_verify_ui <- function(id){
         )
       ),
       bs4Dash::box(
-        width = 8,
+        width = 9,
         collapsible = FALSE,
         title = NULL,
         wellPanel(style = "overflow-y:scroll; max-height: 400px; background-color: transparent; padding: 15px 15px 0 15px;",

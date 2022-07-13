@@ -294,18 +294,23 @@ mod_analysis_model_server <- function(id, store){
     })
 
     # save into store for reproducible script
-    analysis_model_support <- reactive(input$analysis_model_support)
-    analysis_over_ride_common_support <-  reactive(input$analysis_over_ride_common_support)
-    analysis_model_moderator_vars <- reactive(input$analysis_model_moderator_vars)
-    analysis_random_intercept <- reactive(input$analysis_random_intercept)
-    analysis_model_estimand <- reactive(input$analysis_model_estimand)
+    # analysis_model_support <- reactive(input$analysis_model_support)
+    # analysis_over_ride_common_support <-  reactive(input$analysis_over_ride_common_support)
+    # analysis_model_moderator_vars <- reactive(input$analysis_model_moderator_vars)
+    # analysis_random_intercept <- reactive(input$analysis_random_intercept)
+    # analysis_model_estimand <- reactive(input$analysis_model_estimand)
 
     observeEvent(input$analysis_model_button_next, {
-      store$analysis$model$analysis_model_support <- analysis_model_support()
-      store$analysis$model$analysis_over_ride_common_support <- analysis_over_ride_common_support()
-      store$analysis$model$analysis_model_moderator_vars <- analysis_model_moderator_vars()
-      store$analysis$model$analysis_random_intercept <- analysis_random_intercept()
-      store$analysis$model$analysis_model_estimand <- analysis_model_estimand()
+      # store$analysis$model$analysis_model_support <- analysis_model_support()
+      # store$analysis$model$analysis_over_ride_common_support <- analysis_over_ride_common_support()
+      # store$analysis$model$analysis_model_moderator_vars <- analysis_model_moderator_vars()
+      # store$analysis$model$analysis_random_intercept <- analysis_random_intercept()
+      # store$analysis$model$analysis_model_estimand <- analysis_model_estimand()
+      store$analysis$model$analysis_model_support <- isolate(input$analysis_model_support)
+      store$analysis$model$analysis_over_ride_common_support <- isolate(input$analysis_over_ride_common_support)
+      store$analysis$model$analysis_model_moderator_vars <- isolate(input$analysis_model_moderator_vars)
+      store$analysis$model$analysis_random_intercept <- isolate(input$analysis_random_intercept)
+      store$analysis$model$analysis_model_estimand <- isolate(input$analysis_model_estimand)
     })
 
 
