@@ -2,8 +2,8 @@
 #'
 #' Designed to fail in an appropriate way
 #'
-#' @param .data
-#' @param new_data_types
+#' @param .data data frame
+#' @param new_data_types character vector of new data types
 #'
 #' @return data frame
 #' @export
@@ -148,7 +148,7 @@ identify_indicators <- function(x, cats){
 #'
 #' @author Junhui Yang
 #'
-#' @return
+#' @return a data frame
 #' @export
 #' @noRd
 #'

@@ -3,14 +3,12 @@
 #'
 #' For use on the server-side
 #'
-#' @param store
+#' @param store store object
 #' @param section the title of the h3 section within the help markdown
 #'
 #' @return NULL; called for the JavaScript side effects
 #' @export
 #' @noRd
-#'
-#' @examples
 open_help_sidebar <- function(store, section){
 
   # toggle side bar help menu

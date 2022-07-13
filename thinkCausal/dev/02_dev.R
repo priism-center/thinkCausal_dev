@@ -65,6 +65,7 @@ golem::add_fct('create', with_test = TRUE)
 golem::add_fct('popup', with_test = FALSE)
 golem::add_fct('convert', with_test = TRUE)
 golem::add_utils('utils', with_test = FALSE)
+golem::add_fct('model', with_test = TRUE)
 
 ## External resources
 ## Creates .js and .css files at inst/app/www

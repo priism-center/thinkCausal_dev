@@ -208,7 +208,6 @@ close_popup <- function(session){
 #'
 #' @param div div ID of the parent
 #'
-#' @return
 #' @export
 #' @noRd
 #'

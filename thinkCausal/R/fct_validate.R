@@ -33,7 +33,7 @@ validate_design <- function(store){
 }
 
 validate_prespecifed_moderators <- function(store){
-  validate(need(!is_null(store$analysis$subgroup$prespecified_subgroups),
+  validate(need(!rlang::is_null(store$analysis$subgroup$prespecified_subgroups),
                 "No subgroup analyses were prespecifed."))
 }
 
