@@ -15,7 +15,6 @@ app_ui <- function(request) {
       fullscreen = TRUE,
       header = bs4Dash::dashboardHeader(
         title = tags$a(
-          # href = 'https://www.eqt.com/',
           target = "_blank",
           tags$img(
             src = 'www/img/thinkCausal_logo_wide.png',

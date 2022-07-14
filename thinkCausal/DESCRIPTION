@@ -9,15 +9,24 @@ Description: A federally funded project devoted to building scaffolded causal in
 License: MIT + file LICENSE
 URL: https://priism-center.github.io/thinkCausal/
 Imports: 
+    bartCause,
     bs4Dash,
     config (>= 0.3.1),
     dplyr,
     ggplot2,
     glue,
     golem (>= 0.3.2),
+    Hmisc,
+    openxlsx,
+    pkgload,
+    plotBart,
+    purrr,
+    reactable,
     readr,
+    readstata13,
     shiny (>= 1.7.1),
     shinyjs,
+    sortable,
     stringr
 Suggests: 
     knitr,

@@ -18,9 +18,19 @@
 # attachment::att_amend_desc()
 usethis::use_package('ggplot2')
 usethis::use_package('dplyr')
-usethis::use_package('readr')
+usethis::use_package('purrr')
 usethis::use_package('stringr')
+usethis::use_package('glue')
+usethis::use_package('bs4Dash')
 usethis::use_package('shinyjs')
+usethis::use_package('reactable')
+usethis::use_package('sortable')
+usethis::use_package('readr')
+usethis::use_package('Hmisc')
+usethis::use_package('openxlsx')
+usethis::use_package('readstata13')
+usethis::use_package('plotBart')
+usethis::use_package('bartCause')
 
 ## Add modules ----
 ## Create a module infrastructure in R/
