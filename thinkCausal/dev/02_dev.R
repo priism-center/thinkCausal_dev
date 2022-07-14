@@ -50,10 +50,21 @@ golem::add_css_file('analysis-subgroup')
 
 ## learning modules
 golem::add_css_file('learn')
+
+# estimands
 golem::add_module(name = "learn_estimands", with_test = FALSE)
-golem::add_css_file("learn-estimands")
+golem::add_fct('learn_estimands', with_test = TRUE)
+golem::add_css_file("learn-estimands", dir = 'inst/app/www/learn/estimands')
+golem::add_js_file('init', dir = 'inst/app/www/learn/estimands/js')
+golem::add_js_file('buildPlot', dir = 'inst/app/www/learn/estimands/js')
+golem::add_js_file('buildTable', dir = 'inst/app/www/learn/estimands/js')
+golem::add_js_file('helpers', dir = 'inst/app/www/learn/estimands/js')
+golem::add_js_file('namespace', dir = 'inst/app/www/learn/estimands/js')
+golem::add_js_file('scrollPlot', dir = 'inst/app/www/learn/estimands/js')
+
+# post treatment variables
 golem::add_module(name = "learn_post_treatment", with_test = FALSE)
-golem::add_css_file("learn-post-treatment")
+golem::add_css_file("learn-post-treatment", dir = 'inst/app/www/learn/post-treatment')
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*

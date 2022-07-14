@@ -164,7 +164,7 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Describe data',
               tabName = 'analysis_describe',
-              icon = icon("table")
+              icon = icon("comment")
             ),
             bs4Dash::menuSubItem(
               text = 'Upload data',
@@ -209,7 +209,7 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'View subgroup results',
               tabName = 'analysis_subgroup',
-              icon = icon('code-branch')
+              icon = icon('layer-group')
             )
           ),
 

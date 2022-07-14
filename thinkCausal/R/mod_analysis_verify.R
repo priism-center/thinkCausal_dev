@@ -34,7 +34,7 @@ mod_analysis_verify_ui <- function(id){
       bs4Dash::box(
         width = 9,
         collapsible = FALSE,
-        title = NULL,
+        title = 'Column types and names',
         wellPanel(style = "overflow-y:scroll; max-height: 400px; background-color: transparent; padding: 15px 15px 0 15px;",
                   uiOutput(outputId = ns(
                     'analysis_verify_data_modify_UI'
