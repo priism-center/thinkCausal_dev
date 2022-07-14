@@ -93,9 +93,14 @@ mod_analysis_results_server <- function(id, store){
       open_help_sidebar(store, 'Results')
     })
 
-    # results page
+    # go to subgroup page
     observeEvent(input$analysis_results_button_next, {
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_subgroup')
+    })
+
+    # go to diagnostics page
+    observeEvent(input$analysis_results_button_back, {
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_diagnostics')
     })
 
     # render the summary table

@@ -43,7 +43,7 @@ mod_analysis_diagnostics_ui <- function(id){
         title = 'Trace plot',
         plotOutput(ns('analysis_diagnostics_plot_trace'),
                    height = 500),
-        downloadButton(ns('download_diagnostic_plot'), label = "Download plot")
+        downloadButton(ns('download_diagnostic_plot_trace'), label = "Download plot")
       )
     ),
     fluidRow(
@@ -52,16 +52,16 @@ mod_analysis_diagnostics_ui <- function(id){
         collapsible = FALSE,
         title = 'Overlap',
         plotOutput(ns('analysis_diagnostics_plot_support'),
-                   height = 500)
-        # downloadButton(ns('download_diagnostic_plot'), label = "Download plot")
+                   height = 500),
+        downloadButton(ns('download_diagnostic_plot_support'), label = "Download plot")
       ),
       bs4Dash::box(
         width = 6,
         collapsible = FALSE,
         title = 'Residual vs fit',
         plotOutput(ns('analysis_diagnostics_plot_residual'),
-                   height = 500)
-        # downloadButton(ns('download_diagnostic_plot'), label = "Download plot")
+                   height = 500),
+        downloadButton(ns('download_diagnostic_plot_residual'), label = "Download plot")
       )
     ),
     fluidRow(
@@ -70,8 +70,8 @@ mod_analysis_diagnostics_ui <- function(id){
         collapsible = FALSE,
         title = 'Residual normality',
         plotOutput(ns('analysis_diagnostics_plot_normal'),
-                   height = 500)
-        # downloadButton(ns('download_diagnostic_plot'), label = "Download plot")
+                   height = 500),
+        downloadButton(ns('download_diagnostic_plot_normal'), label = "Download plot")
       )
     )
   )
@@ -111,8 +111,6 @@ mod_analysis_diagnostics_server <- function(id, store){
                        label = "Model results")
         )
       } else {
-        # actionButton(inputId = "analysis_diagnostics_button_back",
-        #              label = "Back to specify model")
         tagList(
           actionButton(inputId = ns("analysis_diagnostics_button_back"),
                        class - 'nav-path',
@@ -282,36 +280,80 @@ mod_analysis_diagnostics_server <- function(id, store){
 
 
     # download plot
-    output$download_diagnostic_plot <- downloadHandler(
-      filename = function() {
-        switch(
-          req(input$analysis_diagnostics_tabs),
-          "Trace plot" = 'diagnostic_trace_plot.png',
-          "Common support" = 'diagnostic_common_support_plot.png',
-          "Residual vs fit" = 'diagnostic_residual_fit_plot.png',
-          "Residual normality" = 'diagnostic_residual_normal_plot.png'
-        )
-      },
-      content = function(file) {
-
-        # get the plot that is on the active tab
-        active_plot <- switch(
-          req(input$analysis_diagnostics_tabs),
-          'Trace plot' = analysis_diagnostics_plot_trace(),
-          'Common support' = analysis_diagnostics_plot_support(),
-          "Residual vs fit" = analysis_diagnostics_plot_residual(),
-          'Residual normality' = analysis_diagnostics_plot_normal()
-        )
-
-        # write out plot
+    output$download_diagnostic_plot_trace <- downloadHandler(
+      filename = function() 'diagnostic_trace_plot.png',
+      content = function(file){
         ggsave(file,
-               plot = active_plot,
+               plot = analysis_diagnostics_plot_trace(),
                height = store$options$settings_options_ggplotHeight,
                width = store$options$settings_options_ggplotWidth,
                units = 'in',
                device = 'png')
       }
     )
+    output$download_diagnostic_plot_support <- downloadHandler(
+      filename = function() 'diagnostic_common_support_plot.png',
+      content = function(file){
+        ggsave(file,
+               plot = analysis_diagnostics_plot_support(),
+               height = store$options$settings_options_ggplotHeight,
+               width = store$options$settings_options_ggplotWidth,
+               units = 'in',
+               device = 'png')
+      }
+    )
+    output$download_diagnostic_plot_residual <- downloadHandler(
+      filename = function() 'diagnostic_residual_fit_plot.png',
+      content = function(file){
+        ggsave(file,
+               plot = analysis_diagnostics_plot_residual(),
+               height = store$options$settings_options_ggplotHeight,
+               width = store$options$settings_options_ggplotWidth,
+               units = 'in',
+               device = 'png')
+      }
+    )
+    output$download_diagnostic_plot_normal <- downloadHandler(
+      filename = function() 'diagnostic_residual_normal_plot.png',
+      content = function(file){
+        ggsave(file,
+               plot = analysis_diagnostics_plot_normal(),
+               height = store$options$settings_options_ggplotHeight,
+               width = store$options$settings_options_ggplotWidth,
+               units = 'in',
+               device = 'png')
+      }
+    )
+    # output$download_diagnostic_plot <- downloadHandler(
+    #   filename = function() {
+    #     switch(
+    #       req(input$analysis_diagnostics_tabs),
+    #       "Trace plot" = 'diagnostic_trace_plot.png',
+    #       "Common support" = 'diagnostic_common_support_plot.png',
+    #       "Residual vs fit" = 'diagnostic_residual_fit_plot.png',
+    #       "Residual normality" = 'diagnostic_residual_normal_plot.png'
+    #     )
+    #   },
+    #   content = function(file) {
+    #
+    #     # get the plot that is on the active tab
+    #     active_plot <- switch(
+    #       req(input$analysis_diagnostics_tabs),
+    #       'Trace plot' = analysis_diagnostics_plot_trace(),
+    #       'Common support' = analysis_diagnostics_plot_support(),
+    #       "Residual vs fit" = analysis_diagnostics_plot_residual(),
+    #       'Residual normality' = analysis_diagnostics_plot_normal()
+    #     )
+    #
+    #     # write out plot
+    #     ggsave(file,
+    #            plot = active_plot,
+    #            height = store$options$settings_options_ggplotHeight,
+    #            width = store$options$settings_options_ggplotWidth,
+    #            units = 'in',
+    #            device = 'png')
+    #   }
+    # )
 
     return(store)
   })

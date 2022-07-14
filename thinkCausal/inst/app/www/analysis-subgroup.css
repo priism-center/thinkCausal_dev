@@ -1,0 +1,8 @@
+
+#analysis_subgroup-analysis_subgroup_tabs .nav-link {
+  margin: 0.5em;
+}
+
+#analysis_subgroup-analysis_subgroup_tabs .nav-link:hover {
+  color: #b0afae;
+}

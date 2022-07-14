@@ -128,6 +128,14 @@ mod_settings_options_server <- function(id, store){
       return(p)
     })
 
+    # store plot height and width settings
+    observeEvent(input$ggplot_height, {
+      store$options$settings_options_ggplotHeight <- isolate(input$ggplot_height)
+    })
+    observeEvent(input$ggplot_width, {
+      store$options$settings_options_ggplotWidth <- isolate(input$ggplot_width)
+    })
+
     return(store)
   })
 }
