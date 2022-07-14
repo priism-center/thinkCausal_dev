@@ -45,6 +45,12 @@ a {
   width: 100%;
   margin: 0.4em 0 0.4em 0;
 }
+.btn:hover {
+  background-color: rgba(48, 47, 66, 0.05) !important;
+}
+.btn:active {
+  background-color: rgba(48, 47, 66, 0.15) !important;
+}
 .btn.nav-path {
   background-color: #302f42 !important;
   color: white !important;

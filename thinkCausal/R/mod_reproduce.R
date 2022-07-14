@@ -13,7 +13,7 @@ mod_reproduce_ui <- function(id){
 
     downloadButton(
       outputId = ns('analysis_results_button_download'),
-      label = 'Download script',
+      label = 'Download R script',
       style = 'max-width: 300px'
     ),
     downloadButton(
