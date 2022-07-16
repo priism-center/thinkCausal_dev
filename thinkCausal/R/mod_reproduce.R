@@ -40,8 +40,31 @@ mod_reproduce_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    # print the log
+    # the log is created by appending text descriptions of events to store$log
+    output$settings_log_text <- renderText({
+      log <- store$log
+      if (length(log) == 0) log <- "No logged events to display"
+      log <- paste0(log, collapse = '\n\n')
+      return(log)
+    })
+
+    # download the log
+    output$settings_log_download <- downloadHandler(
+      filename <- function() {
+        time <- gsub("-|:| ", "", Sys.time())
+        paste0(time, '_thinkCausal_log.txt')
+      },
+      content <- function(filename){
+        fileConn <- file(filename)
+        log <- paste0(paste0(store$log, collapse = '\n\n'), "\n")
+        writeLines(log, fileConn)
+        close(fileConn)
+      }
+    )
+
     # reproducible script
-    # TODO: this hasn't been tested
+    # TODO: this hasn't been thoroughly tested
     reproducible_script <- reactive({
 
       # TODO: these probably should be stored in realtime and then extracted here
@@ -174,29 +197,6 @@ mod_reproduce_server <- function(id, store){
 
         # create the zip file
         zip(filename, files)
-      }
-    )
-
-    # print the log
-    # the log is created by appending text descriptions of events to store$log
-    output$settings_log_text <- renderText({
-      log <- store$log
-      if (length(log) == 0) log <- "No logged events to display"
-      log <- paste0(log, collapse = '\n\n')
-      return(log)
-    })
-
-    # download the log
-    output$settings_log_download <- downloadHandler(
-      filename <- function() {
-        time <- gsub("-|:| ", "", Sys.time())
-        paste0(time, '_thinkCausal_log.txt')
-      },
-      content <- function(filename){
-        fileConn <- file(filename)
-        log <- paste0(paste0(store$log, collapse = '\n\n'), "\n")
-        writeLines(log, fileConn)
-        close(fileConn)
       }
     )
 

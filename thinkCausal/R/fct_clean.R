@@ -1,3 +1,5 @@
+
+
 #' Clean a string for use in column names
 #'
 #' Cleans up strings for use as column names in dataframes. Makes the following changes:

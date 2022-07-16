@@ -17,7 +17,7 @@ mod_analysis_subgroup_ui <- function(id){
         collapsible = FALSE,
         title = 'Subgroup analysis',
          conditionalPanel(condition = "input.analysis_subgroup_tabs == 'Pre-specified Subgroup Analysis'", ns = ns,
-                          h4("Pre-specified Subgroup Analysis"),
+                          h6("Pre-specified Subgroup Analysis"),
                           p("Examine the treatment effect conditional on the selected pre-specifed subgroup."),
                           br(),
                           selectInput(inputId = ns('analysis_subgroup_prespecifed'),
@@ -27,7 +27,7 @@ mod_analysis_subgroup_ui <- function(id){
                           )
          ),
          conditionalPanel(condition = "input.analysis_subgroup_tabs == 'Search'", ns = ns,
-                          h4("Search covariates for predictors of treatment effect heterogeneity"),
+                          h6("Search covariates for predictors of treatment effect heterogeneity"),
                           p('This regression tree uses covariates as predictors of ICATEs, predictors shown in the tree are helpful in informing exploratory subgroup analyses'),
                           sliderInput(inputId = ns('plotBart_tree_depth'),
                                       label = "Choose a Tree depth:",
@@ -35,7 +35,7 @@ mod_analysis_subgroup_ui <- function(id){
                                       min = 1, max = 3, step = 1)
          ),
          conditionalPanel(condition = "input.analysis_subgroup_tabs == 'Exploratory Subgroup Analysis'", ns = ns,
-                          h4("Exploratory Subgroup Analyses"),
+                          h6("Exploratory Subgroup Analyses"),
                           p("These results are exploratory in nature. Examine the treatment effect conditional on the selected subgroup."),
                           br(),
                           selectInput(inputId = ns('analysis_subgroup_explore'),
@@ -44,7 +44,7 @@ mod_analysis_subgroup_ui <- function(id){
                                       selected = NULL)
          ),
          conditionalPanel(condition = "input.analysis_subgroup_tabs == 'ICATE'", ns = ns,
-                          h4("ICATE plots"),
+                          h6("ICATE plots"),
                           p('Check for heterogenety in the treatment effect by exploring the variation of ICATEs.'),
                           selectInput(inputId = ns('icate_plot_type'),
                                       label = 'Plot type:',

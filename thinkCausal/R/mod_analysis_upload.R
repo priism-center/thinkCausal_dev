@@ -288,9 +288,9 @@ mod_analysis_upload_server <- function(id, store){
                           '\n\ttreatment: ', cols_z,
                           '\n\tresponse: ', cols_y,
                           '\n\tcovariates: ', paste0(cols_x, collapse = '; '),
-                          '\n\tsurvey weight:', cols_weight,
-                          '\n\trandom intercepts:', paste0(cols_ran_eff, collapse = '; '),
-                          '\n\tblocking variable(s):', paste0(cols_block, collapse = '; '))
+                          '\n\tsurvey weight: ', cols_weight,
+                          '\n\trandom intercepts: ', paste0(cols_ran_eff, collapse = '; '),
+                          '\n\tblocking variable(s): ', paste0(cols_block, collapse = '; '))
       store$log <- append(store$log, log_event)
 
       # move to next page

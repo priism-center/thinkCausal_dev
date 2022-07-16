@@ -48,20 +48,20 @@ theme_minimal_no_transparency <- function(base_size = 11, base_family =  "", bas
 #'
 #' @param .data typically store$verified_df
 #' @param .plot_type  one of c('Scatter', 'Histogram', 'Density', 'Boxplot')
-#' @param .x
-#' @param .y
-#' @param .levels
-#' @param .fill
-#' @param .fill_static
-#' @param .size
-#' @param .shape
-#' @param .alpha
-#' @param .vars_pairs
-#' @param .n_bins
-#' @param .jitter
-#' @param .groups
-#' @param .facet
-#' @param .facet_second
+#' @param .x x variable as a string
+#' @param .y y variable as a string
+#' @param .levels factor levels
+#' @param .fill fill color variable as a string
+#' @param .fill_static fill color as a string
+#' @param .size passed to ggplot2::geom_point(size = .size)
+#' @param .shape variable to specify shape type as a string. Passed to ggplot2::geom_point(aes(shape = .shape))
+#' @param .alpha transparency value [0, 1]
+#' @param .vars_pairs deprecated
+#' @param .n_bins number of bins to use in historgram
+#' @param .jitter boolean. Jitter the scatter points
+#' @param .groups grouping variable as a string. Passed to ggplot2::aes(group = .groups)
+#' @param .facet variable (as a string) to use for panel plots
+#' @param .facet_second variable (as a string) to use for panel plots
 #' @param .include_regression one of c("Include", "None")
 #'
 #' @author Joe Marlo and George Perrett

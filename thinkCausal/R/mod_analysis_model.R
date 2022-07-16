@@ -238,12 +238,13 @@ mod_analysis_model_server <- function(id, store){
       # add to log
       log_event <- paste0(
         'Ran BART model with following specification: \n',
-        '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
+        # '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
         '\t', 'Causal estimand: ', input$analysis_model_estimand, '\n',
+        '\t', 'Remove observations without overlap: ', input$analysis_model_support, '\n',
         '\t', 'Common support rule: ', common_support_rule, '\n',
         '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
-        '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
-        '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
+        # '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
+        # '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
         '\t', 'Good model fit: ', store$analysis$model$fit_good
       )
       store$log <- append(store$log, log_event)

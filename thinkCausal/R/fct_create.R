@@ -263,11 +263,11 @@ create_info_icon <- function(label, text){
 
 #' Create plain language interpretation of BART model
 #'
-#' @param .model
-#' @param type
-#' @param treatment
-#' @param units
-#' @param participants
+#' @param .model a bartCause model
+#' @param type 'Causal' or NULL
+#' @param treatment string to use as the treatment name
+#' @param units string to use as the units name
+#' @param participants string to useas the participants name
 #'
 #' @author George Perrett
 #'

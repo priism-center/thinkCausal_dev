@@ -146,6 +146,19 @@ mod_analysis_design_server <- function(id, store){
       store$analysis_design_treatment_participants <- input$treatment_participants
       store$analysis_design_estimand <- input$analysis_design_estimand
 
+      # add to log
+      log_event <- paste0(
+        'Set study design: \n',
+        '\t', 'Causal estimand: ', input$analysis_design_estimand, '\n',
+        '\t', 'Treatment name: ', input$treatment_name, '\n',
+        '\t', 'Outcome units: ', input$treatment_units, '\n',
+        '\t', 'Participants name: ', input$treatment_participants, '\n',
+        '\t', 'Study design: ', input$analysis_design, '\n',
+        '\t', 'Survey weights: ', input$analysis_weights, '\n',
+        '\t', 'Clustered or nested data: ', input$analysis_random_intercept
+      )
+      store$log <- append(store$log, log_event)
+
       # remove saved dataframes if they exist
       # TODO: error here if user goes back and changes the estimand then saves the design
       store <- remove_downstream_data(store, page = 'design')
