@@ -21,22 +21,3 @@ is_cat_or_logical <- function(x){
   is_either <- is_log | is_cat
   return(is_either)
 }
-
-# extract source code of a local function
-extract_code <- function(.function){
-  func <- eval(parse(text = .function))
-  .code <- attributes(attributes(func)$srcref)$srcfile$lines
-  return(.code)
-}
-
-# write individual files containing each functions code
-write_function_files <- function(files, .functions){
-  for (func in .functions){
-    filename <- paste0(func, ".R")
-    functionFile <- file(filename)
-    writeLines(extract_code(func), functionFile)
-    close(functionFile)
-    files <- c(filename, files)
-  }
-  return(files)
-}

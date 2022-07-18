@@ -42,6 +42,7 @@ golem::add_module(name = "home", with_test = FALSE) # Name of the module
 golem::add_css_file('home')
 golem::add_module(name = "learn", with_test = FALSE)
 golem::add_module(name = "reproduce", with_test = FALSE)
+golem::add_fct("reproduce", with_test = TRUE)
 golem::add_module(name = "settings_options", with_test = FALSE)
 golem::add_module(name = "settings_about", with_test = FALSE)
 golem::add_module(name = "settings_reference", with_test = FALSE)

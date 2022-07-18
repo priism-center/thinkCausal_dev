@@ -302,4 +302,3 @@ create_interpretation <- function(.model, type, treatment, units, participants){
   return(text)
 
 }
-
