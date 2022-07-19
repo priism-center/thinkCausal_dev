@@ -14,20 +14,6 @@ mod_learn_estimands_ui <- function(id){
     div(
       class = 'learning-page',
 
-      # load custom css
-      # includeCSS(file.path('www', 'learning', 'estimands', 'css', 'estimands.css')),
-
-      # load custom javascript
-      # tags$script(src = file.path('js', 'libraries', 'd3.v5.js')),
-      # tags$script(src = file.path('js', 'libraries', 'jstat.min.js')),
-
-      # tags$script(src = file.path('learning', 'estimands', 'js', 'namespace.js')),
-      # tags$script(src = file.path('learning', 'estimands', 'js', 'helpers.js')),
-      # tags$script(src = file.path('learning', 'estimands', 'js', 'scrollPlot.js')),
-      # tags$script(src = file.path('learning', 'estimands', 'js', 'buildTable.js')),
-      # tags$script(src = file.path('learning', 'estimands', 'js', 'buildPlot.js')),
-      # tags$script(src = file.path('learning', 'estimands', 'js', 'init.js')),
-
       # UI content for the learning module
       div(
         class = ns('learning-content'), # required

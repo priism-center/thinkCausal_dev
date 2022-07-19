@@ -16,7 +16,7 @@ show_popup <- function(session, ..., size = 's', close_button = NULL, easyClose 
 show_popup_waiting <- function(session){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
-    img(src = file.path('img', 'tree.gif'),
+    img(src = file.path('www', 'img', 'tree.gif'),
         width = "50%"),
     h5("...sometimes this takes a while..."),
   )
@@ -130,7 +130,7 @@ show_popup_model_no_data_warning <- function(session, ns){
 show_popup_fitting_BART_waiting <- function(session){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
-    img(src = file.path('img', 'tree.gif'),
+    img(src = file.path('www', 'img', 'tree.gif'),
         width = "50%"),
     h3('Fitting BART model...'),
     h5("...sometimes this takes a while..."),

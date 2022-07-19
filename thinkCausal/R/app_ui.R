@@ -284,6 +284,11 @@ golem_add_external_resources <- function() {
     # load jquery UI
     tags$script(src = c(href = "//code.jquery.com/ui/1.12.1/jquery-ui.js")),
 
+    # load d3 and jstat
+    tags$script(src = file.path('www', 'js', 'd3.v5.js')),
+    tags$script(src = file.path('www', 'js', 'jstat.min.js')),
+    # tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js'),
+
     # make all links open in a new tab
     tags$base(target = "_blank")
   )
