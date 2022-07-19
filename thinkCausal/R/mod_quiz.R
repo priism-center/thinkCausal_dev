@@ -31,7 +31,7 @@ mod_quiz_ui <- function(id){
 #' quiz Server Functions
 #'
 #' @noRd
-mod_quiz_server <- function(idid_parent = character(0), question_texts, question_prompts, correct_answers, message_correct, message_wrong, message_skipped, embed_quiz = TRUE){
+mod_quiz_server <- function(id, id_parent = character(0), question_texts, question_prompts, correct_answers, message_correct, message_wrong, message_skipped, embed_quiz = TRUE){
   moduleServer( id, function(input, output, session){
     # ns <- session$ns
     ns <- NS(NS(id_parent)(id))

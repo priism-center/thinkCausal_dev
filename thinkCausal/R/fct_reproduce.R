@@ -16,7 +16,7 @@ extract_code <- function(.function){
 # write individual files containing each functions code
 write_function_files <- function(files, .functions){
   for (func in .functions){
-    filename <- paste0(func, ".R")
+    filename <- paste0('R/', func, ".R")
     functionFile <- file(filename)
     writeLines(extract_code(func), functionFile)
     close(functionFile)
@@ -41,11 +41,11 @@ edit_reproducible_script <- function(files, store){
 
 add_data_file_ <- function(script, store){
 
-  filename <- store$analysis$data$filename
+  filename <- file.path('inputs', store$analysis$data$filename)
 
   # replace file name
-  i <- which(script == '#!! file <- filename')
-  script[i] <- glue::glue('file <- "{filename}"')
+  # i <- which(script == '#!! file <- filename')
+  # script[i] <- glue::glue('file <- "{filename}"')
 
   # adjust data reading code
   # TODO: error in here
@@ -58,12 +58,15 @@ add_data_file_ <- function(script, store){
   tryCatch(script[i] <- stringr::str_replace(script[i], 'my_col_names', as.character(store$analysis$data$header)), error = function(e) NULL)
 
   # delete other data reading lines
-  i_other <- purrr::map_int(glue::glue("#!! {setdiff(all_file_types, filetype)}"),
+  other_file_types <- setdiff(all_file_types, filetype)
+  i_other <- purrr::map_int(glue::glue("#!! {other_file_types}"),
                         ~stringr::str_which(script, .x))
   script <- script[-i_other]
 
   return(script)
 }
+
+
 
 remove_section_ <- function(script, section){
   if (section == 'test') script_edited <- script[-2]

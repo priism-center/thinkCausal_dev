@@ -90,7 +90,7 @@ mod_analysis_model_server <- function(id, store){
       cols_continuous <- store$column_types$continuous
       X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
 
-      X_cols <- gsub("X_", '',grep("^X_", colnames(store$verified_df), value = TRUE))
+      X_cols <- gsub("X_", '', grep("^X_", colnames(store$verified_df), value = TRUE))
       X_mods <- X_cols
       #TODO update plot bart to allow for 3 way interactions
       # X_mods <- combn(X_cols, m = 2) %>% t() %>% as.data.frame()

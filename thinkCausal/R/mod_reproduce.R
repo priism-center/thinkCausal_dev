@@ -77,11 +77,15 @@ mod_reproduce_server <- function(id, store){
         owd <- setwd(tempdir())
         on.exit(setwd(owd))
 
-        # browser()
         # copy over template files
-        files <- list.files(app_sys('reproduce'), full.names = TRUE)
+        files <- list.files(app_sys('reproduce'), full.names = TRUE, all.files = TRUE)
         file.copy(files, '.', recursive = TRUE)
-        files_new <- list.files()
+        files_new <- list.files(all.files = TRUE)
+
+        # write thinkCausal internal function files
+        dir.create('R')
+        function_names <- lsf.str("package:thinkCausal")
+        files_new <- write_function_files(files_new, function_names)
 
         # remove extraneous files
 

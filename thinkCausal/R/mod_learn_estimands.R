@@ -32,7 +32,7 @@ mod_learn_estimands_ui <- function(id){
       div(
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
-        # includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_1.md')),
+        includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_1.md')),
         br(),br(),br(),br(),br(),br(),
       ),
 
@@ -42,7 +42,7 @@ mod_learn_estimands_ui <- function(id){
         # text content
         div(
           class = 'estimands-text-along-d3',
-          # includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_ate.md'))
+          includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_ate.md'))
         ),
 
         # d3js content
@@ -58,12 +58,12 @@ mod_learn_estimands_ui <- function(id){
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
         br(),br(),br(),
-        # includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_2.md')),
+        includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_2.md')),
         br()
       ),
 
       # the quiz UI
-      # ui_quiz(id = ns('quiz')),
+      mod_quiz_ui(id = ns('quiz')),
 
       div(
         class = ns('learning-content'), # required
@@ -71,10 +71,10 @@ mod_learn_estimands_ui <- function(id){
         class = ns('learning-content-blur'), # required for blur
         class = 'learning-content-blur', # required for blur
         br(),
-        # includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_attatc.md')),
+        includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_attatc.md')),
         br(),br(),br(),br(),br(),
-        # wellPanel(includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_related.md'))),
-        # includeMarkdown(file.path(store_l_estimands$path_to_here, "markdowns", 'estimands_citations.md'))
+        wellPanel(includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_related.md'))),
+        includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_citations.md'))
       )
     )
   )
@@ -87,11 +87,18 @@ mod_learn_estimands_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    # run the quiz
+    mod_quiz_server(
+      id = "quiz", # this should always be quiz
+      id_parent = module_ids$learn$estimands,
+      question_texts = store_l_estimands$question_texts,
+      question_prompts = store_l_estimands$question_prompts,
+      correct_answers = store_l_estimands$correct_answers,
+      message_correct = store_l_estimands$message_correct,
+      message_wrong = store_l_estimands$message_wrong,
+      message_skipped = store_l_estimands$message_skipped,
+      embed_quiz = TRUE
+    )
+
   })
 }
-
-## To be copied in the UI
-# mod_learn_estimands_ui("learn_estimands_1")
-
-## To be copied in the server
-# mod_learn_estimands_server("learn_estimands_1")

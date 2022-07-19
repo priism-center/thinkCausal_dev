@@ -183,7 +183,6 @@ mod_analysis_visualize_ui <- function(id){
         width = 9,
         collapsible = FALSE,
         title = "Plots",
-
         plotOutput(
           outputId = ns('analysis_eda_plot'),
           height = 600,
