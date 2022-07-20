@@ -60,14 +60,15 @@ mod_learn_ui <- function(id){
         bs4Dash::box(
           width = 4,
           collapsible = FALSE,
-          title = 'Post treatment variables',
+          title = 'Randomization',
           tagList(
             shiny::actionLink(
               inputId = ns('learn_randomization_img'),
               img(src = 'www/img/thumbnails/randomization.png',
                   width = '100%'),
             ),
-            "Randomization balances groups on both observed and unobserved characteristics. Learn how this mechanism is exploited for causal inference."
+            "Coming soon"
+            # "Randomization balances groups on both observed and unobserved characteristics. Learn how this mechanism is exploited for causal inference."
           )
         ),
         bs4Dash::box(
@@ -109,7 +110,7 @@ mod_learn_server <- function(id, store){
     ns <- session$ns
 
     # links from learn home page to each learn article
-    selectors <- c('learn_estimands', 'learn_post_treatment')
+    selectors <- c('learn_estimands', 'learn_post_treatment', 'learn_potential_outcomes')
     purrr::map(selectors, function(sel){
       observeEvent(input[[glue::glue('{sel}_img')]], {
         bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = sel)

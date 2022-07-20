@@ -32,6 +32,7 @@ app_server <- function(input, output, session) {
   mod_learn_server(module_ids$learn$home, store)
   mod_learn_estimands_server(module_ids$learn$estimands)
   mod_learn_post_treatment_server(module_ids$learn$post_treatment)
+  mod_learn_potential_outcomes_server(module_ids$learn$potential_outcomes)
 
   # analysis
   store <- mod_analysis_design_server(module_ids$analysis$design, store)

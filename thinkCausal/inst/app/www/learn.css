@@ -9,15 +9,20 @@
   transform: scale(1.03);
 }
 
-
-
 /* wrapper on each learning page */
+.learning-page {
+  background: #fff;
+  padding: 1em 1em 5em 1em;
+  border-radius: 0.75em;
+}
+/*
 @media only screen and (max-width: 769px) {
   .learning-page {
     padding: 0;
     margin: 0;
   }
 }
+*/
 
 /* controls the quiz */
 .quiz-container {

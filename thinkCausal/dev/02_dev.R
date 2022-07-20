@@ -50,7 +50,7 @@ golem::add_module(name = "help", with_test = FALSE)
 golem::add_module(name = 'quiz', with_test = TRUE)
 golem::add_css_file('confetti')
 
-# analysis modules
+## analysis modules
 golem::add_module(name = "analysis_design", with_test = TRUE)
 golem::add_module(name = "analysis_upload", with_test = TRUE)
 golem::add_css_file('analysis-upload')
@@ -81,7 +81,13 @@ golem::add_js_file('6-init', dir = 'inst/app/www/learn/estimands/js')
 
 # post treatment variables
 golem::add_module(name = "learn_post_treatment", with_test = FALSE)
+golem::add_fct('learn_post_treatment', with_test = FALSE)
 golem::add_css_file("learn-post-treatment", dir = 'inst/app/www/learn/post-treatment')
+
+# potential outcomes
+golem::add_module(name = "learn_potential_outcomes", with_test = FALSE)
+golem::add_css_file("learn-potential-outcomes", dir = 'inst/app/www/learn/potential-outcomes')
+
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*

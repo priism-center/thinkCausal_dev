@@ -60,6 +60,10 @@ app_ui <- function(request) {
             tabName = 'learn_post_treatment',
             mod_learn_post_treatment_ui(module_ids$learn$post_treatment)
           ),
+          bs4Dash::tabItem(
+            tabName = 'learn_potential_outcomes',
+            mod_learn_potential_outcomes_ui(module_ids$learn$potential_outcomes)
+          ),
 
           # analysis pages
           bs4Dash::tabItem(
@@ -153,7 +157,15 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Post treatment variables',
               tabName = 'learn_post_treatment'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Potential outcomes',
+              tabName = 'learn_potential_outcomes'
             )
+            # bs4Dash::menuSubItem(
+            #   text = 'Randomization',
+            #   tabName = 'learn_randomization'
+            # )
           ),
 
           # analysis pages
