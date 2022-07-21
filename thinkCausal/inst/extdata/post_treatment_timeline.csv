@@ -1,0 +1,7 @@
+occured,measured,status,variable,.yend
+-2.5,7.5,pre-treatment,birth weight,0.1
+-2.3,7.3,pre-treatment,birth zip-code,-0.12
+-1,-1,pre-treatment,income,0.1
+-1.2,-1.2,pre-treatment,parent education,-0.1
+5.5,5.5,post-treatment,1st grade reading level,0.1
+8.2,8.2,outcome,2nd grade reading level,0.14

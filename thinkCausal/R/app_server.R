@@ -31,7 +31,7 @@ app_server <- function(input, output, session) {
   # learn
   mod_learn_server(module_ids$learn$home, store)
   mod_learn_estimands_server(module_ids$learn$estimands)
-  mod_learn_post_treatment_server(module_ids$learn$post_treatment)
+  mod_learn_post_treatment_server(module_ids$learn$post_treatment, store)
   mod_learn_potential_outcomes_server(module_ids$learn$potential_outcomes)
 
   # analysis
@@ -45,7 +45,6 @@ app_server <- function(input, output, session) {
   store <- mod_analysis_diagnostics_server(module_ids$analysis$diagnostics, store)
   store <- mod_analysis_results_server(module_ids$analysis$results, store)
   store <- mod_analysis_subgroup_server(module_ids$analysis$subgroup, store)
-
 
   # toggle side bar help menu
   # bs4Dash::updateControlbar(id = "help-slideover", session = session)

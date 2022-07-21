@@ -66,7 +66,6 @@ mod_reproduce_server <- function(id, store){
     output$analysis_results_button_download <- downloadHandler(
       filename <- function() {
         'thinkCausal.zip'
-        # paste("output", "zip", sep=".")
       },
 
       content <- function(filename) {

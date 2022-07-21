@@ -88,6 +88,7 @@ golem::add_css_file("learn-post-treatment", dir = 'inst/app/www/learn/post-treat
 golem::add_module(name = "learn_potential_outcomes", with_test = FALSE)
 golem::add_css_file("learn-potential-outcomes", dir = 'inst/app/www/learn/potential-outcomes')
 
+# NOTE: when creating new learning modules, its best to use the estimands or post treatment as a template
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
