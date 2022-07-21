@@ -40,7 +40,7 @@ mod_learn_test_ui <- function(id){
 #' learn_test Server Functions
 #'
 #' @noRd
-mod_learn_test_server <- function(id, input_global){
+mod_learn_test_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -61,12 +61,14 @@ mod_learn_test_server <- function(id, input_global){
       ids <- glue::glue('text-{1:3}')
       names(items) <- glue::glue('scroll-text-{ids}')
 
-      # browser()
-
-      selected_item <- items[input_global$scroll_index]
-      # selected_item <- items[1]
+      # chose item based on scroll position from JavaScript
+      scroll_index <- input$scroll_index
+      if (is.null(scroll_index)) scroll_index <- 1
+      selected_item <- items[scroll_index]
 
       html <- renderPlot(selected_item)
+
+      # TODO: should render all the plots but only {display: show} one of them
 
       return(html)
     })

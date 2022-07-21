@@ -47,9 +47,9 @@ scroll_ui_visual <- function(outputId){
 #   )
 # }
 
-scroll_render <- function(...){
-  shiny::renderUI(...)
-}
+# scroll_render <- function(...){
+#   shiny::renderUI(...)
+# }
 
 # scroll_render <- function(expr, env = parent.frame()){
 #
