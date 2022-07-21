@@ -54,7 +54,7 @@ golem::add_css_file('confetti')
 golem::add_fct(name = 'scrollytell', with_test = TRUE)
 golem::add_css_file('scrollytell')
 golem::add_js_file('scrollytell')
-golem::add_js_input_binding('test')
+golem::add_js_input_binding('scrollytell')
 
 ## analysis modules
 golem::add_module(name = "analysis_design", with_test = TRUE)

@@ -1,1 +1,26 @@
- 
+
+.scroll-container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1000px;
+  min-width: 700px;
+  line-height: 1.75em;
+}
+
+.scroll-text {
+  padding: 0px 50px 0 0;
+  width: 40%;
+}
+
+.scroll-text-section {
+  margin-bottom: 10em;
+}
+
+.scroll-visual {
+  width: 60%;
+  height: 650px; /* should match height of d3 plot or d3 plot plus appended table */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 30px;
+  padding: 20px 0 0 0;
+}
