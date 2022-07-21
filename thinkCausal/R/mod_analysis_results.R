@@ -116,7 +116,7 @@ mod_analysis_results_server <- function(id, store){
         mutate(rownames = rownames(.)) %>%
         dplyr::select(' ' = rownames, 1:4) %>%
         rename_all(tools::toTitleCase) %>%
-        # TODO: round
+        mutate(across(is.numeric, round, 3)) %>%
         reactable::reactable()
 
       return(tab)

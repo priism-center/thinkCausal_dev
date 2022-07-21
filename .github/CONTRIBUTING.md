@@ -11,46 +11,4 @@ Contributions should be made via the [pull request process (PR)](https://docs.gi
 
 Feel free to raise an [issue](https://github.com/gperrett/thinkCausal_dev/issues) if you're uncomfortable with the PR process and only have a small or isolated change.
 
-## Code guidelines
-
-thinkCausal is a mix of 'base' R and [`tidyverse`](https://www.tidyverse.org/) code. We try to adhere to the [tidyverse style guide](https://style.tidyverse.org/) for code formatting. The easiest way to to format ~90% of your R code is `Code -> Reformat Code` within Rstudio.
-
-We use [`roxygen2`](https://roxygen2.r-lib.org/) for documenting functions and [`testthat`](https://testthat.r-lib.org/) for unit testing. Please familiarize yourself with both and feel free to reach out with an [issue](https://github.com/gperrett/thinkCausal_dev/issues) if you have any questions.
-
-Independent lessons should be written as [modules](https://shiny.rstudio.com/articles/modules.html). Any global variables (e.g. a dataframe read in from csv) should be stored in a list specific to that module. E.g. the Post-treatment module stores the dataframe `plants_df` within a module-specific `list()` named `store_l_post_treatment` like `store_l_post_treatment$plants_df <- readr::read_csv('...')`.
-
-## Dependencies
-
-We use [`renv`](https://rstudio.github.io/renv/index.html) to manage dependencies. You can use `renv::restore()` to install all the necessary packages. Please limit adding additional packages.
-
-## Content structure
-
-The core Shiny app is within the `/thinkCausal` directory. Drafts for articles and vignettes should be stored within the `/writing` directory. If you're a NYU student, please use the `/student_work` directory for storing draft work.
-
-    .
-    ├── student_work            # Personal store for students
-    ├── thinkCausal             # Main project directory for Shiny app
-    │   ├── data                # Test data
-    │   ├── man                 # Compiled manual for functions
-    │   ├── modules
-    │   │  ├── analysis         # Modules for the analysis section
-    │   │  └── learning         # Modules for each article the learning section
-    │   ├── R                   # Functions
-    │   ├── renv
-    │   ├── tests               # Unit tests
-    │   ├── UI                  # Scripts that build the UI
-    │   │  ├── concepts         # Deprecated
-    │   │  ├── headers          # UI code that defines the top nav bar hierarchy
-    │   │  ├── markdowns        # Depreacted
-    │   │  └── pages            # UI code that defines each page
-    │   ├── www                 # Browser-side code such as CSS, JavaScript, imgs
-    │   ├── DESCRIPTION         # Unused but required for required for documenting R functions via devtools
-    │   ├── NAMESPACE           # Unused but required for required for documenting R functions via devtools
-    │   ├── NEWS.md             # Descriptions of major updates in user-readable language
-    │   ├── global.R            # Code that is run prior to launching the Shiny app
-    │   ├── server.R            # Server-side code
-    │   └── UI.R                # Main UI framework
-    ├── writing                 # Store for vignettes and similar content
-    ├── LICENSE
-    ├── screenshot.png
-    └── README.md
+## More information in the [wiki](https://github.com/priism-center/thinkCausal_dev/wiki)
