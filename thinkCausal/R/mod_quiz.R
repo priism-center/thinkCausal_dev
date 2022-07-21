@@ -19,7 +19,7 @@
 mod_quiz_ui <- function(id){
   ns <- NS(id)
   tagList(
-    shinyjs::useShinyjs(),
+    # shinyjs::useShinyjs(),
     div(
       id = ns('quiz-container'),
       class = 'quiz-container',

@@ -118,7 +118,6 @@ mod_analysis_results_server <- function(id, store){
         rename_all(tools::toTitleCase) %>%
         # TODO: round
         reactable::reactable()
-        # create_datatable(paging = FALSE, info = FALSE, selection = "none")
 
       return(tab)
     })

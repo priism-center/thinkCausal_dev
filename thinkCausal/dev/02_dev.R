@@ -50,6 +50,12 @@ golem::add_module(name = "help", with_test = FALSE)
 golem::add_module(name = 'quiz', with_test = TRUE)
 golem::add_css_file('confetti')
 
+# scrollytell
+golem::add_fct(name = 'scrollytell', with_test = TRUE)
+golem::add_css_file('scrollytell')
+golem::add_js_file('scrollytell')
+golem::add_js_input_binding('test')
+
 ## analysis modules
 golem::add_module(name = "analysis_design", with_test = TRUE)
 golem::add_module(name = "analysis_upload", with_test = TRUE)
@@ -89,6 +95,9 @@ golem::add_css_file("learn-post-treatment", dir = 'inst/app/www/learn/post-treat
 golem::add_module(name = "learn_potential_outcomes", with_test = FALSE)
 golem::add_css_file("learn-potential-outcomes", dir = 'inst/app/www/learn/potential-outcomes')
 
+# test module TODO: delete
+golem::add_module(name = 'learn_test', with_test = FALSE)
+
 ## Add helper functions ----
 ## Creates fct_* and utils_*
 golem::add_fct("ui", with_test = FALSE)
@@ -99,7 +108,7 @@ golem::add_fct('detect', with_test = TRUE)
 golem::add_fct('create', with_test = TRUE)
 golem::add_fct('popup', with_test = FALSE)
 golem::add_fct('convert', with_test = TRUE)
-golem::add_utils('utils', with_test = FALSE)
+golem::add_utils('utils', with_test = TRUE)
 golem::add_fct('model', with_test = TRUE)
 
 ## External resources

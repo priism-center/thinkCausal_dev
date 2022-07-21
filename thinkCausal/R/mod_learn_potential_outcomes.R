@@ -12,7 +12,7 @@ mod_learn_potential_outcomes_ui <- function(id){
   tagList(
     div(
       class = 'learning-page',
-      # useShinyjs(),
+      # shinyjs::useShinyjs(),
 
       # load custom css
       # includeCSS(file.path('www', 'learning', 'potential-outcomes', 'css', 'potential-outcomes.css')),

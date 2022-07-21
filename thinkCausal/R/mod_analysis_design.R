@@ -10,7 +10,7 @@
 mod_analysis_design_ui <- function(id){
   ns <- NS(id)
   tagList(
-    shinyjs::useShinyjs(),
+    # shinyjs::useShinyjs(),
 
     fluidRow(
       bs4Dash::box(

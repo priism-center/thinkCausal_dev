@@ -64,6 +64,10 @@ app_ui <- function(request) {
             tabName = 'learn_potential_outcomes',
             mod_learn_potential_outcomes_ui(module_ids$learn$potential_outcomes)
           ),
+          bs4Dash::tabItem(
+            tabName = 'learn_test',
+            mod_learn_test_ui('test')
+          ),
 
           # analysis pages
           bs4Dash::tabItem(
@@ -161,6 +165,10 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Potential outcomes',
               tabName = 'learn_potential_outcomes'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'test',
+              tabName = 'learn_test'
             )
             # bs4Dash::menuSubItem(
             #   text = 'Randomization',
@@ -286,6 +294,9 @@ golem_add_external_resources <- function() {
       path = app_sys("app/www"),
       app_title = "thinkCausal"
     ),
+
+    # enable shinyjs
+    shinyjs::useShinyjs(),
 
     # Add here other external resources
     tags$script(src = 'www/ui.js'),

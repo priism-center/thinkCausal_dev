@@ -14,6 +14,8 @@ mod_learn_post_treatment_ui <- function(id){
     div(
       class = 'learning-page',
 
+      shiny::withMathJax(),
+
       # the quiz UI
       mod_quiz_ui(id = ns('quiz')),
 

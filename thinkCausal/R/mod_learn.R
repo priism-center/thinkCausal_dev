@@ -10,7 +10,7 @@
 mod_learn_ui <- function(id){
   ns <- NS(id)
   tagList(
-    shinyjs::useShinyjs(),
+    # shinyjs::useShinyjs(),
 
     div(
       class = 'learn-grid',
