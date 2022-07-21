@@ -6,6 +6,7 @@ thinkCausal-old/rsconnect
 
 # vscode workspaces
 *.code-workspace
+.vscode
 
 # History files
 .Rhistory

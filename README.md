@@ -1,4 +1,4 @@
-# thinkCausal <img src="thinkCausal/www/img/logo/thinkCausal_logo.png" align="right" width="120" />
+# thinkCausal <img src="thinkCausal/inst/app/www/img/thinkCausal_logo.png" align="right" width="120" />
 
 <!-- badges: start -->
 [![GitHub license](https://img.shields.io/github/license/gperrett/thinkCausal_dev?style=flat-square)](https://github.com/gperrett/thinkCausal_dev/blob/master/LICENSE)
