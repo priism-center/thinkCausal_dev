@@ -121,9 +121,3 @@ mod_learn_server <- function(id, store){
 
   })
 }
-
-## To be copied in the UI
-# mod_learn_ui("learn_1")
-
-## To be copied in the server
-# mod_learn_server("learn_1")

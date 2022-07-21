@@ -120,6 +120,16 @@
       "Hash": "c39fbec8a30d23e721980b8afb31984c",
       "Requirements": []
     },
+    "bartCause": {
+      "Package": "bartCause",
+      "Version": "1.0-4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "1ea77f8e2aeb7f7448bed8a8cca59997",
+      "Requirements": [
+        "dbarts"
+      ]
+    },
     "base64enc": {
       "Package": "base64enc",
       "Version": "0.1-3",
@@ -342,6 +352,14 @@
       "Hash": "36b67b5adf57b292923f5659f5f0c853",
       "Requirements": []
     },
+    "dbarts": {
+      "Package": "dbarts",
+      "Version": "0.9-20",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c01631750a7e38725f5d356c9c20b925",
+      "Requirements": []
+    },
     "desc": {
       "Package": "desc",
       "Version": "1.4.1",
@@ -524,6 +542,17 @@
         "rstudioapi",
         "sys",
         "zip"
+      ]
+    },
+    "ggdendro": {
+      "Package": "ggdendro",
+      "Version": "0.1.22",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "bd0785a22c1d8eb187df2d06fab4d906",
+      "Requirements": [
+        "MASS",
+        "ggplot2"
       ]
     },
     "ggplot2": {
@@ -1019,6 +1048,21 @@
         "withr"
       ]
     },
+    "plotBart": {
+      "Package": "plotBart",
+      "Version": "0.1.7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "ffc8e25010ac0826edd5227f8891e93e",
+      "Requirements": [
+        "bartCause",
+        "dplyr",
+        "ggdendro",
+        "ggplot2",
+        "rpart",
+        "tidyr"
+      ]
+    },
     "png": {
       "Package": "png",
       "Version": "0.1-7",
@@ -1494,6 +1538,26 @@
         "pillar",
         "pkgconfig",
         "rlang",
+        "vctrs"
+      ]
+    },
+    "tidyr": {
+      "Package": "tidyr",
+      "Version": "1.1.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c8fbdbd9fcac223d6c6fe8e406f368e1",
+      "Requirements": [
+        "cpp11",
+        "dplyr",
+        "ellipsis",
+        "glue",
+        "lifecycle",
+        "magrittr",
+        "purrr",
+        "rlang",
+        "tibble",
+        "tidyselect",
         "vctrs"
       ]
     },

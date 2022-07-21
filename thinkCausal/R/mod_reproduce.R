@@ -152,9 +152,3 @@ mod_reproduce_server <- function(id, store){
 
   })
 }
-
-## To be copied in the UI
-# mod_reproduce_ui("reproduce_1")
-
-## To be copied in the server
-# mod_reproduce_server("reproduce_1")
