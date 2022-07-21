@@ -66,6 +66,7 @@ golem::add_module(name = "analysis_subgroup", with_test = TRUE)
 golem::add_css_file('analysis-subgroup')
 
 ## learning modules
+# NOTE: when creating new learning modules, its best to use the estimands or post treatment as a template
 golem::add_css_file('learn')
 
 # estimands
@@ -87,8 +88,6 @@ golem::add_css_file("learn-post-treatment", dir = 'inst/app/www/learn/post-treat
 # potential outcomes
 golem::add_module(name = "learn_potential_outcomes", with_test = FALSE)
 golem::add_css_file("learn-potential-outcomes", dir = 'inst/app/www/learn/potential-outcomes')
-
-# NOTE: when creating new learning modules, its best to use the estimands or post treatment as a template
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*

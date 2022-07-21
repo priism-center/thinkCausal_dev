@@ -83,7 +83,7 @@ mod_reproduce_server <- function(id, store){
 
         # write thinkCausal internal function files
         dir.create('R')
-        function_names <- lsf.str("package:thinkCausal")
+        function_names <- lsf.str("package:thinkCausal") # this doesn't work when running from a package
         files_new <- write_function_files(files_new, function_names)
 
         # remove extraneous files
