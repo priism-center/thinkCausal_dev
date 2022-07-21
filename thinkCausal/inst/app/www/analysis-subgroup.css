@@ -1,0 +1,15 @@
+
+#analysis_subgroup-analysis_subgroup_tabs .nav-link {
+  margin: 0.5em;
+}
+
+#analysis_subgroup-analysis_subgroup_tabs .nav-link:hover {
+  color: #787878;
+  background: #f2f2f2;
+  border-color: #f2f2f2;
+}
+
+#analysis_subgroup-analysis_subgroup_tabs .nav-link.active:hover {
+  color: #fff !important;
+    border-color: #ae4ec2;
+}

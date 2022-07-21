@@ -1,0 +1,116 @@
+
+body {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  color: #636363;
+  font-weight: 300;
+}
+
+a {
+  color: #84119c;
+}
+
+#sideBarContainer {
+  background: #302F42;
+
+}
+
+#sideBarContainer .nav-link {
+  color: #fff !important;;
+}
+.nav-link.active {
+  background: #ae4ec2 !important;
+}
+
+.btn-circle, .btn-circle:hover, .btn-circle:active {
+  background: #ae4ec2 !important;
+  border: none;
+}
+.btn-circle:hover {
+  filter: brightness(0.9)
+}
+
+.btn {
+  background-color: rgba(48, 47, 66, 0) !important;
+  border-radius: 3;
+  box-shadow: none;
+  border: 1px solid gray;
+  color: rgba(48, 47, 66, 1) !important;
+  font-weight: 300;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
+  display: inline-block;
+  padding: 10px;
+  width: 100%;
+  margin: 0.4em 0 0.4em 0;
+}
+.btn:hover {
+  background-color: rgba(48, 47, 66, 0.05) !important;
+}
+.btn:active {
+  background-color: rgba(48, 47, 66, 0.15) !important;
+}
+.btn.nav-path {
+  background-color: #302f42 !important;
+  color: white !important;
+  border: 0px
+}
+.btn.nav-path:hover {
+  background-color: #424159 !important;
+}
+.btn.nav-path:active {
+  background-color: #54536e !important;
+}
+
+footer {
+  padding: 0.6em !important;
+}
+footer > a{
+  color: #a1a1a1;
+}
+footer > a:hover{
+  filter: brightness(70%);
+  color: #a1a1a1 !important;
+}
+
+.tab-pane > h1 {
+  margin-bottom: 0.7em;
+}
+
+/* help side bar menu */
+#controlbar-toggle > i {
+  color: #fff;
+}
+#controlbar-toggle:hover {
+  filter: brightness(0.7)
+}
+#controlbar-toggle:active {
+  filter: brightness(0.5)
+}
+#controlbar-toggle {
+  background: #302f42;
+  border-radius: 0.3em;
+}
+#help-slideover {
+  padding: 1rem;
+  -webkit-box-shadow: -20px 0px 50px rgba(74, 74, 74, 0.5);
+  -moz-box-shadow: -20px 0px 50px rgba(74, 74, 74, 0.5);
+  box-shadow: -20px 0px 50px rgba(74, 74, 74, 0.5);
+}
+
+.dimmed {
+  position: relative;
+  filter: blur(2px);
+}
+.dimmed:after {
+  content: " ";
+  z-index: 10;
+  display: block;
+  position: absolute;
+  height: max(100%, 200px);
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+}

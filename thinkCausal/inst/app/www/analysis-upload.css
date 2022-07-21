@@ -1,0 +1,20 @@
+ #upload_file_div .form-control {
+  background-color: rgba(48, 47, 66, 0) !important;
+  border-radius: 3;
+  box-shadow: none;
+  border: 1px solid gray;
+  color: rgba(48, 47, 66, 1) !important;
+  font-weight: 300;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
+  display: inline-block;
+  padding: 10px;
+  height: 46px;
+  margin: 0.4em 0 0.4em 0;
+}
+.progress-bar {
+  background-color: #302f42 !important;
+}
+
