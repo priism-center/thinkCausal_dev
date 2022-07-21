@@ -60,41 +60,43 @@ mod_learn_ui <- function(id){
         bs4Dash::box(
           width = 4,
           collapsible = FALSE,
-          title = 'Randomization',
+          title = 'Coming soon: Randomization',
+          class = 'learning-content-blur',
           tagList(
             shiny::actionLink(
               inputId = ns('learn_randomization_img'),
               img(src = 'www/img/thumbnails/randomization.png',
                   width = '100%'),
             ),
-            "Coming soon"
-            # "Randomization balances groups on both observed and unobserved characteristics. Learn how this mechanism is exploited for causal inference."
+            "Randomization balances groups on both observed and unobserved characteristics. Learn how this mechanism is exploited for causal inference."
           )
         ),
         bs4Dash::box(
           width = 4,
           collapsible = FALSE,
-          title = 'Bias and efficiency',
+          title = 'Coming soon: Bias and efficiency',
+          class = 'learning-content-blur',
           tagList(
             shiny::actionLink(
               inputId = ns('learn_balance_img'),
               img(src = 'www/img/thumbnails/balance.png',
                   width = '100%'),
             ),
-            "Coming soon"
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
           )
         ),
         bs4Dash::box(
           width = 4,
           collapsible = FALSE,
-          title = 'Bayesian Additive Regression Trees',
+          title = 'Coming soon: BART', #Bayesian Additive Regression Trees',
+          class = 'learning-content-blur',
           tagList(
             shiny::actionLink(
               inputId = ns('learn_bart_img'),
               img(src = 'www/img/thumbnails/decision_tree.png',
                   width = '100%'),
             ),
-            "Coming soon"
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.'
           )
         )
       )
