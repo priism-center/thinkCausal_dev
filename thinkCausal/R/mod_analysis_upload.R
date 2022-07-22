@@ -47,6 +47,11 @@ mod_analysis_upload_ui <- function(id){
           label = "Data contains a header row",
           value = TRUE
         ),
+        checkboxInput(
+          inputId = ns("analysis_upload_test_data"),
+          label = "Use lalonde test data",
+          value = FALSE
+        ),
         actionButton(inputId = ns('analysis_upload_help'),
                      label = 'Help me'),
         actionButton(
@@ -81,61 +86,73 @@ mod_analysis_upload_server <- function(id, store){
 
     # read in the uploaded file
     uploaded_df <- reactive({
-      # TODO: test all the file types (e.g. stata is only stata 15 or older)
-      # TODO: what about tsv files?
-      # TODO: add parsing failures to log
-      req(input$analysis_upload_data_upload)
 
-      # extract the filepath and the filetype
-      filepath <- input$analysis_upload_data_upload$datapath
-      filetype <- tools::file_ext(filepath)
+      if (input$analysis_upload_test_data){
 
-      # stop if not one of the accepted file types
-      # this should be caught by fileInput() on the UI side
-      accepted_filetypes <- c('csv', 'txt', 'xlsx', 'dta', 'sav')
-      validate(need(
-        filetype %in% accepted_filetypes,
-        paste(
-          'Filetype not accepted. Only accept ',
-          paste0(accepted_filetypes, collapse = ', ')
+        uploaded_file <- readr::read_csv(
+          file = app_sys('extdata', 'lalonde.csv', mustWork = TRUE),
+          col_names = TRUE
         )
-      ))
 
-      tryCatch({
+      } else {
 
-        # if it's a txt file then ask the user what the delimiter is
-        if (filetype == 'txt'){
-          output$show_delim <- reactive(TRUE)
-          outputOptions(output, "show_delim", suspendWhenHidden = FALSE)
-          req(input$analysis_upload_data_delim_value)
-        } else {
-          output$show_delim <- reactive(FALSE)
-        }
+        # TODO: test all the file types (e.g. stata is only stata 15 or older)
+        # TODO: what about tsv files?
+        # TODO: add parsing failures to log
+        req(input$analysis_upload_data_upload)
 
-        # upload the file based on its filetype
-        if (filetype == "csv"){
-          uploaded_file <- readr::read_csv(
-            file = filepath,
-            col_names = input$analysis_upload_data_header
+        # extract the filepath and the filetype
+        filepath <- input$analysis_upload_data_upload$datapath
+        filetype <- tools::file_ext(filepath)
+
+        # stop if not one of the accepted file types
+        # this should be caught by fileInput() on the UI side
+        accepted_filetypes <- c('csv', 'txt', 'xlsx', 'dta', 'sav')
+        validate(need(
+          filetype %in% accepted_filetypes,
+          paste(
+            'Filetype not accepted. Only accept ',
+            paste0(accepted_filetypes, collapse = ', ')
           )
-        } else if (filetype == 'dta'){
-          uploaded_file <- readstata13::read.dta13(file = filepath)
-        } else if (filetype == 'xlsx'){
-          uploaded_file <- openxlsx::read.xlsx(xlsxFile = filepath)
-        } else if (filetype == 'txt'){
-          uploaded_file <- readr::read_delim(
-            file = filepath,
-            delim = input$analysis_upload_data_delim_value,
-            col_names = input$analysis_upload_data_header
-          )
-        } else if (filetype == 'sav'){
-          uploaded_file <- Hmisc::spss.get(file = filepath)
-        } else stop("File type is invalid")
-      },
-      error = function(e) {
-        # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
-        stop(safeError(e))
-      })
+        ))
+
+        tryCatch({
+
+          # if it's a txt file then ask the user what the delimiter is
+          if (filetype == 'txt'){
+            output$show_delim <- reactive(TRUE)
+            outputOptions(output, "show_delim", suspendWhenHidden = FALSE)
+            req(input$analysis_upload_data_delim_value)
+          } else {
+            output$show_delim <- reactive(FALSE)
+          }
+
+          # upload the file based on its filetype
+          if (filetype == "csv"){
+            uploaded_file <- readr::read_csv(
+              file = filepath,
+              col_names = input$analysis_upload_data_header
+            )
+          } else if (filetype == 'dta'){
+            uploaded_file <- readstata13::read.dta13(file = filepath)
+          } else if (filetype == 'xlsx'){
+            uploaded_file <- openxlsx::read.xlsx(xlsxFile = filepath)
+          } else if (filetype == 'txt'){
+            uploaded_file <- readr::read_delim(
+              file = filepath,
+              delim = input$analysis_upload_data_delim_value,
+              col_names = input$analysis_upload_data_header
+            )
+          } else if (filetype == 'sav'){
+            uploaded_file <- Hmisc::spss.get(file = filepath)
+          } else stop("File type is invalid")
+        },
+        error = function(e) {
+          # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
+          stop(safeError(e))
+        })
+
+      }
 
       # clean column names; bad names will crash the server
       colnames(uploaded_file) <- clean_names(colnames(uploaded_file))
