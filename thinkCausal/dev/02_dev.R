@@ -94,8 +94,7 @@ golem::add_css_file("learn-post-treatment", dir = 'inst/app/www/learn/post-treat
 golem::add_module(name = "learn_potential_outcomes", with_test = FALSE)
 golem::add_css_file("learn-potential-outcomes", dir = 'inst/app/www/learn/potential-outcomes')
 
-# test module TODO: delete
-golem::add_module(name = 'learn_test', with_test = FALSE)
+# scrollytell example
 golem::add_module(name = 'learn_scrolly_example', with_test = FALSE)
 
 ## Add helper functions ----

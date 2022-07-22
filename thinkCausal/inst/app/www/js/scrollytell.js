@@ -3,13 +3,13 @@
 scrolly = {}
 scrolly.emphasizeText = function(moduleId, index){
   // de-emphasize this text
-  d3.selectAll(`.${moduleId}-scroll-text-section`)
-      .style('filter', 'opacity(0.2)')
+  $(`.${moduleId}-scroll-text-section`).css('filter', 'opacity(0.2)')
+
   // emphasize this text
-  d3.selectAll(`#${moduleId}-text-${index+1}-scroll-text-section`)
-      .style('filter', null)
+  $(`#${moduleId}-text-${index+1}-scroll-text-section`).css('filter', 'none')
+
 }
-scrolly.scroll = function(moduleId, state){
+scrolly.scroll = function(moduleId){
 
   // get the positions of section divs relative to the top of the viewport
   let positions = $(`.${moduleId}-scroll-text-section`).map(function() {
@@ -25,8 +25,8 @@ scrolly.scroll = function(moduleId, state){
 
   // show/hide visual if state changed
   if (index != window.scrolly[`plotState${moduleId}`]){
-    $(`#${moduleId}-scroll_visual > *`).hide();
-    $(`#${moduleId}-scroll_visual > :nth-child(${index+1})`).show();
+    $(`#${moduleId}-scroll_visual > *`).css('visibility', 'hidden').hide();
+    $(`#${moduleId}-scroll_visual > :nth-child(${index+1})`).css('visibility', 'visible').show();
     scrolly.emphasizeText(moduleId, index);
     window.scrolly[`plotState${moduleId}`] = index;
   }

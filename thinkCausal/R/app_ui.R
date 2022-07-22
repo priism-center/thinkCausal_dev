@@ -65,12 +65,8 @@ app_ui <- function(request) {
             mod_learn_potential_outcomes_ui(module_ids$learn$potential_outcomes)
           ),
           bs4Dash::tabItem(
-            tabName = 'learn_test',
-            mod_learn_test_ui('test')
-          ),
-          bs4Dash::tabItem(
             tabName = 'learn_scrolly',
-            mod_learn_test_ui('learn_scrolly')
+            mod_learn_scrolly_example_ui('learn_scrolly')
           ),
 
           # analysis pages
@@ -171,11 +167,7 @@ app_ui <- function(request) {
               tabName = 'learn_potential_outcomes'
             ),
             bs4Dash::menuSubItem(
-              text = 'Scrollytell test',
-              tabName = 'learn_test'
-            ),
-            bs4Dash::menuSubItem(
-              text = 'Scrollytell test2',
+              text = 'Scrollytell example',
               tabName = 'learn_scrolly'
             )
             # bs4Dash::menuSubItem(
@@ -307,7 +299,6 @@ golem_add_external_resources <- function() {
     shinyjs::useShinyjs(),
 
     # Add here other external resources
-    tags$script(src = 'www/ui.js'),
 
     # download roboto font
     tags$link(rel = "stylesheet", type = "text/css", href = "//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic"),
