@@ -16,7 +16,7 @@
   margin-bottom: 10em;
 }
 
-.scroll-visual {
+.scroll-visual-container {
   width: 60%;
   height: 650px; /* should match height of the visual */
   position: -webkit-sticky;

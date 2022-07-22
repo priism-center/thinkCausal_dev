@@ -1,33 +1,32 @@
 #' Create a scrollytell
 #'
-#' See mod_learn_test.R for an example. Requires scrollytell.css and scrollytell.js
-#'
-#' @description A fct function
+#' @ description See mod_learn_scrolly_example.R for an example. Requires scrollytell.css and scrollytell.js
 #'
 #' @return html for the UI
 #'
 #' @noRd
-scroll_ui_container <- function(inputId, ns, ...){
+scroll_ui_container <- function(ns, ...){
   htmltools::div(
-    id = glue::glue('{ns(inputId)}-scroll-container'),
+    id = glue::glue('{ns(NULL)}-scroll-container'),
     class = 'scroll-container',
     ...
   )
 }
 
 #' @describeIn scroll_ui_container
-scroll_ui_text <- function(inputId, ns, ...){
+scroll_ui_text <- function(ns, ...){
   htmltools::div(
-    id = glue::glue('{ns(inputId)}-scroll-text'),
+    id = glue::glue('{ns(NULL)}-scroll-text'),
     class = 'scroll-text',
     ...
   )
 }
 
 #' @describeIn scroll_ui_container
-scroll_ui_text_section <- function(inputId, ns, ...){
+scroll_ui_text_section <- function(ns, order, ...){
+  id <- ns(glue::glue('text-{order}'))
   htmltools::div(
-    id = glue::glue('{ns(inputId)}-scroll-text-section'),
+    id = glue::glue('{id}-scroll-text-section'),
     class = 'scroll-text-section',
     class = ns('scroll-text-section'),
     ...
@@ -35,11 +34,12 @@ scroll_ui_text_section <- function(inputId, ns, ...){
 }
 
 #' @describeIn scroll_ui_container
-scroll_ui_visual <- function(outputId, ns){
+scroll_ui_visual <- function(ns){
+  id <- ns('scroll_visual')
   htmltools::div(
-    id = glue::glue('{ns(outputId)}-scroll-visual'),
-    class = 'scroll-visual',
-    shiny::uiOutput(outputId = ns(outputId))
+    id = glue::glue('{id}-container'),
+    class = 'scroll-visual-container',
+    shiny::uiOutput(outputId = id)
   )
 }
 
