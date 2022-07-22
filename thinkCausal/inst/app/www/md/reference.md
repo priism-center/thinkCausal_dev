@@ -13,7 +13,6 @@ R and R packages:
 - **readstata13**: Jan Marvin Garbuszus and Sebastian Jeworutzki (2021). readstata13: Import 'Stata' Data Files. R package version 0.10.0. https://CRAN.R-project.org/package=readstata13
 - **openxlsx**: Philipp Schauberger and Alexander Walker (2021). openxlsx: Read, Write and Edit xlsx Files. R package version 4.2.4. https://CRAN.R-project.org/package=openxlsx
 - **Hmisc**: Frank E Harrell Jr, with contributions from Charles Dupont and many others. (2021). Hmisc: Harrell Miscellaneous. R package version 4.5-0. https://CRAN.R-project.org/package=Hmisc
-- **DT**: Yihui Xie, Joe Cheng and Xianying Tan (2021). DT: A Wrapper of the JavaScript Library 'DataTables'. R package version 0.18. https://CRAN.R-project.org/package=DT
 - **sortable**: Andrie de Vries, Barret Schloerke and Kenton Russell (2020). sortable: Drag-and-Drop in 'shiny' Apps with 'SortableJS'. R package version 0.4.4. https://CRAN.R-project.org/package=sortable
 - **rpart.plot**: Stephen Milborrow (2021). rpart.plot: Plot 'rpart' Models: An Enhanced Version of 'plot.rpart'. R package version 3.1.0. https://CRAN.R-project.org/package=rpart.plot
 - **plotBart**: Joseph Marlo and George Perrett (2022). plotBart: Diagnostic and Plotting Functions to Supplement bartCause. R package version 0.1.7.

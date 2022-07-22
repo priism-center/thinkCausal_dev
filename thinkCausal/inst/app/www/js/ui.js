@@ -1,6 +1,7 @@
 
-$( document ).ready(function() {
-   // remove dark mode switch
+$( window ).on( "load", function() {
+
+  // remove dark mode switch
   $(".navbar-nav > .custom-switch").remove()
 
   // remove attribute from fullscreen toggle that forces link to open in new tab
@@ -8,10 +9,7 @@ $( document ).ready(function() {
 
   // replace slideover icon
   $("#controlbar-toggle > i").removeClass('fa-th').addClass('fa-question')
-});
 
-
-$( window ).on( "load", function() {
     // wrap every h3 header in the help markdown in a div
   $("#help-slideover h3").wrap("<div class='helpSubHeader'></div>");
 

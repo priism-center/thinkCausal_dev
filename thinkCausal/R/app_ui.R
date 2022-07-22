@@ -299,6 +299,7 @@ golem_add_external_resources <- function() {
     shinyjs::useShinyjs(),
 
     # Add here other external resources
+    tags$script(src = app_sys('app/www/ui.js')),
 
     # download roboto font
     tags$link(rel = "stylesheet", type = "text/css", href = "//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic"),

@@ -22,7 +22,7 @@ thinkCausal is managed by [NYU PRIISM](https://steinhardt.nyu.edu/priism) and is
 
 ## Local installation
 
-You can run the latest development version locally by running the following from within R console:
+You can run the latest development version locally by executing the below R code:
 
 ```
 #install.packages('remotes')
