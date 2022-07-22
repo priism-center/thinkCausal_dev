@@ -18,7 +18,7 @@
 
 .scroll-visual {
   width: 60%;
-  height: 650px; /* should match height of d3 plot or d3 plot plus appended table */
+  height: 650px; /* should match height of the visual */
   position: -webkit-sticky;
   position: sticky;
   top: 30px;

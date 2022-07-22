@@ -68,6 +68,10 @@ app_ui <- function(request) {
             tabName = 'learn_test',
             mod_learn_test_ui('test')
           ),
+          bs4Dash::tabItem(
+            tabName = 'learn_scrolly',
+            mod_learn_test_ui('learn_scrolly')
+          ),
 
           # analysis pages
           bs4Dash::tabItem(
@@ -169,6 +173,10 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Scrollytell test',
               tabName = 'learn_test'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Scrollytell test2',
+              tabName = 'learn_scrolly'
             )
             # bs4Dash::menuSubItem(
             #   text = 'Randomization',

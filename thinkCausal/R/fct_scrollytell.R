@@ -1,62 +1,62 @@
-#' scrollytell
+#' Create a scrollytell
+#'
+#' See mod_learn_test.R for an example. Requires scrollytell.css and scrollytell.js
 #'
 #' @description A fct function
 #'
-#' @return The return value, if any, from executing the function.
+#' @return html for the UI
 #'
 #' @noRd
-
-scroll_ui_container <- function(inputId, ...){
+scroll_ui_container <- function(inputId, ns, ...){
   htmltools::div(
-    id = glue::glue('scroll-container-{inputId}'),
+    id = glue::glue('{ns(inputId)}-scroll-container'),
     class = 'scroll-container',
     ...
   )
 }
 
-scroll_ui_text <- function(inputId, ...){
+#' @describeIn scroll_ui_container
+scroll_ui_text <- function(inputId, ns, ...){
   htmltools::div(
-    id = glue::glue('scroll-text-{inputId}'),
+    id = glue::glue('{ns(inputId)}-scroll-text'),
     class = 'scroll-text',
     ...
   )
 }
 
-scroll_ui_text_section <- function(inputId, ...){
+#' @describeIn scroll_ui_container
+scroll_ui_text_section <- function(inputId, ns, ...){
   htmltools::div(
-    id = glue::glue('scroll-text-section-{inputId}'),
+    id = glue::glue('{ns(inputId)}-scroll-text-section'),
     class = 'scroll-text-section',
+    class = ns('scroll-text-section'),
     ...
   )
 }
 
-scroll_ui_visual <- function(outputId){
+#' @describeIn scroll_ui_container
+scroll_ui_visual <- function(outputId, ns){
   htmltools::div(
-    id = glue::glue('scroll-visual-{outputId}'),
+    id = glue::glue('{ns(outputId)}-scroll-visual'),
     class = 'scroll-visual',
-    shiny::uiOutput(outputId = outputId)
+    shiny::uiOutput(outputId = ns(outputId))
   )
 }
 
-# scroll_server_sticky_content <- function(outputId, width = "100%", height = NULL){
-#   htmlwidgets::shinyWidgetOutput(
-#     outputId = outputId,
-#     name = 'scrollytell',
-#     width = width,
-#     height = height
-#   )
-# }
+# TODO: known issue with the content initially displaying everything when there are multiple modules
+#' @describeIn scroll_ui_container runs the JS. For use on the server side
+activate_scrollytell <- function(ns){
+  # this adds the javascript listener for the module
+  moduleId <- ns(NULL)
+  shinyjs::runjs(
+    glue::glue(
+      .open = '<<',
+      .close = '>>',
+      'scrolly.plotState<<moduleId>> = 1; ',
+      '$(document).scroll(function() {
+        scrolly.scroll("<<moduleId>>")
+      }); '
+    )
+  )
+}
 
-# scroll_render <- function(...){
-#   shiny::renderUI(...)
-# }
-
-# scroll_render <- function(expr, env = parent.frame()){
-#
-#   htmlwidgets::shinyRenderWidget(
-#     expr = expr,
-#     outputFunction = scroll_output,
-#     env = env,
-#     quoted = FALSE
-#   )
-# }

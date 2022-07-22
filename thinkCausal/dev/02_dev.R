@@ -97,6 +97,7 @@ golem::add_css_file("learn-potential-outcomes", dir = 'inst/app/www/learn/potent
 
 # test module TODO: delete
 golem::add_module(name = 'learn_test', with_test = FALSE)
+golem::add_module(name = 'learn_scrolly_example', with_test = FALSE)
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
