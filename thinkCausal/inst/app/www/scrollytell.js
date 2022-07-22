@@ -1,6 +1,14 @@
 
 test = {}
 test.plotState = 1
+test.emphasizeText = function(selectors){
+  // de-emphasize this text
+  d3.selectAll(".scroll-text-section")
+      .style('filter', 'opacity(0.2)')
+  // emphasize this text
+  d3.selectAll(selectors)
+      .style('filter', null)
+}
 test.triggerScrollytellAnimation = function(){
     // trigger the closest animation
 
@@ -20,6 +28,7 @@ test.triggerScrollytellAnimation = function(){
     // update plot if state changed
     if (index != test.plotState){
         Shiny.setInputValue("test-scroll_index", index+1, {priority: "event"})
+        test.emphasizeText('#scroll-text-section-test-text-' + (index+1))
         test.plotState = index
     }
 }

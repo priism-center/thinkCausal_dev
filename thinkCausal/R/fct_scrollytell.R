@@ -34,7 +34,7 @@ scroll_ui_visual <- function(outputId){
   htmltools::div(
     id = glue::glue('scroll-visual-{outputId}'),
     class = 'scroll-visual',
-    shiny::htmlOutput(outputId = outputId)
+    shiny::uiOutput(outputId = outputId)
   )
 }
 

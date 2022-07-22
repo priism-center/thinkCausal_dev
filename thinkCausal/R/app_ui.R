@@ -167,7 +167,7 @@ app_ui <- function(request) {
               tabName = 'learn_potential_outcomes'
             ),
             bs4Dash::menuSubItem(
-              text = 'test',
+              text = 'Scrollytell test',
               tabName = 'learn_test'
             )
             # bs4Dash::menuSubItem(
