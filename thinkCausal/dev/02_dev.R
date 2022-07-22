@@ -39,7 +39,7 @@ usethis::use_package('dbarts', min_version = '0.9.20')
 ## Add modules ----
 ## Create a module infrastructure in R/
 golem::add_module(name = "home", with_test = FALSE) # Name of the module
-golem::add_css_file('home')
+golem::add_css_file('home', dir = 'inst/app/www/css')
 golem::add_module(name = "learn", with_test = FALSE)
 golem::add_module(name = "reproduce", with_test = FALSE)
 golem::add_fct("reproduce", with_test = TRUE)
@@ -48,20 +48,19 @@ golem::add_module(name = "settings_about", with_test = FALSE)
 golem::add_module(name = "settings_reference", with_test = FALSE)
 golem::add_module(name = "help", with_test = FALSE)
 golem::add_module(name = 'quiz', with_test = TRUE)
-golem::add_css_file('confetti')
+golem::add_css_file('confetti', dir = 'inst/app/www/css')
 
 # scrollytell
 golem::add_fct(name = 'scrollytell', with_test = TRUE)
-golem::add_css_file('scrollytell')
-golem::add_js_file('scrollytell')
-golem::add_js_input_binding('scrollytell')
+golem::add_css_file('scrollytell', dir = 'inst/app/www/css')
+golem::add_js_file('scrollytell', dir = 'inst/app/www/js')
 
 ## analysis modules
 golem::add_module(name = "analysis_design", with_test = TRUE)
 golem::add_module(name = "analysis_upload", with_test = TRUE)
-golem::add_css_file('analysis-upload')
+golem::add_css_file('analysis-upload', dir = 'inst/app/www/css')
 golem::add_module(name = "analysis_verify", with_test = TRUE)
-golem::add_css_file('analysis-verify')
+golem::add_css_file('analysis-verify', dir = 'inst/app/www/css')
 golem::add_module(name = "analysis_visualize", with_test = TRUE)
 golem::add_module(name = "analysis_balance", with_test = TRUE)
 golem::add_module(name = "analysis_overlap", with_test = TRUE)
@@ -69,11 +68,11 @@ golem::add_module(name = "analysis_model", with_test = TRUE)
 golem::add_module(name = "analysis_diagnostics", with_test = TRUE)
 golem::add_module(name = "analysis_results", with_test = TRUE)
 golem::add_module(name = "analysis_subgroup", with_test = TRUE)
-golem::add_css_file('analysis-subgroup')
+golem::add_css_file('analysis-subgroup', dir = 'inst/app/www/css')
 
 ## learning modules
 # NOTE: when creating new learning modules, its best to use the estimands or post treatment as a template
-golem::add_css_file('learn')
+golem::add_css_file('learn', dir = 'inst/app/www/css')
 
 # estimands
 golem::add_module(name = "learn_estimands", with_test = FALSE)
@@ -114,14 +113,14 @@ golem::add_fct('model', with_test = TRUE)
 
 ## External resources
 ## Creates .js and .css files at inst/app/www
-golem::add_js_file("ui")
+golem::add_js_file("ui", dir = 'inst/app/www/js')
 # golem::add_js_handler("handlers")
-golem::add_css_file("thinkCausal")
-golem::add_css_file('info-icon')
-golem::add_css_file('slider')
-golem::add_css_file('corner-ribbon')
-golem::add_css_file('sortable')
-golem::add_css_file('reactable')
+golem::add_css_file("thinkCausal", dir = 'inst/app/www/css')
+golem::add_css_file('info-icon', dir = 'inst/app/www/css')
+golem::add_css_file('slider', dir = 'inst/app/www/css')
+golem::add_css_file('corner-ribbon', dir = 'inst/app/www/css')
+golem::add_css_file('sortable', dir = 'inst/app/www/css')
+golem::add_css_file('reactable', dir = 'inst/app/www/css')
 # golem::add_sass_file("custom")
 
 ## Add internal datasets ----
