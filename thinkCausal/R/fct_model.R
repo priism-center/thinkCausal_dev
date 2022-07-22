@@ -6,7 +6,6 @@
 #' @param .estimand the causal estimand. See bartCause::bartc
 #'
 #' @return an object of class "bartcFit"
-#' @export
 #' @noRd
 fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
   ind <- max(3, 3 + length(.weights) + length(ran_eff))
@@ -128,7 +127,6 @@ clean_confounders_for_bart <- function(df){
 #' @author Vince Dorie, George Perrett, Joe Marlo
 #'
 #' @return a list
-#' @export
 #' @noRd
 check_common_support <- function(.model){
 

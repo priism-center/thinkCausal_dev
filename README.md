@@ -19,3 +19,13 @@ thinkCausal is managed by [NYU PRIISM](https://steinhardt.nyu.edu/priism) and is
 <img src="screenshot.png" width=80%>
 </p>
 <br>
+
+## Local installation
+
+You can run the latest development version locally by running the following from within R console:
+
+```
+#install.packages('remotes')
+remotes::install_github('priism-center/thinkCausal_dev', subdir = 'thinkCausal')
+thinkCausal::run_app()
+```

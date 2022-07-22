@@ -92,7 +92,6 @@ create_drag_drop_roles <- function(ns, .data, ns_prefix, design, weights, ran_ef
 #' @param ns_prefix a string denoting a prefix to use when creating inputIds
 #'
 #' @return HTML code
-#' @export
 #' @noRd
 #'
 #' @examples
@@ -203,7 +202,6 @@ create_data_summary_grid <- function(ns, .data, default_data_types, ns_prefix, d
 #' @param width
 #'
 #' @return html
-#' @export
 #'
 #' @noRd
 #'
@@ -240,7 +238,6 @@ create_learning_card <- function(page_id, thumbnail_url, title, description, wid
 #' @author Joe Marlo
 #'
 #' @return html
-#' @export
 #'
 #' @noRd
 #'
@@ -272,7 +269,6 @@ create_info_icon <- function(label, text){
 #' @author George Perrett
 #'
 #' @return character
-#' @export
 #' @noRd
 create_interpretation <- function(.model, type, treatment, units, participants){
   if(treatment == '') treatment <- 'treatment condition'
@@ -331,7 +327,6 @@ create_interpretation <- function(.model, type, treatment, units, participants){
 #' @author Joe Marlo, Junhui Yang
 #'
 #' @return a string of JS and HTML code
-#' @export
 #' @noRd
 #'
 #' @examples
@@ -568,7 +563,6 @@ create_row_html <- function(.data){
 #' @author Joe Marlo
 #'
 #' @return values
-#' @export
 #' @noRd
 #'
 #' @seealso \code{\link{create_interactive_table}}
@@ -620,7 +614,6 @@ get_table_values <- function(input, table_id, ns = NULL, convert_to_numeric = TR
 #' @author Joe Marlo, Junhui Yang, George Perrett
 #'
 #' @return a string of JS and HTML code
-#' @export
 #' @noRd
 #'
 #' @examples

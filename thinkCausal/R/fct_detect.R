@@ -5,7 +5,6 @@
 #' @param .data a dataframe
 #'
 #' @return a character vector of column types
-#' @export
 #' @noRd
 #'
 #' @examples
@@ -57,7 +56,6 @@ clean_detect_continuous_or_logical <- function(x){
 #' @author Joe Marlo
 #'
 #' @return dataframe
-#' @export
 #' @noRd
 #'
 #' @importFrom readr parse_logical

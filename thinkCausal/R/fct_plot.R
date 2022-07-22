@@ -20,7 +20,6 @@ options(
 #' @author Joe Marlo
 #'
 #' @return ggplot2 theme
-#' @export
 #'
 #' @import ggplot2
 #'
@@ -67,7 +66,6 @@ theme_minimal_no_transparency <- function(base_size = 11, base_family =  "", bas
 #' @author Joe Marlo and George Perrett
 #'
 #' @return ggplot2 object
-#' @export
 #' @noRd
 #'
 #' @seealso \code{\link{clean_detect_plot_vars}}

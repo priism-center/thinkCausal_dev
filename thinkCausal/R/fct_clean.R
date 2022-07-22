@@ -16,7 +16,6 @@
 #' @author Joe Marlo
 #'
 #' @return character vector
-#' @export
 #' @noRd
 #'
 #' @importFrom stringr str_replace_all
@@ -85,7 +84,6 @@ clean_names <- function(.names){
 #' @author Joe Marlo
 #'
 #' @return dataframe
-#' @export
 #' @noRd
 #'
 #' @importFrom readr parse_logical
@@ -135,7 +133,6 @@ clean_detect_logical <- function(x){
 #' @param .data a dataframe
 #'
 #' @return a vector of class factor
-#' @export
 #' @noRd
 #'
 #' @examples
@@ -188,7 +185,6 @@ clean_detect_integers <- function(x, n_levels_threshold = 15){
 #' @author Joe Marlo
 #'
 #' @return a list denoting which column names are Z, Y, X, and ID
-#' @export
 #' @noRd
 #'
 #' @examples
@@ -271,7 +267,6 @@ clean_detect_ZYX_columns <- function(.data) {
 #' @param .response_column name of the outcome column
 #'
 #' @return a list denoting which columns to use in plotting
-#' @export
 #' @noRd
 #'
 #' @seealso \code{\link{plot_exploration} \link{clean_detect_column_types}}

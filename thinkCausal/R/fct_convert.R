@@ -6,7 +6,6 @@
 #' @param new_data_types character vector of new data types
 #'
 #' @return data frame
-#' @export
 #' @noRd
 #'
 #' @examples
@@ -55,7 +54,6 @@ convert_data_types_ <- function(x, new_data_type){
 #' @author Joe Marlo
 #'
 #' @return character vector of length ncol(.data)
-#' @export
 #' @noRd
 #'
 #' @seealso \code{\link{convert_data_type_to_complex}}
@@ -98,7 +96,6 @@ convert_data_type_to_simple <- function(.data){
 #' @author George Perrett
 #'
 #' @return a list that containing a vecotr best and a list possible. best is the most likely combination of levels while possible is all possible combinations of levels
-#' @export
 #' @noRd
 #'
 #' @examples
@@ -149,7 +146,6 @@ identify_indicators <- function(x, cats){
 #' @author Junhui Yang
 #'
 #' @return a data frame
-#' @export
 #' @noRd
 #'
 #' @examples

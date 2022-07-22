@@ -13,7 +13,7 @@ scroll_ui_container <- function(ns, ...){
   )
 }
 
-#' @describeIn scroll_ui_container
+#' @describeIn scroll_ui_container UI container for the text sections
 scroll_ui_text <- function(ns, ...){
   htmltools::div(
     id = glue::glue('{ns(NULL)}-scroll-text'),
@@ -22,7 +22,7 @@ scroll_ui_text <- function(ns, ...){
   )
 }
 
-#' @describeIn scroll_ui_container
+#' @describeIn scroll_ui_container UI for establishing a scrollytell text section
 scroll_ui_text_section <- function(ns, position, ...){
   id <- ns(glue::glue('text-{position}'))
   htmltools::div(
@@ -33,7 +33,7 @@ scroll_ui_text_section <- function(ns, position, ...){
   )
 }
 
-#' @describeIn scroll_ui_container
+#' @describeIn scroll_ui_container UI output for the visual (plots, tables, etc.)
 scroll_ui_visual <- function(ns){
   id <- ns('scroll_visual')
   htmltools::div(

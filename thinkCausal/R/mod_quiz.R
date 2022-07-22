@@ -167,7 +167,6 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
 #' @param state one of c('quiz-question-1', ..., 'quiz-question')
 #'
 #' @return depends on function
-#' @export
 #' @noRd
 #'
 #' @author Joe Marlo
