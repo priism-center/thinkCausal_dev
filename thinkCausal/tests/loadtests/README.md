@@ -5,9 +5,9 @@ Note: shinyloadtests has an issue with selectize elements so loadtests that open
 See https://rstudio.github.io/shinyloadtest/index.html. Must install `shinyloadtest` library and `shinycannon` command line tool.
 
 ## Process
-- Need to run app in a seperate R process
-- Then run `shinyloadtest::record_session()`, use the app, then close
-- Run the load test within terminal using `shinycannon recording.log http://127.0.0.1:6830 --workers 5 --loaded-duration-minutes 2 --output-dir run1`
--Load the results within R `df <- shinyloadtest::load_runs("run1")` 
--Generate the report `shinyloadtest::shinyloadtest_report(df, "report.html")`
+- Need to run app in a seperate R process  
+- Then run `shinyloadtest::record_session()`, use the app, then close  
+- Run the load test within terminal using `shinycannon recording.log http://127.0.0.1:6830 --workers 5 --loaded-duration-minutes 2 --output-dir run1`  
+- Load the results within R `df <- shinyloadtest::load_runs("run1")`   
+- Generate the report `shinyloadtest::shinyloadtest_report(df, "report.html")`  
 
