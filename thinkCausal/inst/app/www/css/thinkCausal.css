@@ -114,3 +114,14 @@ footer > a:hover{
   right: 0;
   background-color: rgba(0, 0, 0, 0.1);
 }
+
+.disabled {
+  cursor: not-allowed;
+}
+
+.shiny-notification {
+  background: #E08054;
+  color: #fff;
+  font-weight: 500;
+  opacity: 1 !important;
+}

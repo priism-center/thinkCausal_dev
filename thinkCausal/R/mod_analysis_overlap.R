@@ -205,7 +205,7 @@ mod_analysis_overlap_server <- function(id, store){
       # stop if p is not a plot
       validate(need(
         inherits(p, 'ggplot'),
-        'Error in building plot. Error likely occured in propensity score calculation.'
+        'Error in building plot. Error likely occured in propensity score calculation. Did you select variables?'
       ))
 
       return(p)

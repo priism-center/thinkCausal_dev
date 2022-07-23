@@ -1,6 +1,6 @@
 # Load testing
 
-Note: shinyloadtests has an issue with selectize elements so loadtests that open the EDA page or model page with subgroup analysis enabled will fail. Must use the lalonde test data (do not upload data) as upload will fail as well.
+Note: shinyloadtests has an issue with selectize elements so loadtests that open the Balance page or Model page with subgroup analysis enabled will fail. Must use the lalonde test data (do not upload data) as upload will fail as well.
 
 See https://rstudio.github.io/shinyloadtest/index.html. Must install `shinyloadtest` library and `shinycannon` command line tool.
 
