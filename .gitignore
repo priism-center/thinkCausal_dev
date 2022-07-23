@@ -3,6 +3,7 @@
 .ds_store
 thinkCausal/rsconnect
 thinkCausal-old/rsconnect
+*.html
 
 # vscode workspaces
 *.code-workspace
