@@ -1,7 +1,7 @@
 validate_data_uploaded <- function(store){
   # stop here if data hasn't been uploaded
   validate(need(nrow(store$analysis_data_uploaded_df) > 0,
-                "Data must be first uploaded. Please see the 'Analyze - Upload Data' page"))
+                "Data must be first uploaded. Please see the 'Analyze - Upload Data' page."))
 }
 
 validate_columns_assigned <- function(store){
@@ -36,7 +36,7 @@ validate_design <- function(store){
 
 validate_prespecifed_moderators <- function(store){
   validate(need(!rlang::is_null(store$analysis$subgroup$prespecified_subgroups),
-                "No subgroup analyses were prespecifed."))
+                "No subgroup analyses were prespecifed"))
 }
 
 remove_downstream_data <- function(store, page = NULL){

@@ -116,7 +116,7 @@ mod_analysis_results_server <- function(id, store){
         rename(!!glue::glue('CI - {(1 - model_sum$ci.info$ci.level) / 2}') := ci.lower,
                !!glue::glue('CI - {1 - (1 - model_sum$ci.info$ci.level) / 2}') := ci.upper) %>%
         rename_all(tools::toTitleCase) %>%
-        mutate(across(is.numeric, round, 3)) %>%
+        mutate(across(where(is.numeric), round, 3)) %>%
         reactable::reactable()
 
       return(tab)

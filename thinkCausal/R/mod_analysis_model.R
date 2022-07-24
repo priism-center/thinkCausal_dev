@@ -144,13 +144,8 @@ mod_analysis_model_server <- function(id, store){
       # stop here if data hasn't been uploaded and selected
       validate_data_verified(store)
 
-      # stop here if inputs aren't found
-      # TODO
+      # TODO: stop here if inputs aren't found
       # req(input$)
-      # print('Dataframe going into bartC: \n')
-      # print(store$verified_df)
-      # print('Column types of dataframe going into bartC: \n')
-      # print(store$verified_df  %>% summarize_all(class))
 
       # save the estimand (again, also saved on the design page)
       store$analysis_design_estimand <- input$analysis_model_estimand

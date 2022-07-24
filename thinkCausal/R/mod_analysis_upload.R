@@ -42,16 +42,18 @@ mod_analysis_upload_ui <- function(id){
             inline = FALSE
           )
         ),
-        checkboxInput(
-          inputId = ns("analysis_upload_data_header"),
-          label = "Data contains a header row",
-          value = TRUE
-        ),
-        checkboxInput(
-          inputId = ns("analysis_upload_test_data"),
-          label = "Use lalonde test data",
-          value = FALSE
-        ),
+        HTML('<details><summary>Advanced options</summary>'),
+          checkboxInput(
+            inputId = ns("analysis_upload_data_header"),
+            label = "Data contains a header row",
+            value = TRUE
+          ),
+          checkboxInput(
+            inputId = ns("analysis_upload_test_data"),
+            label = "Use lalonde test data",
+            value = FALSE
+          ),
+        HTML('</details><br>'),
         actionButton(inputId = ns('analysis_upload_help'),
                      label = 'Help me'),
         actionButton(

@@ -57,8 +57,6 @@ mod_learn_potential_outcomes_server <- function(id){
       # only allow user to choose once
       shinyjs::disable("which_outcome")
 
-      # TODO: issue with how some images are referenced
-
       # user chooses Alex uses HyperShoe
       if(input$which_outcome == 'hyper'){
         output$output_based_on_selection <- renderUI({
