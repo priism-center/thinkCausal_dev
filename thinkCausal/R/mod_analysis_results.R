@@ -110,11 +110,11 @@ mod_analysis_results_server <- function(id, store){
       validate_model_fit(store, req_only = TRUE)
 
       # extract estimates and format
-      # TODO: unclear if credible interval is 80 or 95
-      tab <- summary(store$analysis$model$model, ci.style = 'quant')$estimates %>%
+      model_sum <- summary(store$analysis$model$model, ci.style = 'quant')
+      tab <- model_sum$estimates %>%
         as.data.frame() %>%
-        mutate(rownames = rownames(.)) %>%
-        dplyr::select(' ' = rownames, 1:4) %>%
+        rename(!!glue::glue('CI - {(1 - model_sum$ci.info$ci.level) / 2}') := ci.lower,
+               !!glue::glue('CI - {1 - (1 - model_sum$ci.info$ci.level) / 2}') := ci.upper) %>%
         rename_all(tools::toTitleCase) %>%
         mutate(across(is.numeric, round, 3)) %>%
         reactable::reactable()

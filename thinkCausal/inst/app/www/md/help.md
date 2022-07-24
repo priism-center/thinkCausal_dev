@@ -18,7 +18,7 @@ Example inputs for each are:
 #### Unsure about your causal estimand?
 Nisl vel pretium lectus quam id leo. Vitae et leo duis ut diam. Varius vel pharetra vel turpis nunc eget lorem. Nisl purus in mollis nunc sed. Phasellus faucibus scelerisque eleifend donec pretium vulputate sapien. Semper risus in hendrerit gravida rutrum.
 
-<a onclick="go_to_shiny_page('Causal estimands');">
+<a onclick="go_to_shiny_page('learn_estimands');" style="cursor: pointer;">
   <span class="glyphicon glyphicon-info-sign"></span>  Learn more about causal estimands
 </a>
 
@@ -55,7 +55,7 @@ Each column of your dataset must be matched to one of these roles depending on s
 
 ID, index, and post-treatment variables are excluded from the analysis.
 
-<a onclick="go_to_shiny_page('Post-treatment variables');">
+<a onclick="go_to_shiny_page('learn_post_treatment');" style="cursor: pointer;">
   <span class="glyphicon glyphicon-info-sign"></span>  Learn more about post-treatment variables
 </a>
 

@@ -202,6 +202,7 @@ mod_analysis_overlap_server <- function(id, store){
       # remove overlay
       close_message_updating(div_id)
 
+      # TODO: this is often triggered; I think discrete variables cause the propensity score calculation to fail
       # stop if p is not a plot
       validate(need(
         inherits(p, 'ggplot'),
