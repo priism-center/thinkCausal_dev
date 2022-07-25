@@ -125,3 +125,10 @@ footer > a:hover{
   font-weight: 500;
   opacity: 1 !important;
 }
+
+.help-link {
+  cursor: pointer;
+}
+.help-link:hover {
+  color: #fff !important;
+}
