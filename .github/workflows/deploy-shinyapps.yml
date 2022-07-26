@@ -16,9 +16,10 @@ jobs:
       - name: Install extra dependencies
         shell: Rscript {0}
         run: install.packages(c("remotes", "rsconnect"))
+        working-directory: thinkCausal
       - name: Deploy to shinyapps.io
         shell: Rscript {0}
         run: |
           rsconnect::setAccountInfo(name = "${{secrets.SA_ACCOUNT_NAME}}", token = "${{secrets.SA_TOKEN}}", secret = "${{secrets.SA_SECRET}}")
-          rsconnect::deployApp(appDir = 'thinkCausal', appName = 'thinkCausal', account = "${{secrets.SA_ACCOUNT_NAME}}")
-
+          rsconnect::deployApp(appName = 'thinkCausal', account = "${{secrets.SA_ACCOUNT_NAME}}")
+        working-directory: thinkCausal
