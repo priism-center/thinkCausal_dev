@@ -1,9 +1,8 @@
 name: deploy-shinyapps
 
 on:
+  workflow_dispatch:
   push:
-    branches: [main, master]
-  pull_request:
     branches: [main, master]
 
 jobs:
@@ -16,7 +15,7 @@ jobs:
       - uses: priism-center/thinkCausal_dev/.github/setup-renv@master
       - name: Install extra dependencies
         shell: Rscript {0}
-        run: install.packages(c("remotes", "rsconnect"), type = "binary")
+        run: install.packages(c("remotes", "rsconnect"))
       - name: Deploy to shinyapps.io
         shell: Rscript {0}
         run: |
