@@ -1,0 +1,24 @@
+name: deploy-shinyapps
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  deploy-shinyapps:
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: r-lib/actions/setup-r@v2
+      - uses: priism-center/thinkCausal_dev/.github/setup-renv@master
+      - name: Install extra dependencies
+        shell: Rscript {0}
+        run: install.packages(c("remotes", "rsconnect"))
+      - name: Deploy to shinyapps.io
+        shell: Rscript {0}
+        run: |
+          rsconnect::setAccountInfo(name = "${{secrets.SA_ACCOUNT_NAME}}", token = "${{secrets.SA_TOKEN}}", secret = "${{secrets.SA_SECRET}}")
+          rsconnect::deployApp(appDir = 'thinkCausal', appName = 'thinkCausal', account = "${{secrets.SA_ACCOUNT_NAME}}")
+
