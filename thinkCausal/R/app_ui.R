@@ -13,6 +13,7 @@ app_ui <- function(request) {
     # Your application UI logic
     bs4Dash::dashboardPage(
       fullscreen = TRUE,
+      dark = NULL,
       header = bs4Dash::dashboardHeader(
         title = tags$a(
           target = "_blank",
@@ -294,6 +295,9 @@ golem_add_external_resources <- function() {
       app_title = "thinkCausal"
     ),
 
+    # make all links open in a new tab
+    tags$base(target = "_blank"),
+
     # enable shinyjs
     shinyjs::useShinyjs(),
 
@@ -306,9 +310,6 @@ golem_add_external_resources <- function() {
     # load jquery UI, d3, and jstat
     tags$script(src = file.path('www', 'js', 'jquery-ui.js')),
     tags$script(src = file.path('www', 'js', 'd3.v5.js')),
-    tags$script(src = file.path('www', 'js', 'jstat.min.js')),
-
-    # make all links open in a new tab
-    tags$base(target = "_blank")
+    tags$script(src = file.path('www', 'js', 'jstat.min.js'))
   )
 }
