@@ -1,4 +1,4 @@
-#' Create a scrollytell
+#' @title Create a scrollytell
 #'
 #' @description See mod_learn_scrolly_example.R for an example. Requires scrollytell.css and scrollytell.js
 #'

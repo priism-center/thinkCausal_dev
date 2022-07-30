@@ -1,6 +1,5 @@
 
-
-#' Clean a string for use in column names
+#' @title Clean a string for use in column names
 #'
 #' Cleans up strings for use as column names in dataframes. Makes the following changes:
 #' \itemize{
@@ -75,9 +74,9 @@ clean_names <- function(.names){
 
 # TODO: should adjust this to accept yes, no
 
-#' Convert all psuedo-logical columns in a dataframe to booleans
+#' @title Convert all psuedo-logical columns in a dataframe to booleans
 #'
-#' Converts columns of a dataframe containing binary c(0, 1), c("T", "F"), c("True", "False") to boolean c(TRUE, FALSE). Is agnostic to case.
+#' @description Converts columns of a dataframe containing binary c(0, 1), c("T", "F"), c("True", "False") to boolean c(TRUE, FALSE). Is agnostic to case.
 #'
 #' @param input_data dataframe
 #'
@@ -126,9 +125,9 @@ clean_detect_logical <- function(x){
 }
 
 
-#' Convert integer-like columns with few levels to a factor
+#' @title Convert integer-like columns with few levels to a factor
 #'
-#' Useful for plotting
+#' @description Useful for plotting
 #'
 #' @param .data a dataframe
 #'

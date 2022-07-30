@@ -1,6 +1,6 @@
-#' Convert the column types of a dataframe
+#' @title Convert the column types of a dataframe
 #'
-#' Designed to fail in an appropriate way
+#' @description Designed to fail in an appropriate way
 #'
 #' @param .data data frame
 #' @param new_data_types character vector of new data types
@@ -45,9 +45,9 @@ convert_data_types_ <- function(x, new_data_type){
   return(x)
 }
 
-#' Simplify data types for humans
+#' @title Simplify data types for humans
 #'
-#' Categorizes R data types into 'Continuous', 'Categorical', or 'Binary'
+#' @description Categorizes R data types into 'Continuous', 'Categorical', or 'Binary'
 #'
 #' @param .data dataframe
 #'
@@ -87,8 +87,9 @@ convert_data_type_to_simple <- function(.data){
 }
 
 
-#' Identify levels of an indicator variable when data is has alredy been one hot encoded
-#' For thinkCausal app development use
+#' @title Identify levels of an indicator variable when data is has alredy been one hot encoded
+#'
+#' @description For thinkCausal app development use
 #'
 #' @param x a string that corresponds to the name of a variable that may be part of a categorical variable
 #' @param cat_df dataframe of all non continuous confounders
