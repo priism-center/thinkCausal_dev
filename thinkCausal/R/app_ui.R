@@ -58,6 +58,10 @@ app_ui <- function(request) {
             mod_learn_estimands_ui(module_ids$learn$estimands)
           ),
           bs4Dash::tabItem(
+            tabName = 'learn_randomization',
+            mod_learn_rct_analysis_ui(module_ids$learn$randomization)
+          ),
+          bs4Dash::tabItem(
             tabName = 'learn_post_treatment',
             mod_learn_post_treatment_ui(module_ids$learn$post_treatment)
           ),
@@ -170,11 +174,11 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Scrollytell example',
               tabName = 'learn_scrolly'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Randomization',
+              tabName = 'learn_randomization'
             )
-            # bs4Dash::menuSubItem(
-            #   text = 'Randomization',
-            #   tabName = 'learn_randomization'
-            # )
           ),
 
           # analysis pages
