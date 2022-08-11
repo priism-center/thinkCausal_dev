@@ -1,12 +1,12 @@
-#' #' rct_analysis UI Function
-#' #'
-#' #' @description A shiny Module.
-#' #'
-#' #' @param id,input,output,session Internal parameters for {shiny}.
-#' #'
-#' #' @noRd
-#' #'
-#' #' @importFrom shiny NS tagList
+#' rct_analysis UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd
+#'
+#' @importFrom shiny NS tagList
 mod_learn_rct_analysis_ui <- function(id){
   ns <- NS(id)
   tagList(
