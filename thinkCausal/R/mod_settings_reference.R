@@ -10,7 +10,15 @@
 mod_settings_reference_ui <- function(id){
   ns <- NS(id)
   tagList(
-    includeMarkdown(app_sys('app', 'www', 'md', 'reference.md'))
+    includeMarkdown(app_sys('app', 'www', 'md', 'reference.md')),
+    suppressWarnings(
+      citation('thinkCausal') %>%
+        utils:::print.bibentry() %>%
+        capture.output() %>%
+        paste(collapse = ' ') %>%
+        stringr::str_replace("\\?\\?\\?\\?", as.character(lubridate::year(Sys.Date()))) %>%
+        p()
+    )
   )
 }
 

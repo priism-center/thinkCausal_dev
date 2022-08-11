@@ -296,7 +296,7 @@ golem_add_external_resources <- function() {
     ),
 
     # make all links open in a new tab
-    tags$base(target = "_blank"),
+    # tags$base(target = "_blank"),
 
     # enable shinyjs
     shinyjs::useShinyjs(),

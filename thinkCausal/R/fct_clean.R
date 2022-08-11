@@ -1,13 +1,13 @@
-
 #' @title Clean a string for use in column names
 #'
-#' Cleans up strings for use as column names in dataframes. Makes the following changes:
+#' @description {Cleans up strings for use as column names in dataframes. Makes the following changes:
 #' \itemize{
 #'  \item replaces non-ASCII characters with ASCII counterparts
 #'  \item replaces spaces with underscores
 #'  \item replaces percent sign with '_percent'
 #'  \item removes all punctuation except underscores and periods
 #'  \item adds 'n' to the beginning of strings that start with numeric characters
+#' }
 #' }
 #'
 #' @param .names
@@ -72,8 +72,6 @@ clean_names <- function(.names){
   return(.names)
 }
 
-# TODO: should adjust this to accept yes, no
-
 #' @title Convert all psuedo-logical columns in a dataframe to booleans
 #'
 #' @description Converts columns of a dataframe containing binary c(0, 1), c("T", "F"), c("True", "False") to boolean c(TRUE, FALSE). Is agnostic to case.
@@ -123,7 +121,6 @@ clean_detect_logical <- function(x){
   is_in_list <- length(setdiff(x_cleaned, inclusion_list)) == 0
   return(is_in_list)
 }
-
 
 #' @title Convert integer-like columns with few levels to a factor
 #'

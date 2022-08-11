@@ -64,7 +64,8 @@ a {
 }
 
 footer {
-  padding: 0.6em !important;
+  padding: 0.3em 0 0.3em 0.5em !important;
+  font-size: 0.9em;
 }
 footer > a{
   color: #a1a1a1;
