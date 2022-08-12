@@ -85,10 +85,10 @@ app_ui <- function(request) {
             tabName = 'learn_potential_outcomes',
             mod_learn_potential_outcomes_ui(module_ids$learn$potential_outcomes)
           ),
-          bs4Dash::tabItem(
-            tabName = 'learn_scrolly',
-            mod_learn_scrolly_example_ui('learn_scrolly')
-          ),
+          # bs4Dash::tabItem(
+          #   tabName = 'learn_scrolly',
+          #   mod_learn_scrolly_example_ui('learn_scrolly')
+          # ),
 
           # analysis pages
           bs4Dash::tabItem(
@@ -187,10 +187,10 @@ app_ui <- function(request) {
               text = 'Potential outcomes',
               tabName = 'learn_potential_outcomes'
             ),
-            bs4Dash::menuSubItem(
-              text = 'Scrollytell example',
-              tabName = 'learn_scrolly'
-            ),
+            # bs4Dash::menuSubItem(
+            #   text = 'Scrollytell example',
+            #   tabName = 'learn_scrolly'
+            # ),
             bs4Dash::menuSubItem(
               text = 'Randomization',
               tabName = 'learn_randomization'
