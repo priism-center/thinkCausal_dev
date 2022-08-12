@@ -7,10 +7,26 @@
 app_ui <- function(request) {
   tagList(
 
-    # Leave this function for adding external resources
+    # add external resources
     golem_add_external_resources(),
 
-    # Your application UI logic
+    # message when server disconnects
+    # TODO: this can be removed for native installation
+    shinydisconnect::disconnectMessage(
+      text = "Your session has disconnected. This usually happens due to inactivity.",
+      refresh = "Refresh to start again",
+      background = "#1F1F1F",
+      colour = "#FFFFFF",
+      refreshColour = "#E6C0F0",
+      overlayColour = "#000000",
+      overlayOpacity = 0.85,
+      width = "full",
+      top = "center",
+      size = 20,
+      css = "padding: 15px !important; box-shadow: none !important;"
+    ),
+
+    # main UI
     bs4Dash::dashboardPage(
       fullscreen = TRUE,
       dark = NULL,
@@ -304,6 +320,10 @@ golem_add_external_resources <- function() {
 
     # enable shinyjs
     shinyjs::useShinyjs(),
+
+    # enable shinybrowser
+    # TODO: this can be removed for native installation
+    shinybrowser::detect(),
 
     # Add here other external resources
     tags$script(src = app_sys('app/www/ui.js')),

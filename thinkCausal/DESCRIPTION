@@ -3,7 +3,8 @@ Title: Point-and-click bartCause analysis and causal inference education
 Version: 0.3.0
 Authors@R: c(
   person('Joseph', 'Marlo', email = 'jpm770@nyu.edu', role = c('cre', 'aut')),
-  person("George", "Perrett", email = "gp77@nyu.edu", role = "aut")
+  person("George", "Perrett", email = "gp77@nyu.edu", role = "aut"),
+  person("Jennifer", "Hill", email = "jennifer.hill@nyu.edu", role = "aut")
   )
 Description: A federally funded project devoted to building scaffolded causal inference software implementing Bayesian Additive Regression Trees.
 License: MIT + file LICENSE

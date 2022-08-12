@@ -60,8 +60,7 @@ mod_learn_ui <- function(id){
         bs4Dash::box(
           width = 4,
           collapsible = FALSE,
-          title = 'Coming soon: Randomization',
-          class = 'learning-content-blur',
+          title = 'Randomization',
           tagList(
             shiny::actionLink(
               inputId = ns('learn_randomization_img'),

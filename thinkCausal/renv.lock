@@ -44,10 +44,10 @@
     },
     "MASS": {
       "Package": "MASS",
-      "Version": "7.3-58.1",
+      "Version": "7.3-57",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "762e1804143a332333c054759f89a706",
+      "Hash": "71476c1d88d1ebdf31580e5a257d5d31",
       "Requirements": []
     },
     "Matrix": {
@@ -141,16 +141,28 @@
     "bit": {
       "Package": "bit",
       "Version": "4.0.4",
-      "Source": "Repository",
+      "Source": "CRAN",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "bit",
+      "RemoteRef": "bit",
+      "RemoteRepos": "https://packagemanager.rstudio.com/all/latest",
+      "RemotePkgPlatform": "windows",
+      "RemoteSha": "4.0.4",
       "Hash": "f36715f14d94678eea9933af927bc15d",
       "Requirements": []
     },
     "bit64": {
       "Package": "bit64",
       "Version": "4.0.5",
-      "Source": "Repository",
+      "Source": "CRAN",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "bit64",
+      "RemoteRef": "bit64",
+      "RemoteRepos": "https://packagemanager.rstudio.com/all/latest",
+      "RemotePkgPlatform": "windows",
+      "RemoteSha": "4.0.5",
       "Hash": "9fe98599ca456d6552421db0d6772d8f",
       "Requirements": [
         "bit"
@@ -192,16 +204,14 @@
     },
     "bslib": {
       "Package": "bslib",
-      "Version": "0.4.0",
+      "Version": "0.3.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "be5ee090716ce1671be6cd5d7c34d091",
+      "Hash": "56ae7e1987b340186a8a5a157c2ec358",
       "Requirements": [
-        "cachem",
         "htmltools",
         "jquerylib",
         "jsonlite",
-        "memoise",
         "rlang",
         "sass"
       ]
@@ -219,10 +229,10 @@
     },
     "callr": {
       "Package": "callr",
-      "Version": "3.7.1",
+      "Version": "3.7.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "2fda237f24bc56508f31394beaa56877",
+      "Hash": "461aa75a11ce2400245190ef5d3995df",
       "Requirements": [
         "R6",
         "processx"
@@ -283,8 +293,14 @@
     "config": {
       "Package": "config",
       "Version": "0.3.1",
-      "Source": "Repository",
+      "Source": "CRAN",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "config",
+      "RemoteRef": "config",
+      "RemoteRepos": "https://packagemanager.rstudio.com/all/latest",
+      "RemotePkgPlatform": "windows",
+      "RemoteSha": "0.3.1",
       "Hash": "31d77b09f63550cee9ecb5a08bf76e8f",
       "Requirements": [
         "yaml"
@@ -338,10 +354,10 @@
     },
     "dbarts": {
       "Package": "dbarts",
-      "Version": "0.9-20",
+      "Version": "0.9-22",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "c01631750a7e38725f5d356c9c20b925",
+      "Hash": "6477aed2a548aa336b560d1ead8a2d0f",
       "Requirements": []
     },
     "desc": {
@@ -467,10 +483,10 @@
     },
     "fontawesome": {
       "Package": "fontawesome",
-      "Version": "0.3.0",
+      "Version": "0.2.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "a36c4a3eade472039a3ec8cb824e6dc4",
+      "Hash": "55624ed409e46c5f358b2c060be87f67",
       "Requirements": [
         "htmltools",
         "rlang"
@@ -590,12 +606,13 @@
     },
     "golem": {
       "Package": "golem",
-      "Version": "0.3.3",
+      "Version": "0.3.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "3614b1f955fbf891d14af2ee0dda4221",
+      "Hash": "b396a44b56209da3733a4a906b0cc457",
       "Requirements": [
         "attempt",
+        "brio",
         "cli",
         "config",
         "crayon",
@@ -944,10 +961,10 @@
     },
     "nlme": {
       "Package": "nlme",
-      "Version": "3.1-159",
+      "Version": "3.1-157",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "4a0b3a68f846cb999ff0e8e519524fbb",
+      "Hash": "dbca60742be0c9eddc5205e5c7ca1f44",
       "Requirements": [
         "lattice"
       ]
@@ -1268,10 +1285,10 @@
     },
     "rlang": {
       "Package": "rlang",
-      "Version": "1.0.4",
+      "Version": "1.0.3",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "6539dd8c651e67e3b55b5ffea106362b",
+      "Hash": "9103a8f74b2114a5ed1136b471d8feca",
       "Requirements": []
     },
     "rmarkdown": {
@@ -1295,10 +1312,10 @@
     },
     "roxygen2": {
       "Package": "roxygen2",
-      "Version": "7.2.1",
+      "Version": "7.2.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "da1f278262e563c835345872f2fef537",
+      "Hash": "b390c1d54fcd977cda48588e6172daba",
       "Requirements": [
         "R6",
         "brew",
@@ -1370,10 +1387,10 @@
     },
     "sass": {
       "Package": "sass",
-      "Version": "0.4.2",
+      "Version": "0.4.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "1b191143d7d3444d504277843f3a95fe",
+      "Hash": "f37c0028d720bab3c513fd65d28c7234",
       "Requirements": [
         "R6",
         "fs",
@@ -1410,10 +1427,10 @@
     },
     "shiny": {
       "Package": "shiny",
-      "Version": "1.7.2",
+      "Version": "1.7.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "4f7970a3edb0a153ac6b376785a1944a",
+      "Hash": "00344c227c7bd0ab5d78052c5d736c44",
       "Requirements": [
         "R6",
         "bslib",
@@ -1435,6 +1452,29 @@
         "sourcetools",
         "withr",
         "xtable"
+      ]
+    },
+    "shinybrowser": {
+      "Package": "shinybrowser",
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0f3fec942ab67d497e1d89f71d99b637",
+      "Requirements": [
+        "shiny"
+      ]
+    },
+    "shinydisconnect": {
+      "Package": "shinydisconnect",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0246e91be508acf9dd58c00db3dd765d",
+      "Requirements": [
+        "checkmate",
+        "glue",
+        "htmltools",
+        "shiny"
       ]
     },
     "shinyjs": {
@@ -1761,10 +1801,10 @@
     },
     "xfun": {
       "Package": "xfun",
-      "Version": "0.32",
+      "Version": "0.31",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "0498af3034691dde715dcd86198efe75",
+      "Hash": "a318c6f752b8dcfe9fb74d897418ab2b",
       "Requirements": []
     },
     "xml2": {
