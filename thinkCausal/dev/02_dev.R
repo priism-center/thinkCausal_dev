@@ -35,6 +35,8 @@ usethis::use_package('Hmisc', min_version = '4.7.0')
 usethis::use_package('openxlsx', min_version = '4.2.5')
 usethis::use_package('readstata13', min_version = '0.10.0')
 usethis::use_package('patchwork', min_version = '1.1.1')
+usethis::use_package('shinybrowser', min_version = '1.0.0')
+usethis::use_package('shinydisconnect', min_version = '0.1.0')
 
 usethis::use_package('plotBart', min_version = '0.1.7')
 usethis::use_package('bartCause', min_version = '1.0.4')
