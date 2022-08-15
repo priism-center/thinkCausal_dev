@@ -288,7 +288,7 @@ app_ui <- function(request) {
 
       footer = bs4Dash::dashboardFooter(
         fixed = TRUE,
-        left = HTML('<a href="https://steinhardt.nyu.edu/priism" target = "_blank">New York University PRIISM')
+        left = HTML('<a href="https://steinhardt.nyu.edu/priism" target = "_blank">New York University PRIISM</a>')
       )
     )
   )
