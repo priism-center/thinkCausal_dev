@@ -32,7 +32,7 @@ is_cat_or_logical <- function(x){
 renv_force_all_cran_repo <- function(){
   get_non_cran <- function(){
     lock <- jsonlite::read_json('renv.lock')
-    non_cran_packages <- purrr::map_lgl(lock$Packages, function(pkg) pkg$Repository != 'CRAN')
+    non_cran_packages <- purrr::map_lgl(lock$Packages, function(pkg) isTRUE(pkg$Repository != 'CRAN'))
     non_cran_packages <- names(non_cran_packages[non_cran_packages])
     return(non_cran_packages)
   }
