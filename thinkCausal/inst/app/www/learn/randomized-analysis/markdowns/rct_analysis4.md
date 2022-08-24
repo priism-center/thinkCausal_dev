@@ -1,0 +1,1 @@
+We can extend this to all 200 runners in our study and calculate the individual causal effect for each of the 200 runners. Remeber this requiors that we have the running times for runner if they wore HyperShoes as well as the running times for each runner if they did not wear HyperShoes. 

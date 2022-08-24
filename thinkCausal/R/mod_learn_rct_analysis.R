@@ -1,12 +1,12 @@
-#' #' rct_analysis UI Function
-#' #'
-#' #' @description A shiny Module.
-#' #'
-#' #' @param id,input,output,session Internal parameters for {shiny}.
-#' #'
-#' #' @noRd
-#' #'
-#' #' @importFrom shiny NS tagList
+#' rct_analysis UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd
+#'
+#' @importFrom shiny NS tagList
 mod_learn_rct_analysis_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -25,7 +25,7 @@ mod_learn_rct_analysis_ui <- function(id){
 
         h1('Analyzing Randomized Experements'),
         includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis1.md')),
-        br(),br(),br(),br()
+        br(),br()
       ),
 
       scroll_ui_container(
@@ -35,99 +35,73 @@ mod_learn_rct_analysis_ui <- function(id){
           scroll_ui_text_section(
             ns = ns,
             position = 1,
-            h2('Section 1'),
-            p('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet facilisis magna etiam tempor orci. Amet purus gravida quis blandit. Diam sit amet nisl suscipit adipiscing bibendum. Mauris rhoncus aenean vel elit scelerisque mauris pellentesque. In est ante in nibh. Neque viverra justo nec ultrices dui sapien eget mi proin. Ut enim blandit volutpat maecenas. Aliquam nulla facilisi cras fermentum odio eu feugiat pretium. Orci a scelerisque purus semper eget duis.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis2.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 2,
-            h2('Section 2'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis3.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 3,
-            h2('Section 3'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis4.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 4,
-            h2('Section 4'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis5.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 5,
-            h2('Section 5'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis6.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 6,
-            h2('Section 6'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis7.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 7,
-            h2('Section 7'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis8.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 8,
-            h2('Section 8'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis9.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 9,
-            h2('Section 9'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis10.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 10,
-            h2('Section 10'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis11.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 11,
-            h2('Section 11'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis12.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 12,
-            h2('Section 12'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis13.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 13,
-            h2('Section 13'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis14.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 14,
-            h2('Section 14'),
-            p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
-            p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
+            includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis15.md')),
+
           ),
           scroll_ui_text_section(
             ns = ns,
@@ -135,13 +109,6 @@ mod_learn_rct_analysis_ui <- function(id){
             h2('Section 15'),
             p('Semper eget duis at tellus at urna condimentum mattis pellentesque. Purus sit amet luctus venenatis lectus. Enim ut tellus elementum sagittis. Duis at tellus at urna condimentum mattis. Lorem ipsum dolor sit amet. Sapien et ligula ullamcorper malesuada proin libero nunc consequat interdum. Iaculis nunc sed augue lacus viverra. Vehicula ipsum a arcu cursus. Vulputate ut pharetra sit amet. Velit egestas dui id ornare arcu odio ut sem.'),
             p('Ipsum dolor sit amet consectetur. Nec feugiat in fermentum posuere urna nec. Eu tincidunt tortor aliquam nulla facilisi cras fermentum odio. Faucibus a pellentesque sit amet porttitor.')
-          ),
-          scroll_ui_text_section(
-            ns = ns,
-            position = 16,
-            h2('Section 16'),
-            p('Libero id faucibus nisl tincidunt eget nullam non nisi. Tempus urna et pharetra pharetra. Eget sit amet tellus cras adipiscing. Ac tortor vitae purus faucibus.'),
-            p('Eget gravida cum sociis natoque penatibus et magnis dis parturient. Vitae justo eget magna fermentum iaculis eu non diam phasellus. Nunc sed id semper risus. Neque laoreet suspendisse interdum consectetur libero id faucibus nisl. Non quam lacus suspendisse faucibus interdum posuere lorem ipsum dolor. Risus pretium quam vulputate dignissim suspendisse in est. Sagittis vitae et leo duis ut diam quam. Amet risus nullam eget felis eget nunc lobortis. In fermentum et sollicitudin ac orci phasellus egestas tellus. Sed faucibus turpis in eu mi bibendum neque egestas. Elit at imperdiet dui accumsan sit. Venenatis a condimentum vitae sapien pellentesque habitant morbi tristique senectus. Maecenas accumsan lacus vel facilisis.')
           )
         ),
         scroll_ui_visual(ns = ns)
@@ -267,8 +234,8 @@ mod_learn_rct_analysis_server <- function(id){
             ggplot2::scale_color_manual(values = c('blue', 'red')) +
             ggplot2::scale_shape_manual(values = c(21, 19)) +
             ggplot2::coord_cartesian(xlim = c(18.00000, 51.88059), ylim = c(170.3687, 193.5359)) +
-            ggplot2::geom_line(data = plot_dat, aes(x = age, y = true.1)) +
-            ggplot2::geom_line(data = plot_dat, aes(x = age, y = true.0)) +
+            ggplot2::geom_line(data = runners_rct, aes(x = age, y = true.1)) +
+            ggplot2::geom_line(data = runners_rct, aes(x = age, y = true.0)) +
             ggplot2::geom_segment(aes(x = age, xend = age, y = y1, yend = y0))+
             ggplot2::geom_label(aes(x = age, y = lb.y, label = lb),  size = 4)+
             ggplot2::labs(title = 'Section B'),
@@ -370,26 +337,14 @@ mod_learn_rct_analysis_server <- function(id){
             ggplot2::geom_point(aes(age, y, col = as.factor(z)), alpha = .3) +
             ggplot2::scale_color_manual(values = c('blue', 'red')) +
             ggplot2::geom_line(aes(x = age, y = bart_mu1), col = 'red') +
-            ggplot2::geom_line(aes(x = age, y = bart_mu0), col = 'blue')+
-            ggplot2::labs(title = 'Section J'),
-          cacheKeyExpr = { list(9) })
-      )
-
-      items$position10 <- div(
-        style = 'visibility: hidden;',
-        renderCachedPlot(
-          ggplot2::ggplot(data = runners_rct) +
-            ggplot2::geom_point(aes(age, y, col = as.factor(z)), alpha = .3) +
-            ggplot2::scale_color_manual(values = c('blue', 'red')) +
-            ggplot2::geom_line(aes(x = age, y = bart_mu1), col = 'red') +
             ggplot2::geom_line(aes(x = age, y = bart_mu0), col = 'blue') +
             ggplot2::geom_segment(aes(x = age, xend = age, y = bart_mu1, yend = bart_mu0)) +
             ggplot2::geom_label(aes(x = 35, y = 182, label = paste('Estimated ATE =', bart_point_est)), size = 5) +
             ggplot2::labs(title = 'Section K'),
-          cacheKeyExpr = { list(10) })
+          cacheKeyExpr = { list(9) })
       )
 
-      items$position11 <- div(
+      items$position10 <- div(
         renderCachedPlot(
           tibble::tibble(model,est, lcls, ucls, order) %>%
             ggplot2::ggplot(aes(est, factor(model, levels = model))) +
@@ -398,6 +353,17 @@ mod_learn_rct_analysis_server <- function(id){
             ggplot2::geom_label(aes(x = ate, y = 3.3, label = paste('Ture ATE =', round(ate, 1)))) +
             ggplot2::coord_cartesian(xlim = c(-7, -3.5)) +
             ggplot2::labs(title = 'Section L'),
+          cacheKeyExpr = { list(10) })
+      )
+
+      items$position11 <- div(
+        renderCachedPlot(
+          ggplot2::ggplot(data = runners_rct) +
+            ggplot2::geom_point(aes(x = age, y = y, col = as.factor(z)), alpha = .3) +
+            ggplot2::scale_color_manual(values = c('blue', 'red')) +
+            ggplot2::geom_line(aes(x = age, y = mean_diff, col = as.factor(z))) +
+            ggplot2::geom_segment(aes(x = age, xend = age, y = y, yend = mean_diff)) +
+            ggplot2::labs(title = 'Section M'),
           cacheKeyExpr = { list(11) })
       )
 
@@ -406,24 +372,13 @@ mod_learn_rct_analysis_server <- function(id){
           ggplot2::ggplot(data = runners_rct) +
             ggplot2::geom_point(aes(x = age, y = y, col = as.factor(z)), alpha = .3) +
             ggplot2::scale_color_manual(values = c('blue', 'red')) +
-            ggplot2::geom_line(aes(x = age, y = mean_diff, col = as.factor(z))) +
-            ggplot2::geom_segment(aes(x = age, xend = age, y = y, yend = mean_diff)) +
-            ggplot2::labs(title = 'Section M'),
+            ggplot2::geom_line(aes(x = age, y = reg, col = as.factor(z))) +
+            ggplot2::geom_segment(aes(x = age, xend = age, y = y, yend = reg)) +
+            ggplot2::labs(title = 'Section N'),
           cacheKeyExpr = { list(12) })
       )
 
       items$position13 <- div(
-        renderCachedPlot(
-          ggplot2::ggplot(data = runners_rct) +
-            ggplot2::geom_point(aes(x = age, y = y, col = as.factor(z)), alpha = .3) +
-            ggplot2::scale_color_manual(values = c('blue', 'red')) +
-            ggplot2::geom_line(aes(x = age, y = reg, col = as.factor(z))) +
-            ggplot2::geom_segment(aes(x = age, xend = age, y = y, yend = reg)) +
-            ggplot2::labs(title = 'Section N'),
-          cacheKeyExpr = { list(13) })
-      )
-
-      items$position14 <- div(
         renderCachedPlot(
           ggplot2::ggplot(data = runners_rct) +
             ggplot2::geom_point(aes(age, y, col = as.factor(z)), alpha = .3) +
@@ -431,10 +386,10 @@ mod_learn_rct_analysis_server <- function(id){
             ggplot2::geom_line(aes(x = age, y = bart, col = as.factor(z))) +
             ggplot2::geom_segment(aes(x = age, xend = age, y = y, yend = bart)) +
             ggplot2::labs(title = 'Section O'),
-          cacheKeyExpr = { list(14) })
+          cacheKeyExpr = { list(13) })
       )
 
-      items$position15 <- div(
+      items$position14 <- div(
         renderCachedPlot(
           runners_rct %>%
             dplyr::mutate(
@@ -447,10 +402,10 @@ mod_learn_rct_analysis_server <- function(id){
             #geom_density()
             ggplot2::geom_density(aes(fill = name), alpha = .5) +
             ggplot2::labs(title = 'Section P'),
-          cacheKeyExpr = { list(15) })
+          cacheKeyExpr = { list(14) })
       )
 
-      items$position16 <- div(
+      items$position15 <- div(
         renderCachedPlot(
           tibble::tibble(model,est, lcls, ucls, order) %>%
             ggplot2::ggplot(aes(est, factor(model, levels = model))) +
@@ -460,7 +415,7 @@ mod_learn_rct_analysis_server <- function(id){
             ggplot2::geom_label(aes(x = ate, y = 3.3, label = paste('Ture ATE =', round(ate, 1)))) +
             ggplot2::coord_cartesian(xlim = c(-7, -3.5)) +
             ggplot2::labs(y = element_blank(), x = 'Estimated ATE', title = 'Section P'),
-          cacheKeyExpr = { list(16) }),
+          cacheKeyExpr = { list(15) }),
         renderTable(data.frame(model = model, estimate = est, `lower ci` = lcls, `upper ci` =  ucls, `interval length` = ci_len))
       )
     return(items)
