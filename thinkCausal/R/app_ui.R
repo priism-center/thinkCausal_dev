@@ -78,6 +78,10 @@ app_ui <- function(request) {
             mod_learn_rct_analysis_ui(module_ids$learn$randomization)
           ),
           bs4Dash::tabItem(
+            tabName = 'learn_observational',
+            mod_learn_obs_analysis_ui('temp1')
+          ),
+          bs4Dash::tabItem(
             tabName = 'learn_post_treatment',
             mod_learn_post_treatment_ui(module_ids$learn$post_treatment)
           ),
@@ -194,6 +198,10 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Randomization',
               tabName = 'learn_randomization'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Observational studies',
+              tabName = 'learn_observational'
             )
           ),
 

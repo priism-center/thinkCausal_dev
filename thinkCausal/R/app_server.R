@@ -43,6 +43,7 @@ app_server <- function(input, output, session) {
   mod_learn_rct_analysis_server(module_ids$learn$randomization)
   mod_learn_post_treatment_server(module_ids$learn$post_treatment, store)
   mod_learn_potential_outcomes_server(module_ids$learn$potential_outcomes)
+  mod_learn_obs_analysis_server('temp1')
   mod_learn_scrolly_example_server('learn_scrolly')
 
   # analysis
