@@ -139,59 +139,69 @@ show_popup_fitting_BART_waiting <- function(session){
   show_popup(session = session, content)
 }
 
-show_popup_welcome <- function(session){
-  content <- tags$div(
-    h2(style = 'margin: auto; text-align: center',
-       "Welcome!"),
-    br(),
-    div(
-      style = 'font-size: 1.2em',
-      HTML(
-        "Here are some tips to get started:
-         <ul>
-          <li>We do not save your data so if you leave and come back, you'll have to start from the beginning</li>
-          <li>The full analysis process is outlined at the bottom of the page</li>
-          <li>thinkCausal is still in beta and we'll be making updates over the coming months</li>
-          <li>Please feel free to reach out on the <a href='https://github.com/gperrett/thinkCausal_dev' target='_blank'>GitHub page</a> or email gp77@nyu.edu if you have any questions</li>
-        </ul>
-      ")
-    )
+show_popup_mobile <- function(session){
+  content <- HTML("<strong>thinkCausal</strong> is best experienced on a big screen! Please come back on a desktop browser.")
+  show_popup(
+    session = session,
+    easyClose = FALSE,
+    close_button = shiny::modalButton("I'll check it out anyway"),
+    content
   )
-  show_popup(session = session,
-             content,
-             size = 'm',
-             close_button = shiny::actionButton(
-               inputId = 'analysis_design-analysis_design_button_closeModal',
-               class = 'nav-btn-focus',
-               `data-dismiss` = "modal",
-               `data-bs-dismiss` = "modal",
-               label = "Get started"
-             ), #shiny::modalButton("Get started"),
-             easyClose = TRUE)
 }
 
-show_popup_crash <- function(){
-  content <- tags$div(
-    div(
-      style = 'margin: auto; text-align: center;',
-      img(src = file.path('img', 'error.png'),
-          width = "40%")
-    ),
-    br(),br(),
-    h2(style = 'margin: auto; text-align: center',
-       "Error!"),
-    br(),
-    div(style = 'margin: auto; text-align: center; font-size: 1.4em',
-        HTML(
-          "If this occurs again, please raise an issue on the <a href='https://github.com/gperrett/thinkCausal_dev/issues' target='_blank'>GitHub page</a> if you have any questions</li>"
-        ))
-  )
+# show_popup_welcome <- function(session){
+#   content <- tags$div(
+#     h2(style = 'margin: auto; text-align: center',
+#        "Welcome!"),
+#     br(),
+#     div(
+#       style = 'font-size: 1.2em',
+#       HTML(
+#         "Here are some tips to get started:
+#          <ul>
+#           <li>We do not save your data so if you leave and come back, you'll have to start from the beginning</li>
+#           <li>The full analysis process is outlined at the bottom of the page</li>
+#           <li>thinkCausal is still in beta and we'll be making updates over the coming months</li>
+#           <li>Please feel free to reach out on the <a href='https://github.com/gperrett/thinkCausal_dev' target='_blank'>GitHub page</a> or email gp77@nyu.edu if you have any questions</li>
+#         </ul>
+#       ")
+#     )
+#   )
+#   show_popup(session = session,
+#              content,
+#              size = 'm',
+#              close_button = shiny::actionButton(
+#                inputId = 'analysis_design-analysis_design_button_closeModal',
+#                class = 'nav-btn-focus',
+#                `data-dismiss` = "modal",
+#                `data-bs-dismiss` = "modal",
+#                label = "Get started"
+#              ), #shiny::modalButton("Get started"),
+#              easyClose = TRUE)
+# }
 
-  show_popup(session = getDefaultReactiveDomain(),
-             content,
-             size = 'm',
-             style = "z-index: 99999")
-}
+# show_popup_crash <- function(){
+#   content <- tags$div(
+#     div(
+#       style = 'margin: auto; text-align: center;',
+#       img(src = file.path('img', 'error.png'),
+#           width = "40%")
+#     ),
+#     br(),br(),
+#     h2(style = 'margin: auto; text-align: center',
+#        "Error!"),
+#     br(),
+#     div(style = 'margin: auto; text-align: center; font-size: 1.4em',
+#         HTML(
+#           "If this occurs again, please raise an issue on the <a href='https://github.com/gperrett/thinkCausal_dev/issues' target='_blank'>GitHub page</a> if you have any questions</li>"
+#         ))
+#   )
+#
+#   show_popup(session = getDefaultReactiveDomain(),
+#              content,
+#              size = 'm',
+#              style = "z-index: 99999")
+# }
 
 
 close_popup <- function(session){

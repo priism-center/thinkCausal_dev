@@ -7,10 +7,26 @@
 app_ui <- function(request) {
   tagList(
 
-    # Leave this function for adding external resources
+    # add external resources
     golem_add_external_resources(),
 
-    # Your application UI logic
+    # message when server disconnects
+    # TODO: this can be removed for native installation
+    shinydisconnect::disconnectMessage(
+      text = "Your session has disconnected. This usually happens due to inactivity.",
+      refresh = "Refresh to start again",
+      background = "#1F1F1F",
+      colour = "#FFFFFF",
+      refreshColour = "#E6C0F0",
+      overlayColour = "#000000",
+      overlayOpacity = 0.85,
+      width = "full",
+      top = "center",
+      size = 20,
+      css = "padding: 15px !important; box-shadow: none !important;"
+    ),
+
+    # main UI
     bs4Dash::dashboardPage(
       fullscreen = TRUE,
       dark = NULL,
@@ -73,10 +89,10 @@ app_ui <- function(request) {
             tabName = 'learn_potential_outcomes',
             mod_learn_potential_outcomes_ui(module_ids$learn$potential_outcomes)
           ),
-          bs4Dash::tabItem(
-            tabName = 'learn_scrolly',
-            mod_learn_scrolly_example_ui('learn_scrolly')
-          ),
+          # bs4Dash::tabItem(
+          #   tabName = 'learn_scrolly',
+          #   mod_learn_scrolly_example_ui('learn_scrolly')
+          # ),
 
           # analysis pages
           bs4Dash::tabItem(
@@ -152,16 +168,16 @@ app_ui <- function(request) {
           bs4Dash::menuItem(
             text = 'thinkCausal',
             tabName = 'home',
-            icon = icon("home")
+            icon = icon("home", verify_fa = FALSE)
           ),
 
           bs4Dash::menuItem(
             text = 'Learn',
-            icon = icon("book"),
+            icon = icon("book", verify_fa = FALSE),
             bs4Dash::menuSubItem(
               text = 'All articles',
               tabName = 'learn',
-              icon = icon("table")
+              icon = icon("table", verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Causal estimands',
@@ -175,10 +191,10 @@ app_ui <- function(request) {
               text = 'Potential outcomes',
               tabName = 'learn_potential_outcomes'
             ),
-            bs4Dash::menuSubItem(
-              text = 'Scrollytell example',
-              tabName = 'learn_scrolly'
-            ),
+            # bs4Dash::menuSubItem(
+            #   text = 'Scrollytell example',
+            #   tabName = 'learn_scrolly'
+            # ),
             bs4Dash::menuSubItem(
               text = 'Randomization',
               tabName = 'learn_randomization'
@@ -192,56 +208,56 @@ app_ui <- function(request) {
           # analysis pages
           bs4Dash::menuItem(
             text = 'Analyze',
-            icon = icon("chart-line"),
+            icon = icon("chart-line", verify_fa = FALSE),
             bs4Dash::menuSubItem(
               text = 'Describe data',
               tabName = 'analysis_describe',
-              icon = icon("comment")
+              icon = icon("comment", verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Upload data',
               tabName = 'analysis_upload',
-              icon = icon("upload")
+              icon = icon("upload", verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Verify data types',
               tabName = 'analysis_verify',
-              icon = icon("check")
+              icon = icon("check", verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Visualize data',
               tabName = 'analysis_visualize',
-              icon = icon('chart-bar')
+              icon = icon('chart-bar', verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Check balance',
               tabName = 'analysis_balance',
-              icon = icon('chart-bar')
+              icon = icon('chart-bar', verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Check overlap',
               tabName = 'analysis_overlap',
-              icon = icon('chart-bar')
+              icon = icon('chart-bar', verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Fit model',
               tabName = 'analysis_model',
-              icon = icon('code')
+              icon = icon('code', verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Check diagnostics',
               tabName = 'analysis_diagnostics',
-              icon = icon('stethoscope')
+              icon = icon('stethoscope', verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'View results',
               tabName = 'analysis_results',
-              icon = icon('chart-area')
+              icon = icon('chart-area', verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'View subgroup results',
               tabName = 'analysis_subgroup',
-              icon = icon('layer-group')
+              icon = icon('layer-group', verify_fa = FALSE)
             )
           ),
 
@@ -280,7 +296,7 @@ app_ui <- function(request) {
 
       footer = bs4Dash::dashboardFooter(
         fixed = TRUE,
-        left = HTML('<a href="https://steinhardt.nyu.edu/priism" target = "_blank">New York University PRIISM')
+        left = HTML('<a href="https://steinhardt.nyu.edu/priism" target = "_blank">New York University PRIISM</a>')
       )
     )
   )
@@ -308,10 +324,14 @@ golem_add_external_resources <- function() {
     ),
 
     # make all links open in a new tab
-    tags$base(target = "_blank"),
+    # tags$base(target = "_blank"),
 
     # enable shinyjs
     shinyjs::useShinyjs(),
+
+    # enable shinybrowser
+    # TODO: this can be removed for native installation
+    shinybrowser::detect(),
 
     # Add here other external resources
     tags$script(src = app_sys('app/www/ui.js')),

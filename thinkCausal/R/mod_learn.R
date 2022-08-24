@@ -60,8 +60,7 @@ mod_learn_ui <- function(id){
         bs4Dash::box(
           width = 4,
           collapsible = FALSE,
-          title = 'Coming soon: Randomization',
-          class = 'learning-content-blur',
+          title = 'Randomization',
           tagList(
             shiny::actionLink(
               inputId = ns('learn_randomization_img'),
@@ -112,7 +111,12 @@ mod_learn_server <- function(id, store){
     ns <- session$ns
 
     # links from learn home page to each learn article
-    selectors <- c('learn_estimands', 'learn_post_treatment', 'learn_potential_outcomes')
+    selectors <- c(
+      'learn_estimands',
+      'learn_post_treatment',
+      'learn_potential_outcomes',
+      'learn_randomization'
+    )
     purrr::map(selectors, function(sel){
       observeEvent(input[[glue::glue('{sel}_img')]], {
         bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = sel)

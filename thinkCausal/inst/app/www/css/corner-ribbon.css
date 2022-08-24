@@ -37,3 +37,12 @@
 .cornerRibbon a:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 768px) {
+  .cornerRibbon {
+    scale: 0.6;
+    width: 220px;
+    bottom: 5px;
+    left: -80px;
+  }
+}

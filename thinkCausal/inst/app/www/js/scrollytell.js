@@ -1,6 +1,7 @@
-// functions to manage control the scrollytell. See fct_scrollytell.R
+// functions to control the scrollytell. See fct_scrollytell.R
 
 scrolly = {};
+scrolly.plotState = {};
 scrolly.emphasizeText = function(moduleId, index){
   $(`.${moduleId}-scroll-text-section`).css('filter', 'opacity(0.2)');
   $(`#${moduleId}-text-${index+1}-scroll-text-section`).css('filter', 'none');
@@ -24,9 +25,9 @@ scrolly.scroll = function(moduleId){
   const index = positions.indexOf(minVal);
 
   // show/hide visual if state changed
-  if (index != window.scrolly[`plotState${moduleId}`]){
+  if (index != window.scrolly[`plotState.${moduleId}`]){
     scrolly.showVisual(moduleId, index);
     scrolly.emphasizeText(moduleId, index);
-    window.scrolly[`plotState${moduleId}`] = index;
+    window.scrolly[`plotState.${moduleId}`] = index;
   }
 };

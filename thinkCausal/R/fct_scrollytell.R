@@ -1,8 +1,9 @@
 #' @title Create a scrollytell
 #'
-#' @description See mod_learn_scrolly_example.R for an example. Requires scrollytell.css and scrollytell.js
+#' @description See mod_learn_scrolly_example.R for an example. Requires scrollytell.css and scrollytell.js. This custom implementation is necessary because we need a R-based API (re: non JS) and current R packages do not support modules.
 #'
 #' @return html for the UI
+#' @author Joe Marlo
 #'
 #' @noRd
 scroll_ui_container <- function(ns, ...){
@@ -22,7 +23,7 @@ scroll_ui_text <- function(ns, ...){
   )
 }
 
-#' @describeIn scroll_ui_container UI for establishing a scrollytell text section
+#' @describeIn scroll_ui_container UI for establishing an individual scrollytell text section
 scroll_ui_text_section <- function(ns, position, ...){
   id <- ns(glue::glue('text-{position}'))
   htmltools::div(
@@ -50,7 +51,7 @@ use_scrollytell <- function(ns){
   js_code <- glue::glue(
     .open = '<<',
     .close = '>>',
-    'scrolly.plotState<<moduleId>> = 1; ',
+    'scrolly.plotState.<<moduleId>> = 1; ',
     '$(document).scroll(function() {
       scrolly.scroll("<<moduleId>>")
     }); '
