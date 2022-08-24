@@ -1,5 +1,5 @@
 ## Difference in means
 
-In observational studies, **when confounders like `age` are not adjusted for the estimated treatment effect will be biased**. If we use the difference in means  as our statistical model, we are not adjusting for the imbalance of age and our resulting estimate of -15.4 is extreamly biased from the true ATT. 
+If we use the difference in means as our statistical model, our estimate of -15.4 would be extremely far from true ATT. When we use difference in means, we are not incorporating any information about age and the imbalance of age has not been accounted for.
 
-The difference in means was producs unbiased estimates when the treatment is randonly assigned because reandomization ensures that we can expect balance across all of our covariates (this includes both measured and non-measured covariates!). The difference in means statsitical model is biased for observational studies becuase *confounding variables* can exist and their imbalance is not accounted for by this statistical model. 
+The difference in means produces unbiased estimates when the treatment is randomly assigned because randomization ensures that we can expect balance across all of our covariates and that there are no confounding variables because no covariates can possibly be associated with the treatment. The difference in means is biased for observational studies because *confounding variables* can exist and their imbalance is not accounted for. 

@@ -1,6 +1,10 @@
 set.seed(2)
-library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(tidyr)
 library(bartCause)
+library(stringr)
 
 # set plot theme
 theme_set(theme_bw() + theme(panel.grid.major = element_blank(),
@@ -35,16 +39,20 @@ observational_plots[[1]] <- ggplot(dat1, aes(age, y, col = z)) +
   geom_point() +
   scale_color_manual(values = c(4, 2))
 
+observational_plots[[2]] <- ggplot(dat1, aes(age, y, col = z)) +
+  geom_point() +
+  scale_color_manual(values = c(4, 2))
+
 (mean(dat1[dat1$z == 1, 'age']) - mean(dat1[dat1$z == 0, 'age']))
 
-observational_plots[[2]] <- ggplot() + 
-  aes(x = -15:5, y = 'age') + 
-  geom_point(aes(x = -13.95844, y = 'age'), size = 4) + 
-  coord_cartesian(xlim = c(-15, 5)) + 
-  geom_vline(xintercept = 0, linetype = 2) + 
+observational_plots[[3]] <- ggplot() +
+  aes(x = -15:5, y = 'age') +
+  geom_point(aes(x = -13.95844, y = 'age'), size = 4) +
+  coord_cartesian(xlim = c(-15, 5)) +
+  geom_vline(xintercept = 0, linetype = 2) +
   geom_label(aes(x = 0, y = 1.5, label = '0 = Perfect Balance with Control Group'))
 
-observational_plots[[3]] <- dat1 %>%
+observational_plots[[4]] <- dat1 %>%
   tidyr::pivot_longer(cols = c(y1, y0)) %>%
   mutate(po = if_else(str_sub(name, -1) == z, 'factual', 'counter factual')) %>%
   ggplot() +
@@ -53,7 +61,7 @@ observational_plots[[3]] <- dat1 %>%
   scale_shape_manual(values = c(21, 19)) +
   scale_color_manual(values = c(4, 2))
 
-observational_plots[[4]] <- dat1 %>%
+observational_plots[[5]] <- dat1 %>%
   filter(z == 1) %>%
   mutate(ICE = y1 - y0) %>%
   arrange(ICE) %>%
@@ -65,7 +73,7 @@ observational_plots[[4]] <- dat1 %>%
 
 
 
-observational_plots[[5]] <- dat1 %>%  
+observational_plots[[6]] <- dat1 %>%
   ggplot() +
   geom_point(data = dat1, aes(age, y, col = z), alpha = .4) +
   scale_color_manual(values = c(4, 2)) +
@@ -83,7 +91,7 @@ observational_plots[[5]] <- dat1 %>%
 
 reg <- lm(y ~ z + age, dat1)
 
-observational_plots[[6]] <- dat1 %>% 
+observational_plots[[7]] <- dat1 %>%
   ggplot() +
   geom_point(aes(age, y, col = z), alpha = .3) +
   scale_color_manual(values = c(4, 2)) +
@@ -99,7 +107,7 @@ observational_plots[[6]] <- dat1 %>%
         label = 'Estimated ATT = -5.0'), size = 5)
 
 
-observational_plots[[7]] <- dat1 %>% 
+observational_plots[[8]] <- dat1 %>%
   ggplot() +
   geom_point(aes(age, y, col = z), alpha = .3) +
   scale_color_manual(values = c(4, 2)) +
@@ -118,7 +126,7 @@ comp1 <- data.frame(model = c('difference in means', 'regression with covariates
 comp1$`interval length` <-  with(comp1, upper.ci - lower.ci)
 comp1$model <- factor(comp1$model, levels = comp1$model)
 
-observational_plots[[8]] <- comp1 %>%
+observational_plots[[9]] <- comp1 %>%
   ggplot(aes(estimate, reorder(model, dplyr::desc(model)))) +
   geom_point(size = 3) +
   ggplot2::geom_errorbarh(aes(xmin = lower.ci, xmax = upper.ci), height = .1) +
@@ -152,11 +160,11 @@ dat2$mu.obs[dat2$z == 1] <- apply(bartCause::extract(bart, 'mu.obs'), 2, mean)
 dat2$mu.cf[dat2$z == 1] <- apply(bartCause::extract(bart, 'mu.cf'), 2, mean)
 
 
-observational_plots[[9]] <- ggplot(dat2, aes(age, y, col = as.factor(z))) +
+observational_plots[[10]] <- ggplot(dat2, aes(age, y, col = as.factor(z))) +
   geom_point() +
   scale_color_manual(values = c(4, 2))
 
-observational_plots[[10]] <-dat2 %>%
+observational_plots[[11]] <-dat2 %>%
   pivot_longer(cols = 1:2) %>%
   mutate(po = if_else(str_sub(name, -1) == z, 'factual outcome', 'counter-factual outcome')) %>%
   ggplot() +
@@ -167,7 +175,7 @@ observational_plots[[10]] <-dat2 %>%
   scale_shape_manual(values = c(21, 19)) +
   scale_color_manual(values = c(4, 2))
 
-observational_plots[[11]] <- dat2 %>%
+observational_plots[[12]] <- dat2 %>%
   filter(z == 1) %>%
   mutate(ICE = y1 - y0) %>%
   arrange(ICE) %>%
@@ -178,7 +186,7 @@ observational_plots[[11]] <- dat2 %>%
   ggplot2::geom_label(aes(x = 55, y = mean(ICE), label = paste0('True ATT = ', round(mean(ICE), 1))), size = 5)
 
 
-observational_plots[[12]] <- dat2 %>%
+observational_plots[[13]] <- dat2 %>%
   ggplot() +
   geom_point(aes(age, y, col = as.factor(z)), alpha = .3) +
   geom_line(aes(age, 198.3161), col = 4) +
@@ -189,7 +197,7 @@ observational_plots[[12]] <- dat2 %>%
   scale_color_manual(values = c(4, 2))
 
 reg2 <- lm(y ~ z + age, dat2)
-observational_plots[[13]] <- dat2 %>%
+observational_plots[[14]] <- dat2 %>%
   ggplot() +
   geom_point(aes(age, y, col = as.factor(z)), alpha = .3) +
   geom_abline(intercept = 183.3755 , slope =  0.3766, col = 4) +
@@ -199,7 +207,7 @@ observational_plots[[13]] <- dat2 %>%
   scale_shape_manual(values = c(21, 19)) +
   scale_color_manual(values = c(4, 2))
 
-observational_plots[[14]] <- dat2 %>%
+observational_plots[[15]] <- dat2 %>%
   ggplot() +
   geom_segment(data = dat2 %>% dplyr::filter(z == 1), aes(x = age, xend = age, y = mu.obs, yend = mu.cf)) +
   geom_point(aes(age, y, col = as.factor(z)), alpha = .3) +
@@ -218,7 +226,7 @@ comp2 <- data.frame(model = c('difference in means', 'regression with all confou
 comp2$interval.length <- with(comp2, upper.ci - lower.ci)
 comp2$model <- factor(comp2$model, levels = comp2$model)
 
-observational_plots[[15]] <- comp2 %>% 
+observational_plots[[16]] <- comp2 %>%
   ggplot() +
   geom_point(aes(estimate, reorder(model, dplyr::desc(model))), size = 3) +
   geom_errorbarh(aes(xmin = lower.ci, xmax = upper.ci, y = model), height = .1) +

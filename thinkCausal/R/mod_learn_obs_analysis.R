@@ -40,72 +40,77 @@ mod_learn_obs_analysis_ui <- function(id){
           scroll_ui_text_section(
             ns = ns,
             position = 2,
-            includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis3.md')),
+            includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis2.2.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 3,
+            includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis3.md')),
+          ),
+          scroll_ui_text_section(
+            ns = ns,
+            position = 4,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis4.md')),
 
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 4,
+            position = 5,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis5.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 5,
+            position = 6,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis6.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 6,
+            position = 7,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis7.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 7,
+            position = 8,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis8.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 8,
+            position = 9,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis9.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 9,
+            position = 10,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis10.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 10,
+            position = 11,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis11.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 11,
+            position = 12,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis12.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 12,
+            position = 13,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis13.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 13,
+            position = 14,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis14.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 14,
+            position = 15,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis15.md')),
           ),
           scroll_ui_text_section(
             ns = ns,
-            position = 15,
+            position = 16,
             includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis16.md')),
           )
         ),
@@ -184,41 +189,61 @@ mod_learn_obs_analysis_server <- function(id){
         style = 'visibility: visible;',
         renderCachedPlot(
           p[[1]] +
-            ggplot2::labs(title = 'Section A'),
+            ggplot2::labs(title = 'Observed data',
+                          subtitle = 'These are all of our factual outcomes',
+                          y = 'Y running times') +
+            theme(legend.position = 'top'),
           cacheKeyExpr = { list(1) })
       )
 
-      # item 2
+      # item 1
       items$position2 <- div(
-        style = 'visibility: hidden;',
+        style = 'visibility: visible;',
         renderCachedPlot(
           p[[2]] +
-            ggplot2::labs(title = 'Section B'),
+            ggplot2::labs(title = 'ATT has complete overlap',
+                          y = 'Y running times') +
+            theme(legend.position = 'top'),
           cacheKeyExpr = { list(2) })
-        #renderTable(data.frame(x = 1:4, y = 3:6, z = 5:8))
       )
 
-      # item 3
+      # item 2
       items$position3 <- div(
         style = 'visibility: hidden;',
         renderCachedPlot(
-          p[[3]]+
-            ggplot2::labs(title = 'Section C'),
+          p[[3]] +
+            ggplot2::labs(title = 'Balance Plot',
+                          subtitle = 'the treatment and control groups are not balanced',
+                          y = element_blank(), x = 'balance'),
           cacheKeyExpr = { list(3) })
+        #renderTable(data.frame(x = 1:4, y = 3:6, z = 5:8))
       )
 
+
+
+      # item 3
       items$position4 <- div(
         style = 'visibility: hidden;',
         renderCachedPlot(
           p[[4]] +
-            ggplot2::labs(title = 'Section F'),
+            ggplot2::labs(title = 'Access to all potential outcomes',
+                          subtitle = 'this is always impossible when doing reseach in practice',
+                          y = 'Y running times',
+                          shape = NULL) +
+            ggplot2::theme(legend.position = 'top')
+,
           cacheKeyExpr = { list(4) })
       )
 
       items$position5 <- div(
         style = 'visibility: hidden;',
         renderCachedPlot(
-          p[[5]],
+          p[[5]] +
+            ggplot2::labs(title = 'Calculating the true ATT',
+                          subtitle = 'We can never calculate this in the real world',
+                          y = 'Individual Causal Effects',
+                          x = 'Ordered from largest to smallest') +
+            ggplot2::theme(axis.text.x = element_blank()),
           cacheKeyExpr = { list(5) })
       )
 
@@ -226,7 +251,10 @@ mod_learn_obs_analysis_server <- function(id){
         style = 'visibility: hidden;',
         renderCachedPlot(
           p[[6]] +
-            ggplot2::labs(title = 'Section H'),
+            ggplot2::labs(title = 'Estimated ATT is -15.4 with 95% CI: (-17.5, -13.4)',
+                          subtitle = 'True ATT = -4.9',
+                          y = 'Y running times') +
+            theme(legend.position = 'top'),
           cacheKeyExpr = { list(6) })
       )
 
@@ -234,49 +262,71 @@ mod_learn_obs_analysis_server <- function(id){
         style = 'visibility: hidden;',
         renderCachedPlot(
           p[[7]] +
-            ggplot2::labs(title = 'Section I'),
+            ggplot2::labs(title = 'Estimated ATT is -5.0 with 95% CI: (-5.4, -4.7)',
+                          subtitle = 'True ATT = -4.9',
+                          y = 'Y running times') +
+            theme(legend.position = 'top'),
           cacheKeyExpr = { list(7) })
       )
 
       items$position8 <- div(
         style = 'visibility: hidden;',
         renderCachedPlot(
-            p[[8]] +
-            ggplot2::labs(title = 'Section K'),
+          p[[8]] +
+            ggplot2::labs(title = 'Estimated ATT is -4.9 with 95% CI: (-5.3, -4.4)',
+                          subtitle = 'True ATT = -4.9',
+                          y = 'Y running times') +
+            theme(legend.position = 'top'),
           cacheKeyExpr = { list(8) })
       )
 
       items$position9 <- div(
         style = 'visibility: hidden;',
-
         renderCachedPlot(
-          p[[9]],
-          cacheKeyExpr = { list(9) })
-        #renderTable(round(comp1, 1))
+            p[[9]] +
 
+              ggplot2::labs(title = 'Comparing statistical models',
+                            subtitle = 'In practice we never know the true ATT',
+                            x = 'Estimated ATT') +
+              theme(legend.position = 'top'),
+          cacheKeyExpr = { list(9) })
       )
 
       items$position10 <- div(
         style = 'visibility: hidden;',
+
         renderCachedPlot(
-          p[[10]],
+          p[[10]]+
+            ggplot2::labs(title = 'Our observed non-linear data',
+                          subtitle = 'Only factual outcomes are shown',
+                          y = 'Y running times') +
+            theme(legend.position = 'top'),
           cacheKeyExpr = { list(10) })
+        #renderTable(round(comp1, 1))
+
       )
 
       items$position11 <- div(
         style = 'visibility: hidden;',
         renderCachedPlot(
           p[[11]] +
-            ggplot2::labs(title = 'Section N'),
+            ggplot2::labs(title = 'All potential outcomes',
+                          subtitle = 'We can never calculate these in the real world',
+                          y = 'Y running times',
+                          color = 'Z',
+                          shape = NULL) + theme(legend.position = 'top'),
           cacheKeyExpr = { list(11) })
       )
 
       items$position12 <- div(
         style = 'visibility: hidden;',
-
         renderCachedPlot(
           p[[12]] +
-            ggplot2::labs(title = 'Section O'),
+            ggplot2::labs(title = 'Calculating the true ATT',
+                          subtitle = 'We can never calculate this in the real world',
+                          y = 'Individual Causal Effects',
+                          x = 'Ordered from largest to smallest') +
+            ggplot2::theme(axis.text.x = element_blank()),
           cacheKeyExpr = { list(12) })
       )
 
@@ -285,7 +335,10 @@ mod_learn_obs_analysis_server <- function(id){
 
         renderCachedPlot(
           p[[13]] +
-            ggplot2::labs(title = 'Section P'),
+            ggplot2::labs(title = 'Estimated ATT is -12.6 with 95% CI: (-13.7, -11.6)',
+                          subtitle = 'True ATT = -7.9',
+                          y = 'Y running times') +
+            theme(legend.position = 'top'),
           cacheKeyExpr = { list(13) })
       )
 
@@ -294,7 +347,10 @@ mod_learn_obs_analysis_server <- function(id){
 
         renderCachedPlot(
           p[[14]] +
-            ggplot2::labs(title = 'Section P'),
+            ggplot2::labs(title = 'Estimated ATT is -6.6 with 95% CI: (-7.2, -6.0)',
+                          subtitle = 'True ATT = -7.9',
+                          y = 'Y running times') +
+            theme(legend.position = 'top'),
           cacheKeyExpr = { list(14) })
       )
 
@@ -303,8 +359,23 @@ mod_learn_obs_analysis_server <- function(id){
 
         renderCachedPlot(
           p[[15]] +
-            ggplot2::labs(y = element_blank(), x = 'Estimated ATE', title = 'Section P'),
+            ggplot2::labs(title = 'Estimated ATT is -8.0 with 95% CI: (-8.6, -7.4)',
+                          subtitle = 'True ATT = -7.9',
+                          y = 'Y running times') +
+            theme(legend.position = 'top'),
           cacheKeyExpr = { list(15) })
+      )
+
+      items$position16 <- div(
+        style = 'visibility: hidden;',
+
+        renderCachedPlot(
+          p[[16]] +
+            ggplot2::labs(y = element_blank(),
+                          x = 'Estimated ATT',
+                          title = 'Comparing statistical model with non-linear data',
+                          subtitle = 'In practice we never know the true ATT'),
+          cacheKeyExpr = { list(16) })
       )
       return(items)
     })
