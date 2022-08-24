@@ -151,7 +151,9 @@ mod_learn_obs_analysis_server <- function(id){
     # dat2$z <- as.factor(dat2$z)
 
 
-    p <- readr::read_rds('~/Dropbox/thinkCausal_dev/thinkCausal/inst/extdata/obs_plots.rds')
+    p <- readr::read_rds(
+      app_sys('extdata', 'obs_plots.rds', mustWork = TRUE)
+      )
 
 
     #table 1
