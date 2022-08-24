@@ -79,7 +79,7 @@ app_ui <- function(request) {
           ),
           bs4Dash::tabItem(
             tabName = 'learn_observational',
-            mod_learn_obs_analysis_ui('temp1')
+            mod_learn_obs_analysis_ui(module_ids$learn$observational)
           ),
           bs4Dash::tabItem(
             tabName = 'learn_post_treatment',
@@ -139,7 +139,7 @@ app_ui <- function(request) {
 
           bs4Dash::tabItem(
             tabName = 'reproduce',
-            mod_reproduce_ui("reproduce")
+            mod_reproduce_ui(module_ids$reproduce)
           ),
 
           bs4Dash::tabItem(

@@ -60,7 +60,20 @@ mod_learn_ui <- function(id){
         bs4Dash::box(
           width = 4,
           collapsible = FALSE,
-          title = 'Randomization',
+          title = 'Observational studies',
+          tagList(
+            shiny::actionLink(
+              inputId = ns('learn_observational_img'),
+              img(src = 'www/img/thumbnails/observational.png',
+                  width = '100%'),
+            ),
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.'
+          )
+        ),
+        bs4Dash::box(
+          width = 4,
+          collapsible = FALSE,
+          title = 'Randomized experiments',
           tagList(
             shiny::actionLink(
               inputId = ns('learn_randomization_img'),
@@ -83,20 +96,6 @@ mod_learn_ui <- function(id){
             ),
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
           )
-        ),
-        bs4Dash::box(
-          width = 4,
-          collapsible = FALSE,
-          title = 'Coming soon: BART', #Bayesian Additive Regression Trees',
-          class = 'learning-content-blur',
-          tagList(
-            shiny::actionLink(
-              inputId = ns('learn_bart_img'),
-              img(src = 'www/img/thumbnails/decision_tree.png',
-                  width = '100%'),
-            ),
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.'
-          )
         )
       )
     )
@@ -115,7 +114,8 @@ mod_learn_server <- function(id, store){
       'learn_estimands',
       'learn_post_treatment',
       'learn_potential_outcomes',
-      'learn_randomization'
+      'learn_randomization',
+      'learn_observational'
     )
     purrr::map(selectors, function(sel){
       observeEvent(input[[glue::glue('{sel}_img')]], {
