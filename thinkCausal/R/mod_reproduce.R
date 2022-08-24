@@ -19,7 +19,8 @@ mod_reproduce_ui <- function(id){
     downloadButton(
       outputId = ns('analysis_results_button_download'),
       label = 'Download R script',
-      style = 'max-width: 300px'
+      style = 'max-width: 300px',
+      class = if (options('golem.app.prod')[[1]]) 'btn-disabled'
     ),
     br(), br(),
     bs4Dash::box(
@@ -69,6 +70,9 @@ mod_reproduce_server <- function(id, store){
       },
 
       content <- function(filename) {
+
+        # this is unstable so stop here for now
+        if (options('golem.app.prod')[[1]]) req(FALSE)
 
         req(store$analysis$model$fit_good)
 

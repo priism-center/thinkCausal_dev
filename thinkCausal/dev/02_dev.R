@@ -57,7 +57,7 @@ golem::add_module(name = 'quiz', with_test = TRUE)
 golem::add_css_file('confetti', dir = 'inst/app/www/css')
 
 # scrollytell
-golem::add_fct(name = 'scrollytell', with_test = TRUE)
+golem::add_fct(name = 'scrollytell')
 golem::add_css_file('scrollytell', dir = 'inst/app/www/css')
 golem::add_js_file('scrollytell', dir = 'inst/app/www/js')
 
