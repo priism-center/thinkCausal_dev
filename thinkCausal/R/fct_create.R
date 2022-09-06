@@ -613,13 +613,14 @@ get_table_values <- function(input, table_id, ns = NULL, convert_to_numeric = TR
 #'
 #' @author Joe Marlo, Junhui Yang, George Perrett
 #'
-#' @return a string of JS and HTML code
+#' @return a list with element 1 = a string of JS and HTML code and element 2 = the dataframe used to make the table
 #' @noRd
 #'
 #' @examples
 #' html_string <- create_table(n_rows = 10, y_min = 50, y_max = 100, ate = -10, po_question = T, ite_question = T)
-#' # HTML(html_string) within Shiny UI
+#' # HTML(html_string[[1]]) within Shiny UI
 #' # access the user inputs via get_table_values(<table_id>) within Shiny server
+#' # access data html_string[[2]]
 create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min = 50, y_max = 100, ate = 10, po_question = TRUE, ite_question = TRUE, extra_header = NULL, extra_header_widths = rep(1, length(extra_header)), table_id = NULL, button = TRUE, ns = NULL, id_unit = NULL){
 
   # TODO: when po_question = FALSE and ite_question = TRUE, why are only three rows have '?'
@@ -754,5 +755,7 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
     ns = ns
   )
 
-  return(html_code)
+  out <- list(html_code, .data)
+
+  return(out)
 }

@@ -82,6 +82,10 @@ app_ui <- function(request) {
             mod_learn_obs_analysis_ui(module_ids$learn$observational)
           ),
           bs4Dash::tabItem(
+            tabName = 'learn_balance',
+            mod_learn_balance_ui(module_ids$learn$balance)
+          ),
+          bs4Dash::tabItem(
             tabName = 'learn_post_treatment',
             mod_learn_post_treatment_ui(module_ids$learn$post_treatment)
           ),
@@ -202,6 +206,10 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Observational studies',
               tabName = 'learn_observational'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Balance',
+              tabName = 'learn_balance'
             )
           ),
 
