@@ -115,7 +115,7 @@ mod_analysis_overlap_server <- function(id, store){
       ps <- X[, c(treatment_col, confounder_cols)]
 
       # calculate pscores
-      pscores <- dbarts::bart2(eval(parse(text = treatment_col)) ~ ., data = ps, seed = 2)
+      pscores <- dbarts::bart2(as.formula(paste(treatment_col, '~ .')), data = ps, seed = 2)
       rm(ps)
       pscores <- fitted(pscores)
       # pscores <- fitted(pscores)
