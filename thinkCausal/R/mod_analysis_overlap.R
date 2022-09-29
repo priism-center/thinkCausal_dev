@@ -116,6 +116,7 @@ mod_analysis_overlap_server <- function(id, store){
 
       # calculate pscores
       pscores <- dbarts::bart2(as.formula(paste(treatment_col, '~ .')), data = ps, seed = 2)
+
       rm(ps)
       pscores <- fitted(pscores)
       # pscores <- fitted(pscores)
