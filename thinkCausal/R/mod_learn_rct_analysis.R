@@ -23,7 +23,7 @@ mod_learn_rct_analysis_ui <- function(id){
         class = 'learning-content',  # required
         style = 'display: block;',
 
-        h1('Analyzing Randomized Experements'),
+        h1('Analyzing Randomized Experiments'),
         includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis1.md')),
         br(),br()
       ),
@@ -305,8 +305,8 @@ mod_learn_rct_analysis_server <- function(id){
         renderCachedPlot(
           runners_rct %>%
             dplyr::mutate(
-              y0mean = mean(y[plot_dat$z == 0]),
-              y1mean = mean(y[plot_dat$z == 1])) %>%
+              y0mean = mean(y[runners_rct$z == 0]),
+              y1mean = mean(y[runners_rct$z == 1])) %>%
             ggplot2::ggplot() +
             ggplot2::geom_point(aes(x = age, y = y, col = as.factor(z)), alpha = .3) +
             ggplot2::scale_color_manual(values = c('blue', 'red')) +

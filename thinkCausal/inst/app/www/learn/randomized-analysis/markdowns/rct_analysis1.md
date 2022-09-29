@@ -4,8 +4,8 @@ Let's consider a hypothetical randomized study where 200 runners were randomly a
 
 <br>
 
-#### Causal Estimands for Randomized Experements
-Before we begin analyzing our data, we'll need to concider which causal estimand we are estimating. When the treatment is randomly assigned, we expect the Average Treatmetn Effect (ATE), Averagre Treatment Effect of the Treated (ATT) and Average Treatment Effect of the Control (ATC) to be equal. 
+#### Causal Estimands for Randomized Experiments
+Before we begin analyzing our data, we'll need to consider which causal estimand we are estimating. When the treatment is randomly assigned, we expect the Average Treatment Effect (ATE), Average Treatment Effect of the Treated (ATT) and Average Treatment Effect of the Control (ATC) to be equal. 
 
 <br>
 <br>
