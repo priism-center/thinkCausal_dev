@@ -18,3 +18,7 @@ R and R packages:
 - **plotBart**: Joseph Marlo and George Perrett (2022). plotBart: Diagnostic and Plotting Functions to Supplement bartCause. R package version 0.1.7.
 - **bartCause**: Hill J (2011). “Bayesian Nonparametric Modeling for Causal Inference.” _Journal of Computational and Graphical Statistics_, *20*(1), 217-240. doi: 10.1198/jcgs.2010.08162 (URL: https://doi.org/10.1198/jcgs.2010.08162).
 
+<br>
+
+#### Reference thinkCausal
+Joseph Marlo, George Perrett, Jennifer Hill (2022). _thinkCausal: Point-and-click bartCause analysis and causal inference education_. R package version 0.3.0, https://priism-center.github.io/thinkCausal/

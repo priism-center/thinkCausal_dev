@@ -16,7 +16,8 @@ module_ids <- list(
     rct_covariates = 'learning_rct_covariates',
     ignorability = 'learning_ignorability',
     confounders_measured = 'learning_confounders_measured',
-    potential_outcomes = "learning_potential_outcomes"
+    potential_outcomes = "learning_potential_outcomes",
+    observational = "learning_observational"
   ),
   analysis = list(
     design = 'analysis_design',

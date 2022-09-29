@@ -1,0 +1,6 @@
+Designing studies with a randomly assigned treatment is the most effective way to obtain unbiased estimates of a true causal effect. Under random assignment, we can expect that the treatment and control groups are balanced and that there is complete overlap across all variables. This is true for both measured and unmeasured variables! 
+
+While random assignment is always preferable, there are many situations where it is impossible to randomly assign a treatment. In observational studies, where participants self-select into the treatment or control conditions (there is no random assignment), we can use statistical models to account for imbalance, predict counter-factuals and estimate causal effects. 
+
+Lets consider a hypothetical example where you were given data from a recent running race with 200 runners. Some of the runners wore the newly developed HyperShoes, while some of the runners wore standard shoes. The treatment (HyperShoes) was not randomly assigned, runners choose for themselves which shoes to use. Besides treatment variable `Z` (HyperShoes or standard shoes) and outcome variable `Y` (running times), the dataset has measurements of `age`. How can we determine if wearing HyperShoes caused runners to run faster than they would have run had they worn standard shoes? 
+

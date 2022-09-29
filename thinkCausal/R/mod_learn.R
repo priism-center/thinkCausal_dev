@@ -60,8 +60,20 @@ mod_learn_ui <- function(id){
         bs4Dash::box(
           width = 4,
           collapsible = FALSE,
-          title = 'Coming soon: Randomization',
-          class = 'learning-content-blur',
+          title = 'Observational studies',
+          tagList(
+            shiny::actionLink(
+              inputId = ns('learn_observational_img'),
+              img(src = 'www/img/thumbnails/observational.png',
+                  width = '100%'),
+            ),
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.'
+          )
+        ),
+        bs4Dash::box(
+          width = 4,
+          collapsible = FALSE,
+          title = 'Randomized experiments',
           tagList(
             shiny::actionLink(
               inputId = ns('learn_randomization_img'),
@@ -84,20 +96,6 @@ mod_learn_ui <- function(id){
             ),
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
           )
-        ),
-        bs4Dash::box(
-          width = 4,
-          collapsible = FALSE,
-          title = 'Coming soon: BART', #Bayesian Additive Regression Trees',
-          class = 'learning-content-blur',
-          tagList(
-            shiny::actionLink(
-              inputId = ns('learn_bart_img'),
-              img(src = 'www/img/thumbnails/decision_tree.png',
-                  width = '100%'),
-            ),
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.'
-          )
         )
       )
     )
@@ -112,7 +110,13 @@ mod_learn_server <- function(id, store){
     ns <- session$ns
 
     # links from learn home page to each learn article
-    selectors <- c('learn_estimands', 'learn_post_treatment', 'learn_potential_outcomes')
+    selectors <- c(
+      'learn_estimands',
+      'learn_post_treatment',
+      'learn_potential_outcomes',
+      'learn_randomization',
+      'learn_observational'
+    )
     purrr::map(selectors, function(sel){
       observeEvent(input[[glue::glue('{sel}_img')]], {
         bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = sel)

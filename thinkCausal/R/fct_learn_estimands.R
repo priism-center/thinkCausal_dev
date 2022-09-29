@@ -9,14 +9,14 @@ quiz_content_estimands <- local({
 
   content <- list()
   content$ns_quiz <- NS(NS('learning_estimands')('quiz'))
-
+  po <- create_table(ate = -5, y_min = 30, y_max = 50, po_question = FALSE, ite_question = FALSE, id_unit = 'Runner', button = FALSE, )
   # questions
   question_1 <- tagList(
     h4("Calculating the ATE"),
     hr(),
     h3("Question 1"), # h3 required for checkmark/red x placement
     p("Imagine your asked to determnie the average treatment effect of wearing HyperShoes (Z = 1) on 5k running times. The potential outcomes for a sample of 6 runners are shown below. Use this data to calculate the average treatment effect (ATE)."),
-    HTML(create_table(ate = -5, y_min = 30, y_max = 50, po_question = FALSE, ite_question = FALSE, id_unit = 'Runner', button = FALSE)),
+    HTML(po[[1]]),
     br(),
     p("The Average Treatment Effect (ATE) for the sample of runners is:")
   )
@@ -28,8 +28,7 @@ quiz_content_estimands <- local({
   )
 
   # answer
-  correct_answer_1 <- list(c(-5.3))
-
+  correct_answer_1 <- list(c(mean(as.numeric(po[[2]]$ITE))))
   # place in a single list
   content$question_texts <- list(question_1)
   content$question_prompts <- list(question_prompt_1)

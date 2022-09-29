@@ -1,9 +1,10 @@
 Package: thinkCausal
 Title: Point-and-click bartCause analysis and causal inference education
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: c(
   person('Joseph', 'Marlo', email = 'jpm770@nyu.edu', role = c('cre', 'aut')),
-  person("George", "Perrett", email = "gp77@nyu.edu", role = "aut")
+  person("George", "Perrett", email = "gp77@nyu.edu", role = "aut"),
+  person("Jennifer", "Hill", email = "jennifer.hill@nyu.edu", role = "aut")
   )
 Description: A federally funded project devoted to building scaffolded causal inference software implementing Bayesian Additive Regression Trees.
 License: MIT + file LICENSE
@@ -18,7 +19,9 @@ Imports:
     glue,
     golem (>= 0.3.2),
     Hmisc (>= 4.7.0),
+    lubridate (>= 1.8.0),
     openxlsx (>= 4.2.5),
+    patchwork (>= 1.1.1),
     pkgload,
     plotBart (>= 0.1.7),
     purrr,
@@ -28,6 +31,8 @@ Imports:
     rlang (>= 1.0.3),
     scales (>= 1.1.1),
     shiny (>= 1.7.1),
+    shinybrowser (>= 1.0.0),
+    shinydisconnect (>= 0.1.0),
     shinyjs (>= 2.1.0),
     sortable (>= 0.4.5),
     stringr,
@@ -41,6 +46,6 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 BugReports: https://priism-center.github.io/thinkCausal//issues

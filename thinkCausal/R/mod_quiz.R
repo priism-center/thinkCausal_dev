@@ -154,9 +154,9 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
 
 # state machine -----------------------------------------------------------
 
-#' Functions for managing the states of the quiz
+#' @title Functions for managing the states of the quiz
 #'
-#' The quiz has states for each question and a final state for once the quiz ends. Only one state can be active at a time and the question text and answers shown depend on what state is active.
+#' @description The quiz has states for each question and a final state for once the quiz ends. Only one state can be active at a time and the question text and answers shown depend on what state is active.
 #'
 #' These are `get` and `set` functions for retrieving state values and setting values. The states are originally created via a `reactiveValues` call within Shiny server (or `list` outside of Shiny; see example below).
 #'

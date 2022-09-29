@@ -24,3 +24,21 @@
   top: 30px;
   padding: 20px 0 0 0;
 }
+
+@media (max-width: 768px) {
+  .scroll-container {
+    max-width: 100%;
+    min-width: 100%;
+    line-height: 1.5em;
+  }
+  .scroll-text {
+    font-size: 80%;
+    width: 50%;
+  }
+  .scroll-visual-container {
+    width: 50%;
+  }
+  .scroll-container h2 {
+    font-size: 1.5rem;
+  }
+}

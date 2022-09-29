@@ -24,6 +24,8 @@ usethis::use_package('stringr')
 usethis::use_package('glue')
 usethis::use_package('rlang', min_version = '1.0.3')
 usethis::use_package('scales', min_version = '1.1.1')
+usethis::use_package('lubridate', min_version = '1.8.0')
+
 usethis::use_package('bs4Dash', min_version = '2.1.0')
 usethis::use_package('shinyjs', min_version = '2.1.0')
 usethis::use_package('reactable', min_version = '0.3.0')
@@ -32,6 +34,10 @@ usethis::use_package('readr')
 usethis::use_package('Hmisc', min_version = '4.7.0')
 usethis::use_package('openxlsx', min_version = '4.2.5')
 usethis::use_package('readstata13', min_version = '0.10.0')
+usethis::use_package('patchwork', min_version = '1.1.1')
+usethis::use_package('shinybrowser', min_version = '1.0.0')
+usethis::use_package('shinydisconnect', min_version = '0.1.0')
+
 usethis::use_package('plotBart', min_version = '0.1.7')
 usethis::use_package('bartCause', min_version = '1.0.4')
 usethis::use_package('dbarts', min_version = '0.9.20')
@@ -51,7 +57,7 @@ golem::add_module(name = 'quiz', with_test = TRUE)
 golem::add_css_file('confetti', dir = 'inst/app/www/css')
 
 # scrollytell
-golem::add_fct(name = 'scrollytell', with_test = TRUE)
+golem::add_fct(name = 'scrollytell')
 golem::add_css_file('scrollytell', dir = 'inst/app/www/css')
 golem::add_js_file('scrollytell', dir = 'inst/app/www/js')
 

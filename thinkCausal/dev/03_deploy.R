@@ -29,6 +29,8 @@ devtools::build()
 ## If you want to deploy on RStudio related platforms
 # golem::add_rstudioconnect_file()
 golem::add_shinyappsio_file()
+# rsconnect::setAccountInfo(name = "${{secrets.SA_ACCOUNT_NAME}}", token = "${{secrets.SA_TOKEN}}", secret = "${{secrets.SA_SECRET}}")
+# rsconnect::deployApp(appName = 'thinkCausal', account = "${{secrets.SA_ACCOUNT_NAME}}")
 # golem::add_shinyserver_file()
 
 ## Docker ----

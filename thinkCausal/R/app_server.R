@@ -12,9 +12,7 @@ app_server <- function(input, output, session) {
   store <- reactiveValues(
     session_global = session,
     log = list(as.character(Sys.time())),
-    # module_ids = module_ids,
-    page_history = NULL,
-    js = NULL,
+    # js = NULL,
     options = list(theme_custom = theme_minimal_no_transparency())
   )
 
@@ -42,8 +40,12 @@ app_server <- function(input, output, session) {
   # learn
   mod_learn_server(module_ids$learn$home, store)
   mod_learn_estimands_server(module_ids$learn$estimands)
+  mod_learn_rct_analysis_server(module_ids$learn$randomization)
   mod_learn_post_treatment_server(module_ids$learn$post_treatment, store)
   mod_learn_potential_outcomes_server(module_ids$learn$potential_outcomes)
+  mod_learn_obs_analysis_server(module_ids$learn$observational)
+  mod_learn_balance_server(module_ids$learn$balance)
+
   mod_learn_scrolly_example_server('learn_scrolly')
 
   # analysis
@@ -57,6 +59,13 @@ app_server <- function(input, output, session) {
   store <- mod_analysis_diagnostics_server(module_ids$analysis$diagnostics, store)
   store <- mod_analysis_results_server(module_ids$analysis$results, store)
   store <- mod_analysis_subgroup_server(module_ids$analysis$subgroup, store)
+
+
+  # other -------------------------------------------------------------------
+
+  # mobile popup warning
+  # TODO: this can be removed for native installation
+  observe(if (shinybrowser::get_device() == 'Mobile') show_popup_mobile(session))
 
   # toggle side bar help menu
   # bs4Dash::updateControlbar(id = "help-slideover", session = session)

@@ -1,14 +1,13 @@
-
-
-#' Clean a string for use in column names
+#' @title Clean a string for use in column names
 #'
-#' Cleans up strings for use as column names in dataframes. Makes the following changes:
+#' @description {Cleans up strings for use as column names in dataframes. Makes the following changes:
 #' \itemize{
 #'  \item replaces non-ASCII characters with ASCII counterparts
 #'  \item replaces spaces with underscores
 #'  \item replaces percent sign with '_percent'
 #'  \item removes all punctuation except underscores and periods
 #'  \item adds 'n' to the beginning of strings that start with numeric characters
+#' }
 #' }
 #'
 #' @param .names
@@ -73,11 +72,9 @@ clean_names <- function(.names){
   return(.names)
 }
 
-# TODO: should adjust this to accept yes, no
-
-#' Convert all psuedo-logical columns in a dataframe to booleans
+#' @title Convert all psuedo-logical columns in a dataframe to booleans
 #'
-#' Converts columns of a dataframe containing binary c(0, 1), c("T", "F"), c("True", "False") to boolean c(TRUE, FALSE). Is agnostic to case.
+#' @description Converts columns of a dataframe containing binary c(0, 1), c("T", "F"), c("True", "False") to boolean c(TRUE, FALSE). Is agnostic to case.
 #'
 #' @param input_data dataframe
 #'
@@ -125,10 +122,9 @@ clean_detect_logical <- function(x){
   return(is_in_list)
 }
 
-
-#' Convert integer-like columns with few levels to a factor
+#' @title Convert integer-like columns with few levels to a factor
 #'
-#' Useful for plotting
+#' @description Useful for plotting
 #'
 #' @param .data a dataframe
 #'
