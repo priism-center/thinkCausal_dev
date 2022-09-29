@@ -93,10 +93,10 @@ app_ui <- function(request) {
             tabName = 'learn_potential_outcomes',
             mod_learn_potential_outcomes_ui(module_ids$learn$potential_outcomes)
           ),
-          # bs4Dash::tabItem(
-          #   tabName = 'learn_scrolly',
-          #   mod_learn_scrolly_example_ui('learn_scrolly')
-          # ),
+          bs4Dash::tabItem(
+            tabName = 'learn_scrolly',
+            mod_learn_scrolly_example_ui('learn_scrolly')
+          ),
 
           # analysis pages
           bs4Dash::tabItem(
@@ -115,10 +115,10 @@ app_ui <- function(request) {
             tabName = 'analysis_visualize',
             mod_analysis_visualize_ui(module_ids$analysis$visualize)
           ),
-          bs4Dash::tabItem(
-            tabName = 'analysis_balance',
-            mod_analysis_balance_ui(module_ids$analysis$balance)
-          ),
+          # bs4Dash::tabItem(
+          #   tabName = 'analysis_balance',
+          #   mod_analysis_balance_ui(module_ids$analysis$balance)
+          # ),
           bs4Dash::tabItem(
             tabName = 'analysis_overlap',
             mod_analysis_overlap_ui(module_ids$analysis$overlap)
@@ -206,11 +206,11 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Observational studies',
               tabName = 'learn_observational'
-            ),
-            bs4Dash::menuSubItem(
-              text = 'Balance',
-              tabName = 'learn_balance'
             )
+            #, bs4Dash::menuSubItem(
+            #   text = 'Balance',
+            #   tabName = 'learn_balance'
+            # )
           ),
 
           # analysis pages
