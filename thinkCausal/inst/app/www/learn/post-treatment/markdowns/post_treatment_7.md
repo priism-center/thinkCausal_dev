@@ -56,7 +56,7 @@ When we can see all potential outcomes, it is clear that comparing Plant 1 & 2 i
 <br>
 
 
-Recall that we can never observe both potential outcomes and only have access to the observed value determined by the treatment (`z`). If we control for the observed value of `bugs`, Plant 2 and Plant 3 no longer appear similar! Rather than making a fair comparison between Plant 1 and Plant 2, a statistical model that controls for the observed value of `bugs` would make the unfair comparisons between Plant 1 & Plant 3 which we know is an unfair comparison! 
+Recall that we can never observe both potential outcomes and only have access to the observed value determined by the treatment (`z`). If we control for the observed value of `bugs`, Plant 2 and Plant 3 no longer appear similar! Rather than making a fair comparison between Plant 1 & Plant 2, a statistical model that controls for the observed value of `bugs` would make the unfair comparisons between Plant 1 & Plant 3 which we know is an unfair comparison! 
 
 <br>
 <table class="table">
