@@ -1,3 +1,3 @@
-## Difference in means
+### Difference in means
 
-With our non-linear data, the difference in means estimate of -12.6 is far off from the true ATT of -7.9. Observational studeis can have confounding variables, like `age` in our example. This is a problem with both linear and non-linear data. 
+If we use the difference in means as our statistical model, our estimate would be -12.6 which is  extremely far from true ATT! The story is the same as the last time we used comparing the difference in means to estimate the ATT, we are still not incorporating any information about age and the imbalance of age has not been accounted for. Not appropriately adjusting for the confounding variable of `age` explains why the estimated ATT is so biased. 

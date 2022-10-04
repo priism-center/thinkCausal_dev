@@ -136,49 +136,6 @@ mod_learn_obs_analysis_server <- function(id){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
-    # set plot theme
-    theme_set(theme_bw() + theme(panel.grid.major = element_blank(),
-                                 panel.grid.minor = element_blank(),
-                                 text = element_text(size = 16)
-    ))
-
-    # load all the objects needed to make every plot
-    ## load df
-    # dat1 <- readr::read_csv(
-    #   app_sys('extdata', 'runners_obs1.csv', mustWork = TRUE),
-    #   show_col_types = FALSE)
-    # dat1$z <- as.factor(dat1$z)
-    #
-    # dat2 <- readr::read_csv(
-    #   app_sys('extdata', 'runners_obs2.csv', mustWork = TRUE),
-    #   show_col_types = FALSE)
-    # dat2$z <- as.factor(dat2$z)
-
-
-    p <- readr::read_rds(
-      app_sys('extdata', 'obs_plots.rds', mustWork = TRUE)
-      )
-
-
-    #table 1
-    comp1 <- data.frame(model = c('difference in means', 'regression with all confounders', 'BART with all confounders'),
-                        estimate = c(-15.4, -5.0, -4.9),
-                        lower.ci = c(-17.45981, -5.417691, -5.327),
-                        upper.ci = c(-13.35439, -4.677999, -4.386))
-
-    comp1$`interval length` <-  with(comp1, upper.ci - lower.ci)
-    comp1$model <- factor(comp1$model, levels = comp1$model)
-
-    # table 2
-    comp2 <- data.frame(model = c('difference in means', 'regression with all confounders', 'BART with all confounders'),
-                        estimate = c(-12.6, -6.6, -8.0),
-                        lower.ci = c(-13.65272, -7.231296, -8.573),
-                        upper.ci = c(-11.57668, -5.968704, -7.444))
-
-    comp2$interval.length <- with(comp2, upper.ci - lower.ci)
-    comp2$model <- factor(comp2$model, levels = comp2$model)
-
-
     output$scroll_visual <- renderUI({
 
       items <- list()
@@ -186,195 +143,162 @@ mod_learn_obs_analysis_server <- function(id){
       # item 1
       items$position1 <- div(
         style = 'visibility: visible;',
-        renderCachedPlot(
-          p[[1]] +
-            ggplot2::labs(title = 'Observed data',
-                          subtitle = 'These are all of our factual outcomes',
-                          y = 'Y running times') +
-            theme(legend.position = 'top'),
-          cacheKeyExpr = { list(1) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p1.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
-      # item 1
       items$position2 <- div(
         style = 'visibility: visible;',
-        renderCachedPlot(
-          p[[2]] +
-            ggplot2::labs(title = 'ATT has complete overlap',
-                          y = 'Y running times') +
-            theme(legend.position = 'top'),
-          cacheKeyExpr = { list(2) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p2.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
-      # item 2
       items$position3 <- div(
         style = 'visibility: hidden;',
-        renderCachedPlot(
-          p[[3]] +
-            ggplot2::labs(title = 'Balance Plot',
-                          subtitle = 'the treatment and control groups are not balanced',
-                          y = element_blank(), x = 'balance'),
-          cacheKeyExpr = { list(3) })
-        #renderTable(data.frame(x = 1:4, y = 3:6, z = 5:8))
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p3.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
-
-
-      # item 3
       items$position4 <- div(
         style = 'visibility: hidden;',
-        renderCachedPlot(
-          p[[4]] +
-            ggplot2::labs(title = 'Access to all potential outcomes',
-                          subtitle = 'this is always impossible when doing reseach in practice',
-                          y = 'Y running times',
-                          shape = NULL) +
-            ggplot2::theme(legend.position = 'top')
-,
-          cacheKeyExpr = { list(4) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p4.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position5 <- div(
         style = 'visibility: hidden;',
-        renderCachedPlot(
-          p[[5]] +
-            ggplot2::labs(title = 'Calculating the true ATT',
-                          subtitle = 'We can never calculate this in the real world',
-                          y = 'Individual Causal Effects',
-                          x = 'Ordered from largest to smallest') +
-            ggplot2::theme(axis.text.x = element_blank()),
-          cacheKeyExpr = { list(5) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p5.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position6 <- div(
         style = 'visibility: hidden;',
-        renderCachedPlot(
-          p[[6]] +
-            ggplot2::labs(title = 'Estimated ATT is -15.4 with 95% CI: (-17.5, -13.4)',
-                          subtitle = 'True ATT = -4.9',
-                          y = 'Y running times') +
-            theme(legend.position = 'top'),
-          cacheKeyExpr = { list(6) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p6.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position7 <- div(
         style = 'visibility: hidden;',
-        renderCachedPlot(
-          p[[7]] +
-            ggplot2::labs(title = 'Estimated ATT is -5.0 with 95% CI: (-5.4, -4.7)',
-                          subtitle = 'True ATT = -4.9',
-                          y = 'Y running times') +
-            theme(legend.position = 'top'),
-          cacheKeyExpr = { list(7) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p7.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position8 <- div(
         style = 'visibility: hidden;',
-        renderCachedPlot(
-          p[[8]] +
-            ggplot2::labs(title = 'Estimated ATT is -4.9 with 95% CI: (-5.3, -4.4)',
-                          subtitle = 'True ATT = -4.9',
-                          y = 'Y running times') +
-            theme(legend.position = 'top'),
-          cacheKeyExpr = { list(8) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p8.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position9 <- div(
         style = 'visibility: hidden;',
-        renderCachedPlot(
-            p[[9]] +
-
-              ggplot2::labs(title = 'Comparing statistical models',
-                            subtitle = 'In practice we never know the true ATT',
-                            x = 'Estimated ATT') +
-              theme(legend.position = 'top'),
-          cacheKeyExpr = { list(9) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p9.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position10 <- div(
         style = 'visibility: hidden;',
-
-        renderCachedPlot(
-          p[[10]]+
-            ggplot2::labs(title = 'Our observed non-linear data',
-                          subtitle = 'Only factual outcomes are shown',
-                          y = 'Y running times') +
-            theme(legend.position = 'top'),
-          cacheKeyExpr = { list(10) })
-        #renderTable(round(comp1, 1))
-
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p10.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position11 <- div(
         style = 'visibility: hidden;',
-        renderCachedPlot(
-          p[[11]] +
-            ggplot2::labs(title = 'All potential outcomes',
-                          subtitle = 'We can never calculate these in the real world',
-                          y = 'Y running times',
-                          color = 'Z',
-                          shape = NULL) + theme(legend.position = 'top'),
-          cacheKeyExpr = { list(11) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p11.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position12 <- div(
         style = 'visibility: hidden;',
-        renderCachedPlot(
-          p[[12]] +
-            ggplot2::labs(title = 'Calculating the true ATT',
-                          subtitle = 'We can never calculate this in the real world',
-                          y = 'Individual Causal Effects',
-                          x = 'Ordered from largest to smallest') +
-            ggplot2::theme(axis.text.x = element_blank()),
-          cacheKeyExpr = { list(12) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p12.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position13 <- div(
         style = 'visibility: hidden;',
-
-        renderCachedPlot(
-          p[[13]] +
-            ggplot2::labs(title = 'Estimated ATT is -12.6 with 95% CI: (-13.7, -11.6)',
-                          subtitle = 'True ATT = -7.9',
-                          y = 'Y running times') +
-            theme(legend.position = 'top'),
-          cacheKeyExpr = { list(13) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p13.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position14 <- div(
         style = 'visibility: hidden;',
-
-        renderCachedPlot(
-          p[[14]] +
-            ggplot2::labs(title = 'Estimated ATT is -6.6 with 95% CI: (-7.2, -6.0)',
-                          subtitle = 'True ATT = -7.9',
-                          y = 'Y running times') +
-            theme(legend.position = 'top'),
-          cacheKeyExpr = { list(14) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p14.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position15 <- div(
         style = 'visibility: hidden;',
-
-        renderCachedPlot(
-          p[[15]] +
-            ggplot2::labs(title = 'Estimated ATT is -8.0 with 95% CI: (-8.6, -7.4)',
-                          subtitle = 'True ATT = -7.9',
-                          y = 'Y running times') +
-            theme(legend.position = 'top'),
-          cacheKeyExpr = { list(15) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p15.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
 
       items$position16 <- div(
         style = 'visibility: hidden;',
-
-        renderCachedPlot(
-          p[[16]] +
-            ggplot2::labs(y = element_blank(),
-                          x = 'Estimated ATT',
-                          title = 'Comparing statistical model with non-linear data',
-                          subtitle = 'In practice we never know the true ATT'),
-          cacheKeyExpr = { list(16) })
+        renderImage({
+          list(src = app_sys('app', 'www/learn/observational-analysis/plots/p16.png'),
+               contentType = 'image/png',
+               width = 600,
+               height = 500)
+        }, deleteFile = F)
       )
       return(items)
     })
