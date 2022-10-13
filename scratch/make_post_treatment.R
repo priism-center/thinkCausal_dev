@@ -17,7 +17,8 @@ summary(lm(y ~ z))
 1.5139 - 1.96*.1540
 
 summary(lm(y ~ z + bugs))
--0.1780    + 1.96*0.1251 
+-0.1780    + 1.96*0.1251;-0.1780    - 1.96*0.1251 
+
 
 
 theme_set(theme_bw() + 
@@ -102,7 +103,7 @@ tibble::tibble(y1, y0, y, z, bugs1, bugs0) %>%
   theme(legend.position = 'top') + 
   labs(x = NULL, color = NULL, shape = NULL, y = 'pounds of fruit', 
        title = 'If we could see all potential outcomes', 
-       subtitle = 'true ATE = 1.59') + 
+       subtitle = 'true ATE = 1.58') + 
   coord_cartesian(ylim = c(2, 10))
 
 ggsave('p3.png', 

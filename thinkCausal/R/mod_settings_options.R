@@ -27,7 +27,7 @@ mod_settings_options_ui <- function(id){
            label = "Plot font size",
            min = 8,
            max = 20,
-           value = 14,
+           value = 16,
            step = 1
          ),
          br(),

@@ -116,7 +116,6 @@ mod_analysis_overlap_server <- function(id, store){
 
       # calculate pscores
       pscores <- dbarts::bart2(as.formula(paste(treatment_col, '~ .')), data = ps, seed = 2)
-
       rm(ps)
       pscores <- fitted(pscores)
       # pscores <- fitted(pscores)
@@ -163,16 +162,15 @@ mod_analysis_overlap_server <- function(id, store){
         )
       }
 
-      # TODO: should pscores include all vars or what is just included in the select input?
       else if(input$analysis_overlap_type == 1){
         p <- tryCatch({
           plotBart::plot_overlap_pScores(
             .data = X,
             treatment = treatment_col,
-            response = response_col,
-            confounders = confounder_cols,
             plot_type = plt_type,
-            pscores = pscores()
+            pscores = pscores(),
+            min_x = min,
+            max_x = max
           )
         },
         error = function(e) NULL
