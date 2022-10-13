@@ -38,7 +38,7 @@ usethis::use_package('patchwork', min_version = '1.1.1')
 usethis::use_package('shinybrowser', min_version = '1.0.0')
 usethis::use_package('shinydisconnect', min_version = '0.1.0')
 
-usethis::use_package('plotBart', min_version = '0.1.10')
+usethis::use_package('plotBart', min_version = '0.1.12')
 usethis::use_package('bartCause', min_version = '1.0.4')
 usethis::use_package('dbarts', min_version = '0.9.20')
 
