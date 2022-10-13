@@ -168,9 +168,7 @@ mod_analysis_overlap_server <- function(id, store){
             .data = X,
             treatment = treatment_col,
             plot_type = plt_type,
-            pscores = pscores(),
-            min_x = min,
-            max_x = max
+            pscores = pscores()
           )
         },
         error = function(e) NULL
