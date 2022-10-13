@@ -6,6 +6,10 @@
 #' @noRd
 app_server <- function(input, output, session) {
 
+  # close loading spinner
+  waiter::waiter_hide()
+
+
   # global store ------------------------------------------------------------
 
   # initialize list to store variables
