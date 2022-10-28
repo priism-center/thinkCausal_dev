@@ -23,7 +23,7 @@ Imports:
     openxlsx (>= 4.2.5),
     patchwork (>= 1.1.1),
     pkgload,
-    plotBart (>= 0.1.8),
+    plotBart (>= 0.1.13),
     purrr,
     reactable (>= 0.3.0),
     readr,
