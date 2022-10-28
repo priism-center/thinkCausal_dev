@@ -1092,13 +1092,13 @@
     },
     "plotBart": {
       "Package": "plotBart",
-      "Version": "0.1.8",
+      "Version": "0.1.7",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "plotBart",
       "RemoteUsername": "priism-center",
-      "RemoteRef": "0.1.12",
+      "RemoteRef": "0.1.7",
       "RemoteSha": "4b8bb10a5096abed70d74e3abfeff87e3c4c6aaa",
       "Hash": "77bd7f2b422ff02a5127ce97b0d73c3e",
       "Requirements": [
