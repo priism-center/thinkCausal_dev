@@ -37,7 +37,7 @@ Imports:
     shinybrowser (>= 1.0.0),
     shinydisconnect (>= 0.1.0),
     shinyjs (>= 2.1.0),
-    sortable (>= 0.4.6),
+    sortable (>= 0.4.5),
     stringr,
     tibble,
     tidyr (>= 1.1.3),
