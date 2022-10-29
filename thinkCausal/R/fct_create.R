@@ -20,26 +20,26 @@ create_drag_drop_roles <- function(ns, .data, ns_prefix, design, weights, ran_ef
       class = 'default-sortable sortable-wide',
       sortable::add_rank_list(
         input_id = ns(paste0(ns_prefix, "_dragdrop_covariates")),
-        text = strong("Covariates"),
+        text = "Covariates",
         labels = auto_columns$X,
         options = sortable::sortable_options(multiDrag = TRUE)
       ),
       sortable::add_rank_list(
         input_id = ns(paste0(ns_prefix, "_dragdrop_treatment")),
-        text = strong("Treatment"),
+        text = "Treatment",
         labels = auto_columns$Z,
         options = sortable::sortable_options(multiDrag = TRUE)
       ),
       sortable::add_rank_list(
         input_id = ns(paste0(ns_prefix, "_dragdrop_response")),
-        text = strong("Outcome"),
+        text = "Outcome",
         labels = auto_columns$Y,
         options = sortable::sortable_options(multiDrag = TRUE)
       ),
       if(design == 'Block randomized treatment'){
         sortable::add_rank_list(
           input_id = ns(paste0(ns_prefix, "_dragdrop_block")),
-          text = strong("Blocking variable(s)"),
+          text = "Blocking variable(s)",
           labels = NULL,
           options = sortable::sortable_options(multiDrag = TRUE)
         )
@@ -47,7 +47,7 @@ create_drag_drop_roles <- function(ns, .data, ns_prefix, design, weights, ran_ef
       if(weights == 'Yes'){
         sortable::add_rank_list(
           input_id = ns(paste0(ns_prefix, "_dragdrop_weight")),
-          text = strong("Survey weight"),
+          text = "Survey weight",
           labels = NULL,
           options = sortable::sortable_options(multiDrag = TRUE)
         )
@@ -55,7 +55,7 @@ create_drag_drop_roles <- function(ns, .data, ns_prefix, design, weights, ran_ef
       if(ran_eff == 'Yes'){
         sortable::add_rank_list(
           input_id = ns(paste0(ns_prefix, "_dragdrop_ran_eff")),
-          text = strong("Random Intercept(s)"),
+          text = "Random Intercept(s)",
           labels = NULL,
           options = sortable::sortable_options(multiDrag = TRUE)
         )
@@ -63,7 +63,7 @@ create_drag_drop_roles <- function(ns, .data, ns_prefix, design, weights, ran_ef
       sortable::add_rank_list(
         input_id = ns(paste0(ns_prefix, "_dragdrop_post_treatment")),
         text = create_info_icon(
-          label = strong("Post-treatment variables to exclude from analysis"),
+          label = "Post-treatment variables to exclude from analysis",
           text = "All variables that could potentially be affected by the treatment"
         ),
         labels = NULL,
@@ -72,7 +72,7 @@ create_drag_drop_roles <- function(ns, .data, ns_prefix, design, weights, ran_ef
       sortable::add_rank_list(
         input_id = ns(paste0(ns_prefix, "_dragdrop_delete")),
         text = create_info_icon(
-          label = strong("ID or index variables to exclude from analysis"),
+          label = "ID or index variables to exclude from analysis",
           text = "Exclude index or ID variables in addition to extraneous variables"
         ),
         labels = auto_columns$ID,
@@ -685,7 +685,7 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
     # create the dataframe
     df <- data.frame(ID, Z, Y0, Y1, Y, ITE)
     if(!rlang::is_null(id_unit)) names(df)[1] <- id_unit
-    df <- mutate(df, Y0 = as.character(Y0), Y1 = as.character(Y1), ITE = as.character(ITE))
+    df <- dplyr::mutate(df, Y0 = as.character(Y0), Y1 = as.character(Y1), ITE = as.character(ITE))
 
     if (po_question == T & ite_question == T){ # generate questions ('?') for both potential outcomes (Y1 and Y0) and ITE
 

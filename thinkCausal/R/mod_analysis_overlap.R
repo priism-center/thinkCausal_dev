@@ -112,20 +112,13 @@ mod_analysis_overlap_server <- function(id, store){
       response_col <- grep("^Y_", col_names, value = TRUE)
       confounder_cols <- grep("^X_", col_names, value = TRUE)
 
-      ps <- X[, c(treatment_col, confounder_cols)]
-
       # calculate pscores
-      pscores <- dbarts::bart2(as.formula(paste(treatment_col, '~ .')), data = ps, seed = 2)
-      rm(ps)
-      pscores <- fitted(pscores)
-      # pscores <- fitted(pscores)
-      #   plotBart:::propensity_scores(
-      #   .data = X,
-      #   treatment = treatment_col,
-      #   response = response_col,
-      #   confounders = confounder_cols,
-      #   seed = 44
-      # )
+        plotBart:::propensity_scores(
+        .data = X,
+        treatment = treatment_col,
+        confounders = confounder_cols,
+        seed = 44
+      )
 
       return(pscores)
     })
