@@ -6,7 +6,6 @@
 #'
 #' @noRd
 #' @importFrom shiny NS
-#' @import sortable
 quiz_content_post_treatment <- local({
 
   content <- list()
