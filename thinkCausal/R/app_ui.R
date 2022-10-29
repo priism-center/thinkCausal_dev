@@ -199,16 +199,16 @@ app_ui <- function(request) {
               icon = icon("table", verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
+              text = 'Potential outcomes',
+              tabName = 'learn_potential_outcomes'
+            ),
+            bs4Dash::menuSubItem(
               text = 'Causal estimands',
               tabName = 'learn_estimands'
             ),
             bs4Dash::menuSubItem(
               text = 'Post treatment variables',
               tabName = 'learn_post_treatment'
-            ),
-            bs4Dash::menuSubItem(
-              text = 'Potential outcomes',
-              tabName = 'learn_potential_outcomes'
             ),
             # bs4Dash::menuSubItem(
             #   text = 'Scrollytell example',

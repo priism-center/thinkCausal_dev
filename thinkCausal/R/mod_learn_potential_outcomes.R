@@ -37,7 +37,7 @@ mod_learn_potential_outcomes_ui <- function(id){
         br(),br(),
         uiOutput(ns('output_based_on_selection')),
         br(),br(),br(),br(),br(),
-        wellPanel(includeMarkdown(app_sys("app", "www", "learn", "potential-outcomes", "markdowns", 'potential_outcomes_related.md'))),
+        # includeMarkdown(app_sys("app", "www", "learn", "potential-outcomes", "markdowns", 'potential_outcomes_related.md')),
         includeMarkdown(app_sys("app", "www", "learn", "potential-outcomes", "markdowns", 'potential_outcomes_citations.md'))
       )
 

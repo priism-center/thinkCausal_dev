@@ -59,20 +59,22 @@ mod_learn_post_treatment_ui <- function(id){
         ),
         scroll_ui_visual(ns = ns)
       ),
-      includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_7.md')),
-      includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_8.md')),
-      # the quiz UI
-      h2('Practice'),
-      mod_quiz_ui(id = ns('quiz')),
-      br(),
-      br(),
-      br(),
-      includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_citations.md')),
-      br(),
-      br(),
-      br(),
-      includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_learn_more.md'))
 
+      div(
+        class = ns('learning-content'), # required
+        class = 'learning-content', # required
+        style = 'display: block;',
+        includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_7.md')),
+        includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_8.md')),
+        # the quiz UI
+        h2('Practice'),
+        mod_quiz_ui(id = ns('quiz')),
+        br(),
+        br(),
+        br(),
+        includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_citations.md')),
+        includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_learn_more.md'))
+      )
     )
 
   )

@@ -23,7 +23,7 @@ mod_learn_obs_analysis_ui <- function(id){
         class = 'learning-content',  # required
         style = 'display: block;',
 
-        h1('Analyzing Data from Observation Studies'),
+        h1('Analyzing Data from Observational Studies'),
         includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational-analysis1.md')),
         br(),br()
       ),
@@ -116,13 +116,12 @@ mod_learn_obs_analysis_ui <- function(id){
         ),
         scroll_ui_visual(ns = ns)
       ),
-
       div(
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
         style = 'display: block;',
-        h2('Ending section'),
-        p('more comming soon...')
+        includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational_learn_more.md')),
+        includeMarkdown(app_sys("app", "www", "learn", "observational-analysis", "markdowns", 'observational_citations.md'))
       )
     )
   )

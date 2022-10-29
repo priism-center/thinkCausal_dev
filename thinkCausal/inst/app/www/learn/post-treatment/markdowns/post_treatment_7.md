@@ -173,6 +173,3 @@ Let's think back to our example with the farmer, suppose the farmer's plants con
 Since it is impossible that the treatment `fertilizer` could change a Sungold tomato plant into a Roma tomato plant the famrmer could include `variety` as a covaraite in the analysis!
 
 <br>
-<br>
-<br>
-
