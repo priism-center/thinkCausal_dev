@@ -10,6 +10,21 @@ app_ui <- function(request) {
     # add external resources
     golem_add_external_resources(),
 
+    # initial load spinner
+    waiter::waiterShowOnLoad(
+      color = "#302F42",
+      html = shiny::tagList(
+        tags$img(
+          src = 'www/img/thinkCausal_logo.png',
+          width = "200px",
+          style = 'margin-bottom: 40px',
+          alt = 'thinkCausal logo'
+        ),
+        br(),
+        waiter::spin_wobblebar()
+      )
+    ),
+
     # message when server disconnects
     # TODO: this can be removed for native installation
     shinydisconnect::disconnectMessage(
@@ -184,16 +199,16 @@ app_ui <- function(request) {
               icon = icon("table", verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
+              text = 'Potential outcomes',
+              tabName = 'learn_potential_outcomes'
+            ),
+            bs4Dash::menuSubItem(
               text = 'Causal estimands',
               tabName = 'learn_estimands'
             ),
             bs4Dash::menuSubItem(
               text = 'Post treatment variables',
               tabName = 'learn_post_treatment'
-            ),
-            bs4Dash::menuSubItem(
-              text = 'Potential outcomes',
-              tabName = 'learn_potential_outcomes'
             ),
             # bs4Dash::menuSubItem(
             #   text = 'Scrollytell example',
@@ -336,6 +351,9 @@ golem_add_external_resources <- function() {
 
     # enable shinyjs
     shinyjs::useShinyjs(),
+
+    # enable waiter loading spinners
+    waiter::use_waiter(),
 
     # enable shinybrowser
     # TODO: this can be removed for native installation

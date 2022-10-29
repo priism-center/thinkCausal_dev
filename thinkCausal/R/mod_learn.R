@@ -18,6 +18,19 @@ mod_learn_ui <- function(id){
         bs4Dash::box(
           width = 4,
           collapsible = FALSE,
+          title = 'Potential outcomes',
+          tagList(
+            shiny::actionLink(
+              inputId = ns('learn_potential_outcomes_img'),
+              img(src = 'www/img/thumbnails/potential-outcomes.png',
+                  width = '100%'),
+            ),
+            "The potential outcomes framework is a methodology to estimate causal effects. Learn the theory foundations here."
+          )
+        ),
+        bs4Dash::box(
+          width = 4,
+          collapsible = FALSE,
           title = 'Causal estimands',
           tagList(
             shiny::actionLink(
@@ -40,36 +53,10 @@ mod_learn_ui <- function(id){
             ),
             "Post-treatment variables are a class of variables that can be affected by the treatment and should be removed prior to modeling. Learn how to identify them to make sure you are not biasing your treatment effect estimates."
           )
-        ),
-        bs4Dash::box(
-          width = 4,
-          collapsible = FALSE,
-          title = 'Potential outcomes',
-          tagList(
-            shiny::actionLink(
-              inputId = ns('learn_potential_outcomes_img'),
-              img(src = 'www/img/thumbnails/potential-outcomes.png',
-                  width = '100%'),
-            ),
-            "The potential outcomes framework is a methodology to estimate causal effects. Learn the theory foundations here."
-          )
         )
       ),
 
       fluidRow(
-        bs4Dash::box(
-          width = 4,
-          collapsible = FALSE,
-          title = 'Observational studies',
-          tagList(
-            shiny::actionLink(
-              inputId = ns('learn_observational_img'),
-              img(src = 'www/img/thumbnails/observational.png',
-                  width = '100%'),
-            ),
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.'
-          )
-        ),
         bs4Dash::box(
           width = 4,
           collapsible = FALSE,
@@ -81,6 +68,19 @@ mod_learn_ui <- function(id){
                   width = '100%'),
             ),
             "Randomization balances groups on both observed and unobserved characteristics. Learn how this mechanism is exploited for causal inference."
+          )
+        ),
+        bs4Dash::box(
+          width = 4,
+          collapsible = FALSE,
+          title = 'Observational studies',
+          tagList(
+            shiny::actionLink(
+              inputId = ns('learn_observational_img'),
+              img(src = 'www/img/thumbnails/observational.png',
+                  width = '100%'),
+            ),
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.'
           )
         ),
         bs4Dash::box(

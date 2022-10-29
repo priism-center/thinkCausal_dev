@@ -18,7 +18,7 @@ Example inputs for each are:
 #### Unsure about your causal estimand?
 Nisl vel pretium lectus quam id leo. Vitae et leo duis ut diam. Varius vel pharetra vel turpis nunc eget lorem. Nisl purus in mollis nunc sed. Phasellus faucibus scelerisque eleifend donec pretium vulputate sapien. Semper risus in hendrerit gravida rutrum.
 
-<a onclick="go_to_shiny_page('learn_estimands');" class="help-link">
+<a onclick="go_to_shiny_page('learn_potential_outcomes');" class="help-link">
   <span class="glyphicon glyphicon-info-sign"></span>  Learn more about causal estimands
 </a>
 

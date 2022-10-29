@@ -23,6 +23,7 @@ mod_learn_rct_analysis_ui <- function(id){
         class = 'learning-content',  # required
         style = 'display: block;',
 
+        h3('Under development', style = 'color: red'),
         h1('Analyzing Randomized Experiments'),
         includeMarkdown(app_sys("app", "www", "learn", "randomized-analysis", "markdowns", 'rct_analysis1.md')),
         br(),br()

@@ -48,7 +48,13 @@ mod_learn_estimands_ui <- function(id){
         br(),br(),br(),
         # the quiz UI
         mod_quiz_ui(id = ns('quiz')),
-        wellPanel(includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_related.md'))),
+      ),
+      br(),
+      div(
+        class = ns('learning-content'), # required
+        class = 'learning-content',  # required
+        style = 'display: block;',
+        # includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_related.md')),
         includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_citations.md'))
       )
     )

@@ -1,3 +1,3 @@
-When `bugs` **is included** in the analysis, the causal effect of `pest_control` is a comparison between the average height of plants that received the pest-control (colored in red) against the average height and plants that did not receive the pest-control(colored in blue) **that is made within groups of plants that had bugs and did not have bugs**. 
+When `bugs` **is included** in the analysis, the causal effect of the new fertilizer is estimated by comparing the average height of plants that received the new fertilizer (colored in red) against the average height and plants that did not receive the new fertilizer (colored in blue) **that is made within groups of plants that had bugs and did not have bugs**. 
 
-Plants that received the pest-control grew an average of **-0.1778 inches taller**, than they would have grown had they not received the pest-control. 
+The results of this analysis, which does control for post-treatment variables, found that receiving fertilizer caused plants to produce an average of **1.51 more pounds of fruit**, than they would have produced had they not received the new fertilizer
