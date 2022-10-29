@@ -5,10 +5,12 @@
 #' @return a list
 #'
 #' @noRd
+#' @importFrom shiny NS
+#' @import sortable
 quiz_content_post_treatment <- local({
 
   content <- list()
-  content$ns_quiz <- NS(NS('learning_post_treatment')('quiz'))
+  content$ns_quiz <- shiny::NS(shiny::NS('learning_post_treatment')('quiz'))
 
   # set quiz structure ------------------------------------------------------
 
@@ -35,29 +37,31 @@ quiz_content_post_treatment <- local({
     class = 'default-sortable sortable-wide',
     sortable::add_rank_list(
       input_id = content$ns_quiz('answers_variables'),
-      text = strong("Available"),
+      text = "Available",
       labels = c('bp_3month', 'sex', 'height'),
       options = sortable::sortable_options(multiDrag = TRUE)
     ),
     sortable::add_rank_list(
       input_id = content$ns_quiz('answers_include'),
-      text = strong("Control for"),
+      text = "Control for",
       labels = NULL,
       options = sortable::sortable_options(multiDrag = TRUE)
     ),
     sortable::add_rank_list(
       input_id = content$ns_quiz('answers_treatment'),
-      text = strong("Treatment"),
+      text = "Treatment",
       labels = c('fish_oil'),
       options = sortable::sortable_options(disabled = TRUE)
     ),
     sortable::add_rank_list(
       input_id = content$ns_quiz('answers_outcome'),
-      text = strong("Outcome"),
+      text = "Outcome",
       labels = c('bp_6month'),
       options = sortable::sortable_options(disabled = TRUE)
     )
   )
+
+  # return(NULL)
 
   # set the correct answers for question 1
   # answer structure must match structure provided by input$answers
@@ -85,25 +89,25 @@ quiz_content_post_treatment <- local({
     class = 'default-sortable sortable-wide',
     sortable::add_rank_list(
       input_id = content$ns_quiz('answers_variables'),
-      text = strong("Available"),
+      text = "Available",
       labels = c('6th grade grades', '7th grade grades', 'Detentions during 8th grade', 'Race'),
       options = sortable::sortable_options(multiDrag = TRUE)
     ),
     sortable::add_rank_list(
       input_id = content$ns_quiz('answers_include'),
-      text = strong("Control for"),
+      text = "Control for",
       labels = NULL,
       options = sortable::sortable_options(multiDrag = TRUE)
     ),
     sortable::add_rank_list(
       input_id = content$ns_quiz('answers_treatment'),
-      text = strong("Treatment"),
+      text = "Treatment",
       labels = c('Meditation'),
       options = sortable::sortable_options(disabled = TRUE)
     ),
     sortable::add_rank_list(
       input_id = content$ns_quiz('answers_outcome'),
-      text = strong("Outcome"),
+      text = "Outcome",
       labels = c('Grades'),
       options = sortable::sortable_options(disabled = TRUE)
     )

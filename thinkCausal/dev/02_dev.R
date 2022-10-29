@@ -18,6 +18,7 @@
 # attachment::att_amend_desc()
 usethis::use_package('ggplot2', min_version = '3.3.2')
 usethis::use_package('dplyr', min_version = '1.0.5')
+usethis::use_package('tibble')
 usethis::use_package('purrr')
 usethis::use_package('tidyr', min_version = '1.1.3')
 usethis::use_package('stringr')
@@ -25,6 +26,7 @@ usethis::use_package('glue')
 usethis::use_package('rlang', min_version = '1.0.3')
 usethis::use_package('scales', min_version = '1.1.1')
 usethis::use_package('lubridate', min_version = '1.8.0')
+usethis::use_package('cli')
 
 usethis::use_package('bs4Dash', min_version = '2.1.0')
 usethis::use_package('shinyjs', min_version = '2.1.0')
@@ -37,10 +39,14 @@ usethis::use_package('readstata13', min_version = '0.10.0')
 usethis::use_package('patchwork', min_version = '1.1.1')
 usethis::use_package('shinybrowser', min_version = '1.0.0')
 usethis::use_package('shinydisconnect', min_version = '0.1.0')
+usethis::use_package('htmltools')
+usethis::use_package('jsonlite')
+usethis::use_package('waiter')
 
 usethis::use_dev_package('plotBart', min_version = '0.1.13')
 usethis::use_package('bartCause', min_version = '1.0.4')
 usethis::use_package('dbarts', min_version = '0.9.20')
+
 
 ## Add modules ----
 ## Create a module infrastructure in R/
