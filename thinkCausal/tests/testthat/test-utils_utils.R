@@ -19,9 +19,9 @@ test_that("converted_logicals() output is correct", {
 
 # -------------------------------------------------------------------------
 
-code_ <- extract_code('fit_bart')
-test_that("extract_code() output is correct", {
-  expect_type(code_, "character")
-  expect_true(any(grepl("bartCause::bartc", code_)))
-  expect_true(length(code_) > 10)
-})
+# code_ <- extract_code('fit_bart')
+# test_that("extract_code() output is correct", {
+#   expect_type(code_, "character")
+#   expect_true(any(grepl("bartCause::bartc", code_)))
+#   expect_true(length(code_) > 10)
+# })
