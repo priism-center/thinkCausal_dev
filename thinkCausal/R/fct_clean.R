@@ -44,7 +44,10 @@ clean_names <- function(.names){
   pat <- "(?![._])[[:punct:]]"
   .names <- stringr::str_remove_all(string = .names, pattern = pat)
 
-  # remove dollar signs
+  # remove ^~`$
+  .names <- stringr::str_remove_all(string = .names, pattern = "[\\^]")
+  .names <- stringr::str_remove_all(string = .names, pattern = "[\\~]")
+  .names <- stringr::str_remove_all(string = .names, pattern = "[\\`]")
   .names <- stringr::str_remove_all(string = .names, pattern = "[$]")
 
   # remove leading special characters
