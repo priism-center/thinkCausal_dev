@@ -113,7 +113,7 @@ mod_analysis_overlap_server <- function(id, store){
       confounder_cols <- grep("^X_", col_names, value = TRUE)
 
       # calculate pscores
-        plotBart:::propensity_scores(
+      pscores <- plotBart:::propensity_scores(
         .data = X,
         treatment = treatment_col,
         confounders = confounder_cols,
