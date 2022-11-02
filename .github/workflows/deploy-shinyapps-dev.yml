@@ -8,7 +8,7 @@ on:
 jobs:
   deploy-shinyapps:
     timeout-minutes: 45
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
       - uses: r-lib/actions/setup-r@v2
