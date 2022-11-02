@@ -35,7 +35,7 @@ mod_analysis_overlap_ui <- function(id){
                          selectInput(
                            inputId = ns("analysis_overlap_select_var"),
                            label = "Select variables for overlap check:",
-                           multiple = TRUE,
+                           multiple = FALSE,
                            choices = NULL,
                            selected = NULL
                          )),
@@ -101,12 +101,11 @@ mod_analysis_overlap_server <- function(id, store){
 
     # calculate propensity scores
     pscores <- reactive({
-
       # stop here if data hasn't been uploaded and selected
       validate_data_verified(store)
 
       # get variables
-      X <- store$verified_df
+      X <- clean_to_indicator(store$verified_df)
       col_names <- colnames(X)
       treatment_col <- grep("^Z_", col_names, value = TRUE)
       response_col <- grep("^Y_", col_names, value = TRUE)
@@ -119,7 +118,6 @@ mod_analysis_overlap_server <- function(id, store){
         confounders = confounder_cols,
         seed = 44
       )
-
       return(pscores)
     })
 
