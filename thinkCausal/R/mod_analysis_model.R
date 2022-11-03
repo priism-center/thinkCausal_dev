@@ -221,7 +221,8 @@ mod_analysis_model_server <- function(id, store){
       # store the results
       # TODO: need way to test if actually have a good fit
       store$analysis$model$fit_good <- TRUE
-
+      # move to diagnostic page
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_diagnostic')
       # update exploratory moderators
       updateSelectInput(session = store$session_global,
                         inputId = 'analysis_moderator_vars',
@@ -254,7 +255,7 @@ mod_analysis_model_server <- function(id, store){
 
       # nav buttons within the popup
       observeEvent(input$common_support_opt3, {
-        bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_diagnostic')
+        bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_diagnostics')
         # updateNavbarPage(store$session_global, inputId = "nav", selected = store$module_ids$analysis$diagnostic)
         # updateTabsetPanel(store$session_global, inputId = "analysis_diagnostic-analysis_diagnostics_tabs", selected = "Overlap")
         close_popup(session = session)
