@@ -111,10 +111,9 @@ mod_analysis_results_server <- function(id, store){
 
       # extract estimates and format
       sate <- bartCause::extract(store$analysis$model$model, 'sate')
-      model_sum <- data.frame(estimate = mean(sate), sd = sd(sate), `CI - 2.5%` = quantile(sate, .025), `CI - 97.5%` = quantile(sate, .975))
+      model_sum <- data.frame(estimate = mean(sate), sd = sd(sate), `95% CI - lower bound` = quantile(sate, .025), `95% CI - upper bound` = quantile(sate, .975))
       rownames(model_sum) <- store$analysis$model$model$estimand
-      tab <- model_sum$estimates %>%
-        as.data.frame() %>%
+      tab <- model_sum %>%
         # rename(!!glue::glue('CI - {(1 - model_sum$ci.info$ci.level) / 2}') := ci.lower,
         #        !!glue::glue('CI - {1 - (1 - model_sum$ci.info$ci.level) / 2}') := ci.upper) %>%
         rename_all(tools::toTitleCase) %>%
