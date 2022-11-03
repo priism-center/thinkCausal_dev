@@ -30,7 +30,7 @@ mod_learn_potential_outcomes_ui <- function(id){
                                                 "Alex does not use the HyperShoe" = 'normal'),
                                     multiple = F),
                         actionButton(inputId = ns('submit'),
-                                     label = 'Submit',
+                                     label = 'Click to make the choice!',
                                      class = 'nav-path',
                                      style = 'width: min(100%, 350px)')
         )),
@@ -56,7 +56,7 @@ mod_learn_potential_outcomes_server <- function(id){
 
       # only allow user to choose once
       shinyjs::disable("which_outcome")
-
+      shinyjs::disable("submit")
       # user chooses Alex uses HyperShoe
       if(input$which_outcome == 'hyper'){
         output$output_based_on_selection <- renderUI({
@@ -69,17 +69,17 @@ mod_learn_potential_outcomes_server <- function(id){
             actionButton(inputId = ns("hyper_conterfactual"),
                          label = "Show me what if Alex wasn't using the HyperShoe",
                          class = 'nav-path',
-                         style = "width: min(100%, 350px)"),
+                         style = "width: min(100%, 450px)"),
             br(),br(),
             imageOutput(ns('hyper_conterfactual_illustration'), height = NULL),
-            br(),br(),br(),br(),br(),br(),
+            br(),br(),
             uiOutput(ns("hyper_text_1")),
             imageOutput(ns('hyper_hist_illustration'), height = NULL),
-            br(),br(),br(),br(),
+            br(),br(),
             uiOutput(ns("hyper_text_2")),
-            br(),
+            br(),br(),br(),
             imageOutput(ns('hyper_eight_runners_1'), width = "100%", height = NULL),
-            br(),
+            br(),br(),br(),
             # br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
             # br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),
             imageOutput(ns('hyper_eight_runners_2'), width = "100%", height = NULL),
@@ -288,10 +288,10 @@ mod_learn_potential_outcomes_server <- function(id){
       output$normal_po_notation_table <- reactable::renderReactable({
         data.frame(
           runner = 1:8,
-          shoe = c(0,0,0,1,0,1,0,0),
-          y0 = c("3.20", "2.95", "2.95", "3.30", "3.00", "2.80", "3.00", "2.90"),
-          y1 = c("3.10", "2.85", "2.80", "3.20", "2.85", "2.70", "2.95", "2.80"),
-          y = c("3.20", "2.95", "2.95", "3.20", "3.00", "2.70", "3.00", "2.90")
+          Z = c(0,0,0,1,0,1,0,0),
+          `Y(0)` = c("3.20", "2.95", "2.95", "3.30", "3.00", "2.80", "3.00", "2.90"),
+          `Y(1)` = c("3.10", "2.85", "2.80", "3.20", "2.85", "2.70", "2.95", "2.80"),
+          Y = c("3.20", "2.95", "2.95", "3.20", "3.00", "2.70", "3.00", "2.90")
         ) %>%
           reactable::reactable()
       })

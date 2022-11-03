@@ -50,7 +50,7 @@ mod_analysis_results_ui <- function(id){
           br(),
           actionButton(inputId = ns('analysis_results_help'),
                        label = 'What is this plot telling me?'),
-          downloadButton(ns('download_PATE_plot'), label = "Download plot"),
+          downloadButton(ns('download_SATE_plot'), label = "Download plot"),
           actionButton(inputId = ns("analysis_results_button_back"),
                        label = "See diagnostics"),
           actionButton(inputId = ns("analysis_results_button_next"),
@@ -65,7 +65,7 @@ mod_analysis_results_ui <- function(id){
             width = 12,
             collapsible = FALSE,
             title = 'Model results',
-            plotOutput(outputId = ns('analysis_results_plot_PATE'),
+            plotOutput(outputId = ns('analysis_results_plot_SATE'),
                        height = 400),
             reactable::reactableOutput(ns('analysis_results_table_summary'))
           ),
@@ -110,11 +110,13 @@ mod_analysis_results_server <- function(id, store){
       validate_model_fit(store, req_only = TRUE)
 
       # extract estimates and format
-      model_sum <- summary(store$analysis$model$model, ci.style = 'quant')
+      sate <- bartCause::extract(store$analysis$model$model, 'sate')
+      model_sum <- data.frame(estimate = mean(sate), sd = sd(sate), `CI - 2.5%` = quantile(sate, .025), `CI - 97.5%` = quantile(sate, .975))
+      rownames(model_sum) <- store$analysis$model$model$estimand
       tab <- model_sum$estimates %>%
         as.data.frame() %>%
-        rename(!!glue::glue('CI - {(1 - model_sum$ci.info$ci.level) / 2}') := ci.lower,
-               !!glue::glue('CI - {1 - (1 - model_sum$ci.info$ci.level) / 2}') := ci.upper) %>%
+        # rename(!!glue::glue('CI - {(1 - model_sum$ci.info$ci.level) / 2}') := ci.lower,
+        #        !!glue::glue('CI - {1 - (1 - model_sum$ci.info$ci.level) / 2}') := ci.upper) %>%
         rename_all(tools::toTitleCase) %>%
         mutate(across(where(is.numeric), round, 3)) %>%
         reactable::reactable()
@@ -136,13 +138,13 @@ mod_analysis_results_server <- function(id, store){
       return(text_out)
     })
 
-    # PATE plot
-    analysis_results_plot_PATE <- reactive({
+    # SATE plot
+    analysis_results_plot_SATE <- reactive({
 
       # stop here if model isn't fit yet
       validate_model_fit(store)
       # add overlay
-      div_id <- 'analysis_results_plot_PATE'
+      div_id <- 'analysis_results_plot_SATE'
       show_message_updating(div_id)
 
       # get value for reference bar
@@ -150,7 +152,7 @@ mod_analysis_results_server <- function(id, store){
       if (input$show_reference == 'Yes') reference_bar <- req(input$reference_bar)
 
       # create plot
-      p <- plotBart::plot_PATE(
+      p <- plotBart::plot_SATE(
         .model = store$analysis$model$model,
         type = input$plot_result_style,
         ci_80 = sum(input$show_interval == 0.80) > 0,
@@ -173,14 +175,14 @@ mod_analysis_results_server <- function(id, store){
     })
 
 
-    output$analysis_results_plot_PATE <- renderPlot(analysis_results_plot_PATE())
+    output$analysis_results_plot_SATE <- renderPlot(analysis_results_plot_SATE())
 
-    output$download_PATE_plot <- downloadHandler(
-      filename = "PATE_plot.png",
+    output$download_SATE_plot <- downloadHandler(
+      filename = "SATE_plot.png",
       content = function(file) {
         ggplot2::ggsave(
           file,
-          plot = analysis_results_plot_PATE(),
+          plot = analysis_results_plot_SATE(),
           height = store$options$settings_options_ggplotHeight,
           width = store$options$settings_options_ggplotWidth,
           units = 'in',
