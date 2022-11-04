@@ -141,7 +141,7 @@ mod_analysis_subgroup_server <- function(id, store){
       show_message_updating(div_id)
 
       if(input$analysis_subgroup_prespecifed %in% cols_categorical){
-        p <- plotBart::plot_moderator_d_density(store$analysis$model$model,
+        p <- plotBart::plot_moderator_d(store$analysis$model$model, type = 'histogram',
                                       moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_prespecifed)]])
       }else{
         p <- plotBart::plot_moderator_c_loess(store$analysis$model$model,
@@ -183,7 +183,7 @@ mod_analysis_subgroup_server <- function(id, store){
       cols_continuous <- gsub('X_', '', store$column_types$continuous)
 
       if(input$analysis_subgroup_explore %in% cols_categorical){
-        p <- plotBart::plot_moderator_d_density(store$analysis$model$model,
+        p <- plotBart::plot_moderator_d(store$analysis$model$model, type = 'histogram',
                                       moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_explore)]])
       }else{
         p <- plotBart::plot_moderator_c_loess(store$analysis$model$model,
