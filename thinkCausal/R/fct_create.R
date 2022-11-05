@@ -5,11 +5,16 @@
 #' @return html
 #'
 #' @noRd
-create_drag_drop_roles <- function(ns, .data, ns_prefix, design, weights, ran_eff){
+create_drag_drop_roles <- function(ns, .data, ns_prefix, exclude = NULL, include_all = FALSE){
   if (!inherits(.data, 'data.frame')) stop('.data must be a dataframe')
-
-  # infer which columns are Z, Y, and X columns (i.e. smart defaults)
-  auto_columns <- clean_detect_ZYX_columns(.data)
+  # gather coviraiate names
+  if(isFALSE(include_all)){
+    avalable <- names(.data)[names(.data) %notin% exclude]
+    included <- NULL
+  }else{
+    included <- names(.data)[names(.data) %notin% exclude]
+    avalable <- NULL
+  }
 
 
   drag_drop_html <-
@@ -19,63 +24,15 @@ create_drag_drop_roles <- function(ns, .data, ns_prefix, design, weights, ran_ef
       orientation = "horizontal",
       class = 'default-sortable sortable-wide',
       sortable::add_rank_list(
+        input_id = ns(paste0(ns_prefix, "_dragdrop_avalable")),
+        text = strong("Available variables (not included in the analysis):"),
+        labels = avalable, #auto_columns$X,
+        options = sortable::sortable_options(multiDrag = TRUE)
+      ),
+      sortable::add_rank_list(
         input_id = ns(paste0(ns_prefix, "_dragdrop_covariates")),
-        text = "Covariates",
-        labels = auto_columns$X,
-        options = sortable::sortable_options(multiDrag = TRUE)
-      ),
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_treatment")),
-        text = "Treatment",
-        labels = auto_columns$Z,
-        options = sortable::sortable_options(multiDrag = TRUE)
-      ),
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_response")),
-        text = "Outcome",
-        labels = auto_columns$Y,
-        options = sortable::sortable_options(multiDrag = TRUE)
-      ),
-      if(design == 'Block randomized treatment'){
-        sortable::add_rank_list(
-          input_id = ns(paste0(ns_prefix, "_dragdrop_block")),
-          text = "Blocking variable(s)",
-          labels = NULL,
-          options = sortable::sortable_options(multiDrag = TRUE)
-        )
-      },
-      if(weights == 'Yes'){
-        sortable::add_rank_list(
-          input_id = ns(paste0(ns_prefix, "_dragdrop_weight")),
-          text = "Survey weight",
-          labels = NULL,
-          options = sortable::sortable_options(multiDrag = TRUE)
-        )
-      },
-      if(ran_eff == 'Yes'){
-        sortable::add_rank_list(
-          input_id = ns(paste0(ns_prefix, "_dragdrop_ran_eff")),
-          text = "Random Intercept(s)",
-          labels = NULL,
-          options = sortable::sortable_options(multiDrag = TRUE)
-        )
-      },
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_post_treatment")),
-        text = create_info_icon(
-          label = "Post-treatment variables to exclude from analysis",
-          text = "All variables that could potentially be affected by the treatment"
-        ),
-        labels = NULL,
-        options = sortable::sortable_options(multiDrag = TRUE)
-      ),
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_delete")),
-        text = create_info_icon(
-          label = "ID or index variables to exclude from analysis",
-          text = "Exclude index or ID variables in addition to extraneous variables"
-        ),
-        labels = auto_columns$ID,
+        text = strong("Covariates to include in analysis:"),
+        labels = included,
         options = sortable::sortable_options(multiDrag = TRUE)
       )
     )
@@ -685,7 +642,7 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
     # create the dataframe
     df <- data.frame(ID, Z, Y0, Y1, Y, ITE)
     if(!rlang::is_null(id_unit)) names(df)[1] <- id_unit
-    df <- dplyr::mutate(df, Y0 = as.character(Y0), Y1 = as.character(Y1), ITE = as.character(ITE))
+    df <- mutate(df, Y0 = as.character(Y0), Y1 = as.character(Y1), ITE = as.character(ITE))
 
     if (po_question == T & ite_question == T){ # generate questions ('?') for both potential outcomes (Y1 and Y0) and ITE
 

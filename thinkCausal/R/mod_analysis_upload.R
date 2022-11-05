@@ -7,13 +7,13 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_analysis_upload_ui <- function(id){
+mod_analysis_upload_ui <- function(id) {
   ns <- NS(id)
-  tagList(
-
-    fluidRow(
+  tagList(fluidRow(
+    column(
+      width = 3,
       bs4Dash::box(
-        width = 3,
+        width = 12,
         collapsible = FALSE,
         title = "Upload your data",
         HTML(
@@ -43,35 +43,112 @@ mod_analysis_upload_ui <- function(id){
           )
         ),
         HTML('<details><summary>Advanced options</summary>'),
-          checkboxInput(
-            inputId = ns("analysis_upload_data_header"),
-            label = "Data contains a header row",
-            value = TRUE
-          ),
-          checkboxInput(
-            inputId = ns("analysis_upload_test_data"),
-            label = "Use lalonde test data",
-            value = FALSE
-          ),
+        checkboxInput(
+          inputId = ns("analysis_upload_data_header"),
+          label = "Data contains a header row",
+          value = TRUE
+        ),
+        checkboxInput(
+          inputId = ns("analysis_upload_test_data"),
+          label = "Use lalonde test data",
+          value = FALSE
+        ),
         HTML('</details><br>'),
-        actionButton(inputId = ns('analysis_upload_help'),
-                     label = 'Help me'),
+        actionButton(
+          inputId = ns('analysis_upload_help'),
+          label = 'Help me'
+        ),
         actionButton(
           inputId = ns('analysis_upload_data_button_columnAssignSave'),
           class = 'nav-path',
-          label = 'Save role assignments'
-        )
-      ),
-      bs4Dash::box(
-        width = 9,
-        collapsible = FALSE,
-        title = 'Variable selection',
-        uiOutput(
-          outputId = ns('analysis_upload_data_UI_dragdrop')
+          label = 'Save variable selection & continue'
         )
       )
-    )
-  )
+    ),
+    column(width = 9,
+           fluidRow(column(
+             width = 12,
+             bs4Dash::box(
+               collapsible = FALSE,
+               width = 12,
+               title = 'Specify variables',
+               uiOutput(outputId = ns("readySpecifyVariables")),
+               fluidRow(
+                 column(
+                   width = 6,
+                   conditionalPanel(
+                     condition = "output.fileUploaded == true",
+                     ns = ns,
+                     selectInput(
+                       inputId = ns('analysis_upload_outcome'),
+                       label = 'Select the outcome variable from you data',
+                       choices = NULL,
+                       selected = NULL
+                     )
+                   )
+                 ),
+                 column(
+                   width = 6,
+                   conditionalPanel(
+                     condition = "input.analysis_upload_outcome != ''",
+                     ns = ns,
+                     selectInput(
+                       inputId = ns('analysis_upload_treatment'),
+                       label = 'Select the treatment variable from you data',
+                       choices = NULL,
+                       selected = NULL
+                     )
+                   )
+                 ),
+                   column(
+                     width = 6,
+                     conditionalPanel(
+                       condition = "output.weightOption == true",
+                       ns = ns,
+                       selectInput(
+                         inputId = ns('analysis_upload_weights'),
+                         label = 'Select the weight variable from you data',
+                         choices = NULL,
+                         selected = NULL
+                       )
+                     )
+                   ),
+                   column(
+                     width = 6,
+                     conditionalPanel(
+                       condition = "output.ran_effOption == true",
+                       ns = ns,
+                       selectInput(
+                         inputId = ns('analysis_upload_random_effects'),
+                         label = 'Select the variable(s) to be modeled as random effects',
+                         choices = NULL,
+                         selected = NULL
+                       )
+                     )
+                   )
+               )
+             )
+           )),
+           column(width = 12,
+                  fluidRow(
+                    bs4Dash::box(
+                      width = 12,
+                      collapsible = FALSE,
+                      title = 'Select covariates',
+                      uiOutput(outputId = ns("readyCovariates")),
+                      conditionalPanel(
+                        condition = "output.coeffReady == true",
+                        ns = ns,
+                        checkboxInput(
+                          inputId = ns('analysis_upload_include_all'),
+                          label = 'Move all covariates to include box',
+                          value = FALSE
+                        ),
+                        uiOutput(outputId = ns('analysis_upload_data_UI_dragdrop'))
+                      )
+                    )
+                  ))
+    )))
 }
 
 #' analysis_upload Server Functions
@@ -162,6 +239,53 @@ mod_analysis_upload_server <- function(id, store){
       return(uploaded_file)
     })
 
+    # conditional listener for file uploaded, this triggers outcome variable prompt
+    output$fileUploaded <- reactive({
+      return(!is.null(uploaded_df()))
+    })
+
+    outputOptions(output, 'fileUploaded', suspendWhenHidden=FALSE)
+
+    output$weightOption <- reactive({
+      return(input$analysis_upload_treatment != "" & store$analysis_design_weights == 'Yes')
+    })
+    outputOptions(output, 'weightOption', suspendWhenHidden=FALSE)
+
+    output$ran_effOption <- reactive({
+      return(input$analysis_upload_treatment != "" & input$analysis_upload_weights != "" & store$analysis_design_random_effects == 'Yes')
+    })
+    outputOptions(output, 'ran_effOption', suspendWhenHidden=FALSE)
+
+    output$coeffReady <- reactive({
+      req_inputs <- sum(2, store$analysis_design_weights == 'Yes', store$analysis_design_random_effects == 'Yes')
+      entered_inputs <-
+        sum(
+          input$analysis_upload_outcome != '',
+          input$analysis_upload_treatment != '',
+          input$analysis_upload_weights != '',
+          input$analysis_upload_random_effects != ''
+        )
+
+      eval <- sum(req_inputs == entered_inputs)
+      return(eval)
+    })
+    outputOptions(output, 'coeffReady', suspendWhenHidden=FALSE)
+
+    message_argument_variables <- reactive({
+      if(store$analysis_design_random_effects != 'Yes' & store$analysis_design_weights != 'Yes'){
+        out <- 'Before selecting covariates, specify the outcome and treatment variables.'
+      } else if(store$analysis_design_random_effects == 'Yes' & store$analysis_design_weights != 'Yes'){
+        out <- 'Before selecting covariates, specify the outcome, treatment and random effects variables.'
+      } else if(store$analysis_design_random_effects != 'Yes' & store$analysis_design_weights == 'Yes'){
+        out <- 'Before selecting covariates, specify the outcome, treatment and survey weigth variables.'
+      } else{
+        out <- 'Before selecting covariates, specify the outcome, treatment, survey weigth and random effects variables.'
+      }
+
+      return(out)
+    })
+
+
     # add dataframe to store object
     observeEvent(uploaded_df(), {
 
@@ -197,19 +321,75 @@ mod_analysis_upload_server <- function(id, store){
       store$analysis_data_uploaded_df <- auto_cleaned_df
     })
 
-    # render the drag and drop UI
-    output$analysis_upload_data_UI_dragdrop <- renderUI({
+    output$readySpecifyVariables <- renderUI({
+      validate_design(store)
+      validate_data_uploaded(store)
+    })
 
+    output$readyCovariates <- renderUI({
       validate_design(store)
       validate_data_uploaded(store)
 
-      # render the drag-drop UI
+      req_inputs <- sum(2, store$analysis_design_weights == 'Yes', store$analysis_design_random_effects == 'Yes')
+      entered_inputs <-
+        sum(
+          input$analysis_upload_outcome != '',
+          input$analysis_upload_treatment != '',
+          input$analysis_upload_weights != '',
+          input$analysis_upload_random_effects != ''
+        )
+
+      eval <- req_inputs == entered_inputs
+      validate(need(eval, message_argument_variables()))
+
+    })
+
+    # update outcome, treatment, weight and ran_eff options
+    observeEvent(store$analysis_data_uploaded_df, {
+      # update outcome
+      updateSelectInput(
+        inputId = 'analysis_upload_outcome',
+        selected = NULL,
+        choices = c('',  names(store$analysis_data_uploaded_df))
+      )
+    })
+
+    observeEvent(input$analysis_upload_outcome, {
+      updateSelectInput(
+        inputId = 'analysis_upload_treatment',
+        selected = NULL,
+        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_upload_outcome])
+      )
+    })
+
+    observeEvent(input$analysis_upload_outcome, {
+      updateSelectInput(
+        inputId = 'analysis_upload_weights',
+        selected = NULL,
+        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_upload_outcome])
+      )
+    })
+
+    observeEvent(input$analysis_upload_treatment, {
+      updateSelectInput(
+        inputId = 'analysis_upload_weights',
+        selected = NULL,
+        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_upload_treatment])
+      )
+    })
+
+    # render the drag and drop UI
+    output$analysis_upload_data_UI_dragdrop <- renderUI({
+      .exclude <- c(input$analysis_upload_outcome,
+                    input$analysis_upload_treatment,
+                    input$analysis_upload_random_effects,
+                    input$analysis_upload_weights)
+
       drag_drop_html <- create_drag_drop_roles(ns = ns,
                                                .data = store$analysis_data_uploaded_df,
                                                ns_prefix = 'analysis_upload_data',
-                                               design = store$analysis_design_design,
-                                               weights = store$analysis_design_weights,
-                                               ran_eff = store$analysis_design_random_effects)
+                                               exclude = .exclude,
+                                               include_all = input$analysis_upload_include_all)
 
       return(drag_drop_html)
     })
@@ -224,8 +404,8 @@ mod_analysis_upload_server <- function(id, store){
       store <- remove_downstream_data(store, page = 'upload')
 
       # get user inputs
-      cols_z <- input$analysis_upload_data_dragdrop_treatment
-      cols_y <- input$analysis_upload_data_dragdrop_response
+      cols_z <- input$analysis_upload_treatment
+      cols_y <- input$analysis_upload_outcome
       cols_x <- input$analysis_upload_data_dragdrop_covariates
       if(store$analysis_design_design != "Block randomized treatment") cols_block <- NULL
       else cols_block <- input$analysis_upload_data_dragdrop_block

@@ -26,7 +26,7 @@ mod_home_ui <- function(id){
           bs4Dash::box(
             width = 12,
             collapsible = FALSE,
-            title = 'Learn',
+            title = 'Learn about causal inference',
             tagList(
               shiny::actionLink(
                 inputId = ns('learn_img'),
@@ -34,7 +34,10 @@ mod_home_ui <- function(id){
                     width = '100%'),
               ),
               "Interactively learn the foundational concepts of casual inference."
-            )
+            ),
+            actionButton(inputId = ns('learn_start'),
+                         label = 'Click here to start learning!',
+                         class = 'nav-path')
           ),
         ),
         column(
@@ -42,15 +45,18 @@ mod_home_ui <- function(id){
           bs4Dash::box(
             width = 12,
             collapsible = FALSE,
-            title = 'Analyze',
+            title = 'Analyze your own data',
             tagList(
               shiny::actionLink(
                 inputId = ns('analysis_img'),
                 img(src = 'www/img/thumbnails/assumptions.png',
                     width = '100%'),
               ),
-              "Utilize modern causal inference methods. Easily implement Bayesian Additive Regression Trees."
-            )
+              "Easily implement Bayesian Additive Regression Trees to estimate average causal effects."
+            ),
+            actionButton(inputId = ns('analysis_start'),
+                         label = 'Click here to start analyzing!',
+                         class = 'nav-path')
           )
         )
       )
@@ -72,6 +78,14 @@ mod_home_server <- function(id, store){
     observeEvent(input$analysis_img, {
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_describe')
     })
+    observeEvent(input$analysis_start, {
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_describe')
+    })
+    observeEvent(input$learn_start, {
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'learn')
+    })
+
+
 
   })
 }
