@@ -28,7 +28,7 @@ mod_analysis_verify_ui <- function(id){
         actionButton(
           inputId = ns('analysis_verify_data_save'),
           class = "nav-path",
-          label = 'Save data'
+          label = 'Save & continue'
         )
       ),
       bs4Dash::box(
