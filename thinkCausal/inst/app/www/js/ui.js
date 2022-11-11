@@ -22,7 +22,7 @@ $( window ).on( "load", function() {
 });
 
 // make {page} active
-function go_to_shiny_page(page) {
+function go_to_shiny_page(page, toggleHelp) {
   document.body.scrollTop = document.documentElement.scrollTop = 0;
-  setTimeout(function(){Shiny.setInputValue("js_open_page", page, {priority: "event"}); }, 400);
+  setTimeout(function(){Shiny.setInputValue("js_open_page", {page: page, toggleHelp: toggleHelp}, {priority: "event"}); }, 400);
 }

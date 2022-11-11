@@ -141,3 +141,10 @@
   top: 30px;
   padding: 20px 0 0 0;
 }
+
+.learn-link {
+  cursor: pointer;
+}
+.learn-link:hover {
+  color: black !important;
+}
