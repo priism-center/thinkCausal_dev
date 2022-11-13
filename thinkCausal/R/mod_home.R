@@ -36,7 +36,7 @@ mod_home_ui <- function(id){
               "Interactively learn the foundational concepts of casual inference."
             ),
             actionButton(inputId = ns('learn_start'),
-                         label = 'Click here to start learning!',
+                         label = 'Start learning!',
                          class = 'nav-path')
           ),
         ),
@@ -55,7 +55,7 @@ mod_home_ui <- function(id){
               "Easily implement Bayesian Additive Regression Trees to estimate average causal effects."
             ),
             actionButton(inputId = ns('analysis_start'),
-                         label = 'Click here to start analyzing!',
+                         label = 'Start analyzing!',
                          class = 'nav-path')
           )
         )

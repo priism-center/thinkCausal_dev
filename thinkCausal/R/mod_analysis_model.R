@@ -245,48 +245,10 @@ mod_analysis_model_server <- function(id, store){
       )
       store$log <- append(store$log, log_event)
 
-      # common support warning
-      common_support_check <- check_common_support(bart_model)
-      # display popup if any observations would be removed
-      any_points_removed <- common_support_check$proportion_removed_sd > 5 | common_support_check$proportion_removed_chi > 5
-      if(any_points_removed & input$analysis_model_support == 'No'){
-        show_popup_common_support_warning(session = session, common_support_check = common_support_check, ns = ns)
-      }
+       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_results')
+      # updateNavbarPage(store$session_global, inputId = "nav", selected = store$module_ids$analysis$results)
+      close_popup(session = session)
 
-      # nav buttons within the popup
-      observeEvent(input$common_support_opt3, {
-        bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_diagnostics')
-        # updateNavbarPage(store$session_global, inputId = "nav", selected = store$module_ids$analysis$diagnostic)
-        # updateTabsetPanel(store$session_global, inputId = "analysis_diagnostic-analysis_diagnostics_tabs", selected = "Overlap")
-        close_popup(session = session)
-      })
-
-      observeEvent(input$common_support_opt2, {
-        shinyjs::runjs('openHelpSection("help-model")')
-      })
-
-      observeEvent(input$common_support_new_rule, {
-        bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_model')
-        # updateNavbarPage(store$session_global, inputId = "nav", selected = store$module_ids$analysis$model)
-        close_popup(session = session)
-      })
-      observeEvent(input$common_support_continue, {
-        bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_results')
-        # updateNavbarPage(store$session_global, inputId = "nav", selected = store$module_ids$analysis$results)
-        close_popup(session = session)
-      })
-
-      # move to next page based on model fit
-      no_points_removed <- common_support_check$proportion_removed_sd == 0 | common_support_check$proportion_removed_chi == 0
-      if(no_points_removed & input$analysis_model_support == 'No'){
-        bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_results')
-        # updateNavbarPage(store$session_global, inputId = "nav", selected = store$module_ids$analysis$results)
-      }
-
-      if( input$analysis_model_support != 'No'){
-        bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_results')
-        # updateNavbarPage(store$session_global, inputId = "nav", selected = store$module_ids$analysis$results)
-      }
 
     })
 
