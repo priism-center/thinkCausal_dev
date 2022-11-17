@@ -43,7 +43,7 @@ usethis::use_package('htmltools')
 usethis::use_package('jsonlite')
 usethis::use_package('waiter')
 
-usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart', min_version = '0.1.14')
+usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart@*release')
 usethis::use_package('bartCause', min_version = '1.0.4')
 usethis::use_package('dbarts', min_version = '0.9.20')
 
