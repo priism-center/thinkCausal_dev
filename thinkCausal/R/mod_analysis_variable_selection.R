@@ -185,6 +185,7 @@ mod_analysis_variable_selection_server <- function(id, store){
 
     # update outcome, treatment, weight and ran_eff options
     observeEvent(store$analysis_data_uploaded_df, {
+      browser()
       # update outcome
       updateSelectInput(
         inputId = 'analysis_select_outcome',

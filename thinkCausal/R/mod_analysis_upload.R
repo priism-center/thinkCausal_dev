@@ -203,7 +203,6 @@ mod_analysis_upload_server <- function(id, store){
     })
 
 
-
     output$analysis_upload_show_data <- reactable::renderReactable({
       validate_data_uploaded(store)
       tab <- store$analysis_data_uploaded_df %>%

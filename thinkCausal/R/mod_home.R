@@ -76,10 +76,10 @@ mod_home_server <- function(id, store){
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'learn')
     })
     observeEvent(input$analysis_img, {
-      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_describe')
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_upload')
     })
     observeEvent(input$analysis_start, {
-      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_describe')
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_upload')
     })
     observeEvent(input$learn_start, {
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'learn')
@@ -89,9 +89,3 @@ mod_home_server <- function(id, store){
 
   })
 }
-
-## To be copied in the UI
-# mod_home_ui("home_1")
-
-## To be copied in the server
-# mod_home_server("home_1")
