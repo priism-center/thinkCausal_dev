@@ -349,9 +349,3 @@ mod_analysis_verify_server <- function(id, store){
 
   })
 }
-
-## To be copied in the UI
-# mod_analysis_verify_ui("analysis_verify_1")
-
-## To be copied in the server
-# mod_analysis_verify_server("analysis_verify_1")
