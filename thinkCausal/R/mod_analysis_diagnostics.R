@@ -43,7 +43,6 @@ mod_analysis_diagnostics_ui <- function(id){
                column(6,
                       bs4Dash::box(
                         width = 12,
-                        maximizable = TRUE,
                         collapsible = FALSE,
                         title = 'Trace plot',
                         plotOutput(ns('analysis_diagnostics_plot_trace'),
