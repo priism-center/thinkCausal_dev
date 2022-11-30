@@ -30,53 +30,23 @@ mod_analysis_variable_selection_ui <- function(id) {
     column(
       9,
       bs4Dash::box(
-        collapsible = FALSE,
+        collapsible = TRUE,
         width = 12,
-        title = textOutput(outputId = ns("specify_title")),
-        uiOutput(outputId = ns("readySpecifyVariables")),
-        fluidRow(
-          column(
-            width = 6,
-            selectInput(
-              inputId = ns('analysis_select_outcome'),
-              label = 'Select the outcome variable from you data',
-              choices = NULL,
-              selected = NULL
-            )
-          ),
-          column(
-            width = 6,
-            selectInput(
-              inputId = ns('analysis_select_treatment'),
-              label = 'Select the treatment variable from you data',
-              choices = NULL,
-              selected = NULL
-            )
-          )
-        )
+        title = 'Select outcome and treatment',
+        uiOutput(ns('outcome_treatment_ui'))
       ),
       bs4Dash::box(
         width = 12,
-        collapsible = FALSE,
+        collapsible = TRUE,
+        title = 'Study design',
+        uiOutput(ns('design_ui'))
+      ),
+      bs4Dash::box(
+        width = 12,
+        collapsible = TRUE,
         title = 'Select covariates',
-        uiOutput(outputId = ns("readyCovariates")),
-        conditionalPanel(
-          condition = "output.coeffReady == true",
-          ns = ns,
-          HTML("<details open><summary><b>Information about variable selection</b></summary>"),
-          p('For observational studies, include all potential confounders in the analysis.'),
-          p('If you are unsure whether or not a variable is a counfounder, it is recomended to assume that it is a confounder.'),
-          p('Co-linearity between variables is not a problem in causal inference.'),
-          p('Do not include post-treatment variables as covariates in the analysis.'),
-          #includeMarkdown('inst/app/www/md/go_to_post_treatment.md'),
-          HTML("</details>"),
-          checkboxInput(
-            inputId = ns('analysis_select_include_all'),
-            label = 'Move all covariates to include box',
-            value = FALSE
-          ),
-          uiOutput(outputId = ns('analysis_select_UI_dragdrop'))
-        )
+        uiOutput(outputId = ns("covariate_selection_info")),
+        uiOutput(outputId = ns('analysis_select_UI_dragdrop'))
       )
     )
   )
@@ -96,146 +66,156 @@ mod_analysis_variable_selection_server <- function(id, store){
       open_help_sidebar(store, 'Data')
     })
 
-    message_argument_title <- reactive({
-      if(is.null(store$analysis_design_random_effects) | is.null(store$analysis_design_weights )){
-        out <- 'Select variables'
-      } else if(store$analysis_design_random_effects != 'Yes' & store$analysis_design_weights != 'Yes'){
-        out <- 'Select outcome and treatment'
-      } else if(store$analysis_design_random_effects == 'Yes' & store$analysis_design_weights != 'Yes'){
-        out <- 'Select the outcome, treatment and random effects'
-      } else if(store$analysis_design_random_effects != 'Yes' & store$analysis_design_weights == 'Yes'){
-        out <- 'Select outcome, treatment and survey weight variables'
-      } else if(store$analysis_design_random_effects == 'Yes' & store$analysis_design_weights == 'Yes'){
-        out <- 'Select outcome, treatment, survey weight and random effects'
-      } else{
-        out <- 'Select variables'
-      }
-
-      return(out)
-    })
-
-    output$specify_title <- renderText({
-      return(message_argument_title())
-    })
-
     output$weightOption <- reactive({
-      return(store$analysis_design_weights == 'Yes')
+      return(input$analysis_weights == 'Yes')
     })
     outputOptions(output, 'weightOption', suspendWhenHidden=FALSE)
 
     output$ran_effOption <- reactive({
-      return(store$analysis_design_random_effects == 'Yes')
+      return(input$analysis_random_effects == 'Yes')
     })
     outputOptions(output, 'ran_effOption', suspendWhenHidden=FALSE)
 
-    output$coeffReady <- reactive({
-      req_inputs <- sum(2, store$analysis_design_weights == 'Yes', store$analysis_design_random_effects == 'Yes')
-      entered_inputs <-
-        sum(
-          input$analysis_select_outcome != '',
-          input$analysis_select_treatment != '',
-          input$analysis_select_weights != '',
-          input$analysis_select_random_effects != ''
+   output$outcome_treatment_ui <- renderUI({
+      validate_data_uploaded(store,
+                             message = "You need to upload a dataset on the upload data page before you can select and outcome and treatment variable.")
+      fluidRow(
+        column(
+          width = 6,
+          selectInput(
+            inputId = ns('analysis_select_outcome'),
+            label = 'Select the outcome variable from you data',
+            choices = NULL,
+            selected = NULL
+          )
+        ),
+        column(
+          width = 6,
+          selectInput(
+            inputId = ns('analysis_select_treatment'),
+            label = 'Select the treatment variable from you data',
+            choices = NULL,
+            selected = NULL
+          )
+        )
+      )
+    })
+
+
+    output$design_ui <- renderUI({
+      validate(need(input$analysis_select_outcome != '' & input$analysis_select_treatment != '',
+               "Beofore describing the study design, you'll need to select an outcome variable and a treatment variable."))
+        tagList(
+      selectInput(
+        inputId = ns('analysis_design'),
+        label = 'Indicate the study design:',
+        choices = c(
+          "",
+          "Unsure",
+          'Observational',
+          'Randomized treatment',
+          'Block randomized treatment'
+        )
+      ),
+      HTML('<details><summary>Advanced options (random effects & survey weights)</summary>'),
+      selectInput(
+        ns('analysis_random_effects'),
+        label = create_info_icon(
+          'Include random effects:',
+          'Random effects often account for nested/clustered data: classes within schools or patients within medical practices.'
+        ),
+        choices = c("No", "Yes")
+      ),
+      selectInput(
+        inputId = ns('analysis_weights'),
+        label = create_info_icon(
+          'Include survey weights:',
+          'Survey weights are used in survey research when samples are not randomly drawn from the population of interest.'
+        ),
+        choices = c('No', 'Yes')
+      ),
+      HTML('</details><br>')
         )
 
-      eval <- sum(req_inputs == entered_inputs)
-      return(eval)
-    })
-    outputOptions(output, 'coeffReady', suspendWhenHidden=FALSE)
-
-
-    message_argument_variables <- reactive({
-      if(store$analysis_design_random_effects != 'Yes' & store$analysis_design_weights != 'Yes'){
-        out <- 'Before selecting covariates, specify the outcome and treatment variables.'
-      } else if(store$analysis_design_random_effects == 'Yes' & store$analysis_design_weights != 'Yes'){
-        out <- 'Before selecting covariates, specify the outcome, treatment and random effects variables.'
-      } else if(store$analysis_design_random_effects != 'Yes' & store$analysis_design_weights == 'Yes'){
-        out <- 'Before selecting covariates, specify the outcome, treatment and survey weigth variables.'
-      } else{
-        out <- 'Before selecting covariates, specify the outcome, treatment, survey weigth and random effects variables.'
-      }
-
-      return(out)
-    })
-
-    output$readySpecifyVariables <- renderUI({
-      validate_design(store)
-      validate_data_uploaded(store)
     })
 
 
-
-    output$readyCovariates <- renderUI({
-      validate_design(store)
-      validate_data_uploaded(store)
-
-      req_inputs <- sum(2, store$analysis_design_weights == 'Yes', store$analysis_design_random_effects == 'Yes')
-      entered_inputs <-
-        sum(
-          input$analysis_select_outcome != '',
-          input$analysis_select_treatment != '',
-          input$analysis_select_weights != '',
-          input$analysis_select_random_effects != ''
-        )
-
-      eval <- req_inputs == entered_inputs
-      validate(need(eval, message_argument_variables()))
-
+    # update outcome, treatment, weight and ran_eff options
+    observeEvent(input$analysis_select_treatment, {
+      updateSelectInput(
+        inputId = 'analysis_select_outcome',
+        selected = input$analysis_select_outcome,
+        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_select_treatment])
+      )
     })
 
     # update outcome, treatment, weight and ran_eff options
-    observeEvent(store$analysis_data_uploaded_df, {
-      browser()
-      # update outcome
-      updateSelectInput(
-        inputId = 'analysis_select_outcome',
-        selected = NULL,
-        choices = c('',  names(store$analysis_data_uploaded_df))
-      )
-
-      updateSelectInput(
-        inputId = 'analysis_select_treatment',
-        selected = NULL,
-        choices = c('', names(store$analysis_data_uploaded_df))
-      )
-    })
-
     observeEvent(input$analysis_select_outcome, {
       updateSelectInput(
         inputId = 'analysis_select_treatment',
-        selected = NULL,
+        selected = input$analysis_select_treatment,
         choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_select_outcome])
       )
     })
 
-    observeEvent(input$analysis_select_outcome, {
-      updateSelectInput(
-        inputId = 'analysis_select_weights',
-        selected = NULL,
-        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_upload_outcome])
+    defaults <- reactiveValues(.default_blocks = NULL,
+                               .default_random_effects = NULL,
+                               .default_weight = NULL)
+
+    observeEvent(input$analysis_design, {
+      defaults$.default_blocks <- NULL
+      defaults$.default_random_effects = NULL
+      defaults$.default_weight = NULL
+    })
+
+    # render covariate info
+    output$covariate_selection_info <- renderUI({
+      validate(need(input$analysis_design != '', "Before selecting covariates, you'll need to provide information about the study design."))
+      tagList(
+      HTML("<details open><summary><b>Information about variable selection</b></summary>"),
+      p('For observational studies, include all potential confounders in the analysis.'),
+      p('If you are unsure whether or not a variable is a counfounder, it is recomended to assume that it is a confounder.'),
+      p('Co-linearity between variables is not a problem in causal inference.'),
+      p('Do not include post-treatment variables as covariates in the analysis.'),
+      #includeMarkdown('inst/app/www/md/go_to_post_treatment.md'),
+      HTML("</details>"),
+      checkboxInput(
+        inputId = ns('analysis_select_include_all'),
+        label = 'Move all covariates to include box',
+        value = FALSE
+      )
       )
     })
 
-    observeEvent(input$analysis_select_treatment, {
-      updateSelectInput(
-        inputId = 'analysis_select_weights',
-        selected = NULL,
-        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_upload_treatment])
-      )
+    observeEvent(input$analysis_select_dragdrop_random_effects,{
+      defaults$.default_random_effects <- input$analysis_select_dragdrop_random_effects
+    })
+
+    observeEvent(input$analysis_select_dragdrop_blocks,{
+      defaults$.default_blocks <- input$analysis_select_dragdrop_blocks
+    })
+
+    observeEvent(input$analysis_select_dragdrop_weight,{
+      defaults$.default_weight <- input$analysis_select_dragdrop_weight
     })
 
     # render the drag and drop UI
     output$analysis_select_UI_dragdrop <- renderUI({
+      req(input$analysis_design)
       .exclude <- c(input$analysis_select_outcome,
-                    input$analysis_select_treatment,
-                    input$analysis_select_random_effects,
-                    input$analysis_select_weights)
+                    input$analysis_select_treatment)
 
       drag_drop_html <- create_drag_drop_roles(ns = ns,
                                                .data = store$analysis_data_uploaded_df,
                                                ns_prefix = 'analysis_select',
                                                exclude = .exclude,
-                                               include_all = input$analysis_select_include_all)
+                                               include_all = input$analysis_select_include_all,
+                                               blocks = if(input$analysis_design == 'Block randomized treatment') TRUE else FALSE,
+                                               default_blocks = if(input$analysis_design == 'Block randomized treatment') input$analysis_select_dragdrop_blocks else NULL,
+                                               random_effect = if(isTRUE(input$analysis_random_effects == 'Yes')) TRUE else FALSE,
+                                               default_random_effects = defaults$.default_random_effects,
+                                               weight = if(isTRUE(input$analysis_weights == 'Yes')) TRUE else FALSE,
+                                               default_weight = if(isTRUE(input$analysis_weights == 'Yes')) input$analysis_select_dragdrop_weight else NULL)
 
       return(drag_drop_html)
     })
@@ -243,7 +223,6 @@ mod_analysis_variable_selection_server <- function(id, store){
     # create new dataframe when user saves column assignments and move to next page
     observeEvent(input$analysis_select_button_columnAssignSave, {
 
-      validate_design(store)
       req(store$analysis_data_uploaded_df)
 
       # remove any previous dataframes from the store
@@ -253,16 +232,15 @@ mod_analysis_variable_selection_server <- function(id, store){
       cols_z <- input$analysis_select_treatment
       cols_y <- input$analysis_select_outcome
       cols_x <- input$analysis_select_dragdrop_covariates
-      if(store$analysis_design_design != "Block randomized treatment") cols_block <- NULL
-      else cols_block <- input$analysis_select_data_dragdrop_block
-      if(store$analysis_design_weights != 'Yes') cols_weight <- NULL
-      else cols_weight <- input$analysis_select_weights
-      if (store$analysis_design_random_effects != 'Yes') cols_ran_eff <- NULL
-      else cols_ran_eff <- analysis_select_random_effects
+      if(input$analysis_design != "Block randomized treatment") cols_block <- NULL
+      else cols_block <- input$analysis_select_dragdrop_blocks
+      if(input$analysis_weights!= 'Yes') cols_weight <- NULL
+      else cols_weight <- input$analysis_dragdrop_weight
+      if (input$analysis_random_effects != 'Yes') cols_ran_eff <- NULL
+      else cols_ran_eff <- input$analysis_select_dragdrop_random_effects
 
       # the order of this is very important for create_data_summary_grid.R
       all_cols <- unlist(c(cols_z, cols_y, cols_ran_eff, cols_weight, cols_block, cols_x))
-
       # are there duplicate selections?
       all_unique <- isTRUE(length(all_cols) == length(unique(all_cols)))
       z_is_only_one <- length(cols_z) == 1
@@ -291,8 +269,8 @@ mod_analysis_variable_selection_server <- function(id, store){
 
       # is blocking variable categorical?
       is_block_categorical <- TRUE
-      if (store$analysis_design_design == 'Block randomized treatment'){
-        is_block_categorical <- purrr::map_lgl(input$analysis_upload_data_dragdrop_block, function(var){
+      if (input$analysis_design == 'Block randomized treatment'){
+        is_block_categorical <- purrr::map_lgl(input$analysis_upload_data_dragdrop_blocks, function(var){
           is_cat_or_logical(store$analysis_data_uploaded_df[[var]])
         })
         is_block_categorical <- all(is_block_categorical)
@@ -316,6 +294,11 @@ mod_analysis_variable_selection_server <- function(id, store){
 
       validate(need(all_good, "There is an issue with column assignment"))
 
+      # save design info
+      store$analysis_select_design <- input$analysis_design
+      store$analysis_select_weights <- input$analysis_weights
+      store$analysis_select_random_effects <- input$analysis_random_effects
+
       # store the new dataframe using the uploaded df as the template
       store$analysis_data_assigned_df <- store$analysis_data_uploaded_df[, all_cols]
 
@@ -330,6 +313,7 @@ mod_analysis_variable_selection_server <- function(id, store){
 
       # add to log
       log_event <- paste0('Assigned columns to roles: ',
+                          '\n\tdesign: ', input$analysis_design,
                           '\n\ttreatment: ', cols_z,
                           '\n\tresponse: ', cols_y,
                           '\n\tcovariates: ', paste0(cols_x, collapse = '; '),

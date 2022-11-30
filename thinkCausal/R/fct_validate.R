@@ -1,7 +1,7 @@
-validate_data_uploaded <- function(store){
+validate_data_uploaded <- function(store, message = "Data must be first uploaded. Please see the 'Analyze - Upload Data' page."){
   # stop here if data hasn't been uploaded
   validate(need(nrow(store$analysis_data_uploaded_df) > 0,
-                "Data must be first uploaded. Please see the 'Analyze - Upload Data' page."))
+                message))
 }
 
 validate_columns_assigned <- function(store){
@@ -30,7 +30,7 @@ validate_model_fit <- function(store, req_only = FALSE){
 
 validate_design <- function(store){
   # stop here if design hasn't been specified
-  validate(need(store$analysis_design_design %in% c('Observational', 'Randomized treatment', 'Block randomized treatment'),
+  validate(need(store$analysis_design %in% c('Observational', 'Randomized treatment', 'Block randomized treatment'),
                 "Study design must first be specified on the 'Analyze - Describe data' page"))
 }
 

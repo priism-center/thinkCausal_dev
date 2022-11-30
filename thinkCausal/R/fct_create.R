@@ -5,37 +5,95 @@
 #' @return html
 #'
 #' @noRd
-create_drag_drop_roles <- function(ns, .data, ns_prefix, exclude = NULL, include_all = FALSE){
+create_drag_drop_roles <- function(ns, .data, ns_prefix, exclude = NULL, include_all = FALSE, blocks = FALSE,random_effect = FALSE, weight = FALSE, default_weight = NULL, default_random_effects = NULL,default_blocks = NULL){
   if (!inherits(.data, 'data.frame')) stop('.data must be a dataframe')
+  # search for an ID variable
+  auto_columns <- clean_detect_ID_column(.data)
+
   # gather coviraiate names
   if(isFALSE(include_all)){
-    avalable <- names(.data)[names(.data) %notin% exclude]
+    avalable <- auto_columns$X[auto_columns$X %notin% exclude]
     included <- NULL
   }else{
-    included <- names(.data)[names(.data) %notin% exclude]
+    included <- auto_columns$X[auto_columns$X %notin% c(exclude, default_weight, default_random_effects)]
     avalable <- NULL
   }
 
 
   drag_drop_html <-
-    sortable::bucket_list(
-      header = "Drag the variables to their respective roles",
-      group_name = ns(paste0(ns_prefix, "_dragdrop")),
-      orientation = "horizontal",
-      class = 'default-sortable sortable-wide',
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_avalable")),
-        text = strong("Available variables (not included in the analysis):"),
-        labels = avalable, #auto_columns$X,
-        options = sortable::sortable_options(multiDrag = TRUE)
-      ),
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_covariates")),
-        text = strong("Covariates to include in analysis:"),
-        labels = included,
-        options = sortable::sortable_options(multiDrag = TRUE)
+    fluidRow(column(
+      width = 6,
+      sortable::bucket_list(
+        header = HTML('<b><center>Variables not included in the analysis</center></b>'),
+        #"Drag the variables to their respective roles",
+        group_name = ns(paste0(ns_prefix, "_dragdrop")),
+        orientation = "vertical",
+        class = 'default-sortable sortable-wide',
+        sortable::add_rank_list(
+          input_id = ns(paste0(ns_prefix, "_dragdrop_avalable")),
+          text = "Available variables (not included in the analysis):",
+          labels = avalable,
+          #auto_columns$X,
+          options = sortable::sortable_options(multiDrag = TRUE)
+        ),
+        sortable::add_rank_list(
+          input_id = ns(paste0(ns_prefix, "_dragdrop_post_treatment")),
+          text = create_info_icon(label = "Post-treatment variables to exclude from analysis",
+                                  text = "Any variables that could potentially be affected by the treatment"),
+          labels = NULL,
+          options = sortable::sortable_options(multiDrag = TRUE)
+        ),
+        sortable::add_rank_list(
+          input_id = ns(paste0(ns_prefix, "_dragdrop_ID")),
+          text = "ID variable (not included in the analysis):",
+          labels = auto_columns$ID,
+          options = sortable::sortable_options(multiDrag = TRUE)
+        )
       )
-    )
+    ),
+    column(
+      width = 6,
+        sortable::bucket_list(
+          header = HTML('<b><center>Variables included in the analysis</center></b>'),
+          group_name = ns(paste0(ns_prefix, "_dragdrop")),
+          orientation = "vertical",
+          class = 'default-sortable sortable-wide',
+          sortable::add_rank_list(
+            input_id = ns(paste0(ns_prefix, "_dragdrop_covariates")),
+            text = if (isFALSE(random_effect))
+              "Covariates included in the analysis:"
+            else
+              "Fixed effects included in the analysis",
+            labels = included,
+            options = sortable::sortable_options(multiDrag = TRUE)
+          ),
+          if(isTRUE(blocks)){
+            sortable::add_rank_list(
+              input_id = ns(paste0(ns_prefix, "_dragdrop_blocks")),
+              text = "Blocking variables included in the analysis:",
+              labels = default_blocks,
+              options = sortable::sortable_options(multiDrag = TRUE)
+            )
+          },
+          if(isTRUE(random_effect)){
+            sortable::add_rank_list(
+              input_id = ns(paste0(ns_prefix, "_dragdrop_random_effects")),
+              text = "Random effects included in the analysis:",
+              labels = default_random_effects,
+              options = sortable::sortable_options(multiDrag = TRUE)
+            )
+          },
+          if(isTRUE(weight)){
+            sortable::add_rank_list(
+              input_id = ns(paste0(ns_prefix, "_dragdrop_weight")),
+              text = "Weight",
+              labels = default_weight)
+          }
+        )
+    ))
+
+
+
 
   drag_drop_html <- tagList(drag_drop_html)
 

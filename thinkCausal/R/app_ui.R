@@ -119,10 +119,6 @@ app_ui <- function(request) {
             mod_analysis_upload_ui(module_ids$analysis$upload)
           ),
           bs4Dash::tabItem(
-            tabName = 'analysis_describe',
-            mod_analysis_design_ui(module_ids$analysis$design),
-          ),
-          bs4Dash::tabItem(
             tabName = 'analysis_variable_selection',
             mod_analysis_variable_selection_ui(module_ids$analysis$select),
           ),
@@ -240,11 +236,6 @@ app_ui <- function(request) {
               text = 'Upload data',
               tabName = 'analysis_upload',
               icon = icon("upload", verify_fa = FALSE)
-            ),
-            bs4Dash::menuSubItem(
-              text = 'Describe study design',
-              tabName = 'analysis_describe',
-              icon = icon("comment", verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Variable selection',

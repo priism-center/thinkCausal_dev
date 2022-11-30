@@ -7,7 +7,7 @@
 #'
 #' @return an object of class "bartcFit"
 #' @noRd
-fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
+fit_bart <- function(.data, block, .weights, ran_eff, .estimand){
   ind <- max(3, 3 + length(.weights) + length(ran_eff))
   if(rlang::is_null(.weights)){
     tryCatch({
@@ -17,8 +17,6 @@ fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
           treatment = .data[, 1],
           confounders = clean_confounders_for_bart(.data[, ind:length(.data)]),
           estimand = .estimand,
-          commonSup.rule = support,
-          keepTrees = TRUE,
           seed = 2
         )
       }
@@ -31,8 +29,6 @@ fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
           estimand = .estimand,
           group.by = ran_eff,
           use.ranef = TRUE,
-          commonSup.rule = support,
-          keepTrees = TRUE,
           seed = 2
         )
       }
@@ -48,8 +44,6 @@ fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
           confounders = clean_confounders_for_bart(.data[, ind:length(.data)]),
           estimand = .estimand,
           weights = .data[[.weights]],
-          commonSup.rule = support,
-          keepTrees = TRUE,
           seed = 2
         )
       }
@@ -63,8 +57,6 @@ fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
           weights = .data[[.weights]],
           group.by = ran_eff,
           use.ranef = TRUE,
-          commonSup.rule = support,
-          keepTrees = TRUE,
           seed = 2
         )
       }

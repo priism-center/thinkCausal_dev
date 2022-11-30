@@ -10,31 +10,18 @@
 mod_analysis_model_ui <- function(id){
   ns <- NS(id)
   tagList(
-
     fluidRow(
       bs4Dash::box(
-        width = 4,
+        width = 3,
         collapsible = FALSE,
         title = '1. Specify model',
         selectInput(ns('analysis_model_estimand'),
-                    label = 'Confirm causal estimand',
+                    label = 'Select a causal estimand:',
                     choices = c('ATE - Average treatment effect' = 'ATE',
-                               'ATC - Average treatment effect on the control' = 'ATC',
-                               'ATT - Average treatment effect on the treated' = 'ATT')),
-        selectInput(ns('analysis_model_support'),
-                    label = 'Remove observations without overlap',
-                    choices = c('', 'Unsure', 'Yes', 'No')),
-        HTML('<details><summary>Advanced modeling options</summary>'),
-        selectInput(ns("analysis_over_ride_common_support"),
-                    label = 'Overlap rule:',
-                    choices = c('Standard deviation' = 'sd', 'Chi squared' = 'chisq'))
-        ),
-      bs4Dash::box(
-        width = 4,
-        collapsible = FALSE,
-        title = '2. Specify secondary analyses',
+                                'ATT - Average treatment effect on the treated' = 'ATT',
+                               'ATC - Average treatment effect on the control' = 'ATC')),
         selectInput(ns('analysis_model_moderator_yes_no'),
-                    label = 'Would you like to pre-specify subgroup analyses?',
+                    label = 'Pre-specify subgroup analyses:',
                     choices = c("No", "Yes", 'Unsure')),
         conditionalPanel(
           condition = "input.analysis_model_moderator_yes_no == 'Yes'",
@@ -42,17 +29,17 @@ mod_analysis_model_ui <- function(id){
           selectInput(ns('analysis_model_moderator_vars'),
                       label = 'Create subgroups by:',
                       choices = NULL,
-                      multiple = TRUE))
-        ),
-      bs4Dash::box(
-        width = 4,
-        collapsible = FALSE,
-        title = '3. Fit model',
+                      multiple = TRUE)),
         actionButton(inputId = ns("analysis_model_button_next"),
                      class = "nav-path",
                      label = "Fit model"),
         actionButton(inputId = ns('analysis_model_help'),
                      label = 'Help me')
+        ),
+      bs4Dash::box(
+        width = 9,
+        collapsible = FALSE,
+        title = '3. Fit model'
         )
       )
     )
@@ -68,14 +55,6 @@ mod_analysis_model_server <- function(id, store){
     # open help on button click
     observeEvent(input$analysis_model_help, {
       open_help_sidebar(store, 'Model')
-    })
-
-    # update estimand dropdown based on selected value in the design section
-    observeEvent(store$analysis_design_estimand, {
-      updateSelectInput(
-        inputId = 'analysis_model_estimand',
-        selected = store$analysis_design_estimand
-      )
     })
 
     # update variables on the model page once the save button on the verify data page is clicked
@@ -126,7 +105,6 @@ mod_analysis_model_server <- function(id, store){
       # make sure required inputs have values
       local({
         req_inputs <- c(
-          'analysis_model_support',
           'analysis_model_moderator_yes_no'
         )
         req_values <- reactiveValuesToList(input)[req_inputs]
@@ -169,8 +147,6 @@ mod_analysis_model_server <- function(id, store){
       # response_v <- store$verified_df[, 2]
       # confounders_mat <- as.matrix(store$verified_df[, 3:ncol(store$verified_df)])
       # colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
-      common_support_rule <- input$analysis_over_ride_common_support
-      if (input$analysis_model_support == 'No') common_support_rule <- 'none'
 
       # run model
       # store$analysis$model$model <- withProgress(
@@ -188,7 +164,6 @@ mod_analysis_model_server <- function(id, store){
 
       bart_model <- fit_bart(
         .data = store$verified_df,
-        support = common_support_rule,
         block = store$column_assignments$block,
         .weights = store$column_assignments$weight,
         ran_eff = store$column_assignments$ran_eff,
@@ -221,8 +196,6 @@ mod_analysis_model_server <- function(id, store){
       # store the results
       # TODO: need way to test if actually have a good fit
       store$analysis$model$fit_good <- TRUE
-      # move to diagnostic page
-      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_diagnostic')
       # update exploratory moderators
       updateSelectInput(session = store$session_global,
                         inputId = 'analysis_moderator_vars',
@@ -237,7 +210,6 @@ mod_analysis_model_server <- function(id, store){
         # '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
         '\t', 'Causal estimand: ', input$analysis_model_estimand, '\n',
         '\t', 'Remove observations without overlap: ', input$analysis_model_support, '\n',
-        '\t', 'Common support rule: ', common_support_rule, '\n',
         '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
         # '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
         # '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
@@ -265,8 +237,6 @@ mod_analysis_model_server <- function(id, store){
       # store$analysis$model$analysis_model_moderator_vars <- analysis_model_moderator_vars()
       # store$analysis$model$analysis_random_intercept <- analysis_random_intercept()
       # store$analysis$model$analysis_model_estimand <- analysis_model_estimand()
-      store$analysis$model$analysis_model_support <- isolate(input$analysis_model_support)
-      store$analysis$model$analysis_over_ride_common_support <- isolate(input$analysis_over_ride_common_support)
       store$analysis$model$analysis_model_moderator_vars <- isolate(input$analysis_model_moderator_vars)
       store$analysis$model$analysis_random_intercept <- isolate(input$analysis_random_intercept)
       store$analysis$model$analysis_model_estimand <- isolate(input$analysis_model_estimand)
