@@ -179,56 +179,38 @@ mod_analysis_diagnostics_server <- function(id, store){
       validate_model_fit(store)
 
       bart_model <- store$analysis$model$model
+#
+#       inference_group <- switch (bart_model$estimand,
+#                                  ate = length(bart_model$sd.obs[!bart_model$missingRows]),
+#                                  att = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 1),
+#                                  atc = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 0)
+#       )
+#
+#       # calculate summary stats
+#       sd.cut = c(trt = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt > 0]), ctl = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt <= 0])) + sd(bart_model$sd.obs[!bart_model$missingRows])
+#       total_sd <- switch (bart_model$estimand,
+#                           ate = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]) + sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2]),
+#                           att = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]),
+#                           atc = sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2])
+#       )
+#
+#
+#       # calculate chisqr rule
+#       total_chi <-  switch (bart_model$estimand,
+#                             ate = sum((bart_model$sd.cf / bart_model$sd.obs) ** 2 > 3.841),
+#                             att = sum((bart_model$sd.cf[bart_model$trt ==1] / bart_model$sd.obs[bart_model$trt ==1]) ** 2 > 3.841),
+#                             atc = sum((bart_model$sd.cf[bart_model$trt ==0] / bart_model$sd.obs[bart_model$trt ==0]) ** 2 > 3.841)
+#       )
+#
+#       # calculate sd rule
+#       prop_sd <- round((total_sd / inference_group)*100 , 2)
+#       prop_chi <- round((total_chi / inference_group)*100, 2)
 
-      inference_group <- switch (bart_model$estimand,
-                                 ate = length(bart_model$sd.obs[!bart_model$missingRows]),
-                                 att = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 1),
-                                 atc = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 0)
-      )
-
-      # calculate summary stats
-      sd.cut = c(trt = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt > 0]), ctl = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt <= 0])) + sd(bart_model$sd.obs[!bart_model$missingRows])
-      total_sd <- switch (bart_model$estimand,
-                          ate = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]) + sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2]),
-                          att = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]),
-                          atc = sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2])
-      )
-
-
-      # calculate chisqr rule
-      total_chi <-  switch (bart_model$estimand,
-                            ate = sum((bart_model$sd.cf / bart_model$sd.obs) ** 2 > 3.841),
-                            att = sum((bart_model$sd.cf[bart_model$trt ==1] / bart_model$sd.obs[bart_model$trt ==1]) ** 2 > 3.841),
-                            atc = sum((bart_model$sd.cf[bart_model$trt ==0] / bart_model$sd.obs[bart_model$trt ==0]) ** 2 > 3.841)
-      )
-
-      # calculate sd rule
-      prop_sd <- round((total_sd / inference_group)*100 , 2)
-      prop_chi <- round((total_chi / inference_group)*100, 2)
-
-
-      if(total_sd > 0 & total_chi > 0){
-        # common support plot from plotbart
-        p1 <- plot_common_support_temp(
-          .model = bart_model,
-          .x = input$analysis_diagnostics_plot_overlap_covariate,
-          rule = 'both'
-        )
-        # plot classification tree on covariates in terms of overlap
-        p2 <- plot_overlap_covariate_tree(.model = bart_model, rule = "sd")
-        p3 <- plot_overlap_covariate_tree(.model = bart_model, rule = "chi")
-
-        # patchwork package to combine the plots
-        p <- p1 | (p2 / p3)
-
-      }else{
         # plot it
-        p <- plot_common_support_temp(
+        p <- plotBart::plot_common_support(
           .model = bart_model,
-          .x = input$analysis_diagnostics_plot_overlap_covariate,
           rule = 'both'
         )
-      }
 
       # add theme
       p <- p +
