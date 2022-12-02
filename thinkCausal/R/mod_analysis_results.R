@@ -130,9 +130,10 @@ mod_analysis_results_server <- function(id, store){
 
       text_out <- create_interpretation(.model = store$analysis$model$model,
                                         type = input$interpretation,
-                                        treatment = store$analysis_design_treatment_name,
-                                        units = store$analysis_design_treatment_units,
-                                        participants = store$analysis_design_treatment_participants)
+                                        treatment = 'treatment', #store$analysis_design_treatment_name,
+                                        units = 'units', #store$analysis_design_treatment_units,
+                                        participants = 'participants' #store$analysis_design_treatment_participants
+                                        )
 
       return(text_out)
     })

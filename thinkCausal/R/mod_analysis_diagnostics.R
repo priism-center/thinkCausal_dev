@@ -19,6 +19,9 @@ mod_analysis_diagnostics_ui <- function(id){
                title = 'Model diagnostics',
                p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
                br(),
+               selectInput(inputId = "analysis_diagnostics_view",
+                           label = 'Show diagnostics for:',
+                           choices = c('General summary','Overlap diagnostics', 'Residual diagnostics','MCMC convergence')),
                conditionalPanel("input.analysis_diagnostics_tabs == 'Overlap'", ns = ns,
                                 selectInput(
                                   inputId = ns("analysis_diagnostics_plot_overlap_covariate"),
@@ -207,9 +210,18 @@ mod_analysis_diagnostics_server <- function(id, store){
 #       prop_chi <- round((total_chi / inference_group)*100, 2)
 
         # plot it
+        if(store$total.chi > store$total.sd){
+          y <- store$chi.removed
+        }else{
+          y <- store$sd.removed
+        }
+
+        predict_support <- cbind.data.frame(y , bart_model$data.rsp@x)
+        tree <- rpart::rpart(y ~ . -z, data = predict_support)
         p <- plotBart::plot_common_support(
           .model = bart_model,
-          rule = 'both'
+          rule = 'both',
+          .x = rownames(tree$splits)[1]
         )
 
       # add theme

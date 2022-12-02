@@ -26,7 +26,7 @@ Imports:
     openxlsx (>= 4.2.5),
     patchwork (>= 1.1.1),
     pkgload,
-    plotBart (>= 0.1.14),
+    plotBart (>= 0.1.16),
     purrr,
     reactable (>= 0.3.0),
     readr,
@@ -54,3 +54,5 @@ LazyData: true
 RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 BugReports: https://priism-center.github.io/thinkCausal//issues
+Remotes:  
+    priism-center/plotBart
