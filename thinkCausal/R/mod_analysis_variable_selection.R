@@ -174,8 +174,8 @@ mod_analysis_variable_selection_server <- function(id, store){
       tagList(
       HTML("<details open><summary><b>Information about variable selection</b></summary>"),
       p('For observational studies, include all potential confounders in the analysis.'),
-      p('If you are unsure whether or not a variable is a counfounder, it is recomended to assume that it is a confounder.'),
-      p('Co-linearity between variables is not a problem in causal inference.'),
+      p('If you are unsure whether or not a variable is a confounder, it is recomended to assume that it is a confounder.'),
+      p('Colinearity between preditors is not problematic for treatment effect estimation.'),
       p('Do not include post-treatment variables as covariates in the analysis.'),
       #includeMarkdown('inst/app/www/md/go_to_post_treatment.md'),
       HTML("</details>"),

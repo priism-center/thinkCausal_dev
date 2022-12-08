@@ -35,7 +35,7 @@ mod_analysis_results_ui <- function(id){
                             label = NULL,
                             inline = T,
                             choices = list('80% ci' = .8, '95% ci' = .95),
-                            selected = 'none'),
+                            selected = .95),
           radioButtons(inputId = ns('show_reference'),
                        label = 'Include reference line:',
                        choices = c('Yes', 'No'),
@@ -140,7 +140,6 @@ mod_analysis_results_server <- function(id, store){
 
     # SATE plot
     analysis_results_plot_SATE <- reactive({
-
       # stop here if model isn't fit yet
       validate_model_fit(store)
       # add overlay
@@ -159,7 +158,8 @@ mod_analysis_results_server <- function(id, store){
         ci_95 = sum(input$show_interval == 0.95) > 0,
         .mean = sum(input$central_tendency == 'Mean') > 0,
         .median = sum(input$central_tendency == 'Median') > 0,
-        reference = reference_bar
+        reference = reference_bar,
+        check_overlap = TRUE
       )
 
       # add theme
