@@ -45,8 +45,6 @@ usethis::use_package('waiter')
 
 usethis::use_dev_package('plotBart')
 usethis::use_package('bartCause', min_version = '1.0.4')
-usethis::use_package('dbarts', min_version = '0.9.20')
-
 
 ## Add modules ----
 ## Create a module infrastructure in R/

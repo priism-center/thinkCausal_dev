@@ -14,7 +14,6 @@ Imports:
     bs4Dash (>= 2.1.0),
     cli,
     config (>= 0.3.1),
-    dbarts (>= 0.9.20),
     dplyr (>= 1.0.5),
     ggplot2 (>= 3.3.2),
     glue,

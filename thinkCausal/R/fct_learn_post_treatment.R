@@ -7,7 +7,6 @@
 #' @noRd
 #' @importFrom shiny NS
 quiz_content_post_treatment <- local({
-
   content <- list()
   content$ns_quiz <- shiny::NS(shiny::NS('learning_post_treatment')('quiz'))
 
@@ -75,7 +74,7 @@ quiz_content_post_treatment <- local({
   # set the text for question 2
   question_2 <- tagList(
     h3("Question 2"), # h3 required for checkmark/red x placement
-    p("A middle school offers an optional meditation class to 8th grade students at the beginning of their 8th grade year. You’re tasked with determining if the meditation class caused higher grades at the end of 8th grade. Besides the treatment variable (meditation) and the outcome variable (grades), the school provided you with several other covariates. All covariates were pulled from administrative data at the end of 8th grade. Each covariate is show below:  "),
+    p("A middle school offers an optional meditation class to 8th grade students at the beginning of their 8th grade year. You’re tasked with determining if the meditation class caused higher grades at the end of 8th grade. Besides the treatment variable (meditation) and the outcome variable (grades), the school provided you with several other covariates. All covariates were pulled from administrative data at the end of 8th grade. Each covariate is show below:"),
   )
 
   # set the UI elements for question 2

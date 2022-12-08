@@ -1,13 +1,12 @@
 #' Fit a BART model using a standardized interface
 #'
 #' @param .data the data. First column should be treatment, second column response.
-#' @param support one of c('ate', 'atc', 'att'). See bartCause::bartc
 #' @param ran.eff if not "None", then the name of the column within .data that represents the random effects
 #' @param .estimand the causal estimand. See bartCause::bartc
-#'
+#' @param .weights name of the variable corresponding to a vector of survey weights
 #' @return an object of class "bartcFit"
 #' @noRd
-fit_bart <- function(.data, block, .weights, ran_eff, .estimand){
+fit_bart <- function(.data, .weights, ran_eff, .estimand){
   ind <- max(3, 3 + length(.weights) + length(ran_eff))
   if(rlang::is_null(.weights)){
     tryCatch({

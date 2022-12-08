@@ -8,9 +8,7 @@ library(bartCause)
 # fit model
 model_results <- fit_bart(
   .data = .data,
-  support = "none",
   ran_eff = NULL,
-  block = NULL,
   .weights = NULL,
   .estimand = "ate"
 )
