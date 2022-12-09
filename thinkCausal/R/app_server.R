@@ -26,8 +26,9 @@ app_server <- function(input, output, session) {
   # move page when JS says so
   # usually triggered by links in the help slideover
   observeEvent(input$js_open_page, {
-    new_page <- input$js_open_page
-    bs4Dash::updateControlbar(id = "help-slideover", session = session)
+    new_page <- input$js_open_page$page
+    toggle_help <- input$js_open_page$toggleHelp
+    if (isTRUE(toggle_help)) bs4Dash::updateControlbar(id = "help-slideover", session = session)
     bs4Dash::updateTabItems(session, inputId = 'sidebar', selected = new_page)
   })
 
@@ -53,8 +54,9 @@ app_server <- function(input, output, session) {
   mod_learn_scrolly_example_server('learn_scrolly')
 
   # analysis
-  store <- mod_analysis_design_server(module_ids$analysis$design, store)
   store <- mod_analysis_upload_server(module_ids$analysis$upload, store)
+  store <- mod_analysis_design_server(module_ids$analysis$design, store)
+  store <- mod_analysis_variable_selection_server(module_ids$analysis$select, store)
   store <- mod_analysis_verify_server(module_ids$analysis$verify, store)
   store <- mod_analysis_visualize_server(module_ids$analysis$visualize, store)
   store <- mod_analysis_balance_server(module_ids$analysis$balance, store)

@@ -1,13 +1,12 @@
 #' Fit a BART model using a standardized interface
 #'
 #' @param .data the data. First column should be treatment, second column response.
-#' @param support one of c('ate', 'atc', 'att'). See bartCause::bartc
 #' @param ran.eff if not "None", then the name of the column within .data that represents the random effects
 #' @param .estimand the causal estimand. See bartCause::bartc
-#'
+#' @param .weights name of the variable corresponding to a vector of survey weights
 #' @return an object of class "bartcFit"
 #' @noRd
-fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
+fit_bart <- function(.data, .weights, ran_eff, .estimand){
   ind <- max(3, 3 + length(.weights) + length(ran_eff))
   if(rlang::is_null(.weights)){
     tryCatch({
@@ -17,8 +16,6 @@ fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
           treatment = .data[, 1],
           confounders = clean_confounders_for_bart(.data[, ind:length(.data)]),
           estimand = .estimand,
-          commonSup.rule = support,
-          keepTrees = TRUE,
           seed = 2
         )
       }
@@ -31,8 +28,6 @@ fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
           estimand = .estimand,
           group.by = ran_eff,
           use.ranef = TRUE,
-          commonSup.rule = support,
-          keepTrees = TRUE,
           seed = 2
         )
       }
@@ -48,8 +43,6 @@ fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
           confounders = clean_confounders_for_bart(.data[, ind:length(.data)]),
           estimand = .estimand,
           weights = .data[[.weights]],
-          commonSup.rule = support,
-          keepTrees = TRUE,
           seed = 2
         )
       }
@@ -63,8 +56,6 @@ fit_bart <- function(.data, support, block, .weights, ran_eff, .estimand){
           weights = .data[[.weights]],
           group.by = ran_eff,
           use.ranef = TRUE,
-          commonSup.rule = support,
-          keepTrees = TRUE,
           seed = 2
         )
       }

@@ -12,67 +12,73 @@ mod_analysis_diagnostics_ui <- function(id){
   tagList(
 
     fluidRow(
-      bs4Dash::box(
-        width = 6,
-        collapsible = FALSE,
-        title = 'Model diagnostics',
-        p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-        br(),
-        conditionalPanel("input.analysis_diagnostics_tabs == 'Overlap'", ns = ns,
-                         selectInput(
-                           inputId = ns("analysis_diagnostics_plot_overlap_covariate"),
-                           label = "By covariate:",
-                           choices = NULL,
-                           selected = NULL
-                         )),
-        conditionalPanel("input.analysis_diagnostics_tabs == 'Residual vs fit'", ns = ns,
-                         selectInput(
-                           inputId = ns("analysis_diagnostics_plot_residual_covariate"),
-                           label = "By covariate: ",
-                           multiple = FALSE,
-                           choices = NULL,
-                           selected = NULL
-                         )),
-        actionButton(inputId = ns('analysis_diagnostics_help'),
-                     label = 'What are these plots telling me?'),
-        uiOutput(outputId = ns('analysis_diagnosis_buttons_ui'))
-      ),
-      bs4Dash::box(
-        width = 6,
-        collapsible = FALSE,
-        title = 'Trace plot',
-        plotOutput(ns('analysis_diagnostics_plot_trace'),
-                   height = 500),
-        downloadButton(ns('download_diagnostic_plot_trace'), label = "Download plot")
-      )
-    ),
-    fluidRow(
-      bs4Dash::box(
-        width = 6,
-        collapsible = FALSE,
-        title = 'Overlap',
-        plotOutput(ns('analysis_diagnostics_plot_support'),
-                   height = 500),
-        downloadButton(ns('download_diagnostic_plot_support'), label = "Download plot")
-      ),
-      bs4Dash::box(
-        width = 6,
-        collapsible = FALSE,
-        title = 'Residual vs fit',
-        plotOutput(ns('analysis_diagnostics_plot_residual'),
-                   height = 500),
-        downloadButton(ns('download_diagnostic_plot_residual'), label = "Download plot")
-      )
-    ),
-    fluidRow(
-      bs4Dash::box(
-        width = 6,
-        collapsible = FALSE,
-        title = 'Residual normality',
-        plotOutput(ns('analysis_diagnostics_plot_normal'),
-                   height = 500),
-        downloadButton(ns('download_diagnostic_plot_normal'), label = "Download plot")
-      )
+      column(3,
+             bs4Dash::box(
+               width = 12,
+               collapsible = FALSE,
+               title = 'Model diagnostics',
+               p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+               br(),
+               selectInput(inputId = "analysis_diagnostics_view",
+                           label = 'Show diagnostics for:',
+                           choices = c('General summary','Overlap diagnostics', 'Residual diagnostics','MCMC convergence')),
+               conditionalPanel("input.analysis_diagnostics_tabs == 'Overlap'", ns = ns,
+                                selectInput(
+                                  inputId = ns("analysis_diagnostics_plot_overlap_covariate"),
+                                  label = "By covariate:",
+                                  choices = NULL,
+                                  selected = NULL
+                                )),
+               conditionalPanel("input.analysis_diagnostics_tabs == 'Residual vs fit'", ns = ns,
+                                selectInput(
+                                  inputId = ns("analysis_diagnostics_plot_residual_covariate"),
+                                  label = "By covariate: ",
+                                  multiple = FALSE,
+                                  choices = NULL,
+                                  selected = NULL
+                                )),
+               actionButton(inputId = ns('analysis_diagnostics_help'),
+                            label = 'What are these plots telling me?'),
+               uiOutput(outputId = ns('analysis_diagnosis_buttons_ui'))
+             )),
+      column(9,
+             fluidRow(
+               column(6,
+                      bs4Dash::box(
+                        width = 12,
+                        collapsible = FALSE,
+                        title = 'Trace plot',
+                        plotOutput(ns('analysis_diagnostics_plot_trace'),
+                                   height = 500),
+                        downloadButton(ns('download_diagnostic_plot_trace'), label = "Download plot")
+                      )),
+               column(6,
+                      bs4Dash::box(
+                        width = 12,
+                        collapsible = FALSE,
+                        title = 'Overlap',
+                        plotOutput(ns('analysis_diagnostics_plot_support'),
+                                   height = 500),
+                        downloadButton(ns('download_diagnostic_plot_support'), label = "Download plot")
+                      )),
+               column(6,
+                      bs4Dash::box(
+                        width = 12,
+                        collapsible = FALSE,
+                        title = 'Residual vs fit',
+                        plotOutput(ns('analysis_diagnostics_plot_residual'),
+                                   height = 500),
+                        downloadButton(ns('download_diagnostic_plot_residual'), label = "Download plot")
+                      )),
+               column(6,
+                      bs4Dash::box(
+                        width = 12,
+                        collapsible = FALSE,
+                        title = 'Residual normality',
+                        plotOutput(ns('analysis_diagnostics_plot_normal'),
+                                   height = 500),
+                        downloadButton(ns('download_diagnostic_plot_normal'), label = "Download plot")
+                      ))))
     )
   )
 }
@@ -176,56 +182,47 @@ mod_analysis_diagnostics_server <- function(id, store){
       validate_model_fit(store)
 
       bart_model <- store$analysis$model$model
+#
+#       inference_group <- switch (bart_model$estimand,
+#                                  ate = length(bart_model$sd.obs[!bart_model$missingRows]),
+#                                  att = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 1),
+#                                  atc = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 0)
+#       )
+#
+#       # calculate summary stats
+#       sd.cut = c(trt = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt > 0]), ctl = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt <= 0])) + sd(bart_model$sd.obs[!bart_model$missingRows])
+#       total_sd <- switch (bart_model$estimand,
+#                           ate = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]) + sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2]),
+#                           att = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]),
+#                           atc = sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2])
+#       )
+#
+#
+#       # calculate chisqr rule
+#       total_chi <-  switch (bart_model$estimand,
+#                             ate = sum((bart_model$sd.cf / bart_model$sd.obs) ** 2 > 3.841),
+#                             att = sum((bart_model$sd.cf[bart_model$trt ==1] / bart_model$sd.obs[bart_model$trt ==1]) ** 2 > 3.841),
+#                             atc = sum((bart_model$sd.cf[bart_model$trt ==0] / bart_model$sd.obs[bart_model$trt ==0]) ** 2 > 3.841)
+#       )
+#
+#       # calculate sd rule
+#       prop_sd <- round((total_sd / inference_group)*100 , 2)
+#       prop_chi <- round((total_chi / inference_group)*100, 2)
 
-      inference_group <- switch (bart_model$estimand,
-                                 ate = length(bart_model$sd.obs[!bart_model$missingRows]),
-                                 att = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 1),
-                                 atc = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 0)
-      )
-
-      # calculate summary stats
-      sd.cut = c(trt = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt > 0]), ctl = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt <= 0])) + sd(bart_model$sd.obs[!bart_model$missingRows])
-      total_sd <- switch (bart_model$estimand,
-                          ate = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]) + sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2]),
-                          att = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]),
-                          atc = sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2])
-      )
-
-
-      # calculate chisqr rule
-      total_chi <-  switch (bart_model$estimand,
-                            ate = sum((bart_model$sd.cf / bart_model$sd.obs) ** 2 > 3.841),
-                            att = sum((bart_model$sd.cf[bart_model$trt ==1] / bart_model$sd.obs[bart_model$trt ==1]) ** 2 > 3.841),
-                            atc = sum((bart_model$sd.cf[bart_model$trt ==0] / bart_model$sd.obs[bart_model$trt ==0]) ** 2 > 3.841)
-      )
-
-      # calculate sd rule
-      prop_sd <- round((total_sd / inference_group)*100 , 2)
-      prop_chi <- round((total_chi / inference_group)*100, 2)
-
-
-      if(total_sd > 0 & total_chi > 0){
-        # common support plot from plotbart
-        p1 <- plot_common_support_temp(
-          .model = bart_model,
-          .x = input$analysis_diagnostics_plot_overlap_covariate,
-          rule = 'both'
-        )
-        # plot classification tree on covariates in terms of overlap
-        p2 <- plot_overlap_covariate_tree(.model = bart_model, rule = "sd")
-        p3 <- plot_overlap_covariate_tree(.model = bart_model, rule = "chi")
-
-        # patchwork package to combine the plots
-        p <- p1 | (p2 / p3)
-
-      }else{
         # plot it
-        p <- plot_common_support_temp(
+        if(store$total.chi > store$total.sd){
+          y <- store$chi.removed
+        }else{
+          y <- store$sd.removed
+        }
+
+        predict_support <- cbind.data.frame(y , bart_model$data.rsp@x)
+        tree <- rpart::rpart(y ~ . -z, data = predict_support)
+        p <- plotBart::plot_common_support(
           .model = bart_model,
-          .x = input$analysis_diagnostics_plot_overlap_covariate,
-          rule = 'both'
+          rule = 'both',
+          .x = rownames(tree$splits)[1]
         )
-      }
 
       # add theme
       p <- p +
@@ -358,9 +355,3 @@ mod_analysis_diagnostics_server <- function(id, store){
     return(store)
   })
 }
-
-## To be copied in the UI
-# mod_analysis_diagnostics_ui("analysis_diagnostics_1")
-
-## To be copied in the server
-# mod_analysis_diagnostics_server("analysis_diagnostics_1")

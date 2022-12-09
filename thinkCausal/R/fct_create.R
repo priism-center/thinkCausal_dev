@@ -5,80 +5,95 @@
 #' @return html
 #'
 #' @noRd
-create_drag_drop_roles <- function(ns, .data, ns_prefix, design, weights, ran_eff){
+create_drag_drop_roles <- function(ns, .data, ns_prefix, exclude = NULL, include_all = FALSE, blocks = FALSE,random_effect = FALSE, weight = FALSE, default_weight = NULL, default_random_effects = NULL,default_blocks = NULL){
   if (!inherits(.data, 'data.frame')) stop('.data must be a dataframe')
+  # search for an ID variable
+  auto_columns <- clean_detect_ID_column(.data)
 
-  # infer which columns are Z, Y, and X columns (i.e. smart defaults)
-  auto_columns <- clean_detect_ZYX_columns(.data)
+  # gather coviraiate names
+  if(isFALSE(include_all)){
+    avalable <- auto_columns$X[auto_columns$X %notin% exclude]
+    included <- NULL
+  }else{
+    included <- auto_columns$X[auto_columns$X %notin% c(exclude, default_weight, default_random_effects)]
+    avalable <- NULL
+  }
 
 
   drag_drop_html <-
-    sortable::bucket_list(
-      header = "Drag the variables to their respective roles",
-      group_name = ns(paste0(ns_prefix, "_dragdrop")),
-      orientation = "horizontal",
-      class = 'default-sortable sortable-wide',
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_covariates")),
-        text = "Covariates",
-        labels = auto_columns$X,
-        options = sortable::sortable_options(multiDrag = TRUE)
-      ),
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_treatment")),
-        text = "Treatment",
-        labels = auto_columns$Z,
-        options = sortable::sortable_options(multiDrag = TRUE)
-      ),
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_response")),
-        text = "Outcome",
-        labels = auto_columns$Y,
-        options = sortable::sortable_options(multiDrag = TRUE)
-      ),
-      if(design == 'Block randomized treatment'){
+    fluidRow(column(
+      width = 6,
+      sortable::bucket_list(
+        header = HTML('<b><center>Variables not included in the analysis</center></b>'),
+        #"Drag the variables to their respective roles",
+        group_name = ns(paste0(ns_prefix, "_dragdrop")),
+        orientation = "vertical",
+        class = 'default-sortable sortable-wide',
         sortable::add_rank_list(
-          input_id = ns(paste0(ns_prefix, "_dragdrop_block")),
-          text = "Blocking variable(s)",
-          labels = NULL,
+          input_id = ns(paste0(ns_prefix, "_dragdrop_avalable")),
+          text = "Available variables (not included in the analysis):",
+          labels = avalable,
+          #auto_columns$X,
           options = sortable::sortable_options(multiDrag = TRUE)
-        )
-      },
-      if(weights == 'Yes'){
-        sortable::add_rank_list(
-          input_id = ns(paste0(ns_prefix, "_dragdrop_weight")),
-          text = "Survey weight",
-          labels = NULL,
-          options = sortable::sortable_options(multiDrag = TRUE)
-        )
-      },
-      if(ran_eff == 'Yes'){
-        sortable::add_rank_list(
-          input_id = ns(paste0(ns_prefix, "_dragdrop_ran_eff")),
-          text = "Random Intercept(s)",
-          labels = NULL,
-          options = sortable::sortable_options(multiDrag = TRUE)
-        )
-      },
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_post_treatment")),
-        text = create_info_icon(
-          label = "Post-treatment variables to exclude from analysis",
-          text = "All variables that could potentially be affected by the treatment"
         ),
-        labels = NULL,
-        options = sortable::sortable_options(multiDrag = TRUE)
-      ),
-      sortable::add_rank_list(
-        input_id = ns(paste0(ns_prefix, "_dragdrop_delete")),
-        text = create_info_icon(
-          label = "ID or index variables to exclude from analysis",
-          text = "Exclude index or ID variables in addition to extraneous variables"
+        sortable::add_rank_list(
+          input_id = ns(paste0(ns_prefix, "_dragdrop_post_treatment")),
+          text = create_info_icon(label = "Post-treatment variables to exclude from analysis",
+                                  text = "Any variables that could potentially be affected by the treatment"),
+          labels = NULL,
+          options = sortable::sortable_options(multiDrag = TRUE)
         ),
-        labels = auto_columns$ID,
-        options = sortable::sortable_options(multiDrag = TRUE)
+        sortable::add_rank_list(
+          input_id = ns(paste0(ns_prefix, "_dragdrop_ID")),
+          text = "ID variable (not included in the analysis):",
+          labels = auto_columns$ID,
+          options = sortable::sortable_options(multiDrag = TRUE)
+        )
       )
-    )
+    ),
+    column(
+      width = 6,
+        sortable::bucket_list(
+          header = HTML('<b><center>Variables included in the analysis</center></b>'),
+          group_name = ns(paste0(ns_prefix, "_dragdrop")),
+          orientation = "vertical",
+          class = 'default-sortable sortable-wide',
+          sortable::add_rank_list(
+            input_id = ns(paste0(ns_prefix, "_dragdrop_covariates")),
+            text = if (isFALSE(random_effect))
+              "Covariates included in the analysis:"
+            else
+              "Fixed effects included in the analysis",
+            labels = included,
+            options = sortable::sortable_options(multiDrag = TRUE)
+          ),
+          if(isTRUE(blocks)){
+            sortable::add_rank_list(
+              input_id = ns(paste0(ns_prefix, "_dragdrop_blocks")),
+              text = "Blocking variables included in the analysis:",
+              labels = default_blocks,
+              options = sortable::sortable_options(multiDrag = TRUE)
+            )
+          },
+          if(isTRUE(random_effect)){
+            sortable::add_rank_list(
+              input_id = ns(paste0(ns_prefix, "_dragdrop_random_effects")),
+              text = "Random effects included in the analysis:",
+              labels = default_random_effects,
+              options = sortable::sortable_options(multiDrag = TRUE)
+            )
+          },
+          if(isTRUE(weight)){
+            sortable::add_rank_list(
+              input_id = ns(paste0(ns_prefix, "_dragdrop_weight")),
+              text = "Weight",
+              labels = default_weight)
+          }
+        )
+    ))
+
+
+
 
   drag_drop_html <- tagList(drag_drop_html)
 
@@ -685,7 +700,7 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
     # create the dataframe
     df <- data.frame(ID, Z, Y0, Y1, Y, ITE)
     if(!rlang::is_null(id_unit)) names(df)[1] <- id_unit
-    df <- dplyr::mutate(df, Y0 = as.character(Y0), Y1 = as.character(Y1), ITE = as.character(ITE))
+    df <- mutate(df, Y0 = as.character(Y0), Y1 = as.character(Y1), ITE = as.character(ITE))
 
     if (po_question == T & ite_question == T){ # generate questions ('?') for both potential outcomes (Y1 and Y0) and ITE
 

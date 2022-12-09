@@ -14,7 +14,6 @@ Imports:
     bs4Dash (>= 2.1.0),
     cli,
     config (>= 0.3.1),
-    dbarts (>= 0.9.20),
     dplyr (>= 1.0.5),
     ggplot2 (>= 3.3.2),
     glue,
@@ -26,7 +25,7 @@ Imports:
     openxlsx (>= 4.2.5),
     patchwork (>= 1.1.1),
     pkgload,
-    plotBart (>= 0.1.13),
+    plotBart (>= 0.1.19),
     purrr,
     reactable (>= 0.3.0),
     readr,
@@ -37,6 +36,7 @@ Imports:
     shinybrowser (>= 1.0.0),
     shinydisconnect (>= 0.1.0),
     shinyjs (>= 2.1.0),
+    shinyWidgets (>= 0.7.4),
     sortable (>= 0.4.5),
     stringr,
     tibble,
@@ -54,3 +54,5 @@ LazyData: true
 RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 BugReports: https://priism-center.github.io/thinkCausal//issues
+Remotes: 
+    github::priism-center/plotBart

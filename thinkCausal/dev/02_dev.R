@@ -30,6 +30,7 @@ usethis::use_package('cli')
 
 usethis::use_package('bs4Dash', min_version = '2.1.0')
 usethis::use_package('shinyjs', min_version = '2.1.0')
+usethis::use_package('shinyWidgets', min_version = '0.7.4')
 usethis::use_package('reactable', min_version = '0.3.0')
 usethis::use_package('sortable', min_version = '0.4.5')
 usethis::use_package('readr')
@@ -43,10 +44,9 @@ usethis::use_package('htmltools')
 usethis::use_package('jsonlite')
 usethis::use_package('waiter')
 
-usethis::use_dev_package('plotBart', min_version = '0.1.13')
-usethis::use_package('bartCause', min_version = '1.0.4')
-usethis::use_package('dbarts', min_version = '0.9.20')
 
+usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')
+usethis::use_package('bartCause', min_version = '1.0.4')
 
 ## Add modules ----
 ## Create a module infrastructure in R/

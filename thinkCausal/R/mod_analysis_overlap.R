@@ -10,12 +10,16 @@
 mod_analysis_overlap_ui <- function(id){
   ns <- NS(id)
   tagList(
-
     fluidRow(
       bs4Dash::box(
         width = 3,
         collapsible = FALSE,
         title = 'Check overlap',
+        selectInput(
+          inputId = ns("analysis_overlap_trim"),
+          label = 'Check overlap of:',
+          choices = c("ATE", 'ATT', 'ATC')
+        ),
         selectInput(
           inputId = ns("analysis_overlap_type"),
           label = "View:",
@@ -35,7 +39,7 @@ mod_analysis_overlap_ui <- function(id){
                          selectInput(
                            inputId = ns("analysis_overlap_select_var"),
                            label = "Select variables for overlap check:",
-                           multiple = TRUE,
+                           multiple = FALSE,
                            choices = NULL,
                            selected = NULL
                          )),
@@ -101,25 +105,23 @@ mod_analysis_overlap_server <- function(id, store){
 
     # calculate propensity scores
     pscores <- reactive({
-
       # stop here if data hasn't been uploaded and selected
       validate_data_verified(store)
 
       # get variables
-      X <- store$verified_df
+      X <- clean_to_indicator(store$verified_df)
       col_names <- colnames(X)
       treatment_col <- grep("^Z_", col_names, value = TRUE)
       response_col <- grep("^Y_", col_names, value = TRUE)
       confounder_cols <- grep("^X_", col_names, value = TRUE)
 
       # calculate pscores
-        plotBart:::propensity_scores(
+      pscores <- plotBart:::propensity_scores(
         .data = X,
         treatment = treatment_col,
         confounders = confounder_cols,
         seed = 44
       )
-
       return(pscores)
     })
 
@@ -144,6 +146,20 @@ mod_analysis_overlap_server <- function(id, store){
 
       # plot either the variables or the 1 dimension propensity scores
       if(input$analysis_overlap_type == 2){
+        if(is.numeric(X[[input$analysis_overlap_select_var]])){
+          trim <- switch (input$analysis_overlap_trim,
+                          'ATE' = c(min(X[[input$analysis_overlap_select_var]]),
+                                    max(X[[input$analysis_overlap_select_var]])),
+                          'ATT' = c(min(X[[input$analysis_overlap_select_var]][X[[treatment_col]] == 1]),
+                                    max(X[[input$analysis_overlap_select_var]][X[[treatment_col]] == 1])),
+                          'ATC' = c(min(X[[input$analysis_overlap_select_var]][X[[treatment_col]] == 0]),
+                                    max(X[[input$analysis_overlap_select_var]][X[[treatment_col]] == 0]))
+          )
+
+          X <- X[X[[input$analysis_overlap_select_var]] >= trim[1],]
+          X <- X[X[[input$analysis_overlap_select_var]] <= trim[2],]
+        }
+
         p <- tryCatch(
           plotBart::plot_overlap_vars(
             .data = X,
@@ -156,12 +172,22 @@ mod_analysis_overlap_server <- function(id, store){
       }
 
       else if(input$analysis_overlap_type == 1){
+
+        trim <- switch (input$analysis_overlap_trim,
+                        'ATE' = c(NULL, NULL),
+                        'ATT' = c(min(pscores()[X[[treatment_col]] == 1]),max(pscores()[X[[treatment_col]] == 1])),
+                        'ATC' = c(min(pscores()[X[[treatment_col]] == 0]),max(pscores()[X[[treatment_col]] == 0]))
+        )
+
+
         p <- tryCatch({
           plotBart::plot_overlap_pScores(
             .data = X,
             treatment = treatment_col,
             plot_type = plt_type,
-            pscores = pscores()
+            pscores = pscores(),
+            min_x = trim[1],
+            max_x = trim[2]
           )
         },
         error = function(e) NULL
@@ -254,9 +280,3 @@ mod_analysis_overlap_server <- function(id, store){
     return(store)
   })
 }
-
-## To be copied in the UI
-# mod_analysis_overlap_ui("analysis_overlap_1")
-
-## To be copied in the server
-# mod_analysis_overlap_server("analysis_overlap_1")

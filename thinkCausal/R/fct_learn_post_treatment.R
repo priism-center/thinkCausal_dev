@@ -6,9 +6,7 @@
 #'
 #' @noRd
 #' @importFrom shiny NS
-#' @import sortable
 quiz_content_post_treatment <- local({
-
   content <- list()
   content$ns_quiz <- shiny::NS(shiny::NS('learning_post_treatment')('quiz'))
 
@@ -38,7 +36,7 @@ quiz_content_post_treatment <- local({
     sortable::add_rank_list(
       input_id = content$ns_quiz('answers_variables'),
       text = "Available",
-      labels = c('bp_3month', 'sex', 'height'),
+      labels = c('bp_baseline','bp_3month', 'sex', 'height'),
       options = sortable::sortable_options(multiDrag = TRUE)
     ),
     sortable::add_rank_list(
@@ -66,7 +64,7 @@ quiz_content_post_treatment <- local({
   # set the correct answers for question 1
   # answer structure must match structure provided by input$answers
   correct_answer_1 <- list(c('bp_3month'),
-                           c('sex', 'height'),
+                           c('bp_baseline','sex', 'height'),
                            c('fish_oil'),
                            c('bp_6month'))
 
@@ -75,10 +73,8 @@ quiz_content_post_treatment <- local({
 
   # set the text for question 2
   question_2 <- tagList(
-    h4("We'll start with a couple practice questions to test your current knowledge. It's okay if you do not get them all correct."),
-    hr(),
     h3("Question 2"), # h3 required for checkmark/red x placement
-    p("A middle school offers an optional meditation class to 8th grade students and you’re tasked with determining if the meditation class causes higher grades at the end of 8th grade. Besides the treatment variable (meditation) and the outcome variable (grades), the school provided you with several other covariates. All covariates were pulled from administrative data at the end of 8th grade. Each covariate is show below:  "),
+    p("A middle school offers an optional meditation class to 8th grade students at the beginning of their 8th grade year. You’re tasked with determining if the meditation class caused higher grades at the end of 8th grade. Besides the treatment variable (meditation) and the outcome variable (grades), the school provided you with several other covariates. All covariates were pulled from administrative data at the end of 8th grade. Each covariate is show below:"),
   )
 
   # set the UI elements for question 2

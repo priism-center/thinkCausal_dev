@@ -115,12 +115,12 @@ app_ui <- function(request) {
 
           # analysis pages
           bs4Dash::tabItem(
-            tabName = 'analysis_describe',
-            mod_analysis_design_ui(module_ids$analysis$design),
-          ),
-          bs4Dash::tabItem(
             tabName = 'analysis_upload',
             mod_analysis_upload_ui(module_ids$analysis$upload)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'analysis_variable_selection',
+            mod_analysis_variable_selection_ui(module_ids$analysis$select),
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_verify',
@@ -233,14 +233,14 @@ app_ui <- function(request) {
             text = 'Analyze',
             icon = icon("chart-line", verify_fa = FALSE),
             bs4Dash::menuSubItem(
-              text = 'Describe data',
-              tabName = 'analysis_describe',
-              icon = icon("comment", verify_fa = FALSE)
-            ),
-            bs4Dash::menuSubItem(
               text = 'Upload data',
               tabName = 'analysis_upload',
               icon = icon("upload", verify_fa = FALSE)
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Variable selection',
+              tabName = 'analysis_variable_selection',
+              icon = icon("filter", verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Verify data types',

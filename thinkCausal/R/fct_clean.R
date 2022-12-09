@@ -44,7 +44,10 @@ clean_names <- function(.names){
   pat <- "(?![._])[[:punct:]]"
   .names <- stringr::str_remove_all(string = .names, pattern = pat)
 
-  # remove dollar signs
+  # remove ^~`$
+  .names <- stringr::str_remove_all(string = .names, pattern = "[\\^]")
+  .names <- stringr::str_remove_all(string = .names, pattern = "[\\~]")
+  .names <- stringr::str_remove_all(string = .names, pattern = "[\\`]")
   .names <- stringr::str_remove_all(string = .names, pattern = "[$]")
 
   # remove leading special characters
@@ -170,6 +173,63 @@ clean_detect_integers <- function(x, n_levels_threshold = 15){
   }
 
   return(FALSE)
+}
+
+#' Attempt to detect which columns of a dataframe are an ID column
+#'
+#' ID detection is based on column name and the values. If none are detected, then columns are categorized as 'X'
+#'
+#' @param .data a dataframe
+#'
+#' @author Joe Marlo & George Perrett
+#'
+#' @return a list denoting which column names is an column ID
+#' @noRd
+#'
+#' @examples
+#' .data <- data.frame(
+#'  treatment = c(TRUE, TRUE, FALSE, TRUE, FALSE),
+#'  rsp = c(0.808, 0.296,-1.579,-1.272, 0.627),
+#'  ID = c(0.808, 0.296,-1.579,-1.272, 0.627),
+#'  dummyID = 1:5,
+#'  dummy1 = c(34, 35, 10, 5, 38)
+#' )
+#' clean_detect_ID_column(.data)
+
+clean_detect_ID_column <- function(.data) {
+
+  # set list of potential column names to match
+  ID_potentials <- c("^id")
+  all_col_names <- colnames(.data)
+
+  # find ID columns
+  ID_matches <- sapply(X = all_col_names, FUN = function(col){
+    any(
+      stringr::str_detect(
+        string = col,
+        pattern = stringr::regex(ID_potentials, ignore_case = TRUE)
+      )
+    )
+  })
+  ID <- all_col_names[ID_matches][1]
+  # test if any columns are integers with spacing 1
+  if (is.na(ID)) {
+    is_ID <- unlist(sapply(X = .data[, all_col_names], FUN = function(col){
+      is_ID <- FALSE
+      if (is.numeric(col)){
+        is_ID <- all(table(diff(sort(col))) == 1)
+      }
+      return(is_ID)
+    }))
+    ID <- all_col_names[is_ID][1]
+  }
+
+  # defaults if none are found
+  if (isTRUE(is.na(ID))) ID <- NULL
+  X <- setdiff(all_col_names, ID)
+
+  matched_cols <- list(X = X, ID = ID)
+  return(matched_cols)
 }
 
 #' Attempt to detect which columns of a dataframe are Z, Y, and X

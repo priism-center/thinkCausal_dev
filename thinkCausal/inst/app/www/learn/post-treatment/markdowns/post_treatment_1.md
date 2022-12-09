@@ -1,4 +1,4 @@
-## Post-treatment variables
+# Post-treatment variables
 
 ### Do not adjust for post-treatment variables
 
