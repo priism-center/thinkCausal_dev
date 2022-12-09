@@ -30,6 +30,7 @@ usethis::use_package('cli')
 
 usethis::use_package('bs4Dash', min_version = '2.1.0')
 usethis::use_package('shinyjs', min_version = '2.1.0')
+usethis::use_package('shinyWidgets', min_version = '0.7.4')
 usethis::use_package('reactable', min_version = '0.3.0')
 usethis::use_package('sortable', min_version = '0.4.5')
 usethis::use_package('readr')
