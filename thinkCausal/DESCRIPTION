@@ -8,7 +8,7 @@ Authors@R: c(
   )
 Description: A federally funded project devoted to building scaffolded causal inference software implementing Bayesian Additive Regression Trees.
 License: MIT + file LICENSE
-URL: https://priism-center.github.io/thinkCausal/
+URL: https://github.com/priism-center/thinkCausal_dev
 Imports: 
     bartCause (>= 1.0.4),
     bs4Dash (>= 2.1.0),
