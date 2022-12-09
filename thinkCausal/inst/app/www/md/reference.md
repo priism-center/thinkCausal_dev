@@ -21,4 +21,4 @@ R and R packages:
 <br>
 
 #### Reference thinkCausal
-Joseph Marlo, George Perrett, Jennifer Hill (2022). _thinkCausal: Point-and-click bartCause analysis and causal inference education_. R package version 0.3.0, https://priism-center.github.io/thinkCausal/
+Joseph Marlo, George Perrett, Jennifer Hill (2022). _thinkCausal: Point-and-click bartCause analysis and causal inference education_. R package version 0.3.0, https://github.com/priism-center/thinkCausal_dev
