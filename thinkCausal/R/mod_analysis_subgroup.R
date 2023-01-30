@@ -85,7 +85,18 @@ mod_analysis_subgroup_ui <- function(id){
                              label = 'Plot type:',
                              choices = c('Histogram' = 'histogram',
                                          'Density' = 'density',
-                                         'Error bar' = 'errorbar'))
+                                         'Error bar' = 'errorbar')),
+                 conditionalPanel(condition = "input.analysis_subgroup_exploratory_type != 'errorbar'", ns = ns,
+                                  checkboxInput(inputId = ns('analysis_subgroup_facet'),
+                                                label = 'Overlay Plots',
+                                                value = FALSE,
+                                                ),
+                                  numericInput(inputId = ns('analysis_subgroup_ncol'),
+                                               label = 'Number of Columns:',
+                                               value = 1,
+                                               min = 1,
+                                               max = 5)
+                                  )
                ),
                br(), br(),
                # create_link_to_help('Subgroup analyses', button_label = 'What is this plot telling me?'),
@@ -250,6 +261,13 @@ mod_analysis_subgroup_server <- function(id, store){
 
     exploratory_plot <- reactive({
       validate_model_fit(store)
+      validate(need(input$analysis_subgroup_exploratory, 'Select a variable to define subgroups'))
+
+      if (input$analysis_subgroup_exploratory_type != 'errorbar') {
+        .facet <- !input$analysis_subgroup_facet
+      } else{
+        .facet <- FALSE
+      }
 
       cols_categorical <- gsub('X_', '',store$column_types$categorical)
       cols_continuous <- gsub('X_', '', store$column_types$continuous)
@@ -267,12 +285,21 @@ mod_analysis_subgroup_server <- function(id, store){
         }else{
           .moderator <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
         }
+
         p <- plotBart::plot_moderator_d(store$analysis$model$model,
                                         type = input$analysis_subgroup_exploratory_type,
-                                        moderator = .moderator)
+                                        moderator = .moderator,
+                                        facet = .facet)
       }else{
-        p <- plotBart::plot_moderator_c_loess(store$analysis$model$model,
-                                              moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]])
+        .moderator <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
+        p <- plotBart::plot_moderator_c_bin(store$analysis$model$model,
+                                        moderator = .moderator,
+                                        .name = input$analysis_subgroup_exploratory,
+                                        type = input$analysis_subgroup_exploratory_type,
+                                        facet = .facet)
+
+        # p <- plotBart::plot_moderator_c_loess(store$analysis$model$model,
+        #                                       moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]])
       }
 
       p <- p + store$options$theme_custom

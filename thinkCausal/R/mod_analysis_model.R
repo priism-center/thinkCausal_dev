@@ -40,7 +40,8 @@ mod_analysis_model_ui <- function(id){
         width = 9,
         collapsible = FALSE,
         title = 'Review your model',
-        p('More coming soon...')
+        p('More coming soon...'),
+        verbatimTextOutput(ns('review'))
         )
       )
     )
@@ -86,6 +87,36 @@ mod_analysis_model_server <- function(id, store){
                         inputId = 'analysis_model_moderator_vars',
                         choices = X_mods,
                         selected = NULL)
+    })
+
+    # model review page on left pannel
+
+    output$review <- renderText({
+      covariates <- paste0(c('re75', 're74'), collapse = '; ')
+      glue::glue(
+      "
+      You are testing if changing the TREATMENT causes a change in OUTCOME
+       by fitting a Bayesian Additive Regression Tree (BART).\n
+       Your data is from a DESIGN
+       You are not blocking on any variables.
+       You have not pre-specified any sub-group comparisons.
+        You are estimating the: INSERT ESTIMAND\n
+        Your model will control for: \n
+        \n\t{covariates}
+
+        You are not controlling for:\n
+        \tNOT INCLUDED
+
+        You have not specified any random effects of survey weights.
+
+        BART models assume that all confounders are being controled for in the model.
+        OVERLAP (explan how we will test for overlap)
+        SUTVA
+
+        BART models will automatically learn any interactions that exist in your data so you do not need to specify interaction effects.
+        BART models are inherently non-parametric and do not assume the relationship between predictors and the outcome is linear.
+        Specification of any polynomial terms are not needed.
+      ")
     })
 
 

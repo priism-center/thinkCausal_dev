@@ -1,0 +1,192 @@
+---
+title: "Untitled"
+output: html_document
+runtime: shiny
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(shiny)
+library(bartCause)
+library(aciccomp2016)
+library(tidyverse)
+```
+
+The recommended approach to variable selection is to include any pre-treatment covariate that could be predictive of the outcome variable. Although there are caveats to this advice they are special cases and will be discussed in a subsequent module. This recommendation means that even if there are many pre-treatment variables, they should all be included in the analysis! **When using thinkCausal, concern about including too many pre-treatment predictors is not a valid reason to exclude variables from a causal analysis.**
+
+
+Introductory statistics courses often recomend there should be 10 observations for each predictor variable. Under this approach a statistical model fit to a dataset of 100 observations should have no more than 10 predictor variables. 
+
+
+```{r}
+# get dat
+# data("input_2016")
+# dat <- input_2016
+# n <- 100
+# dat <- fastDummies::dummy_cols(dat, select_columns = c('x_2', 'x_21', 'x_24'), remove_selected_columns = TRUE)
+# names(dat) <- paste0('x_', 1:length(dat))
+
+```
+
+```{r}
+# counter <- reactiveVal(value = 0)
+# 
+# draw_sample1 <- reactive({
+#   
+#   index <- sample(1:nrow(dat), n)
+#   X <- dat[index, ]
+#   oracle <- dgp_2016(input_2016, 4, 1)
+#   y <- oracle$y[index]
+#   z <- oracle$z[index]
+#   ice <- oracle$y.1[index] - oracle$y.0[index]
+#   att <- mean(ice[z == 1])
+# 
+#   predictors <- n/10 
+#   adjust_prediction_y <- names(tail(lm(y ~ 0 + ., X)$coeff, predictors))
+#   adjust_prediction_z <- names(tail(glm(z ~ 0 + .,X, family = binomial)$coeff, predictors))
+# 
+#   p.z <- vector()
+#   for (i in 1:length(dat)) {
+#     coef <- glm(z ~ 0 + X[,i],X, family = binomial)$coef
+#     se <- sqrt(diag(vcov(glm(z ~ 0 + X[,i], X,family = binomial))))
+#     p.z[i] <- 2*(1-pt(abs(coef/se),99))
+#   
+#   }
+# 
+#   p.z[is.na(p.z)] <- F
+#   coefs <- lm(y ~ 0 + ., X)$coeff
+#   coefs <- coefs[p.z <.05][order(abs(coefs[p.z <.05]))] %>% na.omit()
+#   mix <- names(tail(coefs, predictors))
+#   
+#   adjust_prediction_y <- names(coefs[1:predictors])
+#   allX <- summary(bartc(y, z, X, estimand = 'att'), target = 'sate')
+#   top10z <- summary(bartc(y, z, X[,adjust_prediction_z], estimand = 'att'), target = 'sate')
+#   top10y <- summary(bartc(y, z, X[,adjust_prediction_y], estimand = 'att'), target = 'sate')
+#   mix_model <- summary(bartc(y, z, X[,mix], estimand = 'att'), target = 'sate')
+#   random <- summary(bartc(y, z, X[,sample(1:length(dat), predictors)], estimand = 'att'), target = 'sate')
+#   
+#   
+#   results <- rbind(allX$estimates, top10y$estimates, top10z$estimates, mix_model$estimates, random$estimates)
+#   results$model <-
+#     c(
+#       'all covariates',
+#       'top 10 predictors of y',
+#       'top 10 predictors of z',
+#       'top 10 predictors of y that are significantly associated with z', 
+#       '10 randomly selected covaraites'
+#     )
+#   
+#   out <- list(results, att)
+#   
+#   return(out)
+# 
+# })
+
+
+```
+
+
+
+```{r}
+# set.seed(21)
+# x <- rnorm(10)
+# 
+# y <- 20 + 5*x + rnorm(10, 0, 3)
+# a1 <- rbinom(10, 1, .5)
+# a2 <- rbinom(10, 1, .5)
+# a3 <- rbinom(10, 1, .5)
+# a4 <- rbinom(10, 1, .5)
+# a5 <- rbinom(10, 1, .5)
+# a6 <- rbinom(10, 1, .5)
+# a7 <- rbinom(10, 1, .5)
+# a8 <- rbinom(10, 1, .5)
+# a9 <- rbinom(10, 1, .5)
+# 
+# overfit <- data.frame(a1, a2, a3, a4, a5, a6, a7, x, y)
+# 
+# check <- lm(y ~ ., overfit)
+# tibble(overfit, prediction = check$fitted.values) %>% 
+# ggplot(aes(x, y)) + 
+#   geom_point() + 
+#   geom_line(aes(x, prediction))
+# 
+# x <- rnorm(10)
+# 
+# new_y <- 20 + 5*x + rnorm(10, 0, 3)
+# a1 <- rbinom(10, 1, .5)
+# a2 <- rbinom(10, 1, .5)
+# a3 <- rbinom(10, 1, .5)
+# a4 <- rbinom(10, 1, .5)
+# a5 <- rbinom(10, 1, .5)
+# a6 <- rbinom(10, 1, .5)
+# a7 <- rbinom(10, 1, .5)
+# a8 <- rbinom(10, 1, .5)
+# a9 <- rbinom(10, 1, .5)
+# new_dat <- data.frame(a1, a2, a3, a4, a5, a6, a7, x)
+# new_prediction <- predict(check, newdata = new_dat)
+# summary(check)
+# tibble(prediction = new_prediction, new_y, new_x = x) %>% 
+# ggplot(aes(new_x, new_y)) + 
+#   geom_point() + 
+#   geom_line(aes(new_x, prediction))
+# new_preds <- predict(check, new_dat)
+```
+
+
+```{r}
+set.seed(21)
+x <- rnorm(8)
+a <- sample(c('black', 'red', 'green', 'blue', 'teel','purple', 'yellow', 'grey'), 8)
+a <- factor(a, levels = c('black', 'red', 'green', 'blue', 'teel','purple', 'yellow', 'grey'))
+overfit_dat <- tibble(x,a)
+y <- 20 + x*5 + rnorm(8, 0, 1)
+
+overfit_dat <- data.frame(y, overfit_dat)
+
+check <- lm(y ~ 0 + ., overfit_dat)
+
+check
+ggplot(overfit_dat, aes(x, y, col = a)) + 
+  geom_point(size = 3) + 
+  geom_abline(intercept = 0, slope = check$coefficients[1]) + 
+  geom_abline(intercept = check$coefficients[2], slope = check$coefficients[1]) + 
+    geom_abline(intercept = check$coefficients[3], slope = check$coefficients[1]) + 
+      geom_abline(intercept = check$coefficients[4], slope = check$coefficients[1]) +
+        geom_abline(intercept = check$coefficients[5], slope = check$coefficients[1]) + 
+        geom_abline(intercept = check$coefficients[6], slope = check$coefficients[1]) + 
+        geom_abline(intercept = check$coefficients[7], slope = check$coefficients[1])  + 
+          geom_abline(intercept = check$coefficients[8], slope = check$coefficients[1]) + 
+          scale_color_manual(values = 1:8) + 
+  coord_cartesian(xlim = c(-2.5, 2.5), ylim = c(-10, 90))
+
+
+x <- rnorm(8)
+a <- sample(c('black', 'red', 'green', 'blue', 'teel','purple', 'yellow', 'grey'), 8)
+a <- factor(a, levels = c('black', 'red', 'green', 'blue', 'teel','purple', 'yellow', 'grey'))
+new_y <- 20 + x*5 + rnorm(8, 0, 1)
+
+predicted_y <- predict(check, new_dat)
+new_dat <- tibble(x,a, new_y, predicted_y)
+
+
+ggplot(new_dat, aes(x, new_y, col = a)) + 
+  geom_point(size = 3) + 
+  geom_point(size = 3, shape = 1, aes(x, predicted_y)) + 
+  geom_abline(intercept = 0, slope = check$coefficients[1]) + 
+  geom_abline(intercept = check$coefficients[2], slope = check$coefficients[1]) + 
+    geom_abline(intercept = check$coefficients[3], slope = check$coefficients[1]) + 
+      geom_abline(intercept = check$coefficients[4], slope = check$coefficients[1]) +
+        geom_abline(intercept = check$coefficients[5], slope = check$coefficients[1]) + 
+        geom_abline(intercept = check$coefficients[6], slope = check$coefficients[1]) + 
+        geom_abline(intercept = check$coefficients[7], slope = check$coefficients[1])  + 
+          geom_abline(intercept = check$coefficients[8], slope = check$coefficients[1]) + 
+          scale_color_manual(values = 1:8) + 
+    coord_cartesian(xlim = c(-2.5, 2.5), ylim = c(-10, 90))
+
+
+
+predicted_y;new_y
+```
+

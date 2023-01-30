@@ -1,0 +1,134 @@
+---
+title: "Untitled"
+author: "George Perrett"
+date: '2023-01-25'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Sometimes the effectiveness of a treatment differs across groups in your sample. Let's revisit our hypothetical example of the HyperShoe example. If you are not familiar, the HyperShoe is a high performance running shoe released with the claim that wearing HyperShoes cause you to run a faster marathon than you would have ran had you worn standard running shoes. 
+
+Before you go out buy a pair of very expensive HyperShoes, it may be helpful to understand if there are specific sub-populations that can expect better or worse results from HypeShoes. Do HyperShoes work better for professional runners or amateur runners? What about older vs younger runners?  
+
+In social science these types of effects are often called moderators or interaction effects. In this module we'll explore how to test whether or not a treatment effect varies across different sub-groups of your sample. 
+
+### The Data 
+
+Let's imagine we've collected data on 500 runners who just completed the Detroit marathon. 179 of the runners wore HyperShoes ran the race in HyperShoes while the remaining 321 runners ran in standard shoes. In addition to recording the shoes of each runner and their finishing time, we also have information on each runners age and whether or not they are a professional or amateur runner. 
+
+```{r}
+set.seed(2)
+age.p <- rnbinom(200, mu = 28, size = 40)
+age.p[age.p<20] <- age.p[age.p<20] + 10
+pros.y1 <- data.frame(age = age.p,  level = 'professional', y1 = rnorm(200, 140, 5), id = 1:200)
+pros.y0 <- data.frame(y0 = rnorm(200, 150, 5), id = 1:200)
+pros <- pros.y1 %>% left_join(pros.y0, by = 'id')
+pros$HyperShoe <- rbinom(200, 1, .5)
+age.a <- rnbinom(800, mu = 35, size = 50)
+age.a[age.a < 18] <- age.a[age.a < 18]+ 10
+amas.y1 <- data.frame(age = age.a, level = 'amateur', y1 = rnorm(800, 240, 30), id = 1:800)
+amas.y0 <- data.frame( y0 = rnorm(800, 240, 30), id = 1:800)
+amas <- amas.y1 %>% left_join(amas.y0)
+amas$HyperShoe <- rbinom(800, 1, .2)
+
+runners <- rbind(pros, amas)
+runners <- runners %>% mutate(finish = ifelse(HyperShoe == 1, y1, y0)) %>% dplyr::select(-id)
+runners[sample(1:nrow(runners), nrow(runners)), ]
+
+
+```
+
+
+
+### Sample Average Treatment Effect
+Analyses in thinkCausal use Bayesian Additive Regression Trees (BART) to estimate Sample Average Treatment Effects. If we analyzed the data from our sample of runners using thinkCausal we would find that wearing HperShoes caused runners to finish their race .48 minutes slower than they would have finished had they worn standard shoes. When we concider the undertantly of the estimated treatment effect, we see there is 95% chance that the causal effect of HyperShoes is between causing runners to run 4 minutes faster (SATE = -4.05) and causing runners to run about 5 minutes slower (SATE = 4.99). This results would suggest that wearing HyperShoes. 
+
+These results lead us to believe wearing HyperShoes have no effect on running performance. Before we write off HyperShoes as a total bust lets look into the effect of HyperShoes within sub-groups of our sample. 
+
+
+
+```{r}
+fit <- bartCause::bartc(finish, HyperShoe, age + level, data = runners, seed = 2)
+plotBart::plot_SATE(fit, type = 'density', ci_95 = TRUE) + theme_bw()
+reactable::reactable(round(summary(fit, target = 'sate')$estimates, 2))
+
+```
+
+## Sub-group analyses
+Sub-group analyses estimate the average treatment effects within sub-groups defined by measured covariates. thinkCausal automatically allows you to look at results within sub-groups without specifying a new model or adding any additional terms (more on this later on!). In our sample, we could look at the average treatment treatment effect of subgroups defined by running skill (professional runners and amateur runners) or within different ages of runners. 
+
+
+*terminology pause:*
+Causal effects within sub-groups are often refereed to as a **conditional average treatment effect (CATE)** because we are conditioning (read as sub-setting) by sub-group. thinkCausal automatically allows you to look at treatment effects within all possible sub-groups includes all possible 
+
+
+### Causal Effect of HyerShoes for Professional and Ameature Runners
+If we separate our results into sub-groups defined by being a professional or amateur runner we reach a more nuanced conclusion about HyperShoes! We can see that HyperShoes do in fact cause faster running times but only for professional level runners! For professional runners, wearing HyperShoes caused finishing times that were an average of 9 minutes faster (-9.2) than they would have been had they worn standard shoes. Amateur runners, on the other hand, gain no advantage from wearing HyperShoes!
+
+#### CATEs vs SATEs
+These results may seem like a paradox. How can HyperShoes cause professional runners to run faster if the sample average treatment effect we initially looked at found no causal effect of HyperShoes in our sample? 
+
+In our sample there are many more amateur runners than professionals. In fact for every professional runner there are 4 amateur runners. Recall that the sample average treatment effect is the average the difference in potential outcomes for each unit of the sample. 
+
+```{r}
+plotBart::plot_moderator_d(fit, runners$level,facet = TRUE) + 
+  theme_bw() + 
+  labs(title = 'Sample Average Treatment Effect by amateur/professional status', 
+       x = 'Change in Running Times If a Runner Wore HyperShoes')
+
+icate <- extract(fit, 'icate')
+
+pros <- apply(icate[, runners$level == 'professional'], 1, mean)
+amateurs <- apply(icate[, runners$level == 'amateur'], 1, mean)
+
+sum(pros < amateurs)/5000
+sum(pros < 0)/5000
+
+```
+
+
+### Runners Age
+We could also look at results of sub-groups defined by runners age. Here there appears to be no systematic relationship between the 4 age groups of runners and the causal effect of HyperShoes on running times. 
+
+```{r}
+library(rpart)
+library(rpart.plot)
+icate.m <- apply(icate, 2, mean)
+tree <- rpart(icate.m ~ age, data = runners)
+age_bin <- tibble(splits = tree$where)
+
+check <- tibble(splits = tree$where, age = runners$age) %>% 
+  group_by(splits) %>% 
+  summarise(min = min(age), max = max(age)) %>% 
+  arrange(min) %>% 
+  mutate(age_bin = paste0('age:', min,'-', max))
+
+check <- age_bin %>% left_join(check)
+
+plotBart::plot_moderator_d(fit, check$age_bin, facet = T, .ncol = 1) + 
+  theme_bw()
+
+age1 <- apply(icate[, runners$age <= 25], 1, mean)
+age2 <- apply(icate[, c(runners$age > 25 & runners$age <31)], 1, mean)
+age3 <- apply(icate[, c(runners$age >= 31 & runners$age <40)], 1, mean)
+age4 <- apply(icate[, runners$age > 39], 1, mean)
+
+
+sum(age1 < age2) /5000
+sum(age1 < age3) /5000
+sum(age1 < age4) /5000
+sum(age1 < 0) /5000
+
+sum(age2 < age3) /5000
+sum(age2 < age4) /5000
+sum(age2 < 0) /5000
+
+
+```
+
+
