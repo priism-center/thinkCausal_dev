@@ -3,7 +3,7 @@
 <!-- badges: start -->
 [![GitHub license](https://img.shields.io/github/license/gperrett/thinkCausal_dev?style=flat-square)](https://github.com/gperrett/thinkCausal_dev/blob/master/LICENSE)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg?style=flat-square)]()
-[![testthat](https://img.shields.io/github/workflow/status/gperrett/thinkCausal_dev/test-functions/master?label=testthat&style=flat-square)](https://github.com/gperrett/thinkCausal_dev/actions)
+[![testthat](https://img.shields.io/github/actions/workflow/status/gperrett/thinkCausal_dev/test-functions.yml?label=testthat&style=flat-square)](https://github.com/gperrett/thinkCausal_dev/actions)
 [![last commit](https://img.shields.io/github/last-commit/gperrett/thinkCausal_dev?style=flat-square)](https://github.com/gperrett/thinkCausal_dev/commits/master)
 
 <!-- badges: end -->
