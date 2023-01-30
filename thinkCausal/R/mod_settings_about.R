@@ -10,6 +10,10 @@
 mod_settings_about_ui <- function(id){
   ns <- NS(id)
   tagList(
+    p(
+      style = "font-weight: 300; font-style: italic; font-size: 0.8em; margin-bottom: 1em; color: #a3a3a3",
+      glue::glue('thinkCausal version: {get_golem_config("golem_version")}')
+    ),
     includeMarkdown(app_sys('app', 'www', 'md', 'about.md'))
   )
 }

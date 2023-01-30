@@ -26,3 +26,6 @@ function go_to_shiny_page(page, toggleHelp) {
   document.body.scrollTop = document.documentElement.scrollTop = 0;
   setTimeout(function(){Shiny.setInputValue("js_open_page", {page: page, toggleHelp: toggleHelp}, {priority: "event"}); }, 400);
 }
+
+// popup to prevent user from accidentally leaving the page if closing the tab or using the browser back button
+window.onbeforeunload = function() { return "Please use the navigation buttons on the page."; };
