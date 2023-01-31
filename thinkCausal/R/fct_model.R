@@ -111,86 +111,59 @@ clean_confounders_for_bart <- function(df){
   return(confounders_mat)
 }
 
-#' Check for common support via the standard deviation and chi-square rules
+#' Check overlap rules of a BART model
+#'
+#' @description A fct function
 #'
 #' @param .model a model produced by bartCause::bartc(). Typically store$analysis$model$model
 #'
-#' @author Vince Dorie, George Perrett, Joe Marlo
+#' @author George Perrett
 #'
-#' @return a list
+#' @return list
+#'
 #' @noRd
-check_common_support <- function(.model){
+check_overlap_rules <- function(.model){
 
-  validate_model_fit_(.model)
+  sd.cut <- c(trt = max(.model$sd.obs[!.model$missingRows & .model$trt > 0]), ctl = max(.model$sd.obs[!.model$missingRows & .model$trt <= 0])) + sd(.model$sd.obs[!.model$missingRows])
+  sd.stat <- .model$sd.cf
 
-  # calculate summary stats
-  sd.cut = c(trt = max(.model$sd.obs[!.model$missingRows & .model$trt > 0]), ctl = max(.model$sd.obs[!.model$missingRows & .model$trt <= 0])) + sd(.model$sd.obs[!.model$missingRows])
-  total_sd <- switch (.model$estimand,
+  total.sd <- switch (.model$estimand,
                       ate = sum(.model$sd.cf[.model$trt==1] > sd.cut[1]) + sum(.model$sd.cf[.model$trt==0] > sd.cut[2]),
                       att = sum(.model$sd.cf[.model$trt==1] > sd.cut[1]),
                       atc = sum(.model$sd.cf[.model$trt==0] > sd.cut[2])
   )
 
-  inference_group <- switch (.model$estimand,
-                             ate = length(.model$sd.obs[!.model$missingRows]),
-                             att = length(.model$sd.obs[!.model$missingRows] & .model$trt == 1),
-                             atc = length(.model$sd.obs[!.model$missingRows] & .model$trt == 0)
+  sd.removed <- switch (.model$estimand,
+                        ate = ifelse(.model$trt == 1, sd.stat > sd.cut[1], sd.stat >sd.cut[2]),
+                        att = .model$sd.cf[.model$trt==1] > sd.cut[1],
+                        atc = .model$sd.cf[.model$trt==0] > sd.cut[2]
   )
 
-
-  # create dataframe of the sd and chi values
-  dat <- as_tibble(.model$data.rsp@x) %>%
-    rename(`Propensity Score` = ps)
-
-  dat.sd <- dat %>%
-    mutate(sd.cut = if_else(.model$trt == 1, sd.cut[1], sd.cut[2]),
-           removed = if_else(.model$sd.cf > sd.cut, 'Removed', 'Included'),
-           support_rule = 'sd',
-           stat = .model$sd.cf,
-           sd.cf = .model$sd.cf) %>%
-    select(-sd.cut)
-
-
-  dat.chi <- dat %>%
-    mutate(removed = if_else((.model$sd.cf / .model$sd.obs) ** 2 > 3.841, 'Removed', 'Included'),
-           support_rule = 'chi',
-           stat = (.model$sd.cf / .model$sd.obs) ** 2,
-           sd.cf = .model$sd.cf)
-
-  dat <- rbind(dat.sd, dat.chi)
-
-  if(.model$estimand == 'att') dat <- dat[rep(.model$trt, 2) == 1,]
-  if(.model$estimand == 'atc') dat <- dat[rep(.model$trt, 2) == 0,]
-
-  prop <- dat %>%
-    group_by(support_rule) %>%
-    count(removed) %>%
-    mutate(prop = n/sum(n)*100) %>%
-    filter(removed == 'Removed') %>%
-    arrange(support_rule) %>%
-    ungroup()
-
-  percent_out <- purrr::as_vector(prop$prop)
-  names(percent_out) <- prop$support_rule
-  # orderd alphabetically
-  if(is.na(percent_out['sd'])) percent_out['sd'] <- 0
-  if(is.na(percent_out['chi'])) percent_out['chi'] <- 0
-
-  sd_output <- paste0(round(percent_out['sd'], 2), "% of cases would have been removed under the standard deviation overlap rule")
-
-  chi_output <- paste0(round(percent_out['chi'], 2), "% of cases would have been removed under the chi squared overlap rule")
-
-
-  # create message to user
-  common_support_message <- paste(chi_output, sd_output, sep = '<br><br><br>')
-
-  out <- list(
-    message = common_support_message,
-    proportion_removed_sd = sd_output,
-    proportion_removed_chi = chi_output
+  ## chi sqr rule
+  chi.cut <- 3.841
+  chi.stat <- (.model$sd.cf / .model$sd.obs) ** 2
+  total.chi <- switch (
+    .model$estimand,
+    ate = sum((.model$sd.cf / .model$sd.obs) ** 2 > 3.841),
+    att = sum((.model$sd.cf[.model$trt == 1] / .model$sd.obs[.model$trt == 1]) ** 2 > 3.841),
+    atc = sum((.model$sd.cf[.model$trt == 0] / .model$sd.obs[.model$trt == 0]) ** 2 > 3.841)
+  )
+  chi.removed <- switch(
+    .model$estimand,
+    ate = ifelse(chi.stat > chi.cut, 1, 0),
+    att = ifelse(chi.stat[.model$trt == 1] > chi.cut, 1, 0),
+    atc = ifelse(chi.stat[.model$trt == 0] > chi.cut, 1, 0)
   )
 
-  return(out)
+  list(
+    ind_chisq_removed = chi.removed,
+    sum_chisq_removed = total.chi,
+    stat_chi = chi.stat,
+    ind_sd_removed = sd.removed,
+    sum_sd_removed = total.sd,
+    stat_sd = sd.stat
+  )
+
 }
 
 

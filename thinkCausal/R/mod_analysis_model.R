@@ -202,38 +202,9 @@ mod_analysis_model_server <- function(id, store){
       )
       store$analysis$model$model <- bart_model
 
-      # calculate common support stats
-      ## sd rule
-      sd.cut <- c(trt = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt > 0]), ctl = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt <= 0])) + sd(bart_model$sd.obs[!bart_model$missingRows])
-      sd.stat <- bart_model$sd.cf
+      # check common support
+      store$analysis$model$overlap_checks <- check_overlap_rules(.model = bart_model)
 
-      store$total.sd <- switch (bart_model$estimand,
-                          ate = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]) + sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2]),
-                          att = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]),
-                          atc = sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2])
-      )
-
-      store$sd.removed <- switch (bart_model$estimand,
-        ate = ifelse(bart_model$trt == 1, sd.stat > sd.cut[1], sd.stat >sd.cut[2]),
-        att = bart_model$sd.cf[bart_model$trt==1] > sd.cut[1],
-        atc = bart_model$sd.cf[bart_model$trt==0] > sd.cut[2]
-      )
-
-      ## chi sqr rule
-      chi.cut <- 3.841
-      chi.stat <- (bart_model$sd.cf / bart_model$sd.obs) ** 2
-      store$total.chi <- switch (
-        bart_model$estimand,
-        ate = sum((bart_model$sd.cf / bart_model$sd.obs) ** 2 > 3.841),
-        att = sum((bart_model$sd.cf[bart_model$trt == 1] / bart_model$sd.obs[bart_model$trt == 1]) ** 2 > 3.841),
-        atc = sum((bart_model$sd.cf[bart_model$trt == 0] / bart_model$sd.obs[bart_model$trt == 0]) ** 2 > 3.841)
-      )
-      store$chi.removed <- switch(
-        bart_model$estimand,
-        ate = ifelse(chi.stat > chi.cut, 1, 0),
-        att = ifelse(chi.stat[bart_model$trt == 1] > chi.cut, 1, 0),
-        atc = ifelse(chi.stat[bart_model$trt == 0] > chi.cut, 1, 0)
-      )
 
       # close the alert
       # shinyWidgets::closeSweetAlert()

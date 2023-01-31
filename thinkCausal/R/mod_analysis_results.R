@@ -46,6 +46,10 @@ mod_analysis_results_ui <- function(id){
                                        label = "Reference number",
                                        value = 0,
                                        step = 1)),
+          conditionalPanel(condition = "output.overlap_flag", ns = ns,
+                           checkboxGroupInput(inputId = ns('analysis_results_view_overlap'),
+                                              label = 'View Common Support Rules:',
+                                              choices = c('none', 'standard deviation', 'chi-squared'))),
 
           br(),
           actionButton(inputId = ns('analysis_results_help'),
@@ -103,6 +107,14 @@ mod_analysis_results_server <- function(id, store){
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_diagnostics')
     })
 
+    # create overlap checkbox if any of the two overlap rules are activated
+    output$overlap_flag <- reactive({
+      ifelse(store$analysis$model$overlap_checks$sum_chisq_removed > 0 | sum_sd_removed > 0, TRUE, FALSE)
+    })
+
+    outputOptions(output, "overlap_flag", suspendWhenHidden = FALSE)
+
+
     # render the summary table
     output$analysis_results_table_summary <- reactable::renderReactable({
 
@@ -158,8 +170,8 @@ mod_analysis_results_server <- function(id, store){
         ci_95 = sum(input$show_interval == 0.95) > 0,
         .mean = sum(input$central_tendency == 'Mean') > 0,
         .median = sum(input$central_tendency == 'Median') > 0,
-        reference = reference_bar,
-        check_overlap = TRUE
+        reference = reference_bar
+        #check_overlap = TRUE
       )
 
       # add theme
