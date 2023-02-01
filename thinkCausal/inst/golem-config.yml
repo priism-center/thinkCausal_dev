@@ -5,4 +5,4 @@ default:
 production:
   app_prod: yes
 dev:
-  golem_wd: /Users/joemarlo/Dropbox/Data/Projects/thinkCausal_dev/thinkCausal
+  golem_wd: !expr here::here()
