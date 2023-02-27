@@ -353,9 +353,6 @@ mod_analysis_subgroup_server <- function(id, store){
     output$analysis_subgroup_plot <- renderPlot({
 
       validate_model_fit(store)
-      # add overlay
-      div_id <- 'analysis_subgroup_plot'
-      show_message_updating(div_id)
 
       p <- switch (input$analysis_subgroup_type,
                    'Treatment effect variation' = predict_icate_plot(),
@@ -363,8 +360,6 @@ mod_analysis_subgroup_server <- function(id, store){
                    'Exploratory subgroup analysis' = exploratory_plot()
       )
 
-      # remove overlay
-      close_message_updating(div_id)
       return(p)
 
     })

@@ -166,9 +166,6 @@ mod_analysis_results_server <- function(id, store){
       if(isTRUE(.check)){
         validate(need(input$analysis_results_view_overlap != '', 'Either the standard deviation rule or chi-squred rule detectd lack of overlap. Select an overlap rule to view results. Learning Module on Overlap rules will be avalale soon.'))
       }
-      # add overlay
-      div_id <- 'analysis_results_plot_SATE'
-      show_message_updating(div_id)
 
       # get value for reference bar
       reference_bar <- NULL
@@ -192,9 +189,6 @@ mod_analysis_results_server <- function(id, store){
         store$options$theme_custom +
         theme(legend.position = c(0.1, 0.9),
               legend.title = element_blank())
-
-      # remove overlay
-      close_message_updating(div_id)
 
       return(p)
     })

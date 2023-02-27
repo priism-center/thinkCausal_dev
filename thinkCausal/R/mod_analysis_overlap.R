@@ -208,15 +208,8 @@ mod_analysis_overlap_server <- function(id, store){
       # validate(need(length(input$analysis_overlap_select_var) > 0,
       #               "No continuous columns available or currently selected"))
 
-      # add overlay
-      div_id <- 'analysis_overlap_plot'
-      show_message_updating(div_id)
-
       # build plot
       p <- overlap_plot()
-
-      # remove overlay
-      close_message_updating(div_id)
 
       # TODO: this is often triggered; I think discrete variables cause the propensity score calculation to fail
       # stop if p is not a plot

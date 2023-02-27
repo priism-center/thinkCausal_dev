@@ -354,6 +354,7 @@ golem_add_external_resources <- function() {
 
     # enable waiter loading spinners
     waiter::use_waiter(),
+    waiter::autoWaiter(html = waiter::spin_wobblebar(), color = '#fff'),
 
     # enable shinybrowser
     # TODO: this can be removed for native installation

@@ -140,15 +140,8 @@ mod_analysis_balance_server <- function(id, store){
       # stop here if data hasn't been uploaded and selected
       validate_data_verified(store)
 
-      # add overlay
-      # div_id <- 'analysis_balance_plot
-      # show_message_updating(div_id)
-
       # build plot
       p <- balance_plot()
-
-      # remove overlay
-      # close_message_updating(div_id)
 
       return(p)
     })
@@ -189,16 +182,9 @@ mod_analysis_balance_server <- function(id, store){
       # stop here if data hasn't been uploaded and selected
       validate_data_verified(store)
 
-      # add overlay
-      # div_id <- 'analysis_balance_plot
-      # show_message_updating(div_id)
-
       # build table
       p <- balance_table() %>%
         reactable::reactable(defaultColDef = reactable::colDef(align = 'center'))
-
-      # remove overlay
-      # close_message_updating(div_id)
 
       return(p)
     })
