@@ -40,8 +40,9 @@ mod_analysis_model_ui <- function(id){
         width = 9,
         collapsible = FALSE,
         title = 'Review your model',
-        p('More coming soon...'),
-        verbatimTextOutput(ns('review'))
+        p('More coming soon...')
+        #,
+        #verbatimTextOutput(ns('review'))
         )
       )
     )

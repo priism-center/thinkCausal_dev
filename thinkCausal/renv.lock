@@ -1122,8 +1122,8 @@
       "RemoteRepo": "plotBart",
       "RemoteUsername": "priism-center",
       "RemoteRef": "HEAD",
-      "RemoteSha": "f6b1355f7c7bcaea6db7ca945b87bf1ab25bae56",
-      "Hash": "a45eb2f8c995cc13eb0f9ceee4442f6f",
+      "RemoteSha": "14877e1bcdd994ba7fb83502c2f5e667e89d3cb2",
+      "Hash": "c1748be932b4def4bcacbd9ef015db19",
       "Requirements": [
         "GGally",
         "bartCause",

@@ -1,0 +1,331 @@
+---
+title: "Potential Outcomes"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(patchwork)
+library(reactable)
+library(ggplot2)
+library(tidyr)
+library(shiny)
+library(dplyr)
+library(ggrepel)
+# library(aciccomp2016)
+# library(bartCause)
+```
+
+
+
+A causal effect is the difference between all potential outcomes. Let's concider our hypothetical example of the HyperShoe. For those unaware, the HyperShoe is a speciatly running shoe released with the claim that wearing HyperShoes casues runners to run faster than they would have ran had they worn statndard running shoes. How do we know that the causal claim about waering HyperShoes and fast running is true? Ideally, we would look at a sample of runners and compare their running times if they had worn HyperShoes (Y1) to their running times if they had not worn HyperShoes (Y0). 
+
+
+>**Notation Review**
+>
+> Potential outcomes notation takes a bit to get used to here is a quick refresher: 
+>
+> `Y1` = the outcome with the treatment: what each runners finishing time would have been **if they had worn HyperShoes**
+>
+>`Y0` = the outcome without the treatment: what each runners finishing time would have been **if they had not worn HyperShoes**
+>
+>`Z` = the treatment assignment: whether or not each runner wore HyperShoes (1 = worse HyperShoes, 0 = did not wear HyperShoes)
+>
+>`Y` = the observed outcome: each runners observed finishing time
+>
+
+Imagine our sample consisted of 200 runners, with all potential outcomes our data would look like this:
+```{r}
+set.seed(21)
+Y1 <- floor(250 - 5 + rnorm(20, 0, 2))
+Y0 <- floor(250 + rnorm(20, 0, 2))
+Z <- rbinom(20, 1, .5)
+Y <- ifelse(Z == 1, Y1, Y0)
+
+dat.nf <- data.frame(runner = 1:20, `first race` = 'no',Z, Y0, Y1, Y)
+
+Y1 <- floor(265 - 5 + rnorm(80, 0, 2))
+Y0 <- floor(265 + rnorm(80, 0, 2))
+Z <- rbinom(80, 1, .5)
+Y <- ifelse(Z == 1, Y1, Y0)
+
+dat.f<- data.frame(runner = 21:100, `first race` = 'yes',Z, Y0, Y1, Y)
+
+dat <- rbind(dat.nf, dat.f)
+dat <- dat[sample(1:nrow(dat), nrow(dat)), ]
+dat$runner <- 1:nrow(dat)
+rownames(dat) <- 1:nrow(dat)
+reactable::reactable(dat)
+mean(Y1 - Y0)
+lm(Y ~ Z)
+lm(Y ~ Z + first.race, dat)
+
+
+```
+
+
+With all potential outcomes we could know about the causal effect of HyperShoes for a specific runner. For example, we can see that wearing HyperShoes caused runner 2 to run 13 minutes faster than they would have ran with standard shoes. On the other hand,  HyperShoes caused runner X to run Y minutes slower than they would have run with standard shoes. The causal effect of HyperShoes is different for each runner!
+
+```{r}
+p1 <- dat[1:10, ] %>% 
+  pivot_longer(cols = c(Y0, Y1)) %>% 
+  ggplot(aes(name, value, col = name, label = runner)) + 
+  geom_line(aes(group = runner), col = 'black', linetype = 2) + 
+  geom_point() + 
+  geom_text_repel(show.legend = FALSE, seed = 4) + 
+  scale_color_manual(values = c(4, 2)) + 
+  theme_bw() + 
+  theme(legend.position = 'top')
+
+p2 <- dat %>%
+  pivot_longer(cols = c(Y0, Y1)) %>% 
+  ggplot(aes(name, value, col = name, label = runner)) + 
+  geom_line(aes(group = runner), col = 'black', linetype = 2) + 
+  geom_point() + 
+  scale_color_manual(values = c(4, 2)) + 
+  theme_bw()
+
+p1 
+ 
+
+```
+
+With all potential outcomes we could easily determine the causal effect of HyperShoes for across our sample of runners. If we take the average difference between each runners Y1 and each runners Y0 the average causal effect of HyperShoes in this sample is -4.07. On average, HyperShoes do cause faster running in this sample!
+
+```{r}
+p2
+```
+
+## The Fundemental Problem of Causal Inference
+The only problem with the approach described above is that it is impossible! **We can never observe all potential outcomes**. In reality, researchers can only see one of all possible potential outcomes. In a real research study we will always be missing half of the data we need. 
+
+
+```{r}
+dat2 <- dat
+dat2$Y1 <- as.character(dat2$Y1)
+dat2$Y0 <- as.character(dat2$Y0)
+dat2 <- dat2 %>% mutate(Y1 = ifelse(Z == 1, Y1, '?'), 
+                        Y0 = ifelse(Z == 0, Y0, '?'))
+
+reactable::reactable(dat2)
+
+```
+
+A causal effect is the difference between potential outcomes: what would happen under a treatment compared to what would happen without that treatment. The problem is we can never observe all potential outcomes so how can we proceed? This problem is so central it is called the fundamental problem of causal inference. 
+
+
+## Filling in missing potential outcomes 
+
+How can we proceed? The reality that we will always be missing half of the data we need seems highly problematic. Causal inference is a missing data problem, to move forward we use statistical models to fill in the missing potential outcomes. 
+
+
+### A simple statistical model 
+The simplest statistical model we could use to fill in the missing Y1s and Y0s is to just use the average of the observations we do have! When we take these averages we see the average observed Y1 is 222.08 and average observed Y0 is 229.83. 
+
+Now we can use these values to fill in our missing potential outcomes! 
+
+**Every missing Y1 will be filled in with 222.08**
+**Every missing Y0 will be filled in with 229.83**
+
+```{r}
+
+dat %>% 
+  mutate(Y1 = ifelse(Z == 1,Y1, NA), 
+         Y0 = ifelse(Z == 0, Y0, NA)) %>% 
+  pivot_longer(cols = c(Y1, Y0)) %>% 
+  mutate(name = ifelse(name == 'Y1', 'Observed Y1', 'Observed Y0')) %>% 
+  group_by(name) %>% 
+  mutate(.mean = round(mean(value, na.rm = T), 2)) %>% 
+  ungroup() %>% 
+  ggplot(aes(value, fill = name)) + 
+  geom_histogram(position = 'identity', col = 'black') + 
+  scale_fill_manual(values = c(4, 2)) + 
+  geom_vline(aes(xintercept = .mean)) + 
+  facet_wrap(~ name) + 
+  geom_label(aes(label = paste('average', name, '=', .mean), x = .mean, y = 10),show.legend = FALSE, fill = 'white') + 
+  theme_bw() + 
+  theme(legend.position = 'top')
+
+
+```
+
+```{r}
+imputed <- "#ff9f1a"
+orange_pal <- function(x) ifelse(dat3$Z == 1, imputed, '#FFFFFF')
+
+dat3 <- dat
+dat3 <- dat3 %>% mutate(Y1 = ifelse(Z == 1, Y1, 222.08), 
+                        Y0 = ifelse(Z == 0, Y0, 229.83))
+reactable(dat3, columns = list(
+  Y0 = colDef(
+    style = function(value, index) {
+      if (dat3$Z[index] == 1) {
+        color <- imputed
+      } else if (dat3$Z[index] == 0) {
+        color <- 'white'
+      }
+      list(background = color)
+    }), 
+  Y1 = colDef(
+    style = function(value, index) {
+      if (dat3$Z[index] == 0) {
+        color <- imputed
+      } else if (dat3$Z[index] == 1) {
+        color <- 'white'
+      }
+      list(background = color)
+    })
+))
+
+
+
+```
+
+
+After we have imputed our missing potential outcomes we could estimate the average treatment effect by taking the average of the difference for each runners Y1 and Y0. For now we will call these differences individual treatment effects (ITE). After estimating the ITE for each runner we could take the average of all these ITEs to estimate an average causal effect of wearing HyperShoes. For now you can think of the average causal effect as how much  XXX
+
+
+```{r}
+dat3 <- dat3 %>% mutate(ITE = Y1 - Y0)
+reactable(dat3, columns = list(
+  Y0 = colDef(
+    style = function(value, index) {
+      if (dat3$Z[index] == 1) {
+        color <- imputed
+      } else if (dat3$Z[index] == 0) {
+        color <- 'white'
+      }
+      list(background = color)
+    }), 
+  Y1 = colDef(
+    style = function(value, index) {
+      if (dat3$Z[index] == 0) {
+        color <- imputed
+      } else if (dat3$Z[index] == 1) {
+        color <- 'white'
+      }
+      list(background = color)
+    })
+))
+
+```
+
+
+```{r}
+dat3 %>% 
+  arrange(ITE) %>% 
+  mutate(rank = 1:nrow(dat3)) %>% 
+ggplot(aes(rank, ITE)) + 
+  geom_point() + 
+  geom_hline(yintercept = mean(dat3$ITE)) + 
+  theme_bw()
+ 
+```
+
+
+## A better statistical model 
+Recall we used the simplest possible statistical model to fill in our potential outcomes. Our choice of statistical model will influence our estimated causal effects. Let's consider a slightly more complex model that includes information about whether or not this race is the runners first race (first.race = yes) or if they have been in a race before (first.race = no). 
+
+
+```{r}
+dat %>% 
+  mutate(Y1 = ifelse(Z == 1,Y1, NA), 
+         Y0 = ifelse(Z == 0, Y0, NA)) %>% 
+  pivot_longer(cols = c(Y1, Y0)) %>% 
+  mutate(name = ifelse(name == 'Y1', 'Observed Y1', 'Observed Y0')) %>% 
+  group_by(name, first.race) %>% 
+  mutate(.mean = round(mean(value, na.rm = T), 2)) %>% 
+  ungroup() %>% 
+  ggplot(aes(value, fill = name)) + 
+  geom_histogram(position = 'identity', col = 'black') + 
+  scale_fill_manual(values = c(4, 2)) + 
+  geom_vline(aes(xintercept = .mean)) + 
+  facet_grid(first.race ~ name) + 
+  geom_label(aes(label = paste('average', name, '=', .mean), x = .mean, y = 10),show.legend = FALSE, fill = 'white') + 
+  theme_bw() + 
+  coord_cartesian(xlim = c(200, 300)) + 
+  theme(legend.position = 'top')
+```
+Now we have different values for our missing Y1 and Y0 that depend on whether or not this is a runners first race. This will change the values of our estimated Individual Causal Effects (ITE) and our average causal effect. 
+
+```{r}
+
+dat3 <- dat
+dat3 <- dat3 %>%
+  mutate(Y1 = case_when(
+    Z == 0 & first.race == 'yes' ~ 259.6, 
+    Z == 0 & first.race == 'no' ~ 244.58, 
+    TRUE ~ Y1
+  ), 
+  Y0 = case_when(
+    Z == 1 & first.race == 'yes' ~ 264.41, 
+    Z == 1 & first.race == 'no' ~ 249.5, 
+    TRUE ~ Y0
+  )) %>% 
+  mutate(ITE = Y1 - Y0)
+
+
+reactable(dat3, columns = list(
+  Y0 = colDef(
+    style = function(value, index) {
+      if (dat3$Z[index] == 1 & dat3$first.race[index] == 'yes') {
+        color <- "#4479E4"
+      } else if(dat3$Z[index] == 1 & dat3$first.race[index] == 'no'){
+        color <- "#9DB9F1"
+      }else if (dat3$Z[index] == 0) {
+        color <- 'white'
+      }
+      list(background = color)
+    }), 
+  Y1 = colDef(
+    style = function(value, index) {
+      if (dat3$Z[index] == 0 & dat3$first.race[index] == 'yes') {
+        color <- "#4479E4"
+      } else if(dat3$Z[index] == 0 & dat3$first.race[index] == 'no'){
+        color <- "#9DB9F1"
+      }else if (dat3$Z[index] == 1) {
+        color <- 'white'
+      }
+      list(background = color)
+    })
+))
+
+
+dat3 %>% 
+  arrange(ITE) %>% 
+  mutate(rank = 1:nrow(dat3)) %>% 
+ggplot(aes(rank, ITE)) + 
+  geom_point() + 
+  geom_hline(yintercept = mean(dat3$ITE)) + 
+  theme_bw()
+
+
+
+p1 <- dat3 %>% 
+  ggplot(aes(Y1)) + 
+  geom_histogram(col = 'black') + 
+  coord_cartesian(xlim = c(240, 270))
+  
+p2 <-  dat3 %>% 
+ggplot(aes(Y0)) + 
+geom_histogram(col = 'black') + 
+ coord_cartesian(xlim = c(240, 270))
+
+p3 <-  dat3 %>% 
+ggplot(aes(ITE)) + 
+geom_histogram(col = 'black')
+
+ p1/p2/p3
+
+```
+
+
+
+
+### Comparing Estimates 
+
+## A visit from the oracle 
+
+How do we know whether or not we should beleive these estimates?

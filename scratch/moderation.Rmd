@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Moderation Intro"
 author: "George Perrett"
 date: '2023-01-25'
 output: html_document
@@ -11,7 +11,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Sometimes the effectiveness of a treatment differs across groups in your sample. Let's revisit our hypothetical example of the HyperShoe example. If you are not familiar, the HyperShoe is a high performance running shoe released with the claim that wearing HyperShoes cause you to run a faster marathon than you would have ran had you worn standard running shoes. 
+Sometimes the effectiveness of a treatment differs across groups in your sample. Let's revisit our hypothetical example of the HyperShoe. If you are not familiar, the HyperShoe is a high performance running shoe released with the claim that wearing HyperShoes cause you to run a faster marathon than you would have ran had you worn standard running shoes. 
 
 Before you go out buy a pair of very expensive HyperShoes, it may be helpful to understand if there are specific sub-populations that can expect better or worse results from HypeShoes. Do HyperShoes work better for professional runners or amateur runners? What about older vs younger runners?  
 
@@ -113,11 +113,13 @@ check <- age_bin %>% left_join(check)
 plotBart::plot_moderator_d(fit, check$age_bin, facet = T, .ncol = 1) + 
   theme_bw()
 
+
 age1 <- apply(icate[, runners$age <= 25], 1, mean)
 age2 <- apply(icate[, c(runners$age > 25 & runners$age <31)], 1, mean)
 age3 <- apply(icate[, c(runners$age >= 31 & runners$age <40)], 1, mean)
 age4 <- apply(icate[, runners$age > 39], 1, mean)
 
+sum(sample(age3, 10000, replace = T) - sample(age1, 10000, replace = T) > 0)/10000 *100
 
 sum(age1 < age2) /5000
 sum(age1 < age3) /5000
