@@ -1,3 +1,7 @@
+.learn-grid .card-body {
+  min-height: 400px;
+}
+
 .learn-grid img {
   margin: 0em 0 1em 0;
   object-fit: cover;

@@ -7,6 +7,7 @@
 app_server <- function(input, output, session) {
 
   # close loading spinner
+  Sys.sleep(1.5) # prevent flashing
   waiter::waiter_hide()
 
 
