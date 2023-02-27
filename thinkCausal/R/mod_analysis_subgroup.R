@@ -19,13 +19,15 @@ mod_analysis_subgroup_ui <- function(id){
                shinyWidgets::radioGroupButtons(
                  inputId = ns('analysis_subgroup_type'),
                  label = 'Subgroup analysis step',
-                 choices = c('Step 1: ICATE variation',
-                             'Step 2: Predictors of ICATE variation',
-                             'Step 3: Exploratory subgroup analysis'),
+                 # choices = c('Step 1: ICATE variation',
+                 #             'Step 2: Predictors of ICATE variation',
+                 #             'Step 3: Exploratory subgroup analysis'),
+                 choices = c('Treatment effect variation',
+                             'Exploratory subgroup analysis'),
                  selected = NULL,direction = 'vertical',
                ),
                conditionalPanel(
-                 condition = "input.analysis_subgroup_type == 'Step 1: Prespecified subgroup analysis'",
+                 condition = "input.analysis_subgroup_type == 'Prespecified subgroup analysis'",
                  ns = ns,
                  selectInput(
                    inputId = ns('analysis_subgroup_prespecified'),
@@ -41,29 +43,30 @@ mod_analysis_subgroup_ui <- function(id){
                                'Error bar' = 'errorbar')
                  )
                ),
+               # make ICATE plots
+               # conditionalPanel(
+               #   condition = "input.analysis_subgroup_type == 'Step 1: ICATE variation' || input.analysis_subgroup_type == 'Step 2: ICATE variation'",
+               #   ns = ns,
+               #   selectInput(
+               #     inputId = ns('analysis_subgroup_icate'),
+               #     label = 'Plot type:',
+               #     choices = c('Waterfall', 'Histogram')
+               #   ),
+                 # conditionalPanel(
+                 #   condition = "input.analysis_subgroup_icate == 'Histogram'",
+                 #   ns = ns,
+                 #   sliderInput(
+                 #     inputId = ns('analysis_subgroup_icate_bins'),
+                 #     label = 'number of bins:',
+                 #     value = 20,
+                 #     min = 5,
+                 #     max = 50,
+                 #     step = 1
+                 #   )
+                 # )
+               #),
                conditionalPanel(
-                 condition = "input.analysis_subgroup_type == 'Step 1: ICATE variation' || input.analysis_subgroup_type == 'Step 2: ICATE variation'",
-                 ns = ns,
-                 selectInput(
-                   inputId = ns('analysis_subgroup_icate'),
-                   label = 'Plot type:',
-                   choices = c('Waterfall', 'Histogram')
-                 ),
-                 conditionalPanel(
-                   condition = "input.analysis_subgroup_icate == 'Histogram'",
-                   ns = ns,
-                   sliderInput(
-                     inputId = ns('analysis_subgroup_icate_bins'),
-                     label = 'number of bins:',
-                     value = 20,
-                     min = 5,
-                     max = 50,
-                     step = 1
-                   )
-                 )
-               ),
-               conditionalPanel(
-                 condition = "input.analysis_subgroup_type == 'Step 2: Predictors of ICATE variation' || input.analysis_subgroup_type == 'Step 3: Predictors of ICATE variation'",
+                 condition = "input.analysis_subgroup_type == 'Treatment effect variation'",
                  ns = ns,
                  sliderInput(
                    inputId = ns('analysis_subgroup_treedepth'),
@@ -71,10 +74,21 @@ mod_analysis_subgroup_ui <- function(id){
                    value = 2,
                    min = 1,
                    max = 3
-                 )
+                 ),
+                 HTML('<details><summary>Advanced options (ICATE plots)</summary>'),
+                 selectInput(
+                   inputId = ns('analysis_subgroup_icate'),
+                   label = create_info_icon(
+                     'Show ICATE plot:',
+                     'ICATEs are an individuals predicted causal effect. ICATE plots can be used to understand if there substantial variation in the treatment effect between people'
+                   ),
+                   selectize = TRUE,
+                   choices = c('Select an ICATE plot' = '', 'ICATE Waterfall', 'ICATE Histogram')
+                 ),
+                 HTML('</details><br>')
                ),
                conditionalPanel(
-                 condition = "input.analysis_subgroup_type == 'Step 3: Exploratory subgroup analysis' || input.analysis_subgroup_type == 'Step 4: Exploratory subgroup analysis'",
+                 condition = "input.analysis_subgroup_type == 'Exploratory subgroup analysis'",
                  ns = ns,
                  selectInput(inputId = ns('analysis_subgroup_exploratory'),
                              label = 'Define exploratory subgroups by:',
@@ -85,7 +99,18 @@ mod_analysis_subgroup_ui <- function(id){
                              label = 'Plot type:',
                              choices = c('Histogram' = 'histogram',
                                          'Density' = 'density',
-                                         'Error bar' = 'errorbar'))
+                                         'Error bar' = 'errorbar')),
+                 conditionalPanel(condition = "input.analysis_subgroup_exploratory_type != 'errorbar'", ns = ns,
+                                  checkboxInput(inputId = ns('analysis_subgroup_facet'),
+                                                label = 'Overlay Plots',
+                                                value = FALSE,
+                                  ),
+                                  numericInput(inputId = ns('analysis_subgroup_ncol'),
+                                               label = 'Number of Columns:',
+                                               value = 1,
+                                               min = 1,
+                                               max = 5)
+                 )
                ),
                br(), br(),
                # create_link_to_help('Subgroup analyses', button_label = 'What is this plot telling me?'),
@@ -101,8 +126,8 @@ mod_analysis_subgroup_ui <- function(id){
                id = ns('subgroup_info'),
                width = 12,
                collapsible = TRUE,
-               title = 'Information about ICATEs',
-               p('ICATEs allow researchers to measure the average treatment effect for specific subgroups within a study. More variation in ICATEs signals greater treatment effect heterogeneity. One potential explination of treatment effect heterogeneity is moderating effects from variables included in the analysis',
+               title = 'Treatment Effect Variation',
+               p('The regression tree below identifies covariates that explain the most variation in the treatment effect between units in your study. Variable at the top of the tree explain more variation in the treatment effect than variables at the bottom or not included in the tree. Researchers find this plot useful to help inform a starting point for exploratory sub-group analyses. If you do not theory or priors about sources of variation in the treatment effect it is recomended to start with variables included in the regression tree below.',
                )),
              bs4Dash::box(
                width = 12,
@@ -137,11 +162,8 @@ mod_analysis_subgroup_server <- function(id, store){
 
     output$analysis_subgroup_plot_title <- renderText({
       out <- switch(input$analysis_subgroup_type,
-                    'Step 1: ICATE variation' = 'ICATE variation',
-                    'Step 2: ICATE variation' = 'ICATE variation',
-                    'Step 2: Predictors of ICATE variation' = 'Predictors of ICATE variation',
-                    'Step 3: Predictors of ICATE variation' = 'Predictors of ICATE variation',
-                    'Step 3: Exploratory subgroup analysis' = 'Exploratory subgroup analysis',
+                    'Treatment effect variation' = 'Predictors of treatment effect variation',
+                    'Exploratory subgroup analysis' = 'Exploratory subgroup analysis',
       )
 
       return(out)
@@ -151,15 +173,13 @@ mod_analysis_subgroup_server <- function(id, store){
     observeEvent(store$analysis$model$fit_good, {
       if (!is.null(store$analysis$subgroup$prespecified_subgroups)) {
         subgroup_options <- c(
-          'Step 1: Prespecified subgroup analysis',
-          'Step 2: ICATE variation',
-          'Step 3: Predictors of ICATE variation',
-          'Step 4: Exploratory subgroup analysis'
+          'Prespecified subgroup analysis',
+          'Treatment effect variation',
+          'Exploratory subgroup analysis'
         )
       } else{
-        subgroup_options <- c('Step 1: ICATE variation',
-                              'Step 2: Predictors of ICATE variation',
-                              'Step 3: Exploratory subgroup analysis')
+        subgroup_options <- c('Treatment effect variation',
+                              'Exploratory subgroup analysis')
       }
 
       shinyWidgets::updateRadioGroupButtons(
@@ -245,11 +265,28 @@ mod_analysis_subgroup_server <- function(id, store){
 
       p <- p + store$options$theme_custom
 
+      if(input$analysis_subgroup_icate == 'ICATE Histogram'){
+        p2 <- plotBart::plot_ICATE(store$analysis$model$model) + store$options$theme_custom
+        p <- p/p2
+      }
+
+      if(input$analysis_subgroup_icate == 'ICATE Waterfall'){
+        p2 <- plotBart::plot_waterfall(store$analysis$model$model) + store$options$theme_custom
+        p <- p/p2
+      }
+
       return(p)
     })
 
     exploratory_plot <- reactive({
       validate_model_fit(store)
+      validate(need(input$analysis_subgroup_exploratory, 'Select a variable to define subgroups'))
+
+      if (input$analysis_subgroup_exploratory_type != 'errorbar') {
+        .facet <- !input$analysis_subgroup_facet
+      } else{
+        .facet <- FALSE
+      }
 
       cols_categorical <- gsub('X_', '',store$column_types$categorical)
       cols_continuous <- gsub('X_', '', store$column_types$continuous)
@@ -267,12 +304,21 @@ mod_analysis_subgroup_server <- function(id, store){
         }else{
           .moderator <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
         }
+
         p <- plotBart::plot_moderator_d(store$analysis$model$model,
                                         type = input$analysis_subgroup_exploratory_type,
-                                        moderator = .moderator)
+                                        moderator = .moderator,
+                                        facet = .facet)
       }else{
-        p <- plotBart::plot_moderator_c_loess(store$analysis$model$model,
-                                              moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]])
+        .moderator <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
+        p <- plotBart::plot_moderator_c_bin(store$analysis$model$model,
+                                            moderator = .moderator,
+                                            .name = input$analysis_subgroup_exploratory,
+                                            type = input$analysis_subgroup_exploratory_type,
+                                            facet = .facet)
+
+        # p <- plotBart::plot_moderator_c_loess(store$analysis$model$model,
+        #                                       moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]])
       }
 
       p <- p + store$options$theme_custom
@@ -312,13 +358,9 @@ mod_analysis_subgroup_server <- function(id, store){
       show_message_updating(div_id)
 
       p <- switch (input$analysis_subgroup_type,
-                   'Step 1: ICATE variation' = icate_plot(),
-                   'Step 2: ICATE variation' = icate_plot(),
-                   'Step 2: Predictors of ICATE variation' = predict_icate_plot(),
-                   'Step 3: Predictors of ICATE variation' = predict_icate_plot(),
-                   'Step 1: Pre-specified subgroup analysis' = prespecifed_plot(),
-                   'Step 3: Exploratory subgroup analysis' = exploratory_plot(),
-                   'Step 4: Exploratory subgroup analysis' = exploratory_plot()
+                   'Treatment effect variation' = predict_icate_plot(),
+                   'Pre-specified subgroup analysis' = prespecifed_plot(),
+                   'Exploratory subgroup analysis' = exploratory_plot()
       )
 
       # remove overlay

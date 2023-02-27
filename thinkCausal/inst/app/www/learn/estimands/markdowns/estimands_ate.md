@@ -13,7 +13,7 @@ As shown, 5 of the runners wore HyperShoes while the other 5 runners wore standa
 <h2 id="estimands-trigger-2">Counterfactuals</h2>
 
 Calculating the ATE also requires the unobserved counterfactual running times of all 10 runners. The counterfactual running time is the time each runner would have had if they had worn the other shoe. <br><br>
-This part may appear confusing, how can we use counterfactual outcomes if they aren't observed? We'll cover this later on but for now, imagine we had the impossible power to simultaneously observe factual and coutnerfactual outcomes at the same time.
+This part may appear confusing, how can we use counterfactual outcomes if they aren't observed? We'll cover this later on but for now, imagine we had the impossible power to simultaneously observe factual and counterfactual outcomes at the same time.
 
 
 <br><br><br><br><br><br><br><br><br><br><br><br>

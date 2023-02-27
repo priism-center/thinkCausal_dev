@@ -10,7 +10,6 @@
 mod_analysis_results_ui <- function(id){
   ns <- NS(id)
   tagList(
-
     fluidRow(
       column(
         width = 3,
@@ -46,6 +45,11 @@ mod_analysis_results_ui <- function(id){
                                        label = "Reference number",
                                        value = 0,
                                        step = 1)),
+          conditionalPanel(condition = "output.overlap_flag", ns = ns,
+                           checkboxGroupInput(inputId = ns('analysis_results_view_overlap'),
+                                              label = 'View Overlap Rule:',
+                                              choices = list('none' = 'none', 'standard deviation' = 'sd', 'chi-squared' = 'chisq'),
+                                              selected = c('none', 'sd', 'chisq'))),
 
           br(),
           actionButton(inputId = ns('analysis_results_help'),
@@ -103,6 +107,14 @@ mod_analysis_results_server <- function(id, store){
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_diagnostics')
     })
 
+    # create overlap checkbox if any of the two overlap rules are activated
+    output$overlap_flag <- reactive({
+      ifelse(store$analysis$model$overlap_checks$sum_chisq_removed > 0 | store$analysis$model$overlap_checks$sum_sd_removed > 0, TRUE, FALSE)
+    })
+
+    outputOptions(output, "overlap_flag", suspendWhenHidden = FALSE)
+
+
     # render the summary table
     output$analysis_results_table_summary <- reactable::renderReactable({
 
@@ -142,6 +154,18 @@ mod_analysis_results_server <- function(id, store){
     analysis_results_plot_SATE <- reactive({
       # stop here if model isn't fit yet
       validate_model_fit(store)
+
+      # Do we need to check overlap
+      .check <- ifelse(
+        store$analysis$model$overlap_checks$sum_chisq_removed > 0 |
+          store$analysis$model$overlap_checks$sum_sd_removed > 0,
+        TRUE,
+        FALSE
+      )
+      # make sure a box is checked if applicable
+      if(isTRUE(.check)){
+        validate(need(input$analysis_results_view_overlap != '', 'Either the standard deviation rule or chi-squred rule detectd lack of overlap. Select an overlap rule to view results. Learning Module on Overlap rules will be avalale soon.'))
+      }
       # add overlay
       div_id <- 'analysis_results_plot_SATE'
       show_message_updating(div_id)
@@ -159,7 +183,8 @@ mod_analysis_results_server <- function(id, store){
         .mean = sum(input$central_tendency == 'Mean') > 0,
         .median = sum(input$central_tendency == 'Median') > 0,
         reference = reference_bar,
-        check_overlap = TRUE
+        check_overlap = .check,
+        overlap_rule = input$analysis_results_view_overlap
       )
 
       # add theme

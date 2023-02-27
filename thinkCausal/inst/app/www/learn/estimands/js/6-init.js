@@ -20,4 +20,6 @@ estimands.loadData = function() {
     })
 }
 
-estimands.loadData().then(estimands.initializeData)
+window.addEventListener('load', function(){
+  estimands.loadData().then(estimands.initializeData)
+})

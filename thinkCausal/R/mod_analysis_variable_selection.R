@@ -104,7 +104,7 @@ mod_analysis_variable_selection_server <- function(id, store){
 
     output$design_ui <- renderUI({
       validate(need(input$analysis_select_outcome != '' & input$analysis_select_treatment != '',
-               "Beofore describing the study design, you'll need to select an outcome variable and a treatment variable."))
+               "Before describing the study design, you'll need to select an outcome variable and a treatment variable."))
         tagList(
       selectInput(
         inputId = ns('analysis_design'),
