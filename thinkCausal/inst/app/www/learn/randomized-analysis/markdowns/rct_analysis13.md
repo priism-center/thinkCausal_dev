@@ -1,4 +1,4 @@
-#### Efficency: regression
+#### Efficiency: regression
 
 When using regression information about `age` is incorporated into the estimation process, however, this information can only be incorporated in a linear form. Even though using linear information about `age` is not a perfect fit to our data, the residuals are less than they were when using difference in means. 
 
