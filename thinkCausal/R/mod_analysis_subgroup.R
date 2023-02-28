@@ -7,11 +7,13 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+
 mod_analysis_subgroup_ui <- function(id){
   ns <- NS(id)
   tagList(
     fluidRow(
-      column(3,
+      # side pannel
+      column(width = 3,
              bs4Dash::box(
                width = 12,
                collapsible = FALSE,
@@ -19,15 +21,14 @@ mod_analysis_subgroup_ui <- function(id){
                shinyWidgets::radioGroupButtons(
                  inputId = ns('analysis_subgroup_type'),
                  label = 'Subgroup analysis step',
-                 # choices = c('Step 1: ICATE variation',
-                 #             'Step 2: Predictors of ICATE variation',
-                 #             'Step 3: Exploratory subgroup analysis'),
                  choices = c('Treatment effect variation',
+                             'Predictors of variation',
                              'Exploratory subgroup analysis'),
-                 selected = NULL,direction = 'vertical',
-               ),
+                 selected = NULL,
+                 direction = 'vertical'),
+               # if pre-specified
                conditionalPanel(
-                 condition = "input.analysis_subgroup_type == 'Prespecified subgroup analysis'",
+                 condition = "input.analysis_subgroup_type == 'Pre-specified subgroup analysis'",
                  ns = ns,
                  selectInput(
                    inputId = ns('analysis_subgroup_prespecified'),
@@ -41,32 +42,38 @@ mod_analysis_subgroup_ui <- function(id){
                    choices = c('Histogram' = 'histogram',
                                'Density' = 'density',
                                'Error bar' = 'errorbar')
-                 )
+                 ),
+                 conditionalPanel(condition = "input.analysis_subgroup_prespecified_type != 'errorbar' ", ns = ns,
+                                  checkboxInput(inputId = ns('analysis_prespecified_subgroup_facet'),
+                                                label = 'Overlay Plots',
+                                                value = FALSE,
+                                  ))
                ),
-               # make ICATE plots
-               # conditionalPanel(
-               #   condition = "input.analysis_subgroup_type == 'Step 1: ICATE variation' || input.analysis_subgroup_type == 'Step 2: ICATE variation'",
-               #   ns = ns,
-               #   selectInput(
-               #     inputId = ns('analysis_subgroup_icate'),
-               #     label = 'Plot type:',
-               #     choices = c('Waterfall', 'Histogram')
-               #   ),
-                 # conditionalPanel(
-                 #   condition = "input.analysis_subgroup_icate == 'Histogram'",
-                 #   ns = ns,
-                 #   sliderInput(
-                 #     inputId = ns('analysis_subgroup_icate_bins'),
-                 #     label = 'number of bins:',
-                 #     value = 20,
-                 #     min = 5,
-                 #     max = 50,
-                 #     step = 1
-                 #   )
-                 # )
-               #),
+               # ICATE variation
                conditionalPanel(
                  condition = "input.analysis_subgroup_type == 'Treatment effect variation'",
+                 ns = ns,
+                 selectInput(
+                   inputId = ns('analysis_subgroup_icate'),
+                   label = 'Plot type:',
+                   choices = c('Waterfall', 'Histogram')
+                 ),
+                 conditionalPanel(
+                   condition = "input.analysis_subgroup_icate == 'Histogram'",
+                   ns = ns,
+                   sliderInput(
+                     inputId = ns('analysis_subgroup_icate_bins'),
+                     label = 'number of bins:',
+                     value = 20,
+                     min = 5,
+                     max = 50,
+                     step = 1
+                   )
+                 )
+               ),
+               # Rpart tree
+               conditionalPanel(
+                 condition = "input.analysis_subgroup_type == 'Predictors of variation'",
                  ns = ns,
                  sliderInput(
                    inputId = ns('analysis_subgroup_treedepth'),
@@ -74,19 +81,8 @@ mod_analysis_subgroup_ui <- function(id){
                    value = 2,
                    min = 1,
                    max = 3
-                 ),
-                 HTML('<details><summary>Advanced options (ICATE plots)</summary>'),
-                 selectInput(
-                   inputId = ns('analysis_subgroup_icate'),
-                   label = create_info_icon(
-                     'Show ICATE plot:',
-                     'ICATEs are an individuals predicted causal effect. ICATE plots can be used to understand if there substantial variation in the treatment effect between people'
-                   ),
-                   selectize = TRUE,
-                   choices = c('Select an ICATE plot' = '', 'ICATE Waterfall', 'ICATE Histogram')
-                 ),
-                 HTML('</details><br>')
-               ),
+                 )),
+               # exploratory group analysis
                conditionalPanel(
                  condition = "input.analysis_subgroup_type == 'Exploratory subgroup analysis'",
                  ns = ns,
@@ -100,52 +96,51 @@ mod_analysis_subgroup_ui <- function(id){
                              choices = c('Histogram' = 'histogram',
                                          'Density' = 'density',
                                          'Error bar' = 'errorbar')),
-                 conditionalPanel(condition = "input.analysis_subgroup_exploratory_type != 'errorbar'", ns = ns,
+                 conditionalPanel(condition = "input.analysis_subgroup_exploratory_type != 'errorbar' ", ns = ns,
                                   checkboxInput(inputId = ns('analysis_subgroup_facet'),
                                                 label = 'Overlay Plots',
                                                 value = FALSE,
-                                  ),
-                                  numericInput(inputId = ns('analysis_subgroup_ncol'),
-                                               label = 'Number of Columns:',
-                                               value = 1,
-                                               min = 1,
-                                               max = 5)
+                                  )
+                                  # numericInput(inputId = ns('analysis_subgroup_ncol'),
+                                  #              label = 'Number of Columns:',
+                                  #              value = 1,
+                                  #              min = 1,
+                                  #              max = 5)
                  )
                ),
+               # break before standard options
                br(), br(),
-               # create_link_to_help('Subgroup analyses', button_label = 'What is this plot telling me?'),
                actionButton(inputId = ns('analysis_subgroup_help'),
                             label = 'What is this plot telling me?'),
                downloadButton(ns('download_subgroup_plot'), label = "Download plot"),
                actionButton(inputId = ns('analysis_moderator_analyses_button_reproduce'),
                             label = 'View analysis log')
-
-             )),
-      column(9,
-             bs4Dash::box(
-               id = ns('subgroup_info'),
-               width = 12,
-               collapsible = TRUE,
-               title = 'Treatment Effect Variation',
-               p('The regression tree below identifies covariates that explain the most variation in the treatment effect between units in your study. Variable at the top of the tree explain more variation in the treatment effect than variables at the bottom or not included in the tree. Researchers find this plot useful to help inform a starting point for exploratory sub-group analyses. If you do not theory or priors about sources of variation in the treatment effect it is recomended to start with variables included in the regression tree below.',
-               )),
-             bs4Dash::box(
-               width = 12,
-               collapsible = FALSE,
-               # bs4Dash::tabBox(id = ns("analysis_subgroup_tabs"),
-               title = textOutput(ns('analysis_subgroup_plot_title')),
-               br(),
-               plotOutput(
-                 outputId = ns('analysis_subgroup_plot'),
-                 height = 500
-               )
-             ))
-    ))
+             )
+      ), # end side bar
+      # main panel
+      column(
+        width = 9,
+        bs4Dash::box(
+          width = 12,
+          collapsible = FALSE,
+          # bs4Dash::tabBox(id = ns("analysis_subgroup_tabs"),
+          title = textOutput(ns('analysis_subgroup_plot_title')),
+          br(),
+          plotOutput(
+            outputId = ns('analysis_subgroup_plot'),
+            height = 500
+          )
+        )
+      ) # end of main panel
+    )
+  )
 }
+
 
 #' analysis_subgroup Server Functions
 #'
 #' @noRd
+
 mod_analysis_subgroup_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
@@ -162,7 +157,9 @@ mod_analysis_subgroup_server <- function(id, store){
 
     output$analysis_subgroup_plot_title <- renderText({
       out <- switch(input$analysis_subgroup_type,
-                    'Treatment effect variation' = 'Predictors of treatment effect variation',
+                    'Pre-specified subgroup analysis' = 'Results of pre-specified subgroup analysis',
+                    'Treatment effect variation' = 'Treatment effect variation',
+                    'Predictors of variation' = 'Predictors of treatment effect variation',
                     'Exploratory subgroup analysis' = 'Exploratory subgroup analysis',
       )
 
@@ -173,12 +170,14 @@ mod_analysis_subgroup_server <- function(id, store){
     observeEvent(store$analysis$model$fit_good, {
       if (!is.null(store$analysis$subgroup$prespecified_subgroups)) {
         subgroup_options <- c(
-          'Prespecified subgroup analysis',
+          'Pre-specified subgroup analysis',
           'Treatment effect variation',
+          'Predictors of variation',
           'Exploratory subgroup analysis'
         )
       } else{
         subgroup_options <- c('Treatment effect variation',
+                              'Predictors of variation',
                               'Exploratory subgroup analysis')
       }
 
@@ -242,12 +241,16 @@ mod_analysis_subgroup_server <- function(id, store){
     })
 
 
-    # run analysis
+    # Analysis ----------------------------------------------------------------
+    # ICATE
     icate_plot <- reactive({
+      # div_id <- 'analysis_subgroup_plot'
+      # show_message_updating(div_id)
+
       validate_model_fit(store)
 
       if (input$analysis_subgroup_icate == 'Histogram') {
-        p <- plotBart::plot_ICATE(store$analysis$model$model)
+        p <- plotBart::plot_ICATE(store$analysis$model$model, n_bins = input$analysis_subgroup_icate_bins)
       } else{
         p <- plotBart::plot_waterfall(store$analysis$model$model)
       }
@@ -257,7 +260,10 @@ mod_analysis_subgroup_server <- function(id, store){
       return(p)
     })
 
+    # Predict variation
     predict_icate_plot <- reactive({
+      # div_id <- 'analysis_subgroup_plot'
+      # show_message_updating(div_id)
       validate_model_fit(store)
 
       p <- plotBart::plot_moderator_search(store$analysis$model$model,
@@ -265,23 +271,15 @@ mod_analysis_subgroup_server <- function(id, store){
 
       p <- p + store$options$theme_custom
 
-      if(input$analysis_subgroup_icate == 'ICATE Histogram'){
-        p2 <- plotBart::plot_ICATE(store$analysis$model$model) + store$options$theme_custom
-        p <- p/p2
-      }
-
-      if(input$analysis_subgroup_icate == 'ICATE Waterfall'){
-        p2 <- plotBart::plot_waterfall(store$analysis$model$model) + store$options$theme_custom
-        p <- p/p2
-      }
-
       return(p)
     })
 
+    #subgroup
     exploratory_plot <- reactive({
-      validate_model_fit(store)
       validate(need(input$analysis_subgroup_exploratory, 'Select a variable to define subgroups'))
-
+      # div_id <- 'analysis_subgroup_plot'
+      # show_message_updating(div_id)
+      validate_model_fit(store)
       if (input$analysis_subgroup_exploratory_type != 'errorbar') {
         .facet <- !input$analysis_subgroup_facet
       } else{
@@ -326,20 +324,32 @@ mod_analysis_subgroup_server <- function(id, store){
       return(p)
     })
 
-
+    # Pre-specified
     prespecifed_plot <- reactive({
-      validate_model_fit(store)
+      # div_id <- 'analysis_subgroup_plot'
+      # show_message_updating(div_id)
 
+      validate_model_fit(store)
       cols_categorical <- gsub('X_', '',store$column_types$categorical)
       cols_continuous <- gsub('X_', '', store$column_types$continuous)
+
+      if (input$analysis_subgroup_prespecified_type != 'errorbar') {
+        .facet <- !input$analysis_prespecified_subgroup_facet
+      } else{
+        .facet <- FALSE
+      }
 
       if (input$analysis_subgroup_prespecified %in% cols_categorical) {
         p <- plotBart::plot_moderator_d(store$analysis$model$model,
                                         type = input$analysis_subgroup_prespecified_type,
-                                        moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_prespecified)]])
+                                        moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_prespecified)]],
+                                        facet = .facet)
       } else{
-        p <- plotBart::plot_moderator_c_loess(store$analysis$model$model,
-                                              moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_prespecified)]])
+        p <- plotBart::plot_moderator_c_bin(store$analysis$model$model,
+                                            moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_prespecified)]],
+                                            .name = input$analysis_subgroup_prespecified,
+                                            type = input$analysis_subgroup_prespecified_type,
+                                            facet = .facet)
       }
 
       p <- p + store$options$theme_custom
@@ -348,18 +358,21 @@ mod_analysis_subgroup_server <- function(id, store){
     })
 
 
-
-
     output$analysis_subgroup_plot <- renderPlot({
 
       validate_model_fit(store)
-
+      # # add overlay
+      # div_id <- 'analysis_subgroup_plot'
+      # # show_message_updating(div_id)
       p <- switch (input$analysis_subgroup_type,
-                   'Treatment effect variation' = predict_icate_plot(),
+                   'Treatment effect variation' = icate_plot(),
+                   'Predictors of variation' = predict_icate_plot(),
                    'Pre-specified subgroup analysis' = prespecifed_plot(),
                    'Exploratory subgroup analysis' = exploratory_plot()
       )
 
+      #remove overlay
+      #close_message_updating(div_id)
       return(p)
 
     })
@@ -395,9 +408,8 @@ mod_analysis_subgroup_server <- function(id, store){
                device = 'png')
       }
     )
-
-
-
     return(store)
+
+
   })
 }
