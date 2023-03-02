@@ -22,4 +22,3 @@ The average treatment effect on the control (ATC) is the average causal effect o
 
 
 ## Practice
-

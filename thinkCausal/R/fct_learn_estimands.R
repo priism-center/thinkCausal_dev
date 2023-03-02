@@ -15,7 +15,7 @@ quiz_content_estimands <- local({
     h4("Calculating the ATE"),
     hr(),
     h3("Question 1"), # h3 required for checkmark/red x placement
-    p("Imagine your asked to determnie the average treatment effect of wearing HyperShoes (Z = 1) on 5k running times. The potential outcomes for a sample of 6 runners are shown below. Use this data to calculate the average treatment effect (ATE)."),
+    p("Imagine you're asked to determine the average treatment effect of wearing HyperShoes (Z = 1) on 5k running times. The potential outcomes for a sample of 6 runners are shown below. Use this data to calculate the average treatment effect (ATE)."),
     HTML(po[[1]]),
     br(),
     p("The Average Treatment Effect (ATE) for the sample of runners is:")
