@@ -17,68 +17,144 @@ mod_analysis_diagnostics_ui <- function(id){
                width = 12,
                collapsible = FALSE,
                title = 'Model diagnostics',
-               p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
                br(),
                selectInput(inputId = "analysis_diagnostics_view",
                            label = 'Show diagnostics for:',
-                           choices = c('General summary','Overlap diagnostics', 'Residual diagnostics','MCMC convergence')),
-               conditionalPanel("input.analysis_diagnostics_tabs == 'Overlap'", ns = ns,
+                           choices = c('General summary','Overlap diagnostics', 'Residual diagnostics')), #'MCMC convergence')),
+               conditionalPanel("input.analysis_diagnostics_view == 'Overlap diagnostics'",
+                                ns = ns,
                                 selectInput(
-                                  inputId = ns("analysis_diagnostics_plot_overlap_covariate"),
-                                  label = "By covariate:",
+                                  inputId = ns('overlap_rule'),
+                                  label = 'Overlap rule:',
+                                  choices = list('both' = 'both', 'standard deviation' = 'sd', 'chi-squared' = 'chi')
+                                )
+                                ),
+               conditionalPanel("input.analysis_diagnostics_view == 'Overlap diagnostics'",
+                                ns = ns,
+                                selectInput(
+                                  inputId = ns("overlap_type"),
+                                  label = "Overlap diagnostic:",
+                                  choices = c('Predict', 'Visualize')
+                                )),
+               conditionalPanel("input.analysis_diagnostics_view == 'Overlap diagnostics' & input.overlap_type == 'Predict'",
+                                ns = ns,
+                                sliderInput(
+                                  inputId = ns('overlap_tree_depth'),
+                                  label = 'Tree depth:',
+                                  min = 1,
+                                  max = 3,
+                                  value = 2,
+                                  step = 1
+                                )
+                                ),
+               conditionalPanel("input.analysis_diagnostics_view == 'Residual diagnostics'",
+                                ns = ns,
+                                selectInput(
+                                  inputId = ns('residual_type'),
+                                  label = 'Residual diagnostic:',
+                                  choices = c('Predicted vs Residual', 'Distribution of Residuals')
+                                )
+               ),
+               conditionalPanel("input.analysis_diagnostics_view == 'Overlap diagnostics' & input.overlap_type == 'Visualize'",
+                 ns = ns,
+                 selectInput(
+                   inputId = ns('overlap_x'),
+                   label = 'X:',
+                   choices = NULL,
+                   selected = NULL
+                 ),
+                 selectInput(
+                   inputId = ns('overlap_y'),
+                   label = 'Y:',
+                   choices = NULL,
+                   selected = NULL
+                 )
+               ),
+               conditionalPanel("input.analysis_diagnostics_view == 'Residual diagnostics' & input.residual_type == 'Predicted vs Residual'",
+                                ns = ns,
+                                selectInput(
+                                  inputId = ns('residual_x'),
+                                  label = 'X:',
                                   choices = NULL,
                                   selected = NULL
-                                )),
-               conditionalPanel("input.analysis_diagnostics_tabs == 'Residual vs fit'", ns = ns,
-                                selectInput(
-                                  inputId = ns("analysis_diagnostics_plot_residual_covariate"),
-                                  label = "By covariate: ",
-                                  multiple = FALSE,
-                                  choices = NULL,
-                                  selected = NULL
-                                )),
+                                )
+               ),
+               # conditionalPanel("input.analysis_diagnostics_view == 'MCMC diagnostics'",
+               #                  ns = ns,
+               #                  selectInput(
+               #                    inputId = ns('convergence_of'),
+               #                    label = 'X:',
+               #                    choices = NULL,
+               #                    selected = NULL
+               #                  )
+               # ),
                actionButton(inputId = ns('analysis_diagnostics_help'),
                             label = 'What are these plots telling me?'),
                uiOutput(outputId = ns('analysis_diagnosis_buttons_ui'))
              )),
       column(9,
-             fluidRow(
-               column(6,
-                      bs4Dash::box(
-                        width = 12,
-                        collapsible = FALSE,
-                        title = 'Trace plot',
-                        plotOutput(ns('analysis_diagnostics_plot_trace'),
-                                   height = 500),
-                        downloadButton(ns('download_diagnostic_plot_trace'), label = "Download plot")
-                      )),
-               column(6,
-                      bs4Dash::box(
-                        width = 12,
-                        collapsible = FALSE,
-                        title = 'Overlap',
-                        plotOutput(ns('analysis_diagnostics_plot_support'),
-                                   height = 500),
-                        downloadButton(ns('download_diagnostic_plot_support'), label = "Download plot")
-                      )),
-               column(6,
-                      bs4Dash::box(
-                        width = 12,
-                        collapsible = FALSE,
-                        title = 'Residual vs fit',
-                        plotOutput(ns('analysis_diagnostics_plot_residual'),
-                                   height = 500),
-                        downloadButton(ns('download_diagnostic_plot_residual'), label = "Download plot")
-                      )),
-               column(6,
-                      bs4Dash::box(
-                        width = 12,
-                        collapsible = FALSE,
-                        title = 'Residual normality',
-                        plotOutput(ns('analysis_diagnostics_plot_normal'),
-                                   height = 500),
-                        downloadButton(ns('download_diagnostic_plot_normal'), label = "Download plot")
-                      ))))
+             conditionalPanel(
+               "input.analysis_diagnostics_view == 'General summary'",
+               ns = ns,
+               fluidRow(
+                 column(
+                   6,
+                   bs4Dash::box(
+                     width = 12,
+                     collapsible = FALSE,
+                     title = 'Trace plot',
+                     plotOutput(ns('analysis_diagnostics_plot_trace'),
+                                height = 500),
+                     downloadButton(ns('download_diagnostic_plot_trace'), label = "Download plot")
+                   )
+                 ),
+                 column(
+                   6,
+                   bs4Dash::box(
+                     width = 12,
+                     collapsible = FALSE,
+                     title = 'Overlap',
+                     plotOutput(ns('analysis_diagnostics_plot_support'),
+                                height = 500),
+                     downloadButton(ns('download_diagnostic_plot_support'), label = "Download plot")
+                   )
+                 ),
+                 column(
+                   6,
+                   bs4Dash::box(
+                     width = 12,
+                     collapsible = FALSE,
+                     title = 'Residual vs fit',
+                     plotOutput(ns('analysis_diagnostics_plot_residual'),
+                                height = 500),
+                     downloadButton(ns('download_diagnostic_plot_residual'), label = "Download plot")
+                   )
+                 ),
+                 column(
+                   6,
+                   bs4Dash::box(
+                     width = 12,
+                     collapsible = FALSE,
+                     title = 'Residual normality',
+                     plotOutput(ns('analysis_diagnostics_plot_normal'),
+                                height = 500),
+                     downloadButton(ns('download_diagnostic_plot_normal'), label = "Download plot")
+                   )
+                 )
+               )
+             ),
+             # if Overlap is selected
+             conditionalPanel("input.analysis_diagnostics_view != 'General summary'",
+                              ns = ns,
+                              bs4Dash::box(
+                                width = 12,
+                                collapsed = FALSE,
+                                title = 'Overlap diagnostics',
+                                plotOutput(ns('analysis_diagnostic_overlap'))
+                              )
+
+                              )
+      )
     )
   )
 }
@@ -177,51 +253,13 @@ mod_analysis_diagnostics_server <- function(id, store){
 
     # common support plot
     analysis_diagnostics_plot_support <- reactive({
-
       # stop here if model isn't fit yet
       validate_model_fit(store)
 
       bart_model <- store$analysis$model$model
-#
-#       inference_group <- switch (bart_model$estimand,
-#                                  ate = length(bart_model$sd.obs[!bart_model$missingRows]),
-#                                  att = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 1),
-#                                  atc = length(bart_model$sd.obs[!bart_model$missingRows] & bart_model$trt == 0)
-#       )
-#
-#       # calculate summary stats
-#       sd.cut = c(trt = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt > 0]), ctl = max(bart_model$sd.obs[!bart_model$missingRows & bart_model$trt <= 0])) + sd(bart_model$sd.obs[!bart_model$missingRows])
-#       total_sd <- switch (bart_model$estimand,
-#                           ate = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]) + sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2]),
-#                           att = sum(bart_model$sd.cf[bart_model$trt==1] > sd.cut[1]),
-#                           atc = sum(bart_model$sd.cf[bart_model$trt==0] > sd.cut[2])
-#       )
-#
-#
-#       # calculate chisqr rule
-#       total_chi <-  switch (bart_model$estimand,
-#                             ate = sum((bart_model$sd.cf / bart_model$sd.obs) ** 2 > 3.841),
-#                             att = sum((bart_model$sd.cf[bart_model$trt ==1] / bart_model$sd.obs[bart_model$trt ==1]) ** 2 > 3.841),
-#                             atc = sum((bart_model$sd.cf[bart_model$trt ==0] / bart_model$sd.obs[bart_model$trt ==0]) ** 2 > 3.841)
-#       )
-#
-#       # calculate sd rule
-#       prop_sd <- round((total_sd / inference_group)*100 , 2)
-#       prop_chi <- round((total_chi / inference_group)*100, 2)
 
-        # plot it
-        if(store$total.chi > store$total.sd){
-          y <- store$chi.removed
-        }else{
-          y <- store$sd.removed
-        }
-
-        predict_support <- cbind.data.frame(y , bart_model$data.rsp@x)
-        tree <- rpart::rpart(y ~ . -z, data = predict_support)
         p <- plotBart::plot_common_support(
-          .model = bart_model,
-          rule = 'both',
-          .x = rownames(tree$splits)[1]
+          .model = bart_model
         )
 
       # add theme
@@ -240,14 +278,11 @@ mod_analysis_diagnostics_server <- function(id, store){
       # stop here if model isn't fit yet
       validate_model_fit(store)
 
-      # if "none" is selected, change it to NULL, otherwise remain the same
-      covariates_selection <- switch(input$analysis_diagnostics_plot_residual_covariate, "None" = NULL, input$analysis_diagnostics_plot_residual_covariate)
-
       bart_model <- store$analysis$model$model
       # p1 <- plot_residual_observed_predicted(.model = bart_model,
       #                                        covariate = covariates_selection)
       p3 <- plot_residual_predicted_residual(.model = bart_model,
-                                             covariate = covariates_selection)
+                                             covariate = NULL)
 
       # patchwork package to combine the plots
       p <- p3
@@ -321,6 +356,105 @@ mod_analysis_diagnostics_server <- function(id, store){
                device = 'png')
       }
     )
+
+
+
+# focus in on specific diagnostics -----------------------------------------
+    observeEvent(input$overlap_rule,{
+      req(store$analysis$model$model)
+      # column names for overlap and residual
+      X <- c(grep("^X_", names(store$verified_df), value = TRUE), 'Propensity Score')
+      y <- grep("^Y_", names(store$verified_df), value = TRUE)
+      overlapX <- c(X, y)
+
+
+      # get default (.x) based on overlap plots
+      .x <- plotBart:::predicted_common_support(store$analysis$model$model)
+      .x$var <- ifelse(is.nan(.x$complexity), 'Propensity Score', .x$var)
+
+      if(input$overlap_rule == 'sd') .x <- .x[1,1]
+      if(input$overlap_rule == 'chi') .x <- .x[2,1]
+      if(input$overlap_rule == 'both') {
+        if (length(unique(.x[['var']])) == 1) {
+          .x <-  .x[1, 1]
+        } else{
+          .x[is.nan(.x$complexity), 'complexity'] <-  0
+          .x <- .x[.x$complexity == max(.x$complexity), 1]
+        }
+      }
+
+
+      updateSelectInput(
+        inputId = 'overlap_x',
+        choices = overlapX,
+        selected = .x
+      )
+
+      updateSelectInput(
+        inputId = 'overlap_y',
+        choices = overlapX,
+        selected = y
+      )
+
+    })
+
+    overlap_diagnostics_plot <- reactive({
+      bart_model <- store$analysis$model$model
+      x <- input$overlap_x
+      y <- ifelse(input$overlap_y == grep("^Y_", names(store$verified_df), value = TRUE), 'y', input$overlap_y)
+
+      if(input$overlap_type == 'Predict'){
+        p <- plotBart::plot_predicted_common_support(.model = bart_model,
+                                                     max_depth = input$overlap_tree_depth,
+                                                     rule = input$overlap_rule)
+      }else{
+        p <- plotBart::plot_common_support(.model = bart_model,
+                                           rule = input$overlap_rule,
+                                           .x = x,
+                                           .y = y
+                                           )
+      }
+
+      p <- p + store$options$theme_custom
+
+      return(p)
+    })
+
+    observeEvent(store$analysis$model$fit_good,{
+      X <- c(grep("^X_", names(store$verified_df), value = TRUE), 'Propensity Score')
+      residualX <- c('Predicted', X)
+      updateSelectInput(inputId = 'residual_x',
+                        choices = residualX,
+                        selected = 'Predicted'
+                        )
+    })
+
+    residual_diagnostics_plot <- reactive({
+      bart_model <- store$analysis$model$model
+      x <- input$residual_x
+      x <- ifelse(x == 'Propensity Score', 'ps', x)
+
+      if(input$residual_type == 'Predicted vs Residual' & x == 'Predicted'){
+        p <- plot_residual_predicted_residual(bart_model)
+      } else if(input$residual_type == 'Predicted vs Residual' & x != 'Predicted'){
+        p <- plot_residual_predicted_residual(bart_model, x)
+      }else{
+        p <- plotBart::plot_residual_density(bart_model)
+      }
+
+      p <- p + store$options$theme_custom
+      return(p)
+    })
+
+    output$analysis_diagnostic_overlap <- renderPlot({
+
+      p <- switch(input$analysis_diagnostics_view,
+       'Overlap diagnostics'= overlap_diagnostics_plot(),
+       'Residual diagnostics' = residual_diagnostics_plot())
+
+      return(p)
+      })
+
     # output$download_diagnostic_plot <- downloadHandler(
     #   filename = function() {
     #     switch(
