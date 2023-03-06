@@ -292,13 +292,11 @@ plot_residual_predicted_residual <- function(.model, covariate = NULL){
     # }
   }
   if(rlang::is_null(covariate)){
-    p <- p + geom_smooth(method = 'lm', color = 2, se = F) +
-      labs(x = "Predicted Y", y = "Residual") +
-      theme_minimal()
+    p <- p + geom_smooth(color = 2, se = F) +
+      labs(x = "Predicted Y", y = "Residual")
   }else{
-    p <- p + geom_smooth(method = 'lm', color = 2, se = F) +
-      labs(x = covariate, y = "Residual") +
-      theme_minimal()
+    p <- p + geom_smooth(color = 2, se = F) +
+      labs(x = covariate, y = "Residual")
   }
   return(p)
 }
