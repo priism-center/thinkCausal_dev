@@ -45,7 +45,6 @@ mod_learn_estimands_ui <- function(id){
         class = 'learning-content',  # required
         br(),br(),br(), br(),
         includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_attatc.md')),
-        br(),br(),br(),
         # the quiz UI
         mod_quiz_ui(id = ns('quiz')),
       ),

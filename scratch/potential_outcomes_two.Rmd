@@ -156,8 +156,8 @@ imputed <- "#ff9f1a"
 orange_pal <- function(x) ifelse(dat3$Z == 1, imputed, '#FFFFFF')
 
 dat3 <- dat
-dat3 <- dat3 %>% mutate(Y1 = ifelse(Z == 1, Y1, 222.08), 
-                        Y0 = ifelse(Z == 0, Y0, 229.83))
+dat3 <- dat3 %>% mutate(Y1 = ifelse(Z == 1, Y1, 256), 
+                        Y0 = ifelse(Z == 0, Y0, 261))
 reactable(dat3, columns = list(
   Y0 = colDef(
     style = function(value, index) {
@@ -217,7 +217,7 @@ reactable(dat3, columns = list(
 dat3 %>% 
   arrange(ITE) %>% 
   mutate(rank = 1:nrow(dat3)) %>% 
-ggplot(aes(rank, ITE)) + 
+ggplot(aes(runner, ITE)) + 
   geom_point() + 
   geom_hline(yintercept = mean(dat3$ITE)) + 
   theme_bw()
