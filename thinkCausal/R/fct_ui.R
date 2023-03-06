@@ -19,8 +19,11 @@ open_help_sidebar <- function(store, section){
   shinyjs::runjs(
     paste0(
       "
-      let y = $('#", selector, "')[0].offsetTop
-      setTimeout(function(){$('#help-slideover .os-viewport')[0].scrollTo({top: y, behavior: 'smooth'}); }, 600);
+      setTimeout(function() {
+        let section = $('#", selector, "')[0];
+        let y = section.offsetTop;
+        $('#help-slideover .os-viewport')[0].scrollTo({top: y, behavior: 'smooth'});
+      }, 600);
       "
     )
   )
