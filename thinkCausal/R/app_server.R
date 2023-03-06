@@ -72,7 +72,7 @@ app_server <- function(input, output, session) {
 
   # mobile popup warning
   # TODO: this can be removed for native installation
-  observe(if (shinybrowser::get_device() == 'Mobile') show_popup_mobile(session))
+  observe(if (isTRUE(shinybrowser::is_device_mobile())) show_popup_mobile(session))
 
   # toggle side bar help menu
   # bs4Dash::updateControlbar(id = "help-slideover", session = session)
