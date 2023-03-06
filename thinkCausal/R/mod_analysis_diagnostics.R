@@ -24,18 +24,16 @@ mod_analysis_diagnostics_ui <- function(id){
                conditionalPanel("input.analysis_diagnostics_view == 'Overlap diagnostics'",
                                 ns = ns,
                                 selectInput(
+                                  inputId = ns("overlap_type"),
+                                  label = "Overlap diagnostic:",
+                                  choices = c('Predict', 'Visualize')
+                                ),
+                                selectInput(
                                   inputId = ns('overlap_rule'),
                                   label = 'Overlap rule:',
                                   choices = list('both' = 'both', 'standard deviation' = 'sd', 'chi-squared' = 'chi')
                                 )
                                 ),
-               conditionalPanel("input.analysis_diagnostics_view == 'Overlap diagnostics'",
-                                ns = ns,
-                                selectInput(
-                                  inputId = ns("overlap_type"),
-                                  label = "Overlap diagnostic:",
-                                  choices = c('Predict', 'Visualize')
-                                )),
                conditionalPanel("input.analysis_diagnostics_view == 'Overlap diagnostics' & input.overlap_type == 'Predict'",
                                 ns = ns,
                                 sliderInput(
@@ -90,7 +88,7 @@ mod_analysis_diagnostics_ui <- function(id){
                                 ns = ns,
                                 selectInput(
                                   inputId = ns('mcmc_type'),
-                                  label = 'Plot type:',
+                                  label = 'MCMC diagnostic:',
                                   choices = c('Trace', 'Trank')
                                 ),
                                 selectInput(
@@ -113,7 +111,7 @@ mod_analysis_diagnostics_ui <- function(id){
                    bs4Dash::box(
                      width = 12,
                      collapsible = FALSE,
-                     title = 'Trace plot',
+                     title = 'Convergence',
                      plotOutput(ns('analysis_diagnostics_plot_trace'),
                                 height = 500),
                      downloadButton(ns('download_diagnostic_plot_trace'), label = "Download plot")
@@ -160,12 +158,11 @@ mod_analysis_diagnostics_ui <- function(id){
                               bs4Dash::box(
                                 width = 12,
                                 collapsed = FALSE,
-                                title = 'Overlap diagnostics',
+                                title = textOutput(ns('analysis_diagnostics_title')),
                                 plotOutput(ns('analysis_diagnostic_overlap'),
                                            height = 500)
                               )
-
-                              )
+                            )
       )
     )
   )
@@ -372,7 +369,11 @@ mod_analysis_diagnostics_server <- function(id, store){
 
 
 # focus in on specific diagnostics -----------------------------------------
-    observeEvent(input$overlap_rule,{
+    listen_overlap <- reactive({
+      list(input$overlap_rule, store$analysis$model$fit_good)
+    })
+
+    observeEvent(listen_overlap(),{
       req(store$analysis$model$model)
       # column names for overlap and residual
       X <- c(grep("^X_", names(store$verified_df), value = TRUE), 'Propensity Score')
@@ -420,6 +421,7 @@ mod_analysis_diagnostics_server <- function(id, store){
         p <- plotBart::plot_predicted_common_support(.model = bart_model,
                                                      max_depth = input$overlap_tree_depth,
                                                      rule = input$overlap_rule)
+        validate(need(!is.null(p), 'BART overlap rules did not detect any observations to remove!'))
       }else{
         p <- plotBart::plot_common_support(.model = bart_model,
                                            rule = input$overlap_rule,
@@ -473,44 +475,27 @@ mod_analysis_diagnostics_server <- function(id, store){
 
     output$analysis_diagnostic_overlap <- renderPlot({
 
-      p <- switch(input$analysis_diagnostics_view,
-       'Overlap diagnostics'= overlap_diagnostics_plot(),
-       'Residual diagnostics' = residual_diagnostics_plot(),
-       'MCMC diagnostics' = mcmc_diagnostics_plot())
+      p <- switch(
+        input$analysis_diagnostics_view,
+        'Overlap diagnostics' = overlap_diagnostics_plot(),
+        'Residual diagnostics' = residual_diagnostics_plot(),
+        'MCMC diagnostics' = mcmc_diagnostics_plot()
+      )
 
       return(p)
       })
 
-    # output$download_diagnostic_plot <- downloadHandler(
-    #   filename = function() {
-    #     switch(
-    #       req(input$analysis_diagnostics_tabs),
-    #       "Trace plot" = 'diagnostic_trace_plot.png',
-    #       "Common support" = 'diagnostic_common_support_plot.png',
-    #       "Residual vs fit" = 'diagnostic_residual_fit_plot.png',
-    #       "Residual normality" = 'diagnostic_residual_normal_plot.png'
-    #     )
-    #   },
-    #   content = function(file) {
-    #
-    #     # get the plot that is on the active tab
-    #     active_plot <- switch(
-    #       req(input$analysis_diagnostics_tabs),
-    #       'Trace plot' = analysis_diagnostics_plot_trace(),
-    #       'Common support' = analysis_diagnostics_plot_support(),
-    #       "Residual vs fit" = analysis_diagnostics_plot_residual(),
-    #       'Residual normality' = analysis_diagnostics_plot_normal()
-    #     )
-    #
-    #     # write out plot
-    #     ggsave(file,
-    #            plot = active_plot,
-    #            height = store$options$settings_options_ggplotHeight,
-    #            width = store$options$settings_options_ggplotWidth,
-    #            units = 'in',
-    #            device = 'png')
-    #   }
-    # )
+    output$analysis_diagnostics_title <- renderText({
+      text <- switch (
+        input$analysis_diagnostics_view,
+        'Overlap diagnostics' = 'Overlap diagnostics',
+        'Residual diagnostics' = 'Residual diagnostics',
+        'MCMC diagnostics' = 'MCMC diagnostics'
+      )
+
+      return(text)
+    })
+
 
     return(store)
   })
