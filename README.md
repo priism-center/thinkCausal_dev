@@ -29,3 +29,4 @@ You can run the latest development version locally by executing the below R code
 remotes::install_github('priism-center/thinkCausal_dev', subdir = 'thinkCausal')
 thinkCausal::run_app()
 ```
+
