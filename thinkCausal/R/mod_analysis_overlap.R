@@ -28,6 +28,14 @@ mod_analysis_overlap_ui <- function(id){
           ),
           selected = 1
         ),
+        conditionalPanel("input.analysis_overlap_type == '1'",
+                         ns = ns,
+                         checkboxInput(
+                           inputId = ns('trim'),
+                          label = 'Trim plot:',
+                          value = TRUE
+                         )
+                         ),
         selectInput(
           inputId = ns("analysis_overlap_method"),
           label = "Plot type:",
@@ -187,7 +195,8 @@ mod_analysis_overlap_server <- function(id, store){
             plot_type = plt_type,
             pscores = pscores(),
             min_x = trim[1],
-            max_x = trim[2]
+            max_x = trim[2],
+            trim = input$trim
           )
         },
         error = function(e) NULL

@@ -20,7 +20,7 @@ mod_analysis_diagnostics_ui <- function(id){
                br(),
                selectInput(inputId = "analysis_diagnostics_view",
                            label = 'Show diagnostics for:',
-                           choices = c('General summary','Overlap diagnostics', 'Residual diagnostics')), #'MCMC convergence')),
+                           choices = c('General summary','Overlap diagnostics', 'Residual diagnostics', 'MCMC diagnostics')),
                conditionalPanel("input.analysis_diagnostics_view == 'Overlap diagnostics'",
                                 ns = ns,
                                 selectInput(
@@ -79,15 +79,26 @@ mod_analysis_diagnostics_ui <- function(id){
                                   selected = NULL
                                 )
                ),
-               # conditionalPanel("input.analysis_diagnostics_view == 'MCMC diagnostics'",
-               #                  ns = ns,
-               #                  selectInput(
-               #                    inputId = ns('convergence_of'),
-               #                    label = 'X:',
-               #                    choices = NULL,
-               #                    selected = NULL
-               #                  )
-               # ),
+               conditionalPanel("input.analysis_diagnostics_view == 'Residual diagnostics' & input.residual_type != 'Predicted vs Residual'",
+                                ns = ns,
+                                actionButton(
+                                  inputId = ns('redraw'),
+                                  label = 'Redraw reference'
+                                )
+               ),
+               conditionalPanel("input.analysis_diagnostics_view == 'MCMC diagnostics'",
+                                ns = ns,
+                                selectInput(
+                                  inputId = ns('mcmc_type'),
+                                  label = 'Plot type:',
+                                  choices = c('Trace', 'Trank')
+                                ),
+                                selectInput(
+                                  inputId = ns('convergence'),
+                                  label = 'Paramater:',
+                                  choices = c('Average Treatment Effect', 'Sigma')
+                                )
+               ),
                actionButton(inputId = ns('analysis_diagnostics_help'),
                             label = 'What are these plots telling me?'),
                uiOutput(outputId = ns('analysis_diagnosis_buttons_ui'))
@@ -150,7 +161,8 @@ mod_analysis_diagnostics_ui <- function(id){
                                 width = 12,
                                 collapsed = FALSE,
                                 title = 'Overlap diagnostics',
-                                plotOutput(ns('analysis_diagnostic_overlap'))
+                                plotOutput(ns('analysis_diagnostic_overlap'),
+                                           height = 500)
                               )
 
                               )
@@ -398,6 +410,7 @@ mod_analysis_diagnostics_server <- function(id, store){
 
     })
 
+
     overlap_diagnostics_plot <- reactive({
       bart_model <- store$analysis$model$model
       x <- input$overlap_x
@@ -439,6 +452,7 @@ mod_analysis_diagnostics_server <- function(id, store){
       } else if(input$residual_type == 'Predicted vs Residual' & x != 'Predicted'){
         p <- plot_residual_predicted_residual(bart_model, x)
       }else{
+        input$redraw # redwaw plot if button is clicked
         p <- plotBart::plot_residual_density(bart_model)
       }
 
@@ -446,11 +460,23 @@ mod_analysis_diagnostics_server <- function(id, store){
       return(p)
     })
 
+    mcmc_diagnostics_plot <- reactive({
+      bart_model <- store$analysis$model$model
+      .type <- ifelse(input$convergence == 'Average Treatment Effect', 'sate', 'sigma')
+      p <- switch (input$mcmc_type,
+        'Trace' = plotBart::plot_trace(bart_model, type = .type),
+        'Trank' = plotBart::plot_trank(bart_model, type = .type)
+      )
+
+      return(p)
+    })
+
     output$analysis_diagnostic_overlap <- renderPlot({
 
       p <- switch(input$analysis_diagnostics_view,
        'Overlap diagnostics'= overlap_diagnostics_plot(),
-       'Residual diagnostics' = residual_diagnostics_plot())
+       'Residual diagnostics' = residual_diagnostics_plot(),
+       'MCMC diagnostics' = mcmc_diagnostics_plot())
 
       return(p)
       })

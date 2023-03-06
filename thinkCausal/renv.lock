@@ -162,10 +162,15 @@
     },
     "bartCause": {
       "Package": "bartCause",
-      "Version": "1.0-4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "1ea77f8e2aeb7f7448bed8a8cca59997",
+      "Version": "1.0-6",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "bartCause",
+      "RemoteUsername": "vdorie",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "706d507d7487f3983639ae7dfd4e0994792541ea",
+      "Hash": "0efe8fa1fb78f52f5a1e8ca5b7b304e7",
       "Requirements": [
         "dbarts"
       ]
@@ -380,10 +385,10 @@
     },
     "dbarts": {
       "Package": "dbarts",
-      "Version": "0.9-22",
+      "Version": "0.9-23",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "6477aed2a548aa336b560d1ead8a2d0f",
+      "Hash": "c05310a8c618eaf8590083ebf75746b4",
       "Requirements": []
     },
     "desc": {
@@ -1115,15 +1120,15 @@
     },
     "plotBart": {
       "Package": "plotBart",
-      "Version": "0.1.22",
+      "Version": "0.1.23",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "plotBart",
       "RemoteUsername": "priism-center",
       "RemoteRef": "HEAD",
-      "RemoteSha": "7aa7383a413195ec1f8ca76df4cbf2c44ac011af",
-      "Hash": "0cc78256d5fc4563e7317bf1c4cd8fc7",
+      "RemoteSha": "69db24390274dc613a4867e862338172f3942542",
+      "Hash": "17a7976ac0de716520e618161d7027b6",
       "Requirements": [
         "GGally",
         "bartCause",
