@@ -93,7 +93,7 @@ mod_analysis_diagnostics_ui <- function(id){
                                 ),
                                 selectInput(
                                   inputId = ns('convergence'),
-                                  label = 'Paramater:',
+                                  label = 'Parameter:',
                                   choices = c('Average Treatment Effect', 'Sigma')
                                 )
                ),
