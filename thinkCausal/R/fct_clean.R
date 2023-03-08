@@ -113,16 +113,67 @@ clean_auto_convert_logicals <- function(input_data){
   return(input_data)
 }
 
+clean_detect_continuous_or_logical <- function(x){
+  # used to test if response variable can be modeled by BART
+
+  # continuous and logicals will work
+  classes_good <- c('numeric', 'integer', 'complex', 'logical')
+  if (inherits(x, classes_good)) return(TRUE)
+
+  return(FALSE)
+}
+
 clean_detect_logical <- function(x){
 
   if(inherits(x, 'data.frame')) stop('x cannot be a dataframe')
-
   # is x exclusively in list of pre-determined
   inclusion_list <- c(0, 1, 't', 'f', 'true', 'false')
   x_as_char <- as.character(x)
   x_cleaned <- base::tolower(unique(x_as_char))
   is_in_list <- length(setdiff(x_cleaned, inclusion_list)) == 0
   return(is_in_list)
+}
+
+clean_detect_binary <- function(x){
+  if(inherits(x, 'data.frame')) stop('x cannot be a dataframe')
+  is_binary <- ifelse(length(unique(x)) == 2, TRUE, FALSE)
+  return(is_binary)
+}
+
+clean_eval_outcome <- function(x){
+  # is outcome logical or continuous
+  status <- ifelse(clean_detect_continuous_or_logical(x), 'pass', 'fail')
+
+  # if first check fails is outcome a binary
+  if(status == 'fail'){
+    status <- ifelse(clean_detect_binary(x), 'conditional pass', 'fail')
+  }
+
+  result <- switch (status,
+    'pass' = 'pass',
+    'conditional pass' = 'need information',
+    'fail' = 'fail'
+  )
+
+  return(result)
+}
+
+clean_eval_treatment <- function(x){
+  # is treatment a logical
+  status <- ifelse(clean_detect_logical(x), 'pass', 'fail')
+
+  # if first check fails is treatment a binary
+  if(status == 'fail'){
+    status <- ifelse(clean_detect_binary(x), 'conditional pass', 'fail')
+  }
+
+  result <- switch (status,
+                    'pass' = 'pass',
+                    'conditional pass' = 'need information',
+                    'fail' = 'fail'
+  )
+
+  return(result)
 }
 
 #' @title Convert integer-like columns with few levels to a factor
@@ -165,6 +216,7 @@ clean_detect_integers <- function(x, n_levels_threshold = 15){
 
   # does x match its self coerced to an integer
   is_integer <- tryCatch(all.equal(x, as.integer(x)),
+                         warning = function(w) FALSE,
                          error = function(e) FALSE)
 
   if (isTRUE(is_integer)){

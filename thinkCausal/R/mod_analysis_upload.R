@@ -18,7 +18,7 @@ mod_analysis_upload_ui <- function(id) {
         title = "Upload your data",
         HTML(
           "<p>Data should be rectangular and in wide format where each column represents one variable.</p>
-                        <p> Files can be uploaded from .csv, .txt, Excel (.xlsx), SPSS (.sav) or STATA (.dta) formats.</p>"
+                        <p> Files can be uploaded from .csv, .txt, Excel (.xlsx), SPSS (.sav), R (.Rdata/.rds) or STATA (.dta) formats.</p>"
         ),
         div(
           id = "upload_file_div",
@@ -27,8 +27,8 @@ mod_analysis_upload_ui <- function(id) {
             label = "Choose file:",
             buttonLabel = 'Browse',
             multiple = FALSE,
-            accept = c('.csv', '.txt', '.xlsx', '.sav', '.dta'),
-            placeholder = 'csv, txt, xlsx, sav, or dta'
+            accept = c('.csv', '.txt', '.xlsx', '.sav','.Rdata','.rds', '.dta'),
+            placeholder = 'csv, txt, xlsx, sav, Rdata or dta'
           ),
         ),
         conditionalPanel(
@@ -114,7 +114,7 @@ mod_analysis_upload_server <- function(id, store){
 
         # stop if not one of the accepted file types
         # this should be caught by fileInput() on the UI side
-        accepted_filetypes <- c('csv', 'txt', 'xlsx', 'dta', 'sav')
+        accepted_filetypes <- c('csv', 'txt', 'xlsx', 'dta', 'sav', 'Rdata', 'rds')
         validate(need(
           filetype %in% accepted_filetypes,
           paste(
@@ -124,7 +124,6 @@ mod_analysis_upload_server <- function(id, store){
         ))
 
         tryCatch({
-
           # if it's a txt file then ask the user what the delimiter is
           if (filetype == 'txt'){
             output$show_delim <- reactive(TRUE)
@@ -152,7 +151,14 @@ mod_analysis_upload_server <- function(id, store){
             )
           } else if (filetype == 'sav'){
             uploaded_file <- Hmisc::spss.get(file = filepath)
-          } else stop("File type is invalid")
+          } else if(filetype == 'Rdata'){
+            e <- new.env()
+            name <- load(file = filepath, envir = e)
+            uploaded_file <- e[[name]]
+            rm(e)
+          } else if(filetype == 'rds'){
+            uploaded_file <- readr::read_rds(filepath)
+          }else stop("File type is invalid")
         },
         error = function(e) {
           # return a safeError if a parsing error occurs or if dataset isn't yet uploaded
@@ -191,7 +197,6 @@ mod_analysis_upload_server <- function(id, store){
 
       # retrieve the raw uploaded data frame
       uploaded_df <- uploaded_df()
-
       # auto convert all of the logical columns
       auto_cleaned_df <- clean_auto_convert_logicals(uploaded_df)
 

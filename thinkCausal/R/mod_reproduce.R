@@ -20,7 +20,7 @@ mod_reproduce_ui <- function(id){
       outputId = ns('analysis_results_button_download'),
       label = 'Download R script',
       style = 'max-width: 300px',
-      class = if (isTRUE(options('golem.app.prod')[[1]])) 'btn-disabled'
+      class = if (isTRUE(golem::app_prod())) 'btn-disabled'
     ),
     br(), br(),
     bs4Dash::box(

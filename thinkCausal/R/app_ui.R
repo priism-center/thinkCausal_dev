@@ -174,7 +174,6 @@ app_ui <- function(request) {
             mod_settings_reference_ui(module_ids$settings$reference)
           )
 
-
         )
       ),
 
@@ -314,7 +313,7 @@ app_ui <- function(request) {
       controlbar = bs4Dash::dashboardControlbar(
         mod_help_ui('help'),
         id = 'help-slideover',
-        width = 450
+        width = 500
       ),
 
       footer = bs4Dash::dashboardFooter(
