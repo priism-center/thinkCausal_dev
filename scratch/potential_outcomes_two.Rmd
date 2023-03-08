@@ -69,7 +69,7 @@ lm(Y ~ Z + first.race, dat)
 With all potential outcomes we could know about the causal effect of HyperShoes for a specific runner. For example, we can see that wearing HyperShoes caused runner 2 to run 13 minutes faster than they would have ran with standard shoes. On the other hand,  HyperShoes caused runner X to run Y minutes slower than they would have run with standard shoes. The causal effect of HyperShoes is different for each runner!
 
 ```{r}
-p1 <- dat[1:10, ] %>% 
+p1 <- dat[c(2, 7, 6, 99), ] %>% 
   pivot_longer(cols = c(Y0, Y1)) %>% 
   ggplot(aes(name, value, col = name, label = runner)) + 
   geom_line(aes(group = runner), col = 'black', linetype = 2) + 
@@ -89,7 +89,6 @@ p2 <- dat %>%
 
 p1 
  
-
 ```
 
 With all potential outcomes we could easily determine the causal effect of HyperShoes for across our sample of runners. If we take the average difference between each runners Y1 and each runners Y0 the average causal effect of HyperShoes in this sample is -4.07. On average, HyperShoes do cause faster running in this sample!
@@ -214,12 +213,18 @@ reactable(dat3, columns = list(
 
 
 ```{r}
+dat3$ITE_true <- with(dat, Y1 - Y0)
+
 dat3 %>% 
-  arrange(ITE) %>% 
-  mutate(rank = 1:nrow(dat3)) %>% 
-ggplot(aes(runner, ITE)) + 
+  pivot_longer(contains('ITE')) %>% 
+ggplot(aes(runner, value, col = name, shape = name)) + 
   geom_point() + 
-  geom_hline(yintercept = mean(dat3$ITE)) + 
+  scale_color_manual(values = c(1, 6)) + 
+  scale_shape_manual(values = c(19, 21)) + 
+  #geom_hline(aes(yintercept = mean(value), col = name)) + 
+  geom_hline(yintercept = mean(dat3$ITE)) +   
+  geom_hline(yintercept = mean(dat3$ITE_true), col = 6) + 
+  geom_area(aes(runner)) + 
   theme_bw()
  
 ```

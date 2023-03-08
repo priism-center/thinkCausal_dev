@@ -421,6 +421,8 @@ mod_analysis_diagnostics_server <- function(id, store){
         p <- plotBart::plot_predicted_common_support(.model = bart_model,
                                                      max_depth = input$overlap_tree_depth,
                                                      rule = input$overlap_rule)
+        p[[1]] <- p[[1]] + store$options$theme_custom
+        p[[2]] <- p[[2]] + store$options$theme_custom
         validate(need(!is.null(p), 'BART overlap rules did not detect any observations to remove!'))
       }else{
         p <- plotBart::plot_common_support(.model = bart_model,

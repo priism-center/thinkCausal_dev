@@ -9,7 +9,8 @@
 #' @importFrom shiny NS tagList
 mod_analysis_variable_selection_ui <- function(id) {
   ns <- NS(id)
-  tagList(fluidRow(
+  tagList(
+    fluidRow(
     column(
       width = 3,
       bs4Dash::box(
@@ -33,7 +34,30 @@ mod_analysis_variable_selection_ui <- function(id) {
         collapsible = TRUE,
         width = 12,
         title = 'Select outcome and treatment',
-        uiOutput(ns('outcome_treatment_ui'))
+        uiOutput(ns('outcome_treatment_ui')),
+        fluidRow(
+          column(width = 6,
+        conditionalPanel(
+          "output.need_outcome_info == 'show'",
+          ns = ns,
+          selectInput(
+            inputId = ns('outcome_level'),
+            label = 'Define sucssess as:',
+            choices =  NULL,
+            selected = NULL
+          )
+        )),
+        column(width = 6,
+        conditionalPanel(
+          "output.need_treatment_info == 'show'",
+          ns = ns,
+          selectInput(
+            inputId = ns('treatment_level'),
+            label = 'Select a level to respresent the treated group:',
+            choices =  NULL,
+            selected = NULL
+          )
+        )))
       ),
       bs4Dash::box(
         width = 12,
@@ -79,12 +103,13 @@ mod_analysis_variable_selection_server <- function(id, store){
    output$outcome_treatment_ui <- renderUI({
       validate_data_uploaded(store,
                              message = "You need to upload a dataset on the upload data page before you can select and outcome and treatment variable.")
-      fluidRow(
+
+     fluidRow(
         column(
           width = 6,
           selectInput(
             inputId = ns('analysis_select_outcome'),
-            label = 'Select the outcome variable from you data',
+            label = 'Select an outcome variable from you data',
             choices = NULL,
             selected = NULL
           )
@@ -93,7 +118,7 @@ mod_analysis_variable_selection_server <- function(id, store){
           width = 6,
           selectInput(
             inputId = ns('analysis_select_treatment'),
-            label = 'Select the treatment variable from you data',
+            label = 'Select a treatment variable from you data',
             choices = NULL,
             selected = NULL
           )
@@ -101,10 +126,67 @@ mod_analysis_variable_selection_server <- function(id, store){
       )
     })
 
+   # work in progress
+   # observeEvent(input$analysis_select_outcome, {
+   #   req(input$analysis_select_outcome)
+   #    passed <- clean_eval_outcome(store$analysis_data_uploaded_df[[input$analysis_select_outcome]]) == 'pass'
+   #    if(passed){
+   #      shinyjs::addClass("analysis_select_outcome", class = "success-input")
+   #    }
+   # })
+
+   # identify if we need user to indicate an outcome level
+   output$need_outcome_info <- reactive({
+     req(input$analysis_select_outcome)
+     ifelse(
+       clean_eval_outcome(store$analysis_data_uploaded_df[[input$analysis_select_outcome]]) == 'need information',
+       'show',
+       'hide'
+     )
+   })
+
+   outputOptions(output, "need_outcome_info", suspendWhenHidden = FALSE)
+
+   observeEvent(input$analysis_select_outcome, {
+
+     updateSelectInput(inputId = 'outcome_level',
+                       choices = c('', paste(input$analysis_select_outcome, '=', unique(store$analysis_data_uploaded_df[[input$analysis_select_outcome]])))
+                       )
+   })
+
+   # identify if we need user to provide a treatment level
+   output$need_treatment_info <- reactive({
+     req(input$analysis_select_treatment)
+     ifelse(
+       clean_eval_treatment(store$analysis_data_uploaded_df[[input$analysis_select_treatment]]) == 'need information',
+       'show',
+       'hide'
+     )
+   })
+
+   outputOptions(output, "need_treatment_info", suspendWhenHidden = FALSE)
+
+   observeEvent(input$analysis_select_treatment, {
+     updateSelectInput(inputId = 'treatment_level',
+                       choices = c('', paste(input$analysis_select_treatment, '=', unique(store$analysis_data_uploaded_df[[input$analysis_select_treatment]])))
+     )
+   })
+
 
     output$design_ui <- renderUI({
-      validate(need(input$analysis_select_outcome != '' & input$analysis_select_treatment != '',
-               "Before describing the study design, you'll need to select an outcome variable and a treatment variable."))
+      validate(need(input$analysis_select_treatment != '' & input$analysis_select_treatment != '',
+                    "Before describing the study design, you'll need to finish describing the outcome and treatment variables."))
+
+      if(clean_eval_treatment(store$analysis_data_uploaded_df[[input$analysis_select_treatment]]) == 'need information'){
+        validate(need(input$treatment_level != '',
+                      "Before describing the study design, you'll need to finish describing the outcome and treatment variables."))
+      }
+
+      if(clean_eval_outcome(store$analysis_data_uploaded_df[[input$analysis_select_outcome]]) == 'need information'){
+        validate(need(input$outcome_level != '',
+                      "Before describing the study design, you'll need to finish describing the outcome and treatment variables."))
+      }
+
         tagList(
       selectInput(
         inputId = ns('analysis_design'),
@@ -155,6 +237,21 @@ mod_analysis_variable_selection_server <- function(id, store){
         inputId = 'analysis_select_treatment',
         selected = input$analysis_select_treatment,
         choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_select_outcome])
+      )
+    })
+
+
+    observeEvent(store$analysis_data_uploaded_df, {
+      updateSelectInput(
+        inputId = 'analysis_select_treatment',
+        selected = input$analysis_select_treatment,
+        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_select_outcome])
+      )
+
+      updateSelectInput(
+        inputId = 'analysis_select_outcome',
+        selected = input$analysis_select_outcome,
+        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_select_treatment])
       )
     })
 
@@ -251,6 +348,18 @@ mod_analysis_variable_selection_server <- function(id, store){
       is_treatment_binary <- tryCatch({
         treatment <- store$analysis_data_uploaded_df[[cols_z[1]]]
         is_binary <- isTRUE(clean_detect_logical(treatment))
+        if(isFALSE(is_binary)){
+         is_binary <- clean_detect_binary(treatment)
+         if(isTRUE(is_binary)){
+           # get user entered level
+           treatment_level <- input$treatment_level
+           # clean it up to match df
+           treatment_level <- gsub(pattern = paste(input$analysis_select_treatment, '= '), replacement = '', treatment_level)
+           # recode data
+           store$analysis_data_uploaded_df[[cols_z[1]]] <- ifelse(store$analysis_data_uploaded_df[[cols_z[1]]] == treatment_level, TRUE, FALSE)
+         }
+        }
+
         is_binary
       },
       error = function(e) FALSE,
@@ -261,6 +370,17 @@ mod_analysis_variable_selection_server <- function(id, store){
       is_response_cont_binary <- tryCatch({
         response <- store$analysis_data_uploaded_df[[cols_y[[1]]]]
         is_cont_binary <- clean_detect_continuous_or_logical(response)
+        if(isFALSE(is_cont_binary)){
+          is_cont_binary <- clean_detect_binary(response)
+          if(isTRUE(is_cont_binary)){
+            # get user entered level
+            outcome_level <- input$outcome_level
+            # clean it up to match df
+            outcome_level <- gsub(pattern = paste(input$analysis_select_outcome, '= '), replacement = '', outcome_level)
+            # recode data
+            store$analysis_data_uploaded_df[[cols_y[1]]] <- ifelse(store$analysis_data_uploaded_df[[cols_y[1]]] == outcome_level, TRUE, FALSE)
+          }
+        }
         is_cont_binary
       },
       error = function(e) FALSE,

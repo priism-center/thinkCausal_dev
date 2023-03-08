@@ -197,7 +197,6 @@ mod_analysis_upload_server <- function(id, store){
 
       # retrieve the raw uploaded data frame
       uploaded_df <- uploaded_df()
-
       # auto convert all of the logical columns
       auto_cleaned_df <- clean_auto_convert_logicals(uploaded_df)
 

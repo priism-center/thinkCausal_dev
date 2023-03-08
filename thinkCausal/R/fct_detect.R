@@ -30,19 +30,6 @@ clean_detect_column_types <- function(.data){
   return(column_types)
 }
 
-clean_detect_continuous_or_logical <- function(x){
-  # used to test if response variable can be modeled by BART
-
-  # continuous and logicals will work
-  classes_good <- c('numeric', 'integer', 'complex', 'logical')
-  if (inherits(x, classes_good)) return(TRUE)
-
-  # if its a categorical and only two levels then it will work
-  classes_maybe <- c('character', 'factor')
-  if (inherits(x, classes_maybe) & length(unique(x)) == 2) return(TRUE)
-
-  return(FALSE)
-}
 
 
 # TODO: should adjust this to accept yes, no
