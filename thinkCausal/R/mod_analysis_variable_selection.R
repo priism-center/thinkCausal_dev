@@ -348,16 +348,26 @@ mod_analysis_variable_selection_server <- function(id, store){
       is_treatment_binary <- tryCatch({
         treatment <- store$analysis_data_uploaded_df[[cols_z[1]]]
         is_binary <- isTRUE(clean_detect_logical(treatment))
-        if(isFALSE(is_binary)){
-         is_binary <- clean_detect_binary(treatment)
-         if(isTRUE(is_binary)){
-           # get user entered level
-           treatment_level <- input$treatment_level
-           # clean it up to match df
-           treatment_level <- gsub(pattern = paste(input$analysis_select_treatment, '= '), replacement = '', treatment_level)
-           # recode data
-           store$analysis_data_uploaded_df[[cols_z[1]]] <- ifelse(store$analysis_data_uploaded_df[[cols_z[1]]] == treatment_level, TRUE, FALSE)
-         }
+        if (isFALSE(is_binary)) {
+          is_binary <- clean_detect_binary(treatment)
+          if (isTRUE(is_binary)) {
+            # get user entered level
+            treatment_level <- input$treatment_level
+            # clean it up to match df
+            treatment_level <-
+              gsub(
+                pattern = paste(input$analysis_select_treatment, '= '),
+                replacement = '',
+                treatment_level
+              )
+            # recode data
+            store$analysis_data_uploaded_df[[cols_z[1]]] <-
+              ifelse(store$analysis_data_uploaded_df[[cols_z[1]]] == treatment_level,
+                     TRUE,
+                     FALSE)
+          }
+        } else{
+          treatment_level <- 'variable is already logical or coded as 1/0'
         }
 
         is_binary
@@ -372,14 +382,24 @@ mod_analysis_variable_selection_server <- function(id, store){
         is_cont_binary <- clean_detect_continuous_or_logical(response)
         if(isFALSE(is_cont_binary)){
           is_cont_binary <- clean_detect_binary(response)
-          if(isTRUE(is_cont_binary)){
+          if (isTRUE(is_cont_binary)) {
             # get user entered level
             outcome_level <- input$outcome_level
             # clean it up to match df
-            outcome_level <- gsub(pattern = paste(input$analysis_select_outcome, '= '), replacement = '', outcome_level)
+            outcome_level <-
+              gsub(
+                pattern = paste(input$analysis_select_outcome, '= '),
+                replacement = '',
+                outcome_level
+              )
             # recode data
-            store$analysis_data_uploaded_df[[cols_y[1]]] <- ifelse(store$analysis_data_uploaded_df[[cols_y[1]]] == outcome_level, TRUE, FALSE)
+            store$analysis_data_uploaded_df[[cols_y[1]]] <-
+              ifelse(store$analysis_data_uploaded_df[[cols_y[1]]] == outcome_level,
+                     TRUE,
+                     FALSE)
           }
+        }else{
+          outcome_level <- 'outcome is continuous'
         }
         is_cont_binary
       },
@@ -435,7 +455,9 @@ mod_analysis_variable_selection_server <- function(id, store){
       log_event <- paste0('Assigned columns to roles: ',
                           '\n\tdesign: ', input$analysis_design,
                           '\n\ttreatment: ', cols_z,
+                          '\n\ttreatment level:', treatment_level,
                           '\n\tresponse: ', cols_y,
+                          '\n\tresponse success:', outcome_level,
                           '\n\tcovariates: ', paste0(cols_x, collapse = '; '),
                           '\n\tsurvey weight: ', cols_weight,
                           '\n\trandom intercepts: ', paste0(cols_ran_eff, collapse = '; '),
