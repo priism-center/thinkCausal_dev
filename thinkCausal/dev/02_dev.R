@@ -47,6 +47,9 @@ usethis::use_package('waiter')
 usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')
 usethis::use_package('bartCause', min_version = '1.0.6')
 
+# for PWA app
+usethis::use_package('shiny.pwa')
+
 ## Add modules ----
 ## Create a module infrastructure in R/
 golem::add_module(name = "home", with_test = FALSE) # Name of the module

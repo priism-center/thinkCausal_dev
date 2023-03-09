@@ -33,6 +33,7 @@ Imports:
     rlang (>= 1.0.3),
     scales (>= 1.1.1),
     shiny (>= 1.7.1),
+    shiny.pwa,
     shinybrowser (>= 1.0.0),
     shinydisconnect (>= 0.1.0),
     shinyjs (>= 2.1.0),

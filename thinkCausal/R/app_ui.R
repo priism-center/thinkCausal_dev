@@ -76,7 +76,8 @@ app_ui <- function(request) {
 
           bs4Dash::tabItem(
             tabName = 'home',
-            mod_home_ui(module_ids$home)
+            mod_home_ui(module_ids$home),
+            shiny.pwa::pwa("https://apsta.shinyapps.io/thinkCausal/", output = "www")
           ),
 
           # learning articles
