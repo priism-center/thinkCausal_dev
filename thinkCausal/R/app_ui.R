@@ -25,6 +25,9 @@ app_ui <- function(request) {
       )
     ),
 
+    # add beta ribbon
+    add_beta_ribbon(),
+
     # message when server disconnects
     # TODO: this can be removed for native installation
     shinydisconnect::disconnectMessage(
@@ -58,19 +61,6 @@ app_ui <- function(request) {
       ),
 
       body = bs4Dash::dashboardBody(
-
-        # add beta ribbon
-        tags$div(
-          class = 'cornerRibbon',
-          'BETA',
-          tags$div(
-            tags$a(
-              href = 'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
-              target = "_blank",
-              'Have feedback?'
-            )
-          )
-        ),
 
         bs4Dash::tabItems(
 
@@ -156,12 +146,13 @@ app_ui <- function(request) {
             mod_analysis_subgroup_ui(module_ids$analysis$subgroup)
           ),
 
-
+          # reproduce
           bs4Dash::tabItem(
             tabName = 'reproduce',
             mod_reproduce_ui(module_ids$reproduce)
           ),
 
+          # settings pages
           bs4Dash::tabItem(
             tabName = 'settings_options',
             mod_settings_options_ui(module_ids$settings$options)
@@ -184,12 +175,14 @@ app_ui <- function(request) {
         bs4Dash::sidebarMenu(
           id = 'sidebar',
 
+          # home page
           bs4Dash::menuItem(
             text = 'thinkCausal',
             tabName = 'home',
             icon = icon("home", verify_fa = FALSE)
           ),
 
+          # learning pages
           bs4Dash::menuItem(
             text = 'Learn',
             icon = icon("book", verify_fa = FALSE),
@@ -284,12 +277,14 @@ app_ui <- function(request) {
             )
           ),
 
+          # reproduce
           bs4Dash::menuItem(
             text = 'Reproduce',
             tabName = 'reproduce',
             icon = shiny::icon('repeat', verify_fa = FALSE)
           ),
 
+          # settings pages
           bs4Dash::menuItem(
             text = 'Settings',
             tabName = 'settings',
@@ -345,9 +340,6 @@ golem_add_external_resources <- function() {
       path = app_sys("app/www"),
       app_title = "thinkCausal"
     ),
-
-    # make all links open in a new tab
-    # tags$base(target = "_blank"),
 
     # enable shinyjs
     shinyjs::useShinyjs(),
