@@ -1508,17 +1508,22 @@
         "xtable"
       ]
     },
-    "shiny.pwa": {
-      "Package": "shiny.pwa",
-      "Version": "0.2.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "035f7f130a16f030668a94b2b8ac53ce",
+    "shinyFeedback": {
+      "Package": "shinyFeedback",
+      "Version": "0.4.0.9001",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "shinyFeedback",
+      "RemoteUsername": "merlinoa",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "b741fedab6736b9047580734adcff9b97cc808c3",
+      "Hash": "a88817a9bdb9140ab78193de4ca33eb0",
       "Requirements": [
+        "fontawesome",
         "htmltools",
-        "readr",
-        "shiny",
-        "urltools"
+        "jsonlite",
+        "shiny"
       ]
     },
     "shinyWidgets": {
@@ -1737,16 +1742,6 @@
         "xfun"
       ]
     },
-    "triebeard": {
-      "Package": "triebeard",
-      "Version": "0.4.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "642507a148b0dd9b5620177e0a044413",
-      "Requirements": [
-        "Rcpp"
-      ]
-    },
     "tzdb": {
       "Package": "tzdb",
       "Version": "0.2.0",
@@ -1755,17 +1750,6 @@
       "Hash": "5e069fb033daf2317bd628d3100b75c5",
       "Requirements": [
         "cpp11"
-      ]
-    },
-    "urltools": {
-      "Package": "urltools",
-      "Version": "1.7.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "e86a704261a105f4703f653e05defa3e",
-      "Requirements": [
-        "Rcpp",
-        "triebeard"
       ]
     },
     "usethis": {

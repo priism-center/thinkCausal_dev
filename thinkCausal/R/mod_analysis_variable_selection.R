@@ -42,7 +42,7 @@ mod_analysis_variable_selection_ui <- function(id) {
           ns = ns,
           selectInput(
             inputId = ns('outcome_level'),
-            label = 'Define sucssess as:',
+            label = 'Define success as:',
             choices =  NULL,
             selected = NULL
           )
@@ -103,14 +103,13 @@ mod_analysis_variable_selection_server <- function(id, store){
    output$outcome_treatment_ui <- renderUI({
       validate_data_uploaded(store,
                              message = "You need to upload a dataset on the upload data page before you can select and outcome and treatment variable.")
-
      fluidRow(
         column(
           width = 6,
           selectInput(
             inputId = ns('analysis_select_outcome'),
             label = 'Select an outcome variable from you data',
-            choices = NULL,
+            choices = c('', names(store$analysis_data_uploaded_df)),
             selected = NULL
           )
         ),
@@ -119,7 +118,7 @@ mod_analysis_variable_selection_server <- function(id, store){
           selectInput(
             inputId = ns('analysis_select_treatment'),
             label = 'Select a treatment variable from you data',
-            choices = NULL,
+            choices = c('', names(store$analysis_data_uploaded_df)),
             selected = NULL
           )
         )
@@ -148,7 +147,6 @@ mod_analysis_variable_selection_server <- function(id, store){
    outputOptions(output, "need_outcome_info", suspendWhenHidden = FALSE)
 
    observeEvent(input$analysis_select_outcome, {
-
      updateSelectInput(inputId = 'outcome_level',
                        choices = c('', paste(input$analysis_select_outcome, '=', unique(store$analysis_data_uploaded_df[[input$analysis_select_outcome]])))
                        )
@@ -170,6 +168,103 @@ mod_analysis_variable_selection_server <- function(id, store){
      updateSelectInput(inputId = 'treatment_level',
                        choices = c('', paste(input$analysis_select_treatment, '=', unique(store$analysis_data_uploaded_df[[input$analysis_select_treatment]])))
      )
+   })
+
+   observeEvent(feedback_outcome(), {
+     feedback_outcome()
+   })
+
+   feedback_outcome <- reactive({
+     req(input$analysis_select_outcome)
+
+     isContinuous_Logical <- clean_detect_continuous_or_logical(store$analysis_data_uploaded_df[[input$analysis_select_outcome]])
+     isBinary <- clean_detect_binary(store$analysis_data_uploaded_df[[input$analysis_select_outcome]])
+     if(isTRUE(isBinary)){
+       possibleLevels <- unique(store$analysis_data_uploaded_df[[input$analysis_select_outcome]])
+       currentLevel <- gsub(paste(input$analysis_select_outcome,'= '), '', input$outcome_level)
+     }else{
+       possibleLevels <- TRUE
+       currentLevel <- FALSE
+     }
+
+     status <- dplyr::case_when(
+       isTRUE(isContinuous_Logical) ~ 'pass',
+       isTRUE(isBinary) & isFALSE(currentLevel %in% possibleLevels) ~ 'warn',
+       isTRUE(isBinary) & isTRUE(currentLevel %in% possibleLevels) ~ 'pass',
+       T ~ 'fail'
+     )
+
+     shinyFeedback::hideFeedback("analysis_select_outcome")
+
+     if(status == 'pass'){
+       shinyFeedback::showFeedbackSuccess(inputId = 'analysis_select_outcome', text = paste(input$analysis_select_outcome, 'is either a continuous or binary variable.'))
+     }
+     if(status == 'warn'){
+       shinyFeedback::showFeedbackWarning(inputId = 'analysis_select_outcome', text = paste(input$analysis_select_outcome, "appears to be a catagorical variable with two levels.<br>Before moving on, you'll need to indicate which level represents a sucess."))
+
+     }
+     if(status == 'fail'){
+       shinyFeedback::showFeedbackDanger(inputId = 'analysis_select_outcome', text = 'At this point in time, thinkCausal only handles continuous or binary outcomes.<br>In order to continue, select a continuous or binary outcome.')
+     }
+
+     if(input$analysis_select_treatment == input$analysis_select_outcome){
+       shinyFeedback::showFeedbackDanger(inputId = 'analysis_select_outcome', text = 'The treatment and outcome must be different variables. Select a different treatment or a different outcome before continuing.')
+     }
+
+     shinyFeedback::hideFeedback("outcome_level")
+     if(currentLevel %in% possibleLevels){
+       shinyFeedback::showFeedbackSuccess(inputId = 'outcome_level', text = paste(input$outcome_level, 'will be automatically recoded so that a success = TRUE and a non-success = FALSE.'))
+     }
+
+   })
+
+
+
+   observeEvent(feedback_treatment(), {
+     feedback_treatment()
+   })
+
+   feedback_treatment <- reactive({
+     req(input$analysis_select_treatment)
+      isLogical <- clean_detect_logical(store$analysis_data_uploaded_df[[input$analysis_select_treatment]])
+      isBinary <- clean_detect_binary(store$analysis_data_uploaded_df[[input$analysis_select_treatment]])
+      if(isTRUE(isBinary)){
+        possibleLevels <- unique(store$analysis_data_uploaded_df[[input$analysis_select_treatment]])
+        currentLevel <- gsub(paste(input$analysis_select_treatment,'= '), '', input$treatment_level)
+      }else{
+        possibleLevels <- TRUE
+        currentLevel <- FALSE
+      }
+
+     status <- dplyr::case_when(
+       isTRUE(isLogical) ~ 'pass',
+       isTRUE(isBinary) & isFALSE(currentLevel  %in% possibleLevels) ~ 'warn',
+       isTRUE(isBinary) & currentLevel %in% possibleLevels ~ 'pass',
+       T ~ 'fail'
+     )
+
+     shinyFeedback::hideFeedback("analysis_select_treatment")
+
+     if(status == 'pass'){
+       shinyFeedback::showFeedbackSuccess(inputId = 'analysis_select_treatment', text = paste(input$analysis_select_treatment, 'is a binary variable.'))
+     }
+     if(status == 'warn'){
+       shinyFeedback::showFeedbackWarning(inputId = 'analysis_select_treatment', text = paste(input$analysis_select_treatment, "appears to be a catagorical variable with two levels.<br>Before moving on, you'll need to indicate which level represents a success."))
+
+     }
+     if(status == 'fail'){
+       shinyFeedback::showFeedbackDanger(inputId = 'analysis_select_treatment', text = 'At this point in time, thinkCausal only handles binary treatments.<br>In order to continue, select a binary treatment.')
+     }
+
+     if(input$analysis_select_treatment == input$analysis_select_outcome){
+       shinyFeedback::showFeedbackDanger(inputId = 'analysis_select_treatment', text = 'The treatment and outcome must be different variables. Select a different treatment or a different outcome before continuing.')
+     }
+
+     shinyFeedback::hideFeedback("treatment_level")
+     if(currentLevel %in% possibleLevels){
+       shinyFeedback::showFeedbackSuccess(inputId = 'treatment_level', text = paste(input$analysis_select_treatment, 'will be automatically recoded so that', currentLevel, '= TRUE and', possibleLevels[possibleLevels!=currentLevel],'= FALSE.'))
+     }
+
    })
 
 
@@ -221,41 +316,7 @@ mod_analysis_variable_selection_server <- function(id, store){
 
     })
 
-
-    # update outcome, treatment, weight and ran_eff options
-    observeEvent(input$analysis_select_treatment, {
-      updateSelectInput(
-        inputId = 'analysis_select_outcome',
-        selected = input$analysis_select_outcome,
-        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_select_treatment])
-      )
-    })
-
-    # update outcome, treatment, weight and ran_eff options
-    observeEvent(input$analysis_select_outcome, {
-      updateSelectInput(
-        inputId = 'analysis_select_treatment',
-        selected = input$analysis_select_treatment,
-        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_select_outcome])
-      )
-    })
-
-
-    observeEvent(store$analysis_data_uploaded_df, {
-      updateSelectInput(
-        inputId = 'analysis_select_treatment',
-        selected = input$analysis_select_treatment,
-        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_select_outcome])
-      )
-
-      updateSelectInput(
-        inputId = 'analysis_select_outcome',
-        selected = input$analysis_select_outcome,
-        choices = c('', names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) != input$analysis_select_treatment])
-      )
-    })
-
-    defaults <- reactiveValues(.default_blocks = NULL,
+  defaults <- reactiveValues(.default_blocks = NULL,
                                .default_random_effects = NULL,
                                .default_weight = NULL)
 

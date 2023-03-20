@@ -10,6 +10,9 @@ app_ui <- function(request) {
     # add external resources
     golem_add_external_resources(),
 
+    # add feedback
+    shinyFeedback::useShinyFeedback(),
+
     # initial load spinner
     waiter::waiterShowOnLoad(
       color = "#302F42",
@@ -66,8 +69,7 @@ app_ui <- function(request) {
 
           bs4Dash::tabItem(
             tabName = 'home',
-            mod_home_ui(module_ids$home),
-            shiny.pwa::pwa("https://apsta.shinyapps.io/thinkCausal/")
+            mod_home_ui(module_ids$home)
           ),
 
           # learning articles

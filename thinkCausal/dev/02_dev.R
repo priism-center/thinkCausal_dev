@@ -43,12 +43,11 @@ usethis::use_package('shinydisconnect', min_version = '0.1.0')
 usethis::use_package('htmltools')
 usethis::use_package('jsonlite')
 usethis::use_package('waiter')
+usethis::use_dev_package('shinyFeedback', remote = 'merlinoa/shinyFeedback')
 
 usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')
 usethis::use_package('bartCause', min_version = '1.0.6')
 
-# for PWA app
-usethis::use_package('shiny.pwa')
 
 ## Add modules ----
 ## Create a module infrastructure in R/
