@@ -194,7 +194,6 @@ mod_analysis_model_server <- function(id, store){
       #     )
       #   }
       # )
-
       bart_model <- fit_bart(
         .data = store$verified_df,
         .weights = store$column_assignments$weight,

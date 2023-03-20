@@ -136,7 +136,7 @@ clean_detect_logical <- function(x){
 
 clean_detect_binary <- function(x){
   if(inherits(x, 'data.frame')) stop('x cannot be a dataframe')
-  is_binary <- ifelse(length(unique(x)) == 2, TRUE, FALSE)
+  is_binary <- ifelse(length(unique(na.omit(x))) == 2, TRUE, FALSE)
   return(is_binary)
 }
 

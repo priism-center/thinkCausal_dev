@@ -146,12 +146,6 @@ mod_analysis_variable_selection_server <- function(id, store){
 
    outputOptions(output, "need_outcome_info", suspendWhenHidden = FALSE)
 
-   observeEvent(input$analysis_select_outcome, {
-     updateSelectInput(inputId = 'outcome_level',
-                       choices = c('', paste(input$analysis_select_outcome, '=', unique(store$analysis_data_uploaded_df[[input$analysis_select_outcome]])))
-                       )
-   })
-
    # identify if we need user to provide a treatment level
    output$need_treatment_info <- reactive({
      req(input$analysis_select_treatment)
@@ -164,15 +158,43 @@ mod_analysis_variable_selection_server <- function(id, store){
 
    outputOptions(output, "need_treatment_info", suspendWhenHidden = FALSE)
 
-   observeEvent(input$analysis_select_treatment, {
-     updateSelectInput(inputId = 'treatment_level',
-                       choices = c('', paste(input$analysis_select_treatment, '=', unique(store$analysis_data_uploaded_df[[input$analysis_select_treatment]])))
-     )
+
+   observeEvent(input$analysis_select_outcome, {
+     if (length(unique(na.omit(store$analysis_data_uploaded_df[[input$analysis_select_outcome]]))) <=2) {
+       updateSelectInput(inputId = 'outcome_level',
+                         choices = c('', paste(
+                           input$analysis_select_outcome,
+                           '=',
+                           unique(na.omit(store$analysis_data_uploaded_df[[input$analysis_select_outcome]]))
+                         )))
+     } else{
+       # we need to do this for reasons related to feedback system input updating
+       updateSelectInput(inputId = 'outcome_level',
+                         choices = c('not a binary variable'))
+     }
+
    })
 
-   observeEvent(feedback_outcome(), {
-     feedback_outcome()
+   observeEvent(input$analysis_select_treatment, {
+     if (length(unique(na.omit(store$analysis_data_uploaded_df[[input$analysis_select_treatment]]))) <=2) {
+       updateSelectInput(inputId = 'treatment_level',
+                         choices = c('', paste(
+                           input$analysis_select_treatment,
+                           '=',
+                           unique(na.omit(store$analysis_data_uploaded_df[[input$analysis_select_treatment]]))
+                         )))
+     } else{
+       # we need to do this for reasons related to feedback system input updating
+       updateSelectInput(inputId = 'treatment_level',
+                         choices = c('not a binary variable'))
+     }
+
    })
+
+
+
+
+   observe(feedback_outcome())
 
    feedback_outcome <- reactive({
      req(input$analysis_select_outcome)
@@ -180,7 +202,7 @@ mod_analysis_variable_selection_server <- function(id, store){
      isContinuous_Logical <- clean_detect_continuous_or_logical(store$analysis_data_uploaded_df[[input$analysis_select_outcome]])
      isBinary <- clean_detect_binary(store$analysis_data_uploaded_df[[input$analysis_select_outcome]])
      if(isTRUE(isBinary)){
-       possibleLevels <- unique(store$analysis_data_uploaded_df[[input$analysis_select_outcome]])
+       possibleLevels <- unique(na.omit(store$analysis_data_uploaded_df[[input$analysis_select_outcome]]))
        currentLevel <- gsub(paste(input$analysis_select_outcome,'= '), '', input$outcome_level)
      }else{
        possibleLevels <- TRUE
@@ -213,23 +235,23 @@ mod_analysis_variable_selection_server <- function(id, store){
 
      shinyFeedback::hideFeedback("outcome_level")
      if(currentLevel %in% possibleLevels){
-       shinyFeedback::showFeedbackSuccess(inputId = 'outcome_level', text = paste(input$outcome_level, 'will be automatically recoded so that a success = TRUE and a non-success = FALSE.'))
+       shinyFeedback::showFeedbackSuccess(inputId = 'outcome_level', text = paste(input$outcome_level, 'will be automatically recoded so that', currentLevel, '= TRUE and', possibleLevels[possibleLevels!= currentLevel], '= FALSE.'))
      }
 
    })
 
 
 
-   observeEvent(feedback_treatment(), {
-     feedback_treatment()
-   })
+
+
+   observe(feedback_treatment())
 
    feedback_treatment <- reactive({
      req(input$analysis_select_treatment)
       isLogical <- clean_detect_logical(store$analysis_data_uploaded_df[[input$analysis_select_treatment]])
       isBinary <- clean_detect_binary(store$analysis_data_uploaded_df[[input$analysis_select_treatment]])
       if(isTRUE(isBinary)){
-        possibleLevels <- unique(store$analysis_data_uploaded_df[[input$analysis_select_treatment]])
+        possibleLevels <- unique(na.omit(store$analysis_data_uploaded_df[[input$analysis_select_treatment]]))
         currentLevel <- gsub(paste(input$analysis_select_treatment,'= '), '', input$treatment_level)
       }else{
         possibleLevels <- TRUE
@@ -264,6 +286,8 @@ mod_analysis_variable_selection_server <- function(id, store){
      if(currentLevel %in% possibleLevels){
        shinyFeedback::showFeedbackSuccess(inputId = 'treatment_level', text = paste(input$analysis_select_treatment, 'will be automatically recoded so that', currentLevel, '= TRUE and', possibleLevels[possibleLevels!=currentLevel],'= FALSE.'))
      }
+
+
 
    })
 
@@ -421,14 +445,9 @@ mod_analysis_variable_selection_server <- function(id, store){
                 replacement = '',
                 treatment_level
               )
-            # recode data
-            store$analysis_data_uploaded_df[[cols_z[1]]] <-
-              ifelse(store$analysis_data_uploaded_df[[cols_z[1]]] == treatment_level,
-                     TRUE,
-                     FALSE)
           }
         } else{
-          treatment_level <- 'variable is already logical or coded as 1/0'
+          treatment_level <- NULL
         }
 
         is_binary
@@ -453,14 +472,9 @@ mod_analysis_variable_selection_server <- function(id, store){
                 replacement = '',
                 outcome_level
               )
-            # recode data
-            store$analysis_data_uploaded_df[[cols_y[1]]] <-
-              ifelse(store$analysis_data_uploaded_df[[cols_y[1]]] == outcome_level,
-                     TRUE,
-                     FALSE)
           }
         }else{
-          outcome_level <- 'outcome is continuous'
+          outcome_level <- NULL
         }
         is_cont_binary
       },
@@ -503,6 +517,16 @@ mod_analysis_variable_selection_server <- function(id, store){
       # store the new dataframe using the uploaded df as the template
       store$analysis_data_assigned_df <- store$analysis_data_uploaded_df[, all_cols]
 
+      # recode treatment/outcome if needed
+      if(!is.null(treatment_level)){
+        store$analysis_data_assigned_df[[cols_z]] <- ifelse(store$analysis_data_assigned_df[[cols_z]] == treatment_level, TRUE, FALSE)
+      }
+
+      if(!is.null(outcome_level)){
+        store$analysis_data_assigned_df[[cols_y]] <- ifelse(store$analysis_data_assigned_df[[cols_y]] == outcome_level, TRUE, FALSE)
+      }
+
+
       # save columns assignments
       store$column_assignments <- NULL
       store$column_assignments$z <- cols_z
@@ -516,9 +540,9 @@ mod_analysis_variable_selection_server <- function(id, store){
       log_event <- paste0('Assigned columns to roles: ',
                           '\n\tdesign: ', input$analysis_design,
                           '\n\ttreatment: ', cols_z,
-                          '\n\ttreatment level:', treatment_level,
+                          '\n\ttreatment level: ', ifelse(is.null(treatment_level), 'variable is already logical or coded as 1/0', treatment_level),
                           '\n\tresponse: ', cols_y,
-                          '\n\tresponse success:', outcome_level,
+                          '\n\tresponse success:', ifelse(is.null(outcome_level), 'outcome is continuous', outcome_level),
                           '\n\tcovariates: ', paste0(cols_x, collapse = '; '),
                           '\n\tsurvey weight: ', cols_weight,
                           '\n\trandom intercepts: ', paste0(cols_ran_eff, collapse = '; '),
