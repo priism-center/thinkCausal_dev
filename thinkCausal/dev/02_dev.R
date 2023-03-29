@@ -110,6 +110,11 @@ golem::add_css_file("learn-potential-outcomes", dir = 'inst/app/www/learn/potent
 # scrollytell example
 golem::add_module(name = 'learn_scrolly_example', with_test = FALSE)
 
+# estimands 2
+golem::add_module(name = "learn_estimands3", with_test = FALSE)
+golem::add_module(name = "learn_choose", with_test = FALSE)
+
+
 ## Add helper functions ----
 ## Creates fct_* and utils_*
 golem::add_fct("ui", with_test = FALSE)

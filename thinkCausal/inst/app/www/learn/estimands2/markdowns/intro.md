@@ -1,0 +1,3 @@
+# Choosing an estimand with overlap
+
+To understand more about the connection between choosing an estimand in observational studies and overlap we'll use our running example of the causal effect of HyperShoes on running times. Lets imagine a team of researchers go to a large marathon, as each runner crosses the finish line they record whether they wore HyperShoes or standard shoes and the runners finishing times. To participate in the marathon, each runner was required to run in a qualifying race, this race took place before HyperShoes were available to any runners. The variable `qualifying time` represents each runners, time from the qualification race. 

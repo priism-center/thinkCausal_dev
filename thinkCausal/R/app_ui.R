@@ -82,6 +82,10 @@ app_ui <- function(request) {
             mod_learn_estimands_ui(module_ids$learn$estimands)
           ),
           bs4Dash::tabItem(
+            tabName = 'learn_estimands2',
+            mod_learn_estimands2_ui(module_ids$learn$estimands2)
+          ),
+          bs4Dash::tabItem(
             tabName = 'learn_randomization',
             mod_learn_rct_analysis_ui(module_ids$learn$randomization)
           ),
@@ -105,7 +109,6 @@ app_ui <- function(request) {
             tabName = 'learn_scrolly',
             mod_learn_scrolly_example_ui('learn_scrolly')
           ),
-
           # analysis pages
           bs4Dash::tabItem(
             tabName = 'analysis_upload',
@@ -200,6 +203,10 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Causal estimands',
               tabName = 'learn_estimands'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Estimands 2',
+              tabName = 'learn_estimands2'
             ),
             bs4Dash::menuSubItem(
               text = 'Post treatment variables',

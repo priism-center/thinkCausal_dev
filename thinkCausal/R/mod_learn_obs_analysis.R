@@ -151,7 +151,7 @@ mod_learn_obs_analysis_server <- function(id){
       )
 
       items$position2 <- div(
-        style = 'visibility: visible;',
+        style = 'visibility: hidden;',
         renderImage({
           list(src = app_sys('app', 'www/learn/observational-analysis/plots/p2.png'),
                contentType = 'image/png',

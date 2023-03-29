@@ -271,7 +271,7 @@ mod_analysis_variable_selection_server <- function(id, store){
        shinyFeedback::showFeedbackSuccess(inputId = 'analysis_select_treatment', text = paste(input$analysis_select_treatment, 'is a binary variable.'))
      }
      if(status == 'warn'){
-       shinyFeedback::showFeedbackWarning(inputId = 'analysis_select_treatment', text = paste(input$analysis_select_treatment, "appears to be a catagorical variable with two levels.<br>Before moving on, you'll need to indicate which level represents a success."))
+       shinyFeedback::showFeedbackWarning(inputId = 'analysis_select_treatment', text = paste(input$analysis_select_treatment, "appears to be a catagorical variable with two levels.<br>Before moving on, you'll need to indicate which level represents receiving the treatment."))
 
      }
      if(status == 'fail'){

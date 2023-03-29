@@ -154,8 +154,8 @@ mod_learn_post_treatment_server <- function(id, store){
         }, deleteFile = F)
       )
 
+      browser()
       return(items)
-
     })
 
 
