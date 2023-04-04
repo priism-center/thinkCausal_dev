@@ -12,6 +12,7 @@ mod_learn_estimands2_ui<- function(id){
   ns <- NS(id)
   tagList(
     use_scrollytell(ns = ns),
+    use_scrollytell2(ns = ns),
     div(
       class = 'learning-page',
 
@@ -133,27 +134,61 @@ mod_learn_estimands2_ui<- function(id){
             position = 21,
             includeMarkdown(app_sys("app", "www", "learn", "estimands2", "markdowns", 'section21.md'))
           ),
-          scroll_ui_text_section(
+          scroll_ui_quiz_section(
             ns = ns,
             position = 22,
-            includeMarkdown(app_sys("app", "www", "learn", "estimands2", "markdowns", 'section17.md'))
+            div(
+              class = ns('learning-content'), # required
+              class = 'learning-content', # required
+              style = 'display: block;',
+              p('generic pre-quiz message'),
+              # the quiz UI
+              h2('Practice'),
+              mod_quiz_ui(id = ns('quiz')),
+              br(),
+              br(),
+              br()
+              #includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_citations.md')),
+              #includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_learn_more.md'))
+            )
           ),
           scroll_ui_text_section(
             ns = ns,
             position = 23,
-            includeMarkdown(app_sys("app", "www", "learn", "estimands2", "markdowns", 'section17.md'))
-          )
+            includeMarkdown(app_sys("app", "www", "learn", "estimands2", "markdowns", 'section1.md'))
+          ),
+          scroll_ui_text_section(
+            ns = ns,
+            position = 24,
+            includeMarkdown(app_sys("app", "www", "learn", "estimands2", "markdowns", 'section2.md'))
+          ),
+
         ),
         scroll_ui_visual(ns = ns)
-      ),
-
-      div(
-        class = ns('learning-content'), # required
-        class = 'learning-content',  # required
-        style = 'display: block;',
-        h2('Ending section'),
-        p("That's all folks")
       )
+      #, scroll_ui_container2(
+      #   ns = ns,
+      #   scroll_ui_text(
+      #     ns = ns,
+      #     scroll_ui_text_section(
+      #       ns = ns,
+      #       position = 22,
+      #       includeMarkdown(app_sys("app", "www", "learn", "estimands2", "markdowns", 'section1.md'))
+      #     ),
+      #     scroll_ui_text_section(
+      #       ns = ns,
+      #       position = 23,
+      #       includeMarkdown(app_sys("app", "www", "learn", "estimands2", "markdowns", 'section2.md'))
+      #     ),
+      #     scroll_ui_text_section(
+      #       ns = ns,
+      #       position = 24,
+      #       includeMarkdown(app_sys("app", "www", "learn", "estimands2", "markdowns", 'section3.md'))
+      #     )
+      #   ),
+      #   scroll_ui_visual2(ns = ns)
+      # )
+
     )
   )
 }
@@ -165,6 +200,19 @@ mod_learn_estimands2_ui<- function(id){
 mod_learn_estimands2_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    # run the quiz
+    mod_quiz_server(
+      id = "quiz", # this should always be quiz
+      id_parent = module_ids$learn$estimands2,
+      question_texts = quiz_content_estimands2$question_texts,
+      question_prompts = quiz_content_estimands2$question_prompts,
+      correct_answers = quiz_content_estimands2$correct_answers,
+      message_correct = quiz_content_estimands2$message_correct,
+      message_wrong = quiz_content_estimands2$message_wrong,
+      message_skipped = quiz_content_estimands2$message_skipped,
+      embed_quiz = TRUE
+    )
 
     output$scroll_visual <- renderUI({
       items <- list()
@@ -393,12 +441,76 @@ mod_learn_estimands2_server <- function(id){
         }, deleteFile = F)
       )
 
+      # item 22
+      items$position22 <- div(
+        style = 'visibility: hidden;',
+        NULL
+      )
 
+
+
+      # item 21
+      items$position23 <- div(
+        style = 'visibility: hidden;',
+        renderImage({
+          list(src = app_sys('app', 'www/learn/estimands2/plots/p1.png'),
+               contentType = 'image/png',
+               width = 800,
+               height = 500)
+        }, deleteFile = F)
+      )
+
+      # item 21
+      items$position24 <- div(
+        style = 'visibility: hidden;',
+        renderImage({
+          list(src = app_sys('app', 'www/learn/estimands2/plots/p2.png'),
+               contentType = 'image/png',
+               width = 800,
+               height = 500)
+        }, deleteFile = F)
+      )
 
 
       return(items)
     })
 
+    # output$scroll_visual2 <- renderUI({
+    #   items <- list()
+    #   # item 1
+    #   items$position22 <- div(
+    #     style = 'visibility: hidden;',
+    #     renderImage({
+    #       list(src = app_sys('app', 'www/learn/estimands2/plots/p1.png'),
+    #            contentType = 'image/png',
+    #            width = 800,
+    #            height = 500)
+    #     }, deleteFile = F)
+    #   )
+    #
+    #   # item 2
+    #   items$position23 <- div(
+    #     style = 'visibility: hidden;',
+    #     renderImage({
+    #       list(src = app_sys('app', 'www/learn/estimands2/plots/p2.png'),
+    #            contentType = 'image/png',
+    #            width = 800,
+    #            height = 500)
+    #     }, deleteFile = F)
+    #   )
+    #
+    #   # item 3
+    #   items$position24 <- div(
+    #     style = 'visibility: hidden;',
+    #     reactable::renderReactable({
+    #       readr::read_csv('inst/extdata/estimands2_table1.csv') %>%
+    #         reactable::reactable()
+    #     })
+    #   )
+    #
+    #   return(items)
+    #
+    # })
 
   })
 }

@@ -119,7 +119,6 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
 
       # record answers
       store <- quiz_set_state(store, variable = 'current-response', value = input$answers)
-
       # is the answer correct
       is_correct <- quiz_is_current_correct(store)
 
