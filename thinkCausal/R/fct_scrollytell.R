@@ -38,6 +38,7 @@ scroll_ui_text_section <- function(ns, position, ...){
 
 #' @noRd
 #' @describeIn scroll_ui_container UI for establishing an individual scrollytell quiz section
+#' @description This requires the ui visual container to have style="pointer-events: none"; otherwise it will prevent clicks on the right half of the quiz.
 scroll_ui_quiz_section <- function(ns, position, ...){
   id <- ns(glue::glue('text-{position}'))
   htmltools::div(
@@ -51,11 +52,13 @@ scroll_ui_quiz_section <- function(ns, position, ...){
 
 #' @noRd
 #' @describeIn scroll_ui_container UI output for the visual (plots, tables, etc.)
-scroll_ui_visual <- function(ns){
+#' @description clickable = FALSE is neccessary for when there is a quiz in a UI text section
+scroll_ui_visual <- function(ns, clickable = TRUE){
   id <- ns('scroll_visual')
   htmltools::div(
     id = glue::glue('{id}-container'),
     class = 'scroll-visual-container',
+    style = ifelse(isFALSE(clickable), "pointer-events: none", ''),
     shiny::uiOutput(outputId = id)
   )
 }

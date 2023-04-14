@@ -164,7 +164,7 @@ mod_learn_estimands2_ui<- function(id){
           ),
 
         ),
-        scroll_ui_visual(ns = ns)
+        scroll_ui_visual(ns = ns, clickable = FALSE)
       )
       #, scroll_ui_container2(
       #   ns = ns,
@@ -241,6 +241,7 @@ mod_learn_estimands2_server <- function(id){
       # item 3
       items$position3 <- div(
         style = 'visibility: hidden;',
+        # TODO: note this is not clickable b/c scroll_ui_visual(clickable = FALSE)
         reactable::renderReactable({
           readr::read_csv('inst/extdata/estimands2_table1.csv') %>%
             reactable::reactable()
