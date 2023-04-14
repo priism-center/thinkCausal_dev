@@ -14,6 +14,7 @@ scroll_ui_container <- function(ns, ...){
   )
 }
 
+#' @noRd
 #' @describeIn scroll_ui_container UI container for the text sections
 scroll_ui_text <- function(ns, ...){
   htmltools::div(
@@ -23,6 +24,7 @@ scroll_ui_text <- function(ns, ...){
   )
 }
 
+#' @noRd
 #' @describeIn scroll_ui_container UI for establishing an individual scrollytell text section
 scroll_ui_text_section <- function(ns, position, ...){
   id <- ns(glue::glue('text-{position}'))
@@ -34,6 +36,7 @@ scroll_ui_text_section <- function(ns, position, ...){
   )
 }
 
+#' @noRd
 #' @describeIn scroll_ui_container UI for establishing an individual scrollytell quiz section
 scroll_ui_quiz_section <- function(ns, position, ...){
   id <- ns(glue::glue('text-{position}'))
@@ -46,6 +49,7 @@ scroll_ui_quiz_section <- function(ns, position, ...){
   )
 }
 
+#' @noRd
 #' @describeIn scroll_ui_container UI output for the visual (plots, tables, etc.)
 scroll_ui_visual <- function(ns){
   id <- ns('scroll_visual')
@@ -56,6 +60,7 @@ scroll_ui_visual <- function(ns){
   )
 }
 
+#' @noRd
 #' @describeIn scroll_ui_container runs the JS. For use on the UI side
 use_scrollytell <- function(ns){
   # this adds the javascript listener for the module
@@ -77,7 +82,7 @@ use_scrollytell <- function(ns){
 #' @description See mod_learn_scrolly_example.R for an example. Requires scrollytell.css and scrollytell.js. This custom implementation is necessary because we need a R-based API (re: non JS) and current R packages do not support modules.
 #'
 #' @return html for the UI
-#' @author Joe Marlo
+#' @author Joseph Marlo, George Perrett
 #'
 #' @noRd
 scroll_ui_container2 <- function(ns, ...){
@@ -88,8 +93,7 @@ scroll_ui_container2 <- function(ns, ...){
   )
 }
 
-
-
+#' @noRd
 #' @describeIn scroll_ui_container UI output for the visual (plots, tables, etc.)
 scroll_ui_visual2 <- function(ns){
   id <- ns('scroll_visual2')
@@ -100,6 +104,7 @@ scroll_ui_visual2 <- function(ns){
   )
 }
 
+#' @noRd
 #' @describeIn scroll_ui_container runs the JS. For use on the UI side
 use_scrollytell2 <- function(ns){
   # this adds the javascript listener for the module

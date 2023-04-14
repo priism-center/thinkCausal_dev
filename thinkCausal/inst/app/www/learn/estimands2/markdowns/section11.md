@@ -1,4 +1,4 @@
-### Infinate Possible Counterfactuals
+### Infinite Possible Counterfactuals
 
 We can imagine an infinite number of possible coutnerfactuals. 
 

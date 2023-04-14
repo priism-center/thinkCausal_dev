@@ -7,6 +7,19 @@
 ### requires learning.css style sheet in /www folder ###
 
 
+# TODO: need another version of this quiz that is effectively infinite
+  # infinite quiz "sandbox practice" at end of article
+  # user should see similar quiz interface
+  # have unlimited questions
+  # can end at any point via button to generate "report" of score
+  # create new module
+  # call it "sandbox"
+  # should take a function that generates random question with answers
+# it could not be infinite, maybe just have it wrap around this quiz and take a function that generates 100x questions
+# need to put in "generate report" button
+
+
+
 #' quiz UI Function
 #'
 #' @description A shiny Module.
@@ -189,6 +202,7 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
 #' )
 #' quiz_get_state(store, 'current-question')
 #' }
+#' @noRd
 #' @describeIn quiz_get_state a getter function for the state machine
 quiz_get_state <- function(store, variable = NULL, state = NULL){
   if (is.null(state)) state <- store$state
@@ -215,6 +229,7 @@ quiz_get_state <- function(store, variable = NULL, state = NULL){
   }
 }
 
+#' @noRd
 #' @describeIn quiz_get_state a setter function for the state machine
 quiz_set_state <- function(store, variable, value, state = NULL){
   if (is.null(state)) state <- quiz_get_state(store)
@@ -234,6 +249,7 @@ quiz_set_state <- function(store, variable, value, state = NULL){
   return(store)
 }
 
+#' @noRd
 #' @describeIn quiz_get_state check that an answer matches a response, agnostic of ordering
 quiz_is_answer_correct <- function(answer, key){
   if (length(answer) != length(key)) return(FALSE)
@@ -243,6 +259,7 @@ quiz_is_answer_correct <- function(answer, key){
   return(is_correct)
 }
 
+#' @noRd
 #' @describeIn quiz_get_state check that current-response is correct
 quiz_is_current_correct <- function(store){
   current_response <- unname(quiz_get_state(store, variable = 'current-response'))
@@ -251,6 +268,7 @@ quiz_is_current_correct <- function(store){
   return(is_correct)
 }
 
+#' @noRd
 #' @describeIn quiz_get_state check that all recorded answers are correct
 quiz_is_all_correct <- function(store) {
   tryCatch({
@@ -271,6 +289,7 @@ quiz_is_all_correct <- function(store) {
   error = function(e) FALSE)
 }
 
+#' @noRd
 #' @describeIn quiz_get_state UI to show once the quiz is completed
 quiz_ui_quiz_complete <- function(store, ns, message_correct, message_wrong, message_skipped){
 
@@ -298,6 +317,7 @@ quiz_ui_quiz_complete <- function(store, ns, message_correct, message_wrong, mes
   return(html_content)
 }
 
+#' @noRd
 #' @describeIn quiz_get_state UI to show for each question
 quiz_ui_question <- function(store, ns){
 

@@ -444,10 +444,8 @@ mod_learn_estimands2_server <- function(id){
       # item 22
       items$position22 <- div(
         style = 'visibility: hidden;',
-        NULL
+        NULL # b/c this is a quiz chunk
       )
-
-
 
       # item 21
       items$position23 <- div(

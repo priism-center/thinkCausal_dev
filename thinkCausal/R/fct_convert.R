@@ -29,6 +29,7 @@ convert_data_types <- function(.data, new_data_types){
   return(.data)
 }
 
+#' @noRd
 #' @describeIn convert_data_types converts x to the new_data_type
 convert_data_types_ <- function(x, new_data_type){
   if (new_data_type %notin% c('Categorical', 'Binary', 'Continuous')) stop("new_data_type must be one of c('Categorical', 'Binary', 'Continuous')")
