@@ -13,9 +13,6 @@ quiz_content_estimands2 <- local({
 
 # question 1 --------------------------------------------------------------
   question_1 <- tagList(
-      h4("Practice choosing an estimand based on overlap with these X practice questions:"),
-      hr(),
-      h3("Question 1"), # h3 required for checkmark/red x placement
       p("Variable X is the only confounder. Given the overlap of X, select all the estimands we could estimate without violating the overlap assumption."),
       p("Filler text 1"),
 
@@ -39,9 +36,6 @@ quiz_content_estimands2 <- local({
 
 # question 2 --------------------------------------------------------------
   question_2 <- tagList(
-    h4("Practice choosing an estimand based on overlap with these X practice questions:"),
-    hr(),
-    h3("Question 2"), # h3 required for checkmark/red x placement
     p("Variable X is the only confounder. Given the overlap of X, select all the estimands we could estimate without violating the overlap assumption."),
     p("Filler text 1"),
 
@@ -65,9 +59,9 @@ quiz_content_estimands2 <- local({
 
 # question 3 --------------------------------------------------------------
   question_3 <- tagList(
-    h4("Practice choosing an estimand based on overlap with these X practice questions:"),
-    hr(),
-    h3("Question 3"), # h3 required for checkmark/red x placement
+    # h4("Practice choosing an estimand based on overlap with these X practice questions:"),
+    # hr(),
+    # h3("Question 3"), # h3 required for checkmark/red x placement
     p("Variable X is the only confounder. Given the overlap of X, select all the estimands we could estimate without violating the overlap assumption."),
     p("Filler text 1"),
 
@@ -91,8 +85,6 @@ quiz_content_estimands2 <- local({
 
 
 
-
-# quiz key ----------------------------------------------------------------
   # place in a single list
   content$question_texts <- list(question_1, question_2, question_3)
   content$question_prompts <- list(question_prompt_1, question_prompt_2, question_prompt_3)
@@ -103,3 +95,4 @@ quiz_content_estimands2 <- local({
 
   return(content)
 })
+

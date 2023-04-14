@@ -15,6 +15,7 @@
   # create new module
   # call it "sandbox"
   # should take a function that generates random question with answers
+  # should not end when a question is incorrect
 # it could not be infinite, maybe just have it wrap around this quiz and take a function that generates 100x questions
 # need to put in "generate report" button
 
@@ -44,7 +45,7 @@ mod_quiz_ui <- function(id){
 #' quiz Server Functions
 #'
 #' @noRd
-mod_quiz_server <- function(id, id_parent = character(0), question_texts, question_prompts, correct_answers, message_correct, message_wrong, message_skipped, embed_quiz = TRUE){
+mod_quiz_server <- function(id, id_parent = character(0), question_texts, question_prompts, correct_answers, message_correct, message_wrong, message_skipped, embed_quiz = TRUE, sandbox_mode = FALSE){
   moduleServer( id, function(input, output, session){
     # ns <- session$ns
     ns <- NS(NS(id_parent)(id))
@@ -57,6 +58,21 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
     # add css class to the quiz container if embedding
     if (isTRUE(embed_quiz)) shinyjs::addClass(id = 'quiz-container', class = 'quiz-embedded')
 
+    # resample the questions if in sandbox mode
+    if (isTRUE(sandbox_mode)){
+      # number of questions
+      n <- 50L
+
+      # sample indices for replicating the questions
+      indices <- sample(seq_along(question_texts), size = n, replace = TRUE)
+      question_texts <- question_texts[indices]
+      question_prompts <- question_prompts[indices]
+      correct_answers <- correct_answers[indices]
+    }
+
+    # add headers to question texts
+    question_texts <- quiz_format_question_texts(question_texts)
+
     # set the current state and potential values
     store <- reactiveValues(
       state = 'quiz-question-1',
@@ -66,7 +82,8 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
       correct_answers = correct_answers,
       responses = rep(NA, length(question_texts) + 1),
       ui_html = NULL,
-      skipped = FALSE
+      skipped = FALSE,
+      sandbox_mode = isTRUE(sandbox_mode)
     )
 
     # reset quiz
@@ -79,7 +96,7 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
       store <- quiz_set_state(store, variable = 'quiz-skipped', value = FALSE)
     })
 
-    # skip quiz
+    # skip quiz / finish quiz
     observeEvent(input$skip_button, {
       store <- quiz_set_state(store, variable = 'current-state', value = 'quiz-complete')
       store <- quiz_set_state(store, variable = 'quiz-skipped', value = TRUE)
@@ -132,6 +149,7 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
 
       # record answers
       store <- quiz_set_state(store, variable = 'current-response', value = input$answers)
+
       # is the answer correct
       is_correct <- quiz_is_current_correct(store)
 
@@ -152,8 +170,14 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
         add_red_x(ns = ns, id = 'quiz-container', element = 'h3')
 
         # change the state
+        # if in sandbox mode, go to next question otherwise end here
         shinyjs::delay(delay_in_ms, {
-          store <- quiz_set_state(store, variable = 'current-state', value = 'quiz-complete')
+          if (quiz_in_sandbox_mode(store)){
+            new_state <- quiz_get_state(store, variable = 'next-state')
+            store <- quiz_set_state(store, variable = 'current-state', value = new_state)
+          } else {
+            store <- quiz_set_state(store, variable = 'current-state', value = 'quiz-complete')
+          }
         })
       }
     })
@@ -181,7 +205,7 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
 #' @return depends on function
 #' @noRd
 #'
-#' @author Joe Marlo
+#' @author Joseph Marlo
 #'
 #' @examples
 #' \dontrun{
@@ -198,7 +222,8 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
 #'   question_prompts = question_prompts,
 #'   correct_answers = correct_answers,
 #'   responses = c('yes', NA, NA),
-#'   skipped = FALSE
+#'   skipped = FALSE,
+#'   sandbox_mode = FALSE
 #' )
 #' quiz_get_state(store, 'current-question')
 #' }
@@ -226,6 +251,9 @@ quiz_get_state <- function(store, variable = NULL, state = NULL){
   }
   if (variable == 'quiz-skipped'){
     return(store$skipped)
+  }
+  if (variable == 'sandbox-mode'){
+    return(store$sandbox_mode)
   }
 }
 
@@ -255,7 +283,7 @@ quiz_is_answer_correct <- function(answer, key){
   if (length(answer) != length(key)) return(FALSE)
   if(!is.numeric(answer)) is_correct <- purrr::map2_lgl(answer, key, function(resp, key) base::setequal(resp, key))
   if(is.numeric(answer)) is_correct <-  purrr::map2_lgl(answer, key, function(resp, key) between(resp, key-.1, key+.1))
-  is_correct <- all(is_correct)
+  is_correct <- isTRUE(all(is_correct))
   return(is_correct)
 }
 
@@ -269,24 +297,51 @@ quiz_is_current_correct <- function(store){
 }
 
 #' @noRd
+#' @describeIn quiz_get_state check that recorded answers are correct and return a boolean vector
+quiz_check_is_each_correct <- function(store){
+  # extract responses and correct answers
+  responses <- unname(store$responses[-(length(store$question_texts) + 1)])
+  correct_answers <- unname(store$correct_answers)
+
+  # remove names
+  responses <- purrr::map(responses, unname)
+  correct_answers <- purrr::map(correct_answers, unname)
+
+  # check if they are the same
+  is_identical <- purrr::map2_lgl(responses, correct_answers, quiz_is_answer_correct)
+
+  return(is_identical)
+}
+
+#' @noRd
 #' @describeIn quiz_get_state check that all recorded answers are correct
 quiz_is_all_correct <- function(store) {
   tryCatch({
-    # extract responses and correct answers
-    responses <- unname(store$responses[-(length(store$question_texts) + 1)])
-    correct_answers <- unname(store$correct_answers)
-
-    # remove names
-    responses <- purrr::map(responses, unname)
-    correct_answers <- purrr::map(correct_answers, unname)
-
-    # check if they are the same
-    is_identical <- purrr::map2_lgl(responses, correct_answers, quiz_is_answer_correct)
+    is_identical <- quiz_check_is_each_correct(store)
     is_identical <- all(is_identical)
 
     return(is_identical)
   },
   error = function(e) FALSE)
+}
+
+#' @noRd
+#' @describeIn quiz_get_state Check if the quiz in sandbox mode
+quiz_in_sandbox_mode <- function(store){
+  isTRUE(quiz_get_state(store, 'sandbox-mode'))
+}
+
+#' @noRd
+#' @describeIn quiz_get_state Add a header denoting the question number
+quiz_format_question_texts <- function(question_texts){
+  purrr::map2(question_texts, seq_along(question_texts), function(q_text, i) {
+    htmltools::tagList(
+      htmltools::h4("Practice what you've learned"),
+      htmltools::hr(),
+      htmltools::h3(glue::glue("Question {i}")), # h3 required for checkmark/red x placement
+      q_text
+    )
+  })
 }
 
 #' @noRd
@@ -305,16 +360,82 @@ quiz_ui_quiz_complete <- function(store, ns, message_correct, message_wrong, mes
     html_content <- tagList(br(), add_message_wrong(message_wrong))
   }
 
-  # add restart button
+  # render the report table
+  grade_report <- quiz_ui_quiz_complete_report(store)
+
+  # render the restart button
+  restart_button <- actionButton(
+    inputId = ns('restart_button'),
+    label = 'Restart quiz',
+    class = 'restart-button'
+  )
+
+  # put it all together
   html_content <- tagList(
     html_content,
-    actionButton(inputId = ns('restart_button'),
-                 label = 'Restart quiz',
-                 class = 'restart-button'),
+    grade_report,
+    restart_button,
     br(), br(), hr(), br()
   )
 
   return(html_content)
+}
+
+#' @noRd
+#' @describeIn quiz_get_state Quiz score and table of correct answers to show at the end
+quiz_ui_quiz_complete_report <- function(store){
+
+  # TODO: this doesn't work well for complex answers like ones from a sortable list
+
+  in_sandbox <- quiz_in_sandbox_mode(store)
+
+  # grade answers and convert into icons
+  icon_right <- shiny::icon('check') |> as.character()
+  icon_wrong <- shiny::icon('times') |> as.character()
+  answers <- quiz_check_is_each_correct(store)
+  answers_checks <- c(icon_wrong, icon_right)[answers + 1]
+
+  # format question labels
+  question_label <- paste0('Question ', seq_along(store$correct_answers))
+
+  # calculate score and format user's answers
+  # if in sandbox mode, score is only for non skipped items
+  answers_user <- unname(store$responses[-(length(store$question_texts) + 1)])
+  score <- ifelse(
+    in_sandbox,
+    mean(answers[!is.na(answers_user)]),
+    mean(answers)
+  )
+  if(is.na(score)) score <- 0
+  answers_user[is.na(answers_user)] <- '[skipped]'
+
+  # format correct answers
+  answers_correct <- unname(store$correct_answers[-(length(store$question_texts) + 1)])
+
+  # put everything in a table
+  grade_tbl <- tibble::tibble(
+    icon = answers_checks,
+    label = question_label,
+    `Your Answer` = answers_user,
+    `Correct Answer` = answers_correct
+  ) |>
+    reactable::reactable(
+      columns = list(
+        icon = reactable::colDef(name = '', html = TRUE, width = 40),
+        label = reactable::colDef(name = '', width = 115),
+        `Your Answer` = reactable::colDef(align = 'right'),
+        `Correct Answer` = reactable::colDef(align = 'right')
+      )
+    )
+
+  # add score to top of table
+  grade_report <- htmltools::tagList(
+    br(),
+    htmltools::h4(glue::glue('Score: {scales::percent_format()(score)}')),
+    grade_tbl
+  )
+
+  return(grade_report)
 }
 
 #' @noRd
@@ -336,9 +457,11 @@ quiz_ui_question <- function(store, ns){
                  class = 'submit-button'),
 
     # button to skip quiz
-    actionButton(inputId = ns('skip_button'),
-                 label = 'Skip quiz',
-                 class = 'skip-button')
+    actionButton(
+      inputId = ns('skip_button'),
+      label = ifelse(quiz_in_sandbox_mode(store), 'Finish quiz', 'Skip quiz'),
+      class = 'skip-button'
+    )
   )
 
   return(html_content)

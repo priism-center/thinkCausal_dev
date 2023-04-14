@@ -211,7 +211,8 @@ mod_learn_estimands2_server <- function(id){
       message_correct = quiz_content_estimands2$message_correct,
       message_wrong = quiz_content_estimands2$message_wrong,
       message_skipped = quiz_content_estimands2$message_skipped,
-      embed_quiz = TRUE
+      embed_quiz = TRUE,
+      sandbox_mode = TRUE #TODO: change to false. Currently just for testing
     )
 
     output$scroll_visual <- renderUI({

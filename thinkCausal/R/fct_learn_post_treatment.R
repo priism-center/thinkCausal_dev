@@ -14,9 +14,6 @@ quiz_content_post_treatment <- local({
 
   # set the text for question 1
   question_1 <- tagList(
-    h4("Practice identifying post-treatment variables with these 2 practice questions:"),
-    hr(),
-    h3("Question 1"), # h3 required for checkmark/red x placement
     p("You’re tasked with determining if omega-3 fish oil supplements cause a decrease in blood pressure over a 6 month period. You have data from an experiment where participants were randomly assigned to take omega-3 fish oil supplements or a placebo supplement for 6 months. Besides the treatment variable (fish_oil) and the outcome variable (bp_6month) you have the following covariates: "),
     tags$ul(
       tags$li('Blood pressure measured at the start of the study (bp_baseline)'),
@@ -73,7 +70,6 @@ quiz_content_post_treatment <- local({
 
   # set the text for question 2
   question_2 <- tagList(
-    h3("Question 2"), # h3 required for checkmark/red x placement
     p("A middle school offers an optional meditation class to 8th grade students at the beginning of their 8th grade year. You’re tasked with determining if the meditation class caused higher grades at the end of 8th grade. Besides the treatment variable (meditation) and the outcome variable (grades), the school provided you with several other covariates. All covariates were pulled from administrative data at the end of 8th grade. Each covariate is show below:"),
   )
 

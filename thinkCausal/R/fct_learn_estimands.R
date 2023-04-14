@@ -12,9 +12,7 @@ quiz_content_estimands <- local({
   po <- create_table(ate = -5, y_min = 30, y_max = 50, po_question = FALSE, ite_question = FALSE, id_unit = 'Runner', button = FALSE, )
   # questions
   question_1 <- tagList(
-    h4("Calculating the ATE"),
-    hr(),
-    h3("Question 1"), # h3 required for checkmark/red x placement
+    h5("Calculating the ATE"),
     p("Imagine you're asked to determine the average treatment effect of wearing HyperShoes (Z = 1) on 5k running times. The potential outcomes for a sample of 6 runners are shown below. Use this data to calculate the average treatment effect (ATE)."),
     HTML(po[[1]]),
     br(),
