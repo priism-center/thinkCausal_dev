@@ -20,7 +20,7 @@ mod_reproduce_ui <- function(id){
       outputId = ns('analysis_results_button_download'),
       label = 'Download R script',
       style = 'max-width: 300px',
-      class = if (isTRUE(golem::app_prod())) 'btn-disabled'
+      class = if (golem::app_prod()) 'btn-disabled'
     ),
     br(), br(),
     bs4Dash::box(
@@ -42,7 +42,7 @@ mod_reproduce_server <- function(id, store){
     ns <- session$ns
 
     # print the log
-    # the log is created by appending text descriptions of events to store$log
+    # NOTE: the log is created by appending text descriptions of events to store$log
     output$settings_log_text <- renderText({
       log <- store$log
       if (length(log) == 0) log <- "No logged events to display"
@@ -71,9 +71,10 @@ mod_reproduce_server <- function(id, store){
 
       content <- function(filename) {
 
-        # this is unstable so stop here for now
-        if (isTRUE(options('golem.app.prod')[[1]])) req(FALSE)
+        # this is unstable so stop here for now in prod
+        req(golem::app_dev())
 
+        # model must have fit to generate the script
         req(store$analysis$model$fit_good)
 
         # go to a temp dir to avoid permission issues
