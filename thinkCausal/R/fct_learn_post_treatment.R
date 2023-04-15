@@ -65,6 +65,36 @@ quiz_content_post_treatment <- local({
                            c('fish_oil'),
                            c('bp_6month'))
 
+  # function to check the answers
+  grader_1 <- function(user_response){
+
+    correct_answers <- list(
+      c('bp_3month'),
+      c('bp_baseline', 'sex', 'height'),
+      c('fish_oil'),
+      c('bp_6month')
+    )
+
+    all_true <- all(
+      setequal(user_response[[1]], correct_answers[[1]]),
+      setequal(user_response[[2]], correct_answers[[2]]),
+      setequal(user_response[[3]], correct_answers[[3]]),
+      setequal(user_response[[4]], correct_answers[[4]])
+    )
+    if (isTRUE(all_true)) return(TRUE)
+
+    return(FALSE)
+  }
+
+  #TODO: function to print user response to in grade report
+  # print_user_answer_1 <- function(x){
+  #
+  # }
+  #TODO: function to print correct to in grade report
+  # print_correct_answer_1 <- function(x){
+  #
+  # }
+
 
   # question 2 --------------------------------------------------------------
 
@@ -111,14 +141,37 @@ quiz_content_post_treatment <- local({
                            c('Meditation'),
                            c('Grades')
   )
-  # use character(0) if any rank lists should be empty
 
+  # function to check the answers
+  # function to check the answers
+  grader_2 <- function(user_response){
+
+    correct_answers <- list(
+      c('Detentions during 8th grade'),
+      c('6th grade grades', '7th grade grades', 'Race'),
+      c('Meditation'),
+      c('Grades')
+    )
+
+    all_true <- all(
+      setequal(user_response[[1]], correct_answers[[1]]),
+      setequal(user_response[[2]], correct_answers[[2]]),
+      setequal(user_response[[3]], correct_answers[[3]]),
+      setequal(user_response[[4]], correct_answers[[4]])
+    )
+    if (isTRUE(all_true)) return(TRUE)
+
+    return(FALSE)
+  }
+
+  # use character(0) if any rank lists should be empty
   content$question_texts <- list(question_1, question_2)
   content$question_prompts <- list(question_prompt_1, question_prompt_2)
   content$correct_answers <- list(correct_answer_1, correct_answer_2)
   content$message_correct <- "Well done! You got all of them correct."
   content$message_wrong <- "Hmmm, bummer! You got at least one wrong."
   content$message_skipped <- "Quiz skipped. You can restart it using the button below."
+  content$graders <- list(grader_1, grader_2)
 
   return(content)
 })

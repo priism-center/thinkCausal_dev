@@ -45,7 +45,7 @@ mod_quiz_ui <- function(id){
 #' quiz Server Functions
 #'
 #' @noRd
-mod_quiz_server <- function(id, id_parent = character(0), question_texts, question_prompts, correct_answers, message_correct, message_wrong, message_skipped, embed_quiz = TRUE, sandbox_mode = FALSE){
+mod_quiz_server <- function(id, id_parent = character(0), question_texts, question_prompts, correct_answers, graders = NULL, message_correct, message_wrong, message_skipped, embed_quiz = TRUE, sandbox_mode = FALSE){
   moduleServer( id, function(input, output, session){
     # ns <- session$ns
     ns <- NS(NS(id_parent)(id))
@@ -80,7 +80,9 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
       question_texts = question_texts,
       question_prompts = question_prompts,
       correct_answers = correct_answers,
+      graders = graders,
       responses = rep(NA, length(question_texts) + 1),
+      is_correct = rep(FALSE, length(question_texts)), # TODO: not yet used
       ui_html = NULL,
       skipped = FALSE,
       sandbox_mode = isTRUE(sandbox_mode)
@@ -94,6 +96,7 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
       # remove any responses
       store$responses <- rep(NA, length(question_texts) + 1)
       store <- quiz_set_state(store, variable = 'quiz-skipped', value = FALSE)
+      store$is_correct <- rep(FALSE, length(question_texts))
     })
 
     # skip quiz / finish quiz
@@ -150,8 +153,9 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
       # record answers
       store <- quiz_set_state(store, variable = 'current-response', value = input$answers)
 
-      # is the answer correct
+      # is the answer correct and record it
       is_correct <- quiz_is_current_correct(store)
+      store <- quiz_set_state(store, 'current-correct', is_correct)
 
       # grade it
       delay_in_ms <- 2000
@@ -243,6 +247,12 @@ quiz_get_state <- function(store, variable = NULL, state = NULL){
   if (variable == 'current-correct-answer'){
     return(store$correct_answers[store$states == state][[1]])
   }
+  if (variable == 'current-grader'){
+    return(store$graders[store$states == state][[1]])
+  }
+  if (variable == 'current-correct'){
+    return(store$is_correct[store$states == state])
+  }
   if (variable == 'next-state'){
     return(store$states[min(length(store$states), match(state, store$states) + 1)])
   }
@@ -273,6 +283,10 @@ quiz_set_state <- function(store, variable, value, state = NULL){
     if (!is.logical(value)) stop('value must logical for "quiz-skipped" variable')
     store$skipped <- value
   }
+  if (variable == 'current-correct'){
+    state_index <- store$states[store$states != 'quiz-complete']
+    store$is_correct[state_index == state] <- value
+  }
 
   return(store)
 }
@@ -292,37 +306,27 @@ quiz_is_answer_correct <- function(answer, key){
 quiz_is_current_correct <- function(store){
   current_response <- unname(quiz_get_state(store, variable = 'current-response'))
   current_correct_answer <- unname(quiz_get_state(store, variable = 'current-correct-answer'))
-  is_correct <- quiz_is_answer_correct(current_response, current_correct_answer)
+
+  # if there is a grader function, use it. Otherwise use the generic one defined above
+  current_grader <- quiz_get_state(store, 'current-grader')
+  if (!is.null(current_grader)){
+    is_correct <- current_grader(current_response)
+  } else {
+    is_correct <- quiz_is_answer_correct(current_response, current_correct_answer)
+  }
   return(is_correct)
 }
 
 #' @noRd
 #' @describeIn quiz_get_state check that recorded answers are correct and return a boolean vector
 quiz_check_is_each_correct <- function(store){
-  # extract responses and correct answers
-  responses <- unname(store$responses[-(length(store$question_texts) + 1)])
-  correct_answers <- unname(store$correct_answers)
-
-  # remove names
-  responses <- purrr::map(responses, unname)
-  correct_answers <- purrr::map(correct_answers, unname)
-
-  # check if they are the same
-  is_identical <- purrr::map2_lgl(responses, correct_answers, quiz_is_answer_correct)
-
-  return(is_identical)
+  return(store$is_correct)
 }
 
 #' @noRd
 #' @describeIn quiz_get_state check that all recorded answers are correct
 quiz_is_all_correct <- function(store) {
-  tryCatch({
-    is_identical <- quiz_check_is_each_correct(store)
-    is_identical <- all(is_identical)
-
-    return(is_identical)
-  },
-  error = function(e) FALSE)
+  return(isTRUE(all(quiz_check_is_each_correct(store))))
 }
 
 #' @noRd
@@ -388,6 +392,8 @@ quiz_ui_quiz_complete_report <- function(store){
   # TODO: this doesn't work well for complex answers like ones from a sortable list
 
   in_sandbox <- quiz_in_sandbox_mode(store)
+
+  # browser()
 
   # grade answers and convert into icons
   icon_right <- shiny::icon('check') |> as.character()

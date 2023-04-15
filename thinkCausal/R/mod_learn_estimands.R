@@ -74,6 +74,7 @@ mod_learn_estimands_server <- function(id){
       question_texts = quiz_content_estimands$question_texts,
       question_prompts = quiz_content_estimands$question_prompts,
       correct_answers = quiz_content_estimands$correct_answers,
+      # graders = quiz_content_estimands$graders,
       message_correct = quiz_content_estimands$message_correct,
       message_wrong = quiz_content_estimands$message_wrong,
       message_skipped = quiz_content_estimands$message_skipped,
