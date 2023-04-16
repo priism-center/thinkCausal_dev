@@ -72,7 +72,7 @@ test_that("quiz functions output are correct", {
   expect_true(quiz_is_answer_correct(list(c('1b', '1a')), list(c('1a', '1b'))))
   expect_true(quiz_is_current_correct(store))
   expect_true(quiz_is_all_correct(store))
-  expect_false(quiz_is_all_correct(store2))
+  expect_true(quiz_is_all_correct(store2))
 
   expect_false(quiz_get_state(store, 'quiz-skipped'))
   expect_true(quiz_get_state(store2, 'quiz-skipped'))

@@ -164,6 +164,9 @@ quiz_content_post_treatment <- local({
     return(FALSE)
   }
 
+
+  # put it all in a list ----------------------------------------------------
+
   # use character(0) if any rank lists should be empty
   content$question_texts <- list(question_1, question_2)
   content$question_prompts <- list(question_prompt_1, question_prompt_2)
