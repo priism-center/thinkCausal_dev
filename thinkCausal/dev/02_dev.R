@@ -128,6 +128,7 @@ golem::add_fct('convert', with_test = TRUE)
 golem::add_utils('utils', with_test = TRUE)
 golem::add_fct('model', with_test = TRUE)
 
+
 ## External resources
 ## Creates .js and .css files at inst/app/www
 golem::add_js_file("ui", dir = 'inst/app/www/js')

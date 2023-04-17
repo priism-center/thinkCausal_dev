@@ -205,15 +205,29 @@ mod_learn_estimands2_server <- function(id){
     mod_quiz_server(
       id = "quiz", # this should always be quiz
       id_parent = module_ids$learn$estimands2,
-      question_texts = quiz_content_estimands2$question_texts,
-      question_prompts = quiz_content_estimands2$question_prompts,
-      correct_answers = quiz_content_estimands2$correct_answers,
+      questions = quiz_content_estimands2$questions,
+      # question_texts = quiz_content_post_treatment$question_texts,
+      # question_prompts = quiz_content_post_treatment$question_prompts,
+      # correct_answers = quiz_content_post_treatment$correct_answers,
+      # graders = quiz_content_post_treatment$graders,
       message_correct = quiz_content_estimands2$message_correct,
       message_wrong = quiz_content_estimands2$message_wrong,
       message_skipped = quiz_content_estimands2$message_skipped,
       embed_quiz = TRUE,
-      sandbox_mode = TRUE #TODO: change to false. Currently just for testing
+      sandbox_mode = TRUE # TODO: test
     )
+    # mod_quiz_server(
+    #   id = "quiz", # this should always be quiz
+    #   id_parent = module_ids$learn$estimands2,
+    #   question_texts = quiz_content_estimands2$question_texts,
+    #   question_prompts = quiz_content_estimands2$question_prompts,
+    #   correct_answers = quiz_content_estimands2$correct_answers,
+    #   message_correct = quiz_content_estimands2$message_correct,
+    #   message_wrong = quiz_content_estimands2$message_wrong,
+    #   message_skipped = quiz_content_estimands2$message_skipped,
+    #   embed_quiz = TRUE,
+    #   sandbox_mode = TRUE #TODO: change to false. Currently just for testing
+    # )
 
     output$scroll_visual <- renderUI({
       items <- list()

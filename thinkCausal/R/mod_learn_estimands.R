@@ -68,18 +68,18 @@ mod_learn_estimands_server <- function(id){
     ns <- session$ns
 
     # run the quiz
-    mod_quiz_server(
-      id = "quiz", # this should always be quiz
-      id_parent = module_ids$learn$estimands,
-      question_texts = quiz_content_estimands$question_texts,
-      question_prompts = quiz_content_estimands$question_prompts,
-      correct_answers = quiz_content_estimands$correct_answers,
-      # graders = quiz_content_estimands$graders,
-      message_correct = quiz_content_estimands$message_correct,
-      message_wrong = quiz_content_estimands$message_wrong,
-      message_skipped = quiz_content_estimands$message_skipped,
-      embed_quiz = TRUE
-    )
+    # mod_quiz_server(
+    #   id = "quiz", # this should always be quiz
+    #   id_parent = module_ids$learn$estimands,
+    #   question_texts = quiz_content_estimands$question_texts,
+    #   question_prompts = quiz_content_estimands$question_prompts,
+    #   correct_answers = quiz_content_estimands$correct_answers,
+    #   # graders = quiz_content_estimands$graders,
+    #   message_correct = quiz_content_estimands$message_correct,
+    #   message_wrong = quiz_content_estimands$message_wrong,
+    #   message_skipped = quiz_content_estimands$message_skipped,
+    #   embed_quiz = TRUE
+    # )
 
 
   })

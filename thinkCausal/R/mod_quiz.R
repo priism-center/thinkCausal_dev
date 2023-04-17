@@ -6,20 +6,9 @@
 ### cannot change this logic --> first incorrect answer stops the quiz and puts the user in the article ###
 ### requires learning.css style sheet in /www folder ###
 
+# post_treatment mod is the current working example
 
-# TODO: need another version of this quiz that is effectively infinite
-  # infinite quiz "sandbox practice" at end of article
-  # user should see similar quiz interface
-  # have unlimited questions
-  # can end at any point via button to generate "report" of score
-  # create new module
-  # call it "sandbox"
-  # should take a function that generates random question with answers
-  # should not end when a question is incorrect
-# it could not be infinite, maybe just have it wrap around this quiz and take a function that generates 100x questions
-# need to put in "generate report" button
-
-
+# TODO: move to separate R package
 
 #' quiz UI Function
 #'
@@ -45,7 +34,8 @@ mod_quiz_ui <- function(id){
 #' quiz Server Functions
 #'
 #' @noRd
-mod_quiz_server <- function(id, id_parent = character(0), question_texts, question_prompts, correct_answers, graders = NULL, message_correct, message_wrong, message_skipped, embed_quiz = TRUE, sandbox_mode = FALSE){
+# mod_quiz_server <- function(id, id_parent = character(0), question_texts, question_prompts, correct_answers, graders = NULL, message_correct, message_wrong, message_skipped, embed_quiz = TRUE, sandbox_mode = FALSE){
+mod_quiz_server <- function(id, id_parent = character(0), questions, message_correct, message_wrong, message_skipped, embed_quiz = TRUE, sandbox_mode = FALSE){
   moduleServer( id, function(input, output, session){
     # ns <- session$ns
     ns <- NS(NS(id_parent)(id))
@@ -64,25 +54,29 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
       n <- 50L
 
       # sample indices for replicating the questions
-      indices <- sample(seq_along(question_texts), size = n, replace = TRUE)
-      question_texts <- question_texts[indices]
-      question_prompts <- question_prompts[indices]
-      correct_answers <- correct_answers[indices]
+      indices <- sample(seq_along(questions), size = n, replace = TRUE)
+      questions <- questions[indices]
+      # question_prompts <- question_prompts[indices]
+      # correct_answers <- correct_answers[indices]
     }
 
     # add headers to question texts
-    question_texts <- quiz_format_question_texts(question_texts)
+    # question_texts <- quiz_format_question_texts(questions)
+    for (i in seq_along(questions)){
+      # print(questions[[i]]@question)
+      questions[[i]]@question <- quiz_format_question_text(questions[[i]]@question, i)
+    }
 
     # set the current state and potential values
     store <- reactiveValues(
       state = 'quiz-question-1',
-      states = c(paste0('quiz-question-', seq_along(question_texts)), 'quiz-complete'),
-      question_texts = question_texts,
-      question_prompts = question_prompts,
-      correct_answers = correct_answers,
-      graders = graders,
-      responses = rep(NA, length(question_texts) + 1),
-      is_correct = rep(FALSE, length(question_texts)), # TODO: not yet used
+      states = c(paste0('quiz-question-', seq_along(questions)), 'quiz-complete'),
+      questions = questions,
+      # question_prompts = question_prompts,
+      # correct_answers = correct_answers,
+      # graders = graders,
+      # responses = rep(NA, length(question_texts) + 1),
+      is_correct = rep(FALSE, length(questions)),
       ui_html = NULL,
       skipped = FALSE,
       sandbox_mode = isTRUE(sandbox_mode)
@@ -94,9 +88,10 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
       store <- quiz_set_state(store, variable = 'current-state', value = 'quiz-question-1')
 
       # remove any responses
-      store$responses <- rep(NA, length(question_texts) + 1)
+      # store$responses <- rep(NA, length(questions) + 1)
+      store$questions <- questions
       store <- quiz_set_state(store, variable = 'quiz-skipped', value = FALSE)
-      store$is_correct <- rep(FALSE, length(question_texts))
+      store$is_correct <- rep(FALSE, length(questions))
     })
 
     # skip quiz / finish quiz
@@ -203,7 +198,7 @@ mod_quiz_server <- function(id, id_parent = character(0), question_texts, questi
 #' See the post-treatment learning module for a working example.
 #'
 #' @param store a list formatted like in the example
-#' @param variable one of c('current-question', 'current-answers', 'current-correct-answer', 'next-state', 'current-response')
+#' @param variable one of c('current-question', 'current-correct-answer', 'next-state', 'current-response')
 #' @param state one of c('quiz-question-1', ..., 'quiz-question')
 #'
 #' @return depends on function
@@ -239,16 +234,18 @@ quiz_get_state <- function(store, variable = NULL, state = NULL){
   if (!(state %in% store$states)) stop('state not in store$states')
 
   if (variable == 'current-question'){
-    return(store$question_texts[store$states == state][[1]])
+    return(store$questions[store$states == state][[1]]@question)
   }
-  if (variable == 'current-answers'){
-    return(store$question_prompts[store$states == state][[1]])
-  }
+  # if (variable == 'current-answers'){
+  #   return(store$question_prompts[store$states == state][[1]])
+  # }
   if (variable == 'current-correct-answer'){
-    return(store$correct_answers[store$states == state][[1]])
+    # return(store$correct_answers[store$states == state][[1]])
+    return(store$questions[store$states == state][[1]]@answerCorrectDisplay)
   }
   if (variable == 'current-grader'){
-    return(store$graders[store$states == state][[1]])
+    # return(store$graders[store$states == state][[1]])
+    return(store$questions[store$states == state][[1]]@grader)
   }
   if (variable == 'current-correct'){
     return(store$is_correct[store$states == state])
@@ -257,7 +254,8 @@ quiz_get_state <- function(store, variable = NULL, state = NULL){
     return(store$states[min(length(store$states), match(state, store$states) + 1)])
   }
   if (variable == 'current-response'){
-    return(store$responses[store$states == state][[1]])
+    # return(store$responses[store$states == state][[1]])
+    return(store$questions[store$states == state][[1]]@answerUser[[1]]) # there's some weird indexing that happens with the lists
   }
   if (variable == 'quiz-skipped'){
     return(store$skipped)
@@ -270,6 +268,7 @@ quiz_get_state <- function(store, variable = NULL, state = NULL){
 #' @noRd
 #' @describeIn quiz_get_state a setter function for the state machine
 quiz_set_state <- function(store, variable, value, state = NULL){
+
   if (is.null(state)) state <- quiz_get_state(store)
   if (is.null(value)) value <- character(0)
 
@@ -277,7 +276,9 @@ quiz_set_state <- function(store, variable, value, state = NULL){
     store$state <- value
   }
   if (variable == 'current-response'){
-    store$responses[store$states == state] <- list(value)
+    # store$responses[store$states == state] <- list(value)
+    # store$questions[store$states == state][[1]]@answerUser[[1]] <- value
+    store$questions[[which(store$states == state)]]@answerUser[[1]] <- value # there's some weird indexing that happens with the lists
   }
   if (variable == 'quiz-skipped'){
     if (!is.logical(value)) stop('value must logical for "quiz-skipped" variable')
@@ -292,7 +293,7 @@ quiz_set_state <- function(store, variable, value, state = NULL){
 }
 
 #' @noRd
-#' @describeIn quiz_get_state check that an answer matches a response, agnostic of ordering
+#' @describeIn quiz_get_state Backup function to check that an answer matches a response, agnostic of ordering
 quiz_is_answer_correct <- function(answer, key){
   if (length(answer) != length(key)) return(FALSE)
   if(!is.numeric(answer)) is_correct <- purrr::map2_lgl(answer, key, function(resp, key) base::setequal(resp, key))
@@ -309,7 +310,7 @@ quiz_is_current_correct <- function(store){
 
   # if there is a grader function, use it. Otherwise use the generic one defined above
   current_grader <- quiz_get_state(store, 'current-grader')
-  if (!is.null(current_grader)){
+  if (shiny::isTruthy(current_grader)){
     is_correct <- current_grader(current_response)
   } else {
     is_correct <- quiz_is_answer_correct(current_response, current_correct_answer)
@@ -337,15 +338,23 @@ quiz_in_sandbox_mode <- function(store){
 
 #' @noRd
 #' @describeIn quiz_get_state Add a header denoting the question number
-quiz_format_question_texts <- function(question_texts){
-  purrr::map2(question_texts, seq_along(question_texts), function(q_text, i) {
-    htmltools::tagList(
-      htmltools::h4("Practice what you've learned"),
-      htmltools::hr(),
-      htmltools::h3(glue::glue("Question {i}")), # h3 required for checkmark/red x placement
-      q_text
-    )
-  })
+# quiz_format_question_texts <- function(questions){
+#   purrr::map2(questions, seq_along(questions), function(q_text, i) {
+#     htmltools::tagList(
+#       htmltools::h4("Practice what you've learned"),
+#       htmltools::hr(),
+#       htmltools::h3(glue::glue("Question {i}")), # h3 required for checkmark/red x placement
+#       q_text@question
+#     )
+#   })
+# }
+quiz_format_question_text <- function(question, i){
+  htmltools::div(
+    htmltools::h4("Practice what you've learned"),
+    htmltools::hr(),
+    htmltools::h3(glue::glue("Question {i}")), # h3 required for checkmark/red x placement
+    question
+  )
 }
 
 #' @noRd
@@ -389,42 +398,43 @@ quiz_ui_quiz_complete <- function(store, ns, message_correct, message_wrong, mes
 #' @describeIn quiz_get_state Quiz score and table of correct answers to show at the end
 quiz_ui_quiz_complete_report <- function(store){
 
-  # TODO: this doesn't work well for complex answers like ones from a sortable list
-
   in_sandbox <- quiz_in_sandbox_mode(store)
-
-  # browser()
 
   # grade answers and convert into icons
   icon_right <- shiny::icon('check') |> as.character()
   icon_wrong <- shiny::icon('times') |> as.character()
   answers <- quiz_check_is_each_correct(store)
-  answers_checks <- c(icon_wrong, icon_right)[answers + 1]
+  answers_icons <- c(icon_wrong, icon_right)[answers + 1]
 
   # format question labels
-  question_label <- paste0('Question ', seq_along(store$correct_answers))
+  question_label <- paste0('Question ', seq_along(store$questions))
 
   # calculate score and format user's answers
   # if in sandbox mode, score is only for non skipped items
-  answers_user <- unname(store$responses[-(length(store$question_texts) + 1)])
+  answers_user_print <- purrr::map(store$questions, ~.x@answerUserDisplay(.x@answerUser[[1]]))
+  answers_user_na <- purrr::map(store$questions, ~.x@answerUser[[1]]) |> is.na() # assumes NAs are skipped questions
+
   score <- ifelse(
     in_sandbox,
-    mean(answers[!is.na(answers_user)]),
+    mean(answers[!answers_user_na]),
     mean(answers)
   )
   if(is.na(score)) score <- 0
-  answers_user[is.na(answers_user)] <- '[skipped]'
+  skip_label <- '[skipped]'
+  answers_user_print[answers_user_na] <- skip_label
+
 
   # format correct answers
-  answers_correct <- unname(store$correct_answers[-(length(store$question_texts) + 1)])
+  answers_correct_print <- purrr::map_chr(store$questions, ~.x@answerCorrectDisplay)
 
   # put everything in a table
   grade_tbl <- tibble::tibble(
-    icon = answers_checks,
+    icon = answers_icons,
     label = question_label,
-    `Your Answer` = answers_user,
-    `Correct Answer` = answers_correct
+    `Your Answer` = answers_user_print,
+    `Correct Answer` = answers_correct_print
   ) |>
+    dplyr::filter(`Your Answer` != skip_label) |>
     reactable::reactable(
       columns = list(
         icon = reactable::colDef(name = '', html = TRUE, width = 40),
@@ -455,7 +465,7 @@ quiz_ui_question <- function(store, ns){
     quiz_get_state(store, 'current-question'),
 
     # question answer UI (e.g. radiobuttons, sortable divs, etc.)
-    quiz_get_state(store, 'current-answers'),
+    # quiz_get_state(store, 'current-answers'),
 
     # button to submit answer
     actionButton(inputId = ns('submit_button'),
@@ -472,6 +482,54 @@ quiz_ui_question <- function(store, ns){
 
   return(html_content)
 }
+
+
+# classes -----------------------------------------------------------------
+
+# class for quizes
+setClass('quizQuestion', slots = list(
+  question = 'shiny.tag',
+  answerUser = 'list',
+  answerUserDisplay = 'function', # how to print the user answer in the report
+  answerCorrectDisplay = 'character', # how to print the correct answer in the report
+  grader = 'function' # function that compares user answer to the correct answer
+))
+
+verify_question_structure <- function(question){
+
+  if (!isTRUE(isS4(question))) cli::cli_abort('Must be an S4 object')
+  if (!isTRUE(inherits(question, 'quizQuestion'))) cli::cli_abort('Must be an S4 object with class quizQuestion')
+
+  if (!isTRUE(inherits(question@question, 'shiny.tag'))) cli::cli_abort('`question` must be of class shiny.tag. Preferably generated from htmltools::div().')
+
+  if (!isTRUE(inherits(question@answerUserDisplay, 'function'))) cli::cli_abort('`answerUserDisplay` must be a function that accepts one argument and returns a character.')
+  if (!isTRUE(inherits(question@answerCorrectDisplay, 'character'))) cli::cli_abort('`answerCorrectDisplay` must be a character.')
+  if (!isTRUE(inherits(question@grader, 'function'))) cli::cli_abort('`grader` must be a function that accepts one argument and returns a boolean')
+
+  # verify args
+
+
+  return(invisible(TRUE))
+}
+
+# TODO:
+setClass('quizMessages', slots = list(
+  correct = 'character',
+  wrong = 'character',
+  skipped = 'character'
+))
+
+#
+# setClass('answerCorrect', slots = list(
+#   answer = 'list',
+#   display = 'character',
+#   grader = 'function'
+# ))
+#
+# setClass('answerUser', slots = list(
+#   answer = 'list',
+#   display = 'character'
+# ))
 
 
 # helpers -----------------------------------------------------------------
