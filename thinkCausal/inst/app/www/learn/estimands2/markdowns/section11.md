@@ -1,7 +1,6 @@
 ### Infinite Possible Counterfactuals
 
-We can imagine an infinite number of possible coutnerfactuals. 
+We could imagine an infinite number of possible counterfactuals. 
 
-Lets imagine some of the possibilities! 
-
+Let's consider some of the possibilities! 
 

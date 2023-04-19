@@ -17,22 +17,23 @@ quiz_content_estimands2 <- local({
     htmltools::p("Filler text 1"),
 
     renderImage({
-      list(src = app_sys('app', 'www/learn/estimands2/plots/p21.png'),
+      list(src = app_sys('app', 'www/learn/estimands2/plots/quiz1.png'),
            contentType = 'image/png',
            width = 600,
            height = 400)
     }, deleteFile = F),
 
-    selectInput(
+    shiny::checkboxGroupInput(
       inputId = content$ns_quiz('answers'),
       label = NULL,
-      choices = c('', 'ATE', 'ATT', 'ATC'),
+      inline = TRUE,
+      choices = c('ATE', 'ATT', 'ATC'),
       selected = NULL
     )
   )
 
   # answer
-  # correct_answer_1 <- list(c('ATC'))
+  correct_answer_1 <- list(c('ATE', 'ATT', 'ATC'))
 
   # TODO: move to a permanent home
   setClass('quizQuestion', slots = list(
@@ -63,7 +64,7 @@ quiz_content_estimands2 <- local({
   # create the formal quizQuestion
   question_1 <- new('quizQuestion')
   question_1@question <- question_text_1
-  question_1@answerUser = list(NA)
+  question_1@answerUser = list(c('ATE', 'ATT', 'ATC'))
   question_1@answerUserDisplay <- function(x) {
     tryCatch(
       paste0(x[[2]], collapse = ', '),
@@ -82,19 +83,23 @@ quiz_content_estimands2 <- local({
     htmltools::p("Filler text 1"),
 
     renderImage({
-      list(src = app_sys('app', 'www/learn/estimands2/plots/p21.png'),
+      list(src = app_sys('app', 'www/learn/estimands2/plots/quiz2.png'),
            contentType = 'image/png',
            width = 600,
            height = 400)
     }, deleteFile = F),
 
-    selectInput(
+    shiny::checkboxGroupInput(
       inputId = content$ns_quiz('answers'),
       label = NULL,
-      choices = c('', 'ATE', 'ATT', 'ATC'),
+      inline = TRUE,
+      choices = c('ATE', 'ATT', 'ATC'),
       selected = NULL
     )
   )
+
+  # answer
+  correct_answer_2 <- list(c('ATC'))
 
   # create the formal quizQuestion
   question_2 <- new('quizQuestion')
@@ -122,16 +127,17 @@ quiz_content_estimands2 <- local({
     htmltools::p("Filler text 1"),
 
     shiny::renderImage({
-      list(src = app_sys('app', 'www/learn/estimands2/plots/p22.png'),
+      list(src = app_sys('app', 'www/learn/estimands2/plots/quiz3.png'),
            contentType = 'image/png',
            width = 600,
            height = 400)
     }, deleteFile = F),
 
-    shiny::selectInput(
+    shiny::checkboxGroupInput(
       inputId = content$ns_quiz('answers'),
       label = NULL,
-      choices = c('', 'ATE', 'ATT', 'ATC'),
+      inline = TRUE,
+      choices = c('ATE', 'ATT', 'ATC'),
       selected = NULL
     )
   )

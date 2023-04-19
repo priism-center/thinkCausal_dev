@@ -1,6 +1,6 @@
 ### Potential Outcomes: ATE
 
-Lets put all of our data into a potential outcomes table. This will help us clarify the ATE.
+Let's put all of our data into a potential outcomes table. This will help us think about the meaning of the ATE.
 
 For the runners that wore HyperShoes (Z = 1), we can observe `Y1` values but are missing the `Y0` values. 
 

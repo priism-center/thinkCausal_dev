@@ -141,7 +141,7 @@ mod_learn_estimands2_ui<- function(id){
               class = ns('learning-content'), # required
               class = 'learning-content', # required
               style = 'display: block;',
-              p('generic pre-quiz message'),
+              p("Before moving on, apply what you've learned about overlap and estimands in this three question quiz!"),
               # the quiz UI
               h2('Practice'),
               mod_quiz_ui(id = ns('quiz')),
@@ -164,7 +164,7 @@ mod_learn_estimands2_ui<- function(id){
           ),
 
         ),
-        scroll_ui_visual(ns = ns, clickable = FALSE)
+        scroll_ui_visual(ns = ns, clickable = TRUE)
       )
       #, scroll_ui_container2(
       #   ns = ns,
@@ -214,7 +214,7 @@ mod_learn_estimands2_server <- function(id){
       message_wrong = quiz_content_estimands2$message_wrong,
       message_skipped = quiz_content_estimands2$message_skipped,
       embed_quiz = TRUE,
-      sandbox_mode = TRUE # TODO: test
+      sandbox_mode = FALSE # TODO: test
     )
     # mod_quiz_server(
     #   id = "quiz", # this should always be quiz
@@ -450,7 +450,7 @@ mod_learn_estimands2_server <- function(id){
       items$position21 <- div(
         style = 'visibility: hidden;',
         renderImage({
-          list(src = app_sys('app', 'www/learn/estimands2/plots/p21.png'),
+          list(src = app_sys('app', 'www/learn/estimands2/plots/p15.png'),
                contentType = 'image/png',
                width = 800,
                height = 500)
@@ -467,7 +467,7 @@ mod_learn_estimands2_server <- function(id){
       items$position23 <- div(
         style = 'visibility: hidden;',
         renderImage({
-          list(src = app_sys('app', 'www/learn/estimands2/plots/p1.png'),
+          list(src = app_sys('app', 'www/learn/estimands2/plots/no_overlap.png'),
                contentType = 'image/png',
                width = 800,
                height = 500)

@@ -289,30 +289,8 @@ table3 <- dat %>%
 readr::write_csv(table3, 'inst/extdata/estimands2_table3.csv')
 
 
-p21 <- dat %>%
-  ggplot(aes(X, Y, col = as.factor(Z))) +
-  geom_point() +
-  scale_color_manual(values = c(4, 2)) +
-  theme_bw() +
-  labs(x = 'Single confounder X', y = 'Outcome Y (running times)', color ='Z') +
-  geom_text(aes(label = '???', x = 180, y = 165), col = 1, size = 6) +
-  geom_text(aes(label = '???', x = 190, y = 160), col = 1, size = 6) +
-  geom_text(aes(label = '???', x = 160, y = 157), col = 1, size = 6) +
-  geom_text(aes(label = '???', x = 160, y = 180), col = 1, size = 6) +
-  geom_text(aes(label = '???', x = 180, y = 190), col = 1, size = 6) +
-  coord_cartesian(ylim = c(150, 199), xlim = c(129, 200))
-
-p21
-
-ggsave('inst/app/www/learn/estimands2/plots/p21.png', device = 'png', height = 5, width = 8)
-
-p18 <- ggplot() + theme_void()
-p18
-ggsave('inst/app/www/learn/estimands2/plots/p18.png', device = 'png', height = 5, width = 8)
-
-
-
-N <- 500
+# quiz plots
+N <- 750
 
 X <- rnorm(N, 35, 10)
 X <- X[X > 18 & X < 55]
@@ -322,7 +300,7 @@ dat <- data.frame(age = X, scaled_age = scale(X))
 #beta.z <-c(-1)
 asn_z <- function(x){
   if(x <= 30){
-    rbinom(1, 1, .8)
+    rbinom(1, 1, .77)
   }
 
   else{rbinom(1, 1, .4)}
@@ -350,81 +328,157 @@ dat$true.0 <-  with(dat,
 
 dat$y <- ifelse(dat$z ==1, dat$y1, dat$y0)
 
-p19 <- dat %>%
+dat %>%
+  filter(scaled_age < 2.1) %>%
   ggplot(aes(scaled_age, y, col = as.factor(z))) +
   geom_point() +
-  scale_color_manual(values = c(4, 2)) +
+  scale_color_manual(values = c(4, 2), labels = c('control', 'treated')) +
   theme_bw() +
-  labs(color = 'Z', x = 'X are single confounder',y = 'Outcome Y')
+  labs(color = NULL, x = 'X the single confounder',y = 'Outcome Y')
 
-p19
+ggsave('inst/app/www/learn/estimands2/plots/quiz1.png', device = 'png', height = 5, width = 8)
 
-ggsave('inst/app/www/learn/estimands2/plots/p19.png', device = 'png', height = 5, width = 8)
 
-fit_ex2 <- bartCause::bartc(y, z, scaled_age, data = dat)
-y.cf <- bartCause::extract(fit_ex2, 'y.cf')
-y.cf <- cbind.data.frame(y.cf = apply(y.cf, 2, mean), X = dat$scaled_age, Z = dat$z)
-y.cf0 <- apply(y.cf, 2, mean)[dat$z == 0]
+# quiz question 2
+N <- 750
 
-p20 <- ggplot() +
-  geom_point(data = dat, aes(scaled_age, y, col = as.factor(z))) +
-  geom_line(data = y.cf %>% filter(Z == 1), aes(X, y.cf), col = 2, size = 1) +
-  scale_color_manual(values = c(4, 2)) +
-  theme_bw() +
-  labs(color = 'Z', x = 'X are single confounder',y = 'Outcome Y')
+X <- rnorm(N, 35, 10)
+X <- X[X > 18 & X < 55]
 
-p20
-ggsave('inst/app/www/learn/estimands2/plots/p20.png', device = 'png', height = 5, width = 8)
+dat <- data.frame(age = X, scaled_age = scale(X))
 
-p21 <-   ggplot() +
-  geom_point(data = dat, aes(scaled_age, y, col = as.factor(z))) +
-  #geom_line(data = y.cf %>% filter(Z == 1), aes(X, y.cf), col = 2, size = 1) +
-  geom_line(data = y.cf %>% filter(Z == 0), aes(X, y.cf), col = 4, size = 1) +
-  scale_color_manual(values = c(4, 2)) +
-  theme_bw() +
-  labs(color = 'Z', x = 'X our single confounder',y = 'Outcome Y')
+#beta.z <-c(-1)
+asn_z <- function(x){
+  if(x <= 30){
+    rbinom(1, 1, .73)
+  }
 
-p21
-ggsave('inst/app/www/learn/estimands2/plots/p21.png', device = 'png', height = 5, width = 8)
+  else{rbinom(1, 1, .4)}
+}
 
-dat_ex3 <- dat %>% filter(scaled_age > .1 & scaled_age < .8 | z == 1) %>%
-  filter(scaled_age > -1)
+dat$z <- sapply(X, asn_z)
 
-p22 <- ggplot(dat_ex3, aes(scaled_age, y, col = as.factor(z))) +
+
+
+dat$y1 <- with(dat,
+               180 -10 +2*scaled_age  + rnorm(nrow(dat))
+)
+
+
+dat$y0 <- with(dat,
+               176 +.5*scaled_age + I((scaled_age+.3)^2)*1.3 + rnorm(nrow(dat))
+)
+
+
+
+dat$y <- ifelse(dat$z ==1, dat$y1, dat$y0)
+
+dat %>%
+  filter(scaled_age > .3 & scaled_age < 1.5 | z == 1) %>%
+  ggplot(aes(scaled_age, y, col = as.factor(z))) +
   geom_point() +
-  scale_color_manual(values = c(4, 2)) +
+  scale_color_manual(values = c(4, 2), labels = c('control', 'treated')) +
   theme_bw() +
-  labs(color = 'Z', x = 'X our single confounder',y = 'Outcome Y')
+  labs(color = NULL, x = 'X the single confounder',y = 'Outcome Y')
 
-p22
-
-ggsave('inst/app/www/learn/estimands2/plots/p22.png', device = 'png', height = 5, width = 8)
+ggsave('inst/app/www/learn/estimands2/plots/quiz2.png', device = 'png', height = 5, width = 8)
 
 
-fit_ex3 <- bartCause::bartc(y, z, scaled_age, data = dat_ex3, estimand = 'atc')
-y.cf <- bartCause::extract(fit_ex3, 'y.cf')
-y.cf.uncertain <- cbind.data.frame(
-  y.lcl = apply(y.cf, 2, function(i){quantile(i, .025)}),
-  y.ucl = apply(y.cf, 2, function(i){quantile(i, .975)}),
-  X = dat_ex3$scaled_age[dat_ex3$z == 0])
+# quiz question 3
+N <- 750
 
-y.cf <- cbind.data.frame(y.cf = apply(y.cf, 2, mean), X = dat_ex3$scaled_age[dat_ex3$z == 0])
+X <- rnorm(N, 35, 10)
+X <- X[X > 18 & X < 55]
+
+dat <- data.frame(age = X, scaled_age = scale(X))
+
+#beta.z <-c(-1)
+asn_z <- function(x){
+  if(x <= 30){
+    rbinom(1, 1, .6)
+  }
+
+  else{rbinom(1, 1, .4)}
+}
+
+dat$z <- sapply(X, asn_z)
 
 
-p23 <- ggplot() +
-  geom_point(data = dat_ex3, aes(scaled_age, y, col = as.factor(z))) +
-  geom_line(data = y.cf, aes(X, y.cf), col = 4, size = 1) +
-  #geom_ribbon(data = y.cf.uncertain, aes(x = X, ymin = y.lcl, ymax = y.ucl), alpha = .2) +
-  scale_color_manual(values = c(4, 2)) +
+
+dat$y1 <- with(dat,
+               180 -10 +.5*scaled_age + I((scaled_age-.1)^2)*2  + rnorm(nrow(dat))
+)
+
+
+dat$y0 <- with(dat,
+               176 +.5*scaled_age + I((scaled_age+.3)^2)*1.3 + rnorm(nrow(dat))
+)
+
+
+dat$y <- ifelse(dat$z ==1, dat$y1, dat$y0)
+
+dat %>%
+  filter(scaled_age <.3 | z == 0) %>%
+  ggplot(aes(scaled_age, y, col = as.factor(z))) +
+  geom_point() +
+  scale_color_manual(values = c(4, 2), labels = c('control', 'treated')) +
   theme_bw() +
-  labs(color = 'Z', x = 'X are single confounder',y = 'Outcome Y')
+  labs(color = NULL, x = 'X the single confounder',y = 'Outcome Y')
 
-p23
-ggsave('inst/app/www/learn/estimands2/plots/p23.png', device = 'png', height = 5, width = 8)
-
+ggsave('inst/app/www/learn/estimands2/plots/quiz3.png', device = 'png', height = 5, width = 8)
 
 
+z <- rbinom(500, 1, .5)
+X1 <- rnorm(500, 20, 10)
+X1 <- ifelse(X1<0, 0, X1)
+X0 <- rnorm(500, 40, 10)
+X0 <- ifelse(X0>60, 60, X0)
+X0 <- ifelse(X0 <0, 0, X0)
+X <- ifelse(z==1, X1, X0)
+y1 <- rnorm(500, 72 + 3*sqrt(X1), 1)
+y0 <- rnorm(500, 90 + exp((.06*X0)), 1)
+y <- ifelse(z==1, y1, y0)
+dat <- data.frame(X1, X0, X, y1, y0, y, z)
+
+ggplot(dat %>% filter(X<31 | z == 0) %>% mutate(y= y + 70), aes(X, y, col = as.factor(z))) +
+  geom_point() +
+  scale_color_manual(values = c(4, 2), labels = c('control', 'treated')) +
+  theme_bw() +
+  labs(col = NULL) +
+  labs(x = 'Single confounder X', y = 'Outcome Y (running times)', color = NULL)
+
+ggsave('inst/app/www/learn/estimands2/plots/partial_overlap.png', device = 'png', height = 5, width = 8)
 
 
+ggplot(dat %>% filter(X<31 | z == 0) %>% mutate(y= y + 70), aes(X, y, col = as.factor(z))) +
+  geom_point() +
+  scale_color_manual(values = c(4, 2), labels = c('control', 'treated')) +
+  theme_bw() +
+  annotate("rect", xmin = 12, xmax = 32, ymin = 150, ymax = 170,
+           alpha = 0, color= "black") +
+  labs(col = NULL) +
+  labs(x = 'Single confounder X', y = 'Outcome Y (running times)', color = NULL)
 
 
+#
+# ggplot(dat %>% filter(X > 8& X<31 | z == 0) %>% mutate(y= y + 70), aes(X, y, col = as.factor(z))) +
+#   geom_point() +
+#   scale_color_manual(values = c(4, 2), labels = c('control', 'treated')) +
+#   annotate('rect', xmin=-Inf, xmax=min(X[z == 0])-.5, ymin=-Inf, ymax=Inf, alpha=.2, fill='red') +
+#   theme_bw() +
+#   labs(col = NULL) +
+#   labs(x = 'Single confounder X', y = 'Outcome Y (running times)', color = NULL)
+#
+
+dat %>% filter(X <23 | z == 0) %>% mutate(y= y + 70) %>%
+  filter(X>40|z == 1) %>%
+  ggplot(aes(X, y, col = as.factor(z))) +
+  geom_point() +
+  scale_color_manual(values = c(4, 2), labels = c('control', 'treated')) +
+  #annotate('rect', xmin= 30+ .7, xmax=Inf, ymin=-Inf, ymax=Inf, alpha=.2, fill='blue') +
+  # annotate('rect', xmin=-Inf, xmax=min(X[z == 0])-.5, ymin=-Inf, ymax=Inf, alpha=.2, fill='red') +
+  theme_bw() +
+  labs(col = NULL) +
+  labs(x = 'Single confounder X', y = 'Outcome Y (running times)', color = NULL)
+
+ggsave('inst/app/www/learn/estimands2/plots/no_overlap.png', device = 'png', height = 5, width = 8)
