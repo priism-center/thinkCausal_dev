@@ -86,6 +86,10 @@ app_ui <- function(request) {
             mod_learn_estimands2_ui(module_ids$learn$estimands2)
           ),
           bs4Dash::tabItem(
+            tabName = 'learn_fundamental',
+            mod_learn_fundamental_ui(module_ids$learn$fundamental)
+          ),
+          bs4Dash::tabItem(
             tabName = 'learn_randomization',
             mod_learn_rct_analysis_ui(module_ids$learn$randomization)
           ),
@@ -207,6 +211,10 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Estimands 2',
               tabName = 'learn_estimands2'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Fundamental',
+              tabName = 'learn_fundamental'
             ),
             bs4Dash::menuSubItem(
               text = 'Post treatment variables',

@@ -1526,6 +1526,32 @@
         "shiny"
       ]
     },
+    "shinyQuiz": {
+      "Package": "shinyQuiz",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "shinyQuiz",
+      "RemoteUsername": "priism-center",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "228cc5cee3b13396580361d20d994a2b7883079c",
+      "Hash": "bcef021f53c1248dfebf03dd04c60782",
+      "Requirements": [
+        "cli",
+        "dplyr",
+        "fontawesome",
+        "glue",
+        "htmltools",
+        "purrr",
+        "reactable",
+        "scales",
+        "shiny",
+        "shinyjs",
+        "stringr",
+        "tibble"
+      ]
+    },
     "shinyWidgets": {
       "Package": "shinyWidgets",
       "Version": "0.7.5",

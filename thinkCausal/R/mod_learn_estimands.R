@@ -7,10 +7,10 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#'
 mod_learn_estimands_ui <- function(id){
   ns <- NS(id)
   tagList(
-
     div(
       class = 'learning-page',
 
@@ -44,9 +44,10 @@ mod_learn_estimands_ui <- function(id){
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
         br(),br(),br(), br(),
+        style = 'display: block;',
         includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_attatc.md')),
         # the quiz UI
-        mod_quiz_ui(id = ns('quiz')),
+        shinyQuiz::quiz_ui(quiz_content_estimands)
       ),
       br(),
       div(
@@ -66,6 +67,7 @@ mod_learn_estimands_ui <- function(id){
 mod_learn_estimands_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+    shinyQuiz::quiz_server(quiz_content_estimands)
 
     # run the quiz
     # mod_quiz_server(

@@ -20,7 +20,7 @@ library(ggrepel)
 
 
 
-A causal effect is the difference between all potential outcomes. Let's concider our hypothetical example of the HyperShoe. For those unaware, the HyperShoe is a speciatly running shoe released with the claim that wearing HyperShoes casues runners to run faster than they would have ran had they worn statndard running shoes. How do we know that the causal claim about waering HyperShoes and fast running is true? Ideally, we would look at a sample of runners and compare their running times if they had worn HyperShoes (Y1) to their running times if they had not worn HyperShoes (Y0). 
+A causal effect is the difference between all potential outcomes. Let's concider our hypothetical example of the HyperShoe. For those unaware, the HyperShoe is a speciatly running shoe released with the claim that wearing HyperShoes causes runners to run faster than they would have ran had they worn standard running shoes. How do we know that the causal claim about wearing hyperShoes and fast running is true? Ideally, we would look at a sample of runners and compare their running times if they had worn hyperShoes (Y1) to their running times if they had not worn hyperShoes (Y0). 
 
 
 >**Notation Review**
@@ -218,13 +218,13 @@ dat3$ITE_true <- with(dat, Y1 - Y0)
 dat3 %>% 
   pivot_longer(contains('ITE')) %>% 
 ggplot(aes(runner, value, col = name, shape = name)) + 
-  geom_point() + 
   scale_color_manual(values = c(1, 6)) + 
   scale_shape_manual(values = c(19, 21)) + 
+  geom_line(aes(group = runner), col = 'dark grey', linetype = 2) + 
+  geom_point() + 
   #geom_hline(aes(yintercept = mean(value), col = name)) + 
-  geom_hline(yintercept = mean(dat3$ITE)) +   
-  geom_hline(yintercept = mean(dat3$ITE_true), col = 6) + 
-  geom_area(aes(runner)) + 
+  #geom_hline(yintercept = mean(dat3$ITE)) +   
+  #geom_hline(yintercept = mean(dat3$ITE_true), col = 6, linetype = 2) + 
   theme_bw()
  
 ```

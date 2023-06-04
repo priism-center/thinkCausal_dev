@@ -20,7 +20,8 @@
 #'
 #' @importFrom shiny NS tagList
 mod_quiz_ui <- function(id){
-  ns <- NS(id)
+  ns <- NS(id) # parent module
+
   tagList(
     # shinyjs::useShinyjs(),
     div(
