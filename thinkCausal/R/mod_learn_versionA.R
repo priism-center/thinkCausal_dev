@@ -296,7 +296,7 @@ mod_learn_versionA_server <- function(id){
                       )
         }),
         reactable::renderReactable({
-        if(input$imputed == TRUE & input$view == 'Ora/cle'){
+        if(input$imputed == TRUE & input$view == 'Oracle'){
          reactable::reactable(dat(),fullWidth = FALSE,
                               columns = list(
            runner = reactable::colDef(
