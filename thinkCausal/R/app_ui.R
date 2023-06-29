@@ -86,6 +86,18 @@ app_ui <- function(request) {
             mod_learn_estimands2_ui(module_ids$learn$estimands2)
           ),
           bs4Dash::tabItem(
+            tabName = 'learn_versionA',
+            mod_learn_versionA_ui(module_ids$learn$versionA)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_versionB',
+            mod_learn_versionB_ui(module_ids$learn$versionB)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_versionC',
+            mod_learn_versionC_ui(module_ids$learn$versionC)
+          ),
+          bs4Dash::tabItem(
             tabName = 'learn_fundamental',
             mod_learn_fundamental_ui(module_ids$learn$fundamental)
           ),
@@ -211,6 +223,18 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Estimands 2',
               tabName = 'learn_estimands2'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'version A',
+              tabName = 'learn_versionA'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'version B',
+              tabName = 'learn_versionB'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'version C',
+              tabName = 'learn_versionC'
             ),
             bs4Dash::menuSubItem(
               text = 'Fundamental',
