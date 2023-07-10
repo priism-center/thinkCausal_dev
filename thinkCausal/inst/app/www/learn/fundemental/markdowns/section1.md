@@ -5,7 +5,7 @@ For each runner, we have collected data on whether they wore hyperShoes or did n
 The fundamental problem of causal inference is we are missing data for either `Y1` (what the runners time would have been if they had worn hyperShoes) or `Y0` (what the runners time would have been if they had not worn hyperShoes). 
 <br>
 <br>
-The observed running time `Y` is just which potential outcome actually happened!
+`Y`, the observed running time, is the potential outcome that actually happened!
 <br>
 <br>
 In this example, there are two potential outcomes:

@@ -79,45 +79,50 @@ mod_learn_fundamental_ui <- function(id){
               position = 11,
               includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section11.md'))
             ),
+            # scroll_ui_text_section(
+            #   ns = ns,
+            #   position = 12,
+            #   includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section12.md'))
+            # ),
             scroll_ui_text_section(
               ns = ns,
               position = 12,
-              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section12.md'))
-            ),
-            scroll_ui_text_section(
-              ns = ns,
-              position = 13,
               includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section13.md'))
             ),
             scroll_ui_text_section(
               ns = ns,
+              position = 13,
+              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section14.md'))
+            ),
+            scroll_ui_text_section(
+              ns = ns,
               position = 14,
-              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section10.md'))
+              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section15.md'))
             ),
             scroll_ui_text_section(
               ns = ns,
               position = 15,
-              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section10.md'))
+              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section16.md'))
             ),
             scroll_ui_text_section(
               ns = ns,
               position = 16,
-              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section10.md'))
+              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section17.md'))
             ),
             scroll_ui_text_section(
               ns = ns,
               position = 17,
-              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section10.md'))
+              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section18.md'))
             ),
             scroll_ui_text_section(
               ns = ns,
               position = 18,
-              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section10.md'))
+              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section19.md'))
             ),
             scroll_ui_text_section(
               ns = ns,
               position = 19,
-              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section10.md'))
+              includeMarkdown(app_sys("app", "www", "learn", "fundemental", "markdowns", 'section19.md'))
             )
           ),
           scroll_ui_visual(ns = ns, clickable = T)
@@ -143,6 +148,17 @@ mod_learn_fundamental_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    # load in everything we need
+    datImputed <- readr::read_csv('inst/extdata/fundamental_table2.csv')
+    datTruth <- readr::read_csv('inst/extdata/truth.csv')
+    datCombined <- data.frame(
+      datImputed[, 1:3],
+      estY0 = datImputed$Y0,
+      Y0 = datTruth$Y0,
+      estY1 = datImputed$Y1,
+      Y1 = datTruth$Y1,
+      Y = datImputed$Y
+    )
     shinyQuiz::quiz_server(quiz_content_fundamental)
 
     tab1 <- readr::read_csv('inst/extdata/fundamental_table1.csv') %>%
@@ -250,9 +266,9 @@ mod_learn_fundamental_server <- function(id){
                 if (dat6$hyperShoe[index] == 1) {
                   color <- imputedY0
                 } else if (dat6$hyperShoe[index] == 0) {
-                  color <- 'white'
+                  color <- NULL
                 }
-                list(background = color)
+                list(color = color)
               })
           ))
         })
@@ -267,7 +283,7 @@ mod_learn_fundamental_server <- function(id){
             reactable::reactable(defaultPageSize = 7)
         ),
         renderImage(
-          list(src = app_sys('app', 'www/learn/fundemental/plots/p2.png'),
+          list(src = app_sys('app', 'www/learn/fundemental/plots/p_pre4.png'),
                contentType = 'image/png',
                width = 640,
                height = 400)
@@ -300,9 +316,9 @@ mod_learn_fundamental_server <- function(id){
                 if (dat10$hyperShoe[index] == 0) {
                   color <- imputedY1
                 } else if (dat10$hyperShoe[index] == 1) {
-                  color <- 'white'
+                  color <- NULL
                 }
-                list(background = color)
+                list(color = color)
               })
           ))
         })
@@ -324,59 +340,59 @@ mod_learn_fundamental_server <- function(id){
                 if (dat11$hyperShoe[index] == 0) {
                   color <- imputedY1
                 } else if (dat11$hyperShoe[index] == 1) {
-                  color <- 'white'
+                  color <- NULL
                 }
-                list(background = color)
+                list(color = color)
               }),
             Y0 = reactable::colDef(
               style = function(value, index) {
                 if (dat11$hyperShoe[index] == 1) {
                   color <- imputedY0
                 } else if (dat11$hyperShoe[index] == 0) {
-                  color <- 'white'
+                  color <- NULL
                 }
-                list(background = color)
+                list(color = color)
               }
             )
           ))
         })
       )
 
-      dat12 <- readr::read_csv('inst/extdata/fundamental_table1.csv')
-      dat12$Y1[is.na(dat12$Y1) & dat12$`prior races` == 0] <- 270
-      dat12$Y0[is.na(dat12$Y0) & dat12$`prior races` == 0] <- 281
-
-      items$position12 <- div(
-        style = 'visibility: hidden;',
-        reactable::renderReactable({
-          reactable::reactable(dat12, defaultPageSize = 5, columns = list(
-            Y0 = reactable::colDef(
-              style = function(value, index) {
-                if (dat12$hyperShoe[index] == 1 & dat12$`prior races`[index] == 0) {
-                  color <- imputedY0
-                } else {
-                  color <- 'white'
-                }
-                list(background = color)
-              }),
-            Y1 = reactable::colDef(
-              style = function(value, index) {
-                if (dat12$hyperShoe[index] == 0 & dat12$`prior races`[index] == 0) {
-                  color <- imputedY1
-                } else {
-                  color <- 'white'
-                }
-                list(background = color)
-              })
-          ))
-        }),
-        renderImage(
-          list(src = app_sys('app', 'www/learn/fundemental/plots/p1.png'),
-               contentType = 'image/png',
-               width = 640,
-               height = 400)
-          , deleteFile = F)
-      )
+      # dat12 <- readr::read_csv('inst/extdata/fundamental_table1.csv')
+      # dat12$Y1[is.na(dat12$Y1) & dat12$`prior races` == 0] <- 270
+      # dat12$Y0[is.na(dat12$Y0) & dat12$`prior races` == 0] <- 281
+      #
+      # items$position12 <- div(
+      #   style = 'visibility: hidden;',
+      #   reactable::renderReactable({
+      #     reactable::reactable(dat12, defaultPageSize = 5, columns = list(
+      #       Y0 = reactable::colDef(
+      #         style = function(value, index) {
+      #           if (dat12$hyperShoe[index] == 1 & dat12$`prior races`[index] == 0) {
+      #             color <- imputedY0
+      #           } else {
+      #             color <- NULL
+      #           }
+      #           list(color = color)
+      #         }),
+      #       Y1 = reactable::colDef(
+      #         style = function(value, index) {
+      #           if (dat12$hyperShoe[index] == 0 & dat12$`prior races`[index] == 0) {
+      #             color <- imputedY1
+      #           } else {
+      #             color <- NULL
+      #           }
+      #           list(color= color)
+      #         })
+      #     ))
+      #   }),
+      #   renderImage(
+      #     list(src = app_sys('app', 'www/learn/fundemental/plots/p1.png'),
+      #          contentType = 'image/png',
+      #          width = 640,
+      #          height = 400)
+      #     , deleteFile = F)
+      # )
 
 
       dat13 <- readr::read_csv('inst/extdata/fundamental_table1.csv') %>%
@@ -384,7 +400,7 @@ mod_learn_fundamental_server <- function(id){
       dat13$Y1[is.na(dat13$Y1) & dat13$`prior races` == 1] <- 273
       dat13$Y0[is.na(dat13$Y0) & dat13$`prior races` == 1] <- 280
 
-      items$position13 <- div(
+      items$position12 <- div(
         style = 'visibility: hidden;',
         renderImage(
           list(src = app_sys('app', 'www/learn/fundemental/plots/p5.png'),
@@ -399,84 +415,229 @@ mod_learn_fundamental_server <- function(id){
                 if (dat13$hyperShoe[index] == 1 & dat13$`prior races`[index] == 1) {
                   color <- imputedY0
                 } else {
-                  color <- 'white'
+                  color <- NULL
                 }
-                list(background = color)
+                list(color = color)
               }),
             Y1 = reactable::colDef(
               style = function(value, index) {
                 if (dat13$hyperShoe[index] == 0 & dat13$`prior races`[index] == 1) {
                   color <- imputedY1
                 } else {
-                  color <- 'white'
+                  color <- NULL
                 }
-                list(background = color)
+                list(color = color)
               })
           ))
         })
+      )
+
+      items$position13 <- div(
+        style = 'visibility: hidden;',
+        fluidRow(
+          column(8,
+                 renderUI({
+                   HTML(interactive_table1)
+                 })
+                 ),
+          column(4,
+                 renderPlot({
+                    readr::read_rds(app_sys('app', 'www/learn/fundemental/plots/p6.rds'))
+                 }, height = 500, width = 400)
+                 )
+        )
+
       )
 
       items$position14 <- div(
         style = 'visibility: hidden;',
-        renderImage(
-          list(src = app_sys('app', 'www/learn/fundemental/plots/p6.png'),
-               contentType = 'image/png',
-               width = 800,
-               height = 500)
-          , deleteFile = F)
+        fluidRow(
+          column(8,
+                 renderUI({
+                   HTML(interactive_table2)
+                 })
+          ),
+          column(4,
+                 renderPlot({
+                   readr::read_rds(app_sys('app', 'www/learn/fundemental/plots/p7.rds'))
+                 }, height = 500, width = 400)
+          )
+        )
+
       )
+
 
       items$position15 <- div(
         style = 'visibility: hidden;',
-        renderUI({
-          HTML(interactive_table1)
+        reactable::renderReactable({
+          reactable::reactable(
+            datImputed,
+            defaultPageSize = 20,
+            #class = 'small',
+            theme = reactable::reactableTheme(cellPadding = "1px 6px"),
+            columns = list(
+              Y0 = reactable::colDef(
+                style = function(value, index) {
+                  if (datImputed$hyperShoe[index] == 1) {
+                    color <- imputedY0
+                  } else {
+                    color <- NULL
+                  }
+                  list(color = color)
+                }
+              ),
+              Y1 = reactable::colDef(
+                style = function(value, index) {
+                  if (datImputed$hyperShoe[index] == 0) {
+                    color <- imputedY1
+                  } else {
+                    color <- NULL
+                  }
+                  list(color = color)
+                }
+              )
+            )
+          )
         })
       )
+
 
       items$position16 <- div(
         style = 'visibility: hidden;',
-        renderImage(
-          list(src = app_sys('app', 'www/learn/fundemental/plots/p7.png'),
-               contentType = 'image/png',
-               width = 800,
-               height = 500)
-          , deleteFile = F)
+        reactable::renderReactable({
+          reactable::reactable(
+            datImputed %>% dplyr::mutate('est.ITE' = Y1 - Y0),
+            fullWidth = FALSE,
+            defaultPageSize = 20,
+            #class = 'small',
+            theme = reactable::reactableTheme(cellPadding = "1px 6px"),
+            defaultColDef = reactable::colDef(
+              footerStyle = list(fontWeight = "bold",
+                                 color = list(NULL, imputedY0, imputedY1, NULL)
+                                 ),
+            ),
+            columns = list(
+              Y0 = reactable::colDef(
+                style = function(value, index) {
+                  if (datImputed$hyperShoe[index] == 1) {
+                    color <- imputedY0
+                  } else {
+                    color <- NULL
+                  }
+                  list(color = color)
+                }
+              ),
+              Y1 = reactable::colDef(
+                style = function(value, index) {
+                  if (datImputed$hyperShoe[index] == 0) {
+                    color <- imputedY1
+                  } else {
+                    color <- NULL
+                  }
+                  list(color = color)
+                }
+              ),
+              est.ITE = reactable::colDef(
+                name = 'estimated ITE'
+              )
+            )
+          )
+        })
       )
+
+
 
       items$position17 <- div(
         style = 'visibility: hidden;',
-        renderUI({
-          HTML(interactive_table2)
-        })
-      )
-
-      dat18 <- readr::read_csv('inst/extdata/fundamental_table2.csv')
-      items$position18 <- div(
-        style = 'visibility: hidden;',
         reactable::renderReactable({
-          reactable::reactable(dat18, columns = list(
-            Y0 = reactable::colDef(
-              style = function(value, index) {
-                if (dat18$hyperShoe[index] == 1) {
-                  color <- imputedY0
-                } else {
-                  color <- 'white'
+          reactable::reactable(
+            datImputed %>% dplyr::mutate('estITE' = Y1 - Y0),
+            fullWidth = FALSE,
+            defaultPageSize = 20,
+            #class = 'small',
+            theme = reactable::reactableTheme(cellPadding = "1px 6px"),
+            defaultColDef = reactable::colDef(
+              footerStyle = list(fontWeight = "bold",
+                                 color = list(NULL, imputedY0, imputedY1, NULL)
+              ),
+            ),
+            columns = list(
+              runner = reactable::colDef(
+                footer = 'Average'
+              ),
+              Y0 = reactable::colDef(
+                footer = mean(datImputed$Y0),
+                style = function(value, index) {
+                  if (datImputed$hyperShoe[index] == 1) {
+                    color <- imputedY0
+                  } else {
+                    color <- NULL
+                  }
+                  list(color = color)
                 }
-                list(background = color)
-              }),
-            Y1 = reactable::colDef(
-              style = function(value, index) {
-                if (dat18$hyperShoe[index] == 0) {
-                  color <- imputedY1
-                } else {
-                  color <- 'white'
+              ),
+              Y1 = reactable::colDef(
+                footer = mean(datImputed$Y1),
+                style = function(value, index) {
+                  if (datImputed$hyperShoe[index] == 0) {
+                    color <- imputedY1
+                  } else {
+                    color <- NULL
+                  }
+                  list(color = color)
                 }
-                list(background = color)
-              })
-          ))
+              ),
+              estITE = reactable::colDef(
+                name = 'estimated ITE',
+                footer = mean(datImputed$Y1 - datImputed$Y0)
+              )
+            )
+          )
+        })
+      )
+
+      items$position18 <- div(
+        fluidRow(
+        renderUI({
+          shinyWidgets::radioGroupButtons(ns('view'), label = NULL,
+                                          choices = c('Researcher', 'Parallel Universe', 'Oracle'),
+                                          selected = 'Researcher',
+                                          individual = T
+          )
+        })
+        # ,renderUI({
+        #   selectizeInput(
+        #     inputId = ns('cols'),
+        #     label = 'pick some ol columns:',
+        #     choices = c(names(datCombined), 'estITE', 'ITE'),
+        #     selected = c(names(datCombined)[3:length(datCombined)], 'estITE', 'ITE'),
+        #     multiple = TRUE,
+        #     options = list(maxItems = 7,
+        #                    plugins = list('remove_button', 'drag_drop'))
+        #   )
+        # })
+        ),
+        renderUI({
+          shinyWidgets::materialSwitch(
+            inputId = ns("imputed"),
+            label = "Show imputed potential outcomes",
+            status = "primary",
+            right = TRUE,
+            value = TRUE
+          )
+        }),
+        reactable::renderReactable({
+          switch (
+            input$view,
+            'Researcher' = create_table_researcher(df = datImputed, imputed = input$imputed),
+            'Parallel Universe' = create_table_parallel(df = datTruth),
+            'Oracle' = create_table_oracle(df = datCombined, imputed = input$imputed, .show = input$cols)
+            )
         })
 
       )
+
+
 
       # # item 13
       # items$position13 <- div(

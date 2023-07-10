@@ -50,7 +50,7 @@ app_server <- function(input, output, session) {
   mod_learn_fundamental_server(module_ids$learn$fundamental)
   mod_learn_versionA_server(module_ids$learn$versionA)
   mod_learn_versionB_server(module_ids$learn$versionB)
-  mod_learn_versionC_server(module_ids$learn$versionC)
+  mod_learn_randomization_dist_server(module_ids$learn$rand_dist)
   mod_learn_rct_analysis_server(module_ids$learn$randomization)
   mod_learn_post_treatment_server(module_ids$learn$post_treatment, store)
   mod_learn_potential_outcomes_server(module_ids$learn$potential_outcomes)

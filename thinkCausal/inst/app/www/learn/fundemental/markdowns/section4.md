@@ -1,9 +1,8 @@
-#### title in progress
-Causal inference can be thought of as a missing data problem. In order to make causal claims, we need to impute (fill-in) the missing counter-factual outcomes. 
+### Addressing the problem
+The fundamental problem of causal inference is a missing data problem. We will always be missing the counter-factual outcomes. How can we proceed if we will always be missing half of the data we need?
 <br>
 <br>
-core:
-Use similar individuals with observed Y0s to predict missing Y0s. Use similar individuals with observed Y1 to predict missing Y1.
+To move forward with causal inference we will need to fill in the missing counter-factual outcomes.
 <br>
 <br>
-core: simmilar is in terms of measured covaraites. 
+We'll do this by using the potential outcomes we can observe to predict what would have happened if a runner had received the opposite treatment assignment. 

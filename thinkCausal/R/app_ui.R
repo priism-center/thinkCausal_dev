@@ -94,8 +94,8 @@ app_ui <- function(request) {
             mod_learn_versionB_ui(module_ids$learn$versionB)
           ),
           bs4Dash::tabItem(
-            tabName = 'learn_versionC',
-            mod_learn_versionC_ui(module_ids$learn$versionC)
+            tabName = 'learn_rand_dist',
+            mod_learn_randomization_dist_ui(module_ids$learn$rand_dist)
           ),
           bs4Dash::tabItem(
             tabName = 'learn_fundamental',
@@ -233,8 +233,8 @@ app_ui <- function(request) {
               tabName = 'learn_versionB'
             ),
             bs4Dash::menuSubItem(
-              text = 'version C',
-              tabName = 'learn_versionC'
+              text = 'Sandbox',
+              tabName = 'learn_rand_dist'
             ),
             bs4Dash::menuSubItem(
               text = 'Fundamental',
