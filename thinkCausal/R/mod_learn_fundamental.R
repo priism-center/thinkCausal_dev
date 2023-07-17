@@ -629,9 +629,9 @@ mod_learn_fundamental_server <- function(id){
         reactable::renderReactable({
           switch (
             input$view,
-            'Researcher' = create_table_researcher(df = datImputed, imputed = input$imputed),
-            'Parallel Universe' = create_table_parallel(df = datTruth),
-            'Oracle' = create_table_oracle(df = datCombined, imputed = input$imputed, .show = input$cols)
+            'Researcher' = create_table_researcher(df = datImputed, imputed = input$imputed, rows = 20),
+            'Parallel Universe' = create_table_parallel(df = datTruth, rows = 20),
+            'Oracle' = create_table_oracle(df = datCombined, imputed = input$imputed, .show = input$cols, rows = 20)
             )
         })
 
