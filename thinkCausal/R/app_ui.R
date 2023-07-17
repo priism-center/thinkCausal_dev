@@ -114,6 +114,14 @@ app_ui <- function(request) {
             mod_learn_balance_ui(module_ids$learn$balance)
           ),
           bs4Dash::tabItem(
+            tabName = 'learn_variable_selection',
+            mod_learn_variable_selection_ui(module_ids$learn$selection)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_colinearity',
+            mod_learn_colinearity_ui(module_ids$learn$colinearity)
+          ),
+          bs4Dash::tabItem(
             tabName = 'learn_post_treatment',
             mod_learn_post_treatment_ui(module_ids$learn$post_treatment)
           ),
@@ -239,6 +247,22 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Fundamental',
               tabName = 'learn_fundamental'
+            ),
+            bs4Dash::menuItem(
+              text = 'Variable Selection',
+              tabName = 'learn_variable_selection',
+              bs4Dash::menuSubItem(
+                text = 'Variable Selection',
+                tabName = 'learn_variable_selection',
+              ),
+              bs4Dash::menuSubItem(
+                text = 'Colinearity',
+                tabName = 'learn_colinearity',
+              ),
+              bs4Dash::menuSubItem(
+                text = 'Overfitting',
+                tabName = 'learn_overfitting',
+              )
             ),
             bs4Dash::menuSubItem(
               text = 'Post treatment variables',

@@ -791,7 +791,7 @@ create_table <- function(.data = NULL, correct_answers = NULL, n_rows = 6, y_min
 #' @return data.frame
 #' @noRd
 
-create_table_researcher <- function(df, imputed){
+create_table_researcher <- function(df, imputed, rows = 20){
 
   if(isFALSE(imputed)){
     df$Y1[df$hyperShoe == 0] <- NA
@@ -807,16 +807,11 @@ create_table_researcher <- function(df, imputed){
   }
 
   reactable::reactable(
-    data = dplyr::mutate(df, 'est.ITE' = Y1 - Y0),
+    data = df,
     fullWidth = FALSE,
     theme = reactable::reactableTheme(cellPadding = "1px 6px"),
-    defaultPageSize = 20,
+    defaultPageSize = rows,
     columns = list(
-    #  runner = reactable::colDef(show = 'runner' %in% .show),
-     # `prior races` = reactable::colDef(show = 'prior races' %in% .show),
-      hyperShoe = reactable::colDef(
-      #  show = 'hyperShoe' %in% .show
-      ),
       Y0 = reactable::colDef(
         #show = 'Y0' %in% .show,
         style = function(value, index) {
@@ -832,10 +827,6 @@ create_table_researcher <- function(df, imputed){
       ),
       Y = reactable::colDef(
        # show = 'Y' %in% .show
-      ),
-      est.ITE = reactable::colDef(
-        name = 'estimated ITE'
-        #show = 'est.ITE' %in% .show
       )
     )
   )
@@ -843,7 +834,7 @@ create_table_researcher <- function(df, imputed){
 }
 
 
-create_table_parallel <- function(df){
+create_table_parallel <- function(df, rows){
 
   df$hyperShoe <- abs(df$hyperShoe - 1)
   df$Y <- ifelse(df$hyperShoe == 1, df$Y1, df$Y0)
@@ -862,10 +853,10 @@ create_table_parallel <- function(df){
   colorY0 <- rep('white', nrow(df))
 
   reactable::reactable(
-    data = dplyr::mutate(df, 'est.ITE' = Y1 - Y0),
+    data = df,
     fullWidth = FALSE,
     theme = reactable::reactableTheme(cellPadding = "1px 6px"),
-    defaultPageSize = 20,
+    defaultPageSize = rows,
     columns = list(
       #  runner = reactable::colDef(show = 'runner' %in% .show),
       # `prior races` = reactable::colDef(show = 'prior races' %in% .show),
@@ -897,22 +888,30 @@ create_table_parallel <- function(df){
           list(color = colorY[index],
                background = backgroundY[index])
         }
-      ),
-      est.ITE = reactable::colDef(
-        name = 'estimated ITE'
-        #show = 'est.ITE' %in% .show
       )
     )
   )
 
 }
 
-create_table_oracle <- function(df, imputed, .show){
+create_table_oracle <- function(df, imputed, .show, rows, estimand = 'ate'){
+ if('estY1' %notin% names(df)){
+   df$estY1 <- NA
+ }
 
-  df <- df %>% dplyr::mutate(estITE = estY1 - estY0,
-                             ITE = Y1 - Y0,
-                             estY0 = ifelse(hyperShoe == 0, NA, estY0),
-                             estY1 = ifelse(hyperShoe == 1, NA, estY1))
+  if('estY0' %notin% names(df)){
+    df$estY0 <- NA
+  }
+
+  if('estITE' %notin% names(df)){
+    df$estITE <- NA
+  }
+
+  df <- df %>% dplyr::mutate(
+    ITE = Y1 - Y0,
+    estY0 = ifelse(hyperShoe == 0, NA, estY0),
+    estY1 = ifelse(hyperShoe == 1, NA, estY1)
+  )
   if(isTRUE(imputed)){
     colorEstY1 <- ifelse(df$hyperShoe == 0, "#DF536B", 'none')
     colorEstY0 <- ifelse(df$hyperShoe == 1, "#2297E6", 'none')
@@ -931,78 +930,76 @@ create_table_oracle <- function(df, imputed, .show){
     data = df, #%>% dplyr::select(.show, dplyr::everything()),
     fullWidth = FALSE,
     theme = reactable::reactableTheme(cellPadding = "1px 6px"),
-    defaultPageSize = 20,
+    defaultPageSize = rows,
+    defaultColDef = reactable::colDef(
+      footerStyle = list(fontWeight = "bold", color = 'white', background = 'black'),
+    ),
     columns = list(
-       runner = reactable::colDef(
-         #show = 'runner' %in% .show
-         ),
-      prior.races = reactable::colDef(
-        name = 'prior races',
-        #show = 'prior.races' %in% .show
-        ),
-      hyperShoe = reactable::colDef(
-      #show = 'hyperShoe' %in% .show
-      ),
+      runner = reactable::colDef(footer = 'Average'),
       estY0 = reactable::colDef(
+        show = isTRUE(imputed),
         name = 'est.',
-        maxWidth = 50,
+        maxWidth = ifelse(isTRUE(imputed), 50, 100),
         #show = isTRUE(imputed) & 'estY0' %in% .show,
         style = function(value, index) {
           list(color = colorEstY0[index])
         }
       ),
       Y0 = reactable::colDef(
-        name = 'true',
+        name = ifelse(isTRUE(imputed), 'true', 'Y0'),
+        footer = round(mean(df$Y0), 1),
         #show = 'Y0' %in% .show,
-        maxWidth = 50,
+        maxWidth = ifelse(isTRUE(imputed), 50, 100),
         style = function(value, index) {
           list(color = colorY0[index],
                background = backgroundY0[index])
         }
       ),
       estY1 = reactable::colDef(
+        show = isTRUE(imputed),
         name = 'est.',
-        maxWidth = 50,
+        maxWidth = ifelse(isTRUE(imputed), 50, 100),
         #show = isTRUE(imputed)&'estY1' %in% .show,
         style = function(value, index) {
           list(color = colorEstY1[index])
         }
       ),
       Y1 = reactable::colDef(
+        footer = round(mean(df$Y1), 1),
         #show = 'Y1' %in% .show,
-        name = 'true',
-        maxWidth = 50,
+        name = ifelse(isTRUE(imputed), 'true', 'Y1'),
+        maxWidth = ifelse(isTRUE(imputed), 50, 100),
         #headerStyle = list(backgroundColor = 'green'),
         style = function(value, index) {
           list(color = colorY1[index],
                background = backgroundY1[index])
         }
       ),
-      Y = reactable::colDef(
-         #show = 'Y' %in% .show,
-      ),
       estITE = reactable::colDef(
+        show = isTRUE(imputed),
         name = 'est.',
         #show = isTRUE(imputed) & 'estITE' %in% .show,
         maxWidth = 50
 
       ),
       ITE = reactable::colDef(
-        name = 'true',
+        footer = paste(estimand,'=', round(mean(df$ITE), 1)),
+        name = ifelse(isTRUE(imputed), 'true', 'ITE'),
         #show = 'ITE' %in% .show,
-        maxWidth = 50,
+        maxWidth = ifelse(isTRUE(imputed), 50, 100),
         style = function(value, index) {
           list(color = colorITE[index],
                background = backgroundITE[index])
         }
       )
     ),
+    if(isTRUE(imputed)){
       columnGroups = list(
         reactable::colGroup(name = "Y0", columns = c("estY0", "Y0")),
         reactable::colGroup(name = "Y1", columns = c("estY1", "Y1")),
         reactable::colGroup(name = 'ITE', columns = c('estITE', 'ITE'))
       )
-
+    }
   )
 
 }

@@ -38,6 +38,7 @@ quiz_content_estimands <- local({
 
 
     q <- shinyQuiz::create_question(prompt = question_prompt,
+                               shinyQuiz::add_choice('', correct = FALSE),
                                shinyQuiz::add_choice(ate, correct = estimand == 'ATE'),
                                shinyQuiz::add_choice(att, correct = estimand == 'ATT'),
                                shinyQuiz::add_choice(atc, correct = estimand == 'ATC'),

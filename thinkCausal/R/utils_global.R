@@ -11,6 +11,8 @@ module_ids <- list(
     home = 'learning_home',
     randomization = 'learning_randomization',
     post_treatment = 'learning_post_treatment',
+    selection = 'learning_variable_selection',
+    colinearity = 'learning_colinearity',
     estimands = 'learning_estimands',
     estimands2 = 'learning_estimands2',
     versionA = 'learn_versionA',

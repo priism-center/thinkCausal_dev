@@ -7,5 +7,3 @@ What might we want to learn about the effect of the shoes on these runners? Idea
 The **average treatment effect (ATE)** provides the average of all of the individual level causal effects of HyperShoes across all 10 of the runners in our sample. We saw in the potential outcomes module that there can be individual differences in the causal effect of HyperShoes. Some runners had a huge benefit from HyperShoes while others had no benefit at all. The average treatment effect masks these individual level differences and instead gives us an idea of the general trend. We work with average treatment effects because they can be estimated with more precision.
 
 **The average treatment effect still relies on within-person comparisons.** This is different from simply comparing the average running times between the observed treatment group and the observed control group. We'll walk through calculating the ATE to make these ideas more concrete.
-
-<br>

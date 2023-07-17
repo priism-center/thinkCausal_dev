@@ -591,6 +591,21 @@
         "zip"
       ]
     },
+    "ggdark": {
+      "Package": "ggdark",
+      "Version": "0.2.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "ggdark",
+      "RemoteUsername": "nsgrantham",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "b39b96c2b42dadc316eeaa2991a93b9b3c3fee11",
+      "Hash": "0008a7bbbdfa704f7b58e2435414fa46",
+      "Requirements": [
+        "ggplot2"
+      ]
+    },
     "ggdendro": {
       "Package": "ggdendro",
       "Version": "0.1.23",
@@ -1274,10 +1289,10 @@
     },
     "reactable": {
       "Package": "reactable",
-      "Version": "0.3.0",
+      "Version": "0.4.4",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "377c52754f3e6c17673c79740e9296d7",
+      "Repository": "RSPM",
+      "Hash": "6069eb2a6597963eae0605c1875ff14c",
       "Requirements": [
         "digest",
         "htmltools",

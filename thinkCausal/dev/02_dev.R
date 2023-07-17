@@ -44,6 +44,7 @@ usethis::use_package('htmltools')
 usethis::use_package('jsonlite')
 usethis::use_package('waiter')
 usethis::use_dev_package('shinyFeedback', remote = 'merlinoa/shinyFeedback')
+usethis::use_dev_package('ggdark', remote = 'nsgrantham/ggdark')
 
 usethis::use_dev_package('shinyQuiz', remote = 'github::priism-center/shinyQuiz')
 usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')

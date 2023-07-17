@@ -13,13 +13,14 @@ mod_learn_estimands_ui <- function(id){
   tagList(
     div(
       class = 'learning-page',
-
       # UI content for the learning module
       div(
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
+        style = 'display: block;',
         includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_1.md')),
-        br(),br(),br(),br(),br(),br(),
+        br(),br(),br(),br(),br(),br()
+
       ),
 
       div(

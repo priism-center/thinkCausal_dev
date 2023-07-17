@@ -15,6 +15,7 @@ Imports:
     cli,
     config (>= 0.3.1),
     dplyr (>= 1.0.5),
+    ggdark (>= 0.2.1),
     ggplot2 (>= 3.3.2),
     glue,
     golem (>= 0.3.2),
@@ -59,4 +60,5 @@ BugReports: https://priism-center.github.io/thinkCausal//issues
 Remotes:  
     github::priism-center/plotBart,
     github::merlinoa/shinyFeedback,
-    github::priism-center/shinyQuiz
+    github::priism-center/shinyQuiz,
+    nsgrantham/ggdark
