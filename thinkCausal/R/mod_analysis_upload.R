@@ -140,7 +140,7 @@ mod_analysis_upload_server <- function(id, store){
               col_names = input$analysis_upload_data_header
             )
           } else if (filetype == 'dta'){
-            uploaded_file <- readstata13::read.dta13(file = filepath)
+            #uploaded_file <- readstata13::read.dta13(file = filepath)
           } else if (filetype == 'xlsx'){
             uploaded_file <- openxlsx::read.xlsx(xlsxFile = filepath)
           } else if (filetype == 'txt'){
@@ -150,7 +150,7 @@ mod_analysis_upload_server <- function(id, store){
               col_names = input$analysis_upload_data_header
             )
           } else if (filetype == 'sav'){
-            uploaded_file <- Hmisc::spss.get(file = filepath)
+            #uploaded_file <- Hmisc::spss.get(file = filepath)
           } else if(filetype == 'Rdata'){
             e <- new.env()
             name <- load(file = filepath, envir = e)

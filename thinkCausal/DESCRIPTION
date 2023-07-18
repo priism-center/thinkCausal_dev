@@ -19,7 +19,6 @@ Imports:
     ggplot2 (>= 3.3.2),
     glue,
     golem (>= 0.3.2),
-    Hmisc (>= 4.7.0),
     htmltools,
     jsonlite,
     lubridate (>= 1.8.0),
@@ -30,7 +29,6 @@ Imports:
     purrr,
     reactable (>= 0.3.0),
     readr,
-    readstata13 (>= 0.10.0),
     rlang (>= 1.0.3),
     scales (>= 1.1.1),
     shiny (>= 1.7.1),
@@ -54,10 +52,10 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 BugReports: https://priism-center.github.io/thinkCausal//issues
-Remotes:  
+Remotes: 
     github::priism-center/plotBart,
     github::merlinoa/shinyFeedback,
     github::priism-center/shinyQuiz,
