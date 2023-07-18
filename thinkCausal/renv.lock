@@ -1533,14 +1533,20 @@
     },
     "ragg": {
       "Package": "ragg",
-      "Version": "1.2.5",
-      "Source": "Repository",
-      "Repository": "RSPM",
+      "Version": "1.2.5.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "ragg",
+      "RemoteUsername": "r-lib",
+      "RemotePkgRef": "r-lib/ragg",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "b926382129c40d433fed274bccc0fd9767718490",
       "Requirements": [
         "systemfonts",
         "textshaping"
       ],
-      "Hash": "690bc058ea2b1b8a407d3cfe3dce3ef9"
+      "Hash": "ccbb469f07c01951bf77760b42de1bb0"
     },
     "rappdirs": {
       "Package": "rappdirs",
