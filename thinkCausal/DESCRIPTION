@@ -20,7 +20,6 @@ Imports:
     glue,
     golem (>= 0.3.2),
     haven (>= 2.5.3),
-    Hmisc (>= 4.7.0),
     htmltools,
     jsonlite,
     lubridate (>= 1.8.0),
@@ -45,6 +44,7 @@ Imports:
     stringr,
     tibble,
     tidyr (>= 1.1.3),
+    viridis,
     waiter
 Suggests: 
     knitr,

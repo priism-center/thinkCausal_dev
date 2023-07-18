@@ -17,6 +17,7 @@
 ## Amend DESCRIPTION with dependencies read from package code parsing
 # attachment::att_amend_desc()
 usethis::use_package('ggplot2', min_version = '3.3.2')
+usethis::use_package('viridis')
 usethis::use_package('dplyr', min_version = '1.0.5')
 usethis::use_package('tibble')
 usethis::use_package('purrr')
@@ -48,7 +49,7 @@ usethis::use_dev_package('ggdark', remote = 'nsgrantham/ggdark')
 
 usethis::use_dev_package('shinyQuiz', remote = 'github::priism-center/shinyQuiz')
 usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')
-usethis::use_package('bartCause', min_version = '1.0.6')
+usethis::use_dev_package('bartCause', remote = 'github::vdorie/bartCause')
 
 ## Add modules ----
 ## Create a module infrastructure in R/
