@@ -17,7 +17,6 @@
 ## Amend DESCRIPTION with dependencies read from package code parsing
 # attachment::att_amend_desc()
 usethis::use_package('ggplot2', min_version = '3.3.2')
-usethis::use_package('viridis')
 usethis::use_package('dplyr', min_version = '1.0.5')
 usethis::use_package('tibble')
 usethis::use_package('purrr')
@@ -35,7 +34,7 @@ usethis::use_package('shinyWidgets', min_version = '0.7.4')
 usethis::use_package('reactable', min_version = '0.3.0')
 usethis::use_package('sortable', min_version = '0.4.5')
 usethis::use_package('readr')
-usethis::use_package('haven', min_version = '2.5.3')
+usethis::use_package('Hmisc', min_version = '4.7.0')
 usethis::use_package('openxlsx', min_version = '4.2.5')
 usethis::use_package('readstata13', min_version = '0.10.0')
 usethis::use_package('patchwork', min_version = '1.1.1')
@@ -49,7 +48,7 @@ usethis::use_dev_package('ggdark', remote = 'nsgrantham/ggdark')
 
 usethis::use_dev_package('shinyQuiz', remote = 'github::priism-center/shinyQuiz')
 usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')
-usethis::use_dev_package('bartCause', remote = 'github::vdorie/bartCause')
+usethis::use_package('bartCause', min_version = '1.0.6')
 
 ## Add modules ----
 ## Create a module infrastructure in R/

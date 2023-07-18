@@ -68,7 +68,7 @@ mod_learn_post_treatment_ui <- function(id){
         includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_8.md')),
         # the quiz UI
         h2('Practice'),
-        #mod_quiz_ui(id = ns('quiz')),
+        mod_quiz_ui(id = ns('quiz')),
         br(),
         br(),
         br(),
@@ -88,19 +88,19 @@ mod_learn_post_treatment_server <- function(id, store){
     ns <- session$ns
 
     # run the quiz
-    # mod_quiz_server(
-    #   id = "quiz", # this should always be quiz
-    #   id_parent = module_ids$learn$post_treatment,
-    #   questions = quiz_content_post_treatment$questions,
-    #   # question_texts = quiz_content_post_treatment$question_texts,
-    #   # question_prompts = quiz_content_post_treatment$question_prompts,
-    #   # correct_answers = quiz_content_post_treatment$correct_answers,
-    #   # graders = quiz_content_post_treatment$graders,
-    #   message_correct = quiz_content_post_treatment$message_correct,
-    #   message_wrong = quiz_content_post_treatment$message_wrong,
-    #   message_skipped = quiz_content_post_treatment$message_skipped,
-    #   embed_quiz = TRUE
-    # )
+    mod_quiz_server(
+      id = "quiz", # this should always be quiz
+      id_parent = module_ids$learn$post_treatment,
+      questions = quiz_content_post_treatment$questions,
+      # question_texts = quiz_content_post_treatment$question_texts,
+      # question_prompts = quiz_content_post_treatment$question_prompts,
+      # correct_answers = quiz_content_post_treatment$correct_answers,
+      # graders = quiz_content_post_treatment$graders,
+      message_correct = quiz_content_post_treatment$message_correct,
+      message_wrong = quiz_content_post_treatment$message_wrong,
+      message_skipped = quiz_content_post_treatment$message_skipped,
+      embed_quiz = TRUE
+    )
 
     output$scroll_visual <- renderUI({
       items <- list()

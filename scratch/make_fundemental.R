@@ -97,14 +97,11 @@ tibble(ite_true, ite_est, runner = 1:20) %>%
 
 
 
-lab <- paste('runner', 1:20)
 
-data.frame(Y, prior_race, Z, lab) %>%
-  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z), label = lab)) +
+data.frame(Y, prior_race, Z) %>%
+  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z))) +
   geom_point() +
-  geom_text_repel(show.legend = FALSE, min.segment.length = .1) +
   scale_color_manual(values = c(4, 2), labels = c('no hyperShoe', 'hyperShoe')) +
-  coord_cartesian(ylim = c(220, 285), xlim = c(.9, 3.9)) +
   labs(x = 'number of prior races',
        y = 'observed running time (Y)',
        color = NULL,
@@ -114,14 +111,13 @@ data.frame(Y, prior_race, Z, lab) %>%
 
 ggsave('inst/app/www/learn/fundemental/plots/p1.png', device = 'png', height = 5, width = 8)
 
-data.frame(Y, prior_race, Z, lab) %>%
-  filter(prior_race == 0 & Z == 0) %>%
-  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z), label = lab)) +
+
+data.frame(Y, prior_race, Z) %>%
+  filter(prior_race == 0) %>%
+  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z))) +
   geom_point() +
-  geom_text(show.legend = FALSE, aes(x = 1.4), vjust = -.1) +
   scale_color_manual(values = c(4, 2), labels = c('no hyperShoe', 'hyperShoe')) +
   scale_x_discrete(limits = c('0', '1', '2', '3')) +
-  #coord_cartesian(ylim = c(220, 285)) +
   labs(x = 'number of prior races',
        y = 'observed running time (Y)',
        color = NULL,
@@ -132,15 +128,13 @@ data.frame(Y, prior_race, Z, lab) %>%
 ggsave('inst/app/www/learn/fundemental/plots/p2.png', device = 'png', height = 5, width = 8)
 
 
-data.frame(Y, prior_race, Z,Y0, lab) %>%
-  filter(prior_race == 0 & Z == 0) %>%
-  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z), label = lab)) +
+data.frame(Y, prior_race, Z,Y0) %>%
+  filter(prior_race == 0) %>%
+  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z))) +
   geom_point() +
-  geom_text(show.legend = FALSE, aes(x = 1.4), vjust = -.1) +
   scale_color_manual(values = c(4, 2), labels = c('no hyperShoe', 'hyperShoe')) +
   geom_segment(x = .5, xend = 1.5, y = round(imputed[Z == 0 & prior_race == 0][1],0), yend = round(imputed[Z == 0 & prior_race == 0][1],0), aes(linetype = 'Average Y0 = 281'), col = 4) +
   scale_x_discrete(limits = c('0', '1', '2', '3')) +
-  #coord_cartesian(ylim = c(220, 285)) +
   labs(x = 'number of prior races',
        y = 'observed running time (Y)',
        color = NULL,
@@ -152,30 +146,11 @@ data.frame(Y, prior_race, Z,Y0, lab) %>%
 ggsave('inst/app/www/learn/fundemental/plots/p3.png', device = 'png', height = 5, width = 8)
 
 
-data.frame(Y, prior_race, Z, lab) %>%
-  filter(prior_race == 0 & Z == 1) %>%
-  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z), label = lab)) +
+data.frame(Y, prior_race, Z,Y1) %>%
+  filter(prior_race == 0) %>%
+  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z))) +
   geom_point() +
-  geom_text(show.legend = FALSE, aes(x = 1.4), vjust = -.1) +
-  scale_color_manual(values = c(2), labels = c('hyperShoe')) +
-  scale_x_discrete(limits = c('0', '1', '2', '3')) +
-  #coord_cartesian(ylim = c(220, 285)) +
-  labs(x = 'number of prior races',
-       y = 'observed running time (Y)',
-       color = NULL,
-       title = 'Observed Data') +
-  theme_bw()
-
-
-ggsave('inst/app/www/learn/fundemental/plots/p_pre4.png', device = 'png', height = 5, width = 8)
-
-
-data.frame(Y, prior_race, Z,Y1, lab) %>%
-  filter(prior_race == 0& Z == 1) %>%
-  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z), label = lab)) +
-  geom_point() +
-  geom_text(show.legend = FALSE, aes(x = 1.4), vjust = -.1) +
-  scale_color_manual(values = c(2), labels = c('hyperShoe')) +
+  scale_color_manual(values = c(4, 2), labels = c('no hyperShoe', 'hyperShoe')) +
   geom_segment(aes(linetype = 'Average Y1 = 270'),
                x = .5, xend = 1.5,
                y = round(imputed[Z == 1 & prior_race == 0][1],0), yend = round(imputed[Z == 1 & prior_race == 0][1],0),
@@ -192,11 +167,9 @@ data.frame(Y, prior_race, Z,Y1, lab) %>%
 ggsave('inst/app/www/learn/fundemental/plots/p4.png', device = 'png', height = 5, width = 8)
 
 
-
-
-data.frame(Y, prior_race, Z,Y1, Y0, lab) %>%
+data.frame(Y, prior_race, Z,Y1, Y0) %>%
   filter(prior_race == 1) %>%
-  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z), label = lab)) +
+  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z))) +
   geom_point() +
   geom_segment(aes(linetype = 'Average Y1'),
                x = 1.5, xend = 2.5,
@@ -207,18 +180,15 @@ data.frame(Y, prior_race, Z,Y1, Y0, lab) %>%
                y = round(imputed[Z == 0 & prior_race == 1][1],0), yend = round(imputed[Z == 0 & prior_race == 1][1],0),
                col = 4) +
   scale_linetype_manual(values = c(1, 1),
-                        labels = c(paste('Average Y0 =',round(imputed[Z == 0 & prior_race == 1][1],1)),
-                                   paste('Average Y1 =', round(imputed[Z == 1 & prior_race == 1][1],1))),
+                        labels = c(paste(round(imputed[Z == 0 & prior_race == 1][1],1)), paste(round(imputed[Z == 1 & prior_race == 1][1],1))),
                         guide = guide_legend(
                           override.aes = list(
                             linetype = c(1, 1),
                             color = c(4, 2)
                           ))
                         ) +
-  geom_text(show.legend = FALSE, aes(x = 2.35), vjust = -.4) +
   scale_color_manual(values = c(4, 2), labels = c('no hyperShoe', 'hyperShoe')) +
   scale_x_discrete(limits = c('0', '1', '2', '3')) +
-  coord_cartesian(ylim = c(270, 283)) +
   labs(x = 'number of prior races',
        y = 'observed running time (Y)',
        color = NULL,
@@ -231,11 +201,10 @@ data.frame(Y, prior_race, Z,Y1, Y0, lab) %>%
 ggsave('inst/app/www/learn/fundemental/plots/p5.png', device = 'png', height = 5, width = 8)
 
 
-p <- data.frame(Y, prior_race, Z,Y1, Y0, lab) %>%
+data.frame(Y, prior_race, Z,Y1, Y0) %>%
   filter(prior_race == 2) %>%
-  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z), label = lab)) +
+  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z))) +
   geom_point() +
-  geom_text(show.legend = FALSE, vjust = -.1, hjust = -.2) +
   geom_segment(aes(linetype = 'Average Y1'),
                x = 2.5, xend = 3.5,
                y = round(imputed[Z == 1 & prior_race == 2][1],0), yend = round(imputed[Z == 1 & prior_race == 2][1],0),
@@ -245,8 +214,8 @@ p <- data.frame(Y, prior_race, Z,Y1, Y0, lab) %>%
                y = round(imputed[Z == 0 & prior_race == 2][1],0), yend = round(imputed[Z == 0 & prior_race == 2][1],0),
                col = 4) +
   scale_linetype_manual(values = c(1, 1),
-                        labels = c(paste('Average Y0 =', round(imputed[Z == 0 & prior_race == 2][1],0)),
-                                   paste('Average Y1 =', round(imputed[Z == 1 & prior_race == 2][1],0))),
+                        labels = c(paste(round(imputed[Z == 0 & prior_race == 2][1],0)),
+                                   paste(round(imputed[Z == 1 & prior_race == 2][1],0))),
                         guide = guide_legend(
                           override.aes = list(
                             linetype = c(1, 1),
@@ -258,22 +227,21 @@ p <- data.frame(Y, prior_race, Z,Y1, Y0, lab) %>%
   labs(x = 'number of prior races',
        y = 'observed running time (Y)',
        color = NULL,
-       title = 'Runners with 2 prior races',
+       title = 'Runners with 2 prior race',
        subtitle = paste(paste('Average observed Y0 =', round(imputed[Z == 0 & prior_race == 2][1],0)),
        paste('Average observed Y1 =',round(imputed[Z == 1 & prior_race == 2][1],0)), sep = '\n'),
        linetype = NULL
   ) +
   theme_bw()
 
-saveRDS(p, 'inst/app/www/learn/fundemental/plots/p6.rds')
+ggsave('inst/app/www/learn/fundemental/plots/p6.png', device = 'png', height = 5, width = 8)
 
 
 
-p <- data.frame(Y, prior_race, Z,Y1, Y0, lab) %>%
+data.frame(Y, prior_race, Z,Y1, Y0) %>%
   filter(prior_race == 3) %>%
-  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z), label = lab)) +
+  ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z))) +
   geom_point() +
-  geom_text(show.legend = FALSE, vjust = -.3, hjust = -.2) +
   geom_segment(aes(linetype = 'Average Y1'),
                x = 3.5, xend = 4.5,
                y = round(imputed[Z == 1 & prior_race == 3][1],0), yend = round(imputed[Z == 1 & prior_race == 3][1],0),
@@ -283,8 +251,8 @@ p <- data.frame(Y, prior_race, Z,Y1, Y0, lab) %>%
                y = round(imputed[Z == 0 & prior_race == 3][1],0), yend = round(imputed[Z == 0 & prior_race == 3][1],0),
                col = 4) +
   scale_linetype_manual(values = c(1, 1),
-                        labels = c(paste('Average Y0 =',round(imputed[Z == 0 & prior_race == 3][1],0)),
-                                   paste('Average Y1 =', round(imputed[Z == 1 & prior_race == 3][1],0))),
+                        labels = c(paste(round(imputed[Z == 0 & prior_race == 3][1],0)),
+                                   paste(round(imputed[Z == 1 & prior_race == 3][1],0))),
                         guide = guide_legend(
                           override.aes = list(
                             linetype = c(1, 1),
@@ -296,15 +264,14 @@ p <- data.frame(Y, prior_race, Z,Y1, Y0, lab) %>%
   labs(x = 'number of prior races',
        y = 'observed running time (Y)',
        color = NULL,
-       title = 'Runners with 3 prior races',
+       title = 'Runners with 3 prior race',
        subtitle = paste(paste('Average observed Y0 =', round(imputed[Z == 0 & prior_race == 3][1],0)),
                         paste('Average observed Y1 =',round(imputed[Z == 1 & prior_race == 3][1],0)), sep = '\n'),
        linetype = NULL
   ) +
-  coord_cartesian(xlim = c(.5, 4.8)) +
   theme_bw()
 
-saveRDS(p, 'inst/app/www/learn/fundemental/plots/p7.rds')
+ggsave('inst/app/www/learn/fundemental/plots/p7.png', device = 'png', height = 5, width = 8)
 
 truth <- tibble(runner = 1:20, prior_race, Z, Y0, Y1, Y) %>%
   rename(hyperShoe = Z,

@@ -150,9 +150,7 @@ mod_analysis_upload_server <- function(id, store){
               col_names = input$analysis_upload_data_header
             )
           } else if (filetype == 'sav'){
-            uploaded_file <- haven::read_sav(file = filepath)
-          } else if(filetype == 'spss'){
-            uploaded_file <- haven::read_spss(file = filepath)
+            uploaded_file <- Hmisc::spss.get(file = filepath)
           } else if(filetype == 'Rdata'){
             e <- new.env()
             name <- load(file = filepath, envir = e)
