@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main, master, dev, workflows]
 
+env:
+  RENV_CONFIG_SANDBOX_ENABLED: False
+
 jobs:
   test-functions:
     timeout-minutes: 45
