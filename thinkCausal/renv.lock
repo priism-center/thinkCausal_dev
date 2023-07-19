@@ -230,6 +230,12 @@
       "Version": "4.0.4",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "bit",
+      "RemoteRef": "bit",
+      "RemoteRepos": "https://packagemanager.rstudio.com/all/latest",
+      "RemotePkgPlatform": "windows",
+      "RemoteSha": "4.0.4",
       "Requirements": [
         "R"
       ],
@@ -240,6 +246,12 @@
       "Version": "4.0.5",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "bit64",
+      "RemoteRef": "bit64",
+      "RemoteRepos": "https://packagemanager.rstudio.com/all/latest",
+      "RemotePkgPlatform": "windows",
+      "RemoteSha": "4.0.5",
       "Requirements": [
         "R",
         "bit",
@@ -394,6 +406,12 @@
       "Version": "0.3.1",
       "Source": "Repository",
       "Repository": "CRAN",
+      "RemoteType": "standard",
+      "RemotePkgRef": "config",
+      "RemoteRef": "config",
+      "RemoteRepos": "https://packagemanager.rstudio.com/all/latest",
+      "RemotePkgPlatform": "windows",
+      "RemoteSha": "0.3.1",
       "Requirements": [
         "yaml"
       ],
@@ -1338,15 +1356,14 @@
     },
     "plotBart": {
       "Package": "plotBart",
-      "Version": "0.1.24",
-      "Source": "git",
-      "RemoteType": "git",
+      "Version": "0.1.8",
+      "Source": "GitHub",
+      "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "priism-center",
       "RemoteRepo": "plotBart",
-      "RemoteRef": "",
-      "RemoteSha": "3a4f91acf88d021f282030d2da8cd8d0c2c3bccf",
-      "RemoteUrl": "https://github.com/priism-center/plotBart",
+      "RemoteUsername": "priism-center",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "4b8bb10a5096abed70d74e3abfeff87e3c4c6aaa",
       "Requirements": [
         "GGally",
         "R",
@@ -1361,7 +1378,7 @@
         "stats",
         "tidyr"
       ],
-      "Hash": "37c0bf1e43af5827fc624b190599a5bf"
+      "Hash": "a28787663ddf6b280e4c693ff4cb8573"
     },
     "plyr": {
       "Package": "plyr",
@@ -1581,13 +1598,13 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "1.0.0",
+      "Version": "0.17.3",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
         "utils"
       ],
-      "Hash": "c321cd99d56443dbffd1c9e673c0c1a2"
+      "Hash": "4543b8cd233ae25c6aba8548be9e747e"
     },
     "reshape": {
       "Package": "reshape",
