@@ -20,8 +20,6 @@ jobs:
         with:
           r-version: '4.2.0'
       - uses: gperrett/thinkCausal_dev/.github/setup-renv@master
-        with:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       - name: Run tests
         shell: Rscript {0}
         run: print(getwd()); testthat::test_local();
