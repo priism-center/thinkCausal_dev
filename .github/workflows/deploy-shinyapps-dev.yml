@@ -23,5 +23,5 @@ jobs:
         shell: Rscript {0}
         run: |
           rsconnect::setAccountInfo(name = "${{secrets.SA_ACCOUNT_NAME}}", token = "${{secrets.SA_TOKEN}}", secret = "${{secrets.SA_SECRET}}")
-          rsconnect::deployApp(appName = 'thinkCausal-dev', account = "${{secrets.SA_ACCOUNT_NAME}}")
+          rsconnect::deployApp(appName = 'thinkCausal-dev', account = "${{secrets.SA_ACCOUNT_NAME}}", forceUpdate = TRUE)
         working-directory: thinkCausal
