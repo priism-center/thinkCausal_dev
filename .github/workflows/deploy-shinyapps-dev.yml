@@ -5,6 +5,9 @@ on:
   push:
     branches: [dev]
 
+env:
+  RENV_CONFIG_SANDBOX_ENABLED: False
+
 jobs:
   deploy-shinyapps:
     timeout-minutes: 45
