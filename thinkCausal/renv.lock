@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.2.1",
+    "Version": "4.2.0",
     "Repositories": [
       {
         "Name": "RSPM",
@@ -1824,6 +1824,56 @@
         "withr"
       ],
       "Hash": "f76c2a02d0fdc24aa7a47ea34261a6e3"
+    },
+    "thinkCausal": {
+      "Package": "thinkCausal",
+      "Version": "0.5.0",
+      "Source": "GitHub",
+      "Remotes": "github::priism-center/plotBart, github::merlinoa/shinyFeedback, github::priism-center/shinyQuiz, nsgrantham/ggdark",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "thinkCausal_dev",
+      "RemoteUsername": "priism-center",
+      "RemoteRef": "dev",
+      "RemoteSha": "3763e27f1201dff4218d1a759c46fe4915e69bd6",
+      "RemoteSubdir": "thinkCausal",
+      "Requirements": [
+        "R",
+        "bartCause",
+        "bs4Dash",
+        "cli",
+        "config",
+        "dplyr",
+        "ggdark",
+        "ggplot2",
+        "glue",
+        "golem",
+        "htmltools",
+        "jsonlite",
+        "lubridate",
+        "openxlsx",
+        "patchwork",
+        "pkgload",
+        "plotBart",
+        "purrr",
+        "reactable",
+        "readr",
+        "rlang",
+        "scales",
+        "shiny",
+        "shinyFeedback",
+        "shinyQuiz",
+        "shinyWidgets",
+        "shinybrowser",
+        "shinydisconnect",
+        "shinyjs",
+        "sortable",
+        "stringr",
+        "tibble",
+        "tidyr",
+        "waiter"
+      ],
+      "Hash": "d1efca1fe89c513198feeb7622f93e7a"
     },
     "tibble": {
       "Package": "tibble",
