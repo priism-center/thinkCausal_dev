@@ -6,7 +6,6 @@
 #' @noRd
 app_ui <- function(request) {
   tagList(
-    # attempt to push
     # add external resources
     golem_add_external_resources(),
 
