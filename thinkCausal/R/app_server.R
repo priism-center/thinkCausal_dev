@@ -5,7 +5,7 @@
 #' @import shiny
 #' @noRd
 app_server <- function(input, output, session) {
-
+  # test deployment
   # close loading spinner
   Sys.sleep(1.5) # prevent flashing
   waiter::waiter_hide()
