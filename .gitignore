@@ -1,8 +1,8 @@
 .DS_Store
 .DS_store
 .ds_store
-thinkCausal/rsconnect
-thinkCausal-old/rsconnect
+#thinkCausal/rsconnect
+#thinkCausal-old/rsconnect
 *.html
 
 # vscode workspaces
