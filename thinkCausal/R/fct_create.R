@@ -811,22 +811,34 @@ create_table_researcher <- function(df, imputed, rows = 20){
     fullWidth = FALSE,
     theme = reactable::reactableTheme(cellPadding = "1px 6px"),
     defaultPageSize = rows,
+    defaultColDef = reactable::colDef(
+      footerStyle = list(fontWeight = "bold", background = 'white'),
+    ),
     columns = list(
       Y0 = reactable::colDef(
         #show = 'Y0' %in% .show,
+        footer = round(mean(df$Y0), 1),
+        footerStyle = list(fontWeight = "bold"),
         style = function(value, index) {
           list(color = colorY0[index])
         }
       ),
       Y1 = reactable::colDef(
-        #show = 'Y1' %in% .show,
-        #headerStyle = list(backgroundColor = 'green'),
+        footer = round(mean(df$Y1), 1),
+        footerStyle = list(fontWeight = "bold"),
         style = function(value, index) {
           list(color = colorY1[index])
         }
       ),
       Y = reactable::colDef(
        # show = 'Y' %in% .show
+      ),
+      estITE = reactable::colDef(
+        show = isTRUE(imputed),
+        name = 'estimated ITE',
+        footer = round(mean(df$estITE), 1),
+        footerStyle = list(fontWeight = "bold")
+        # show = 'Y' %in% .show
       )
     )
   )
@@ -864,7 +876,8 @@ create_table_parallel <- function(df, rows){
         #  show = 'hyperShoe' %in% .show
         style = function(value, index) {
           list(color = colorZ[index],
-               background = backgroundZ[index])
+               background = backgroundZ[index]
+          )
         }
       ),
       Y0 = reactable::colDef(
@@ -909,8 +922,8 @@ create_table_oracle <- function(df, imputed, .show, rows, estimand = 'ate'){
 
   df <- df %>% dplyr::mutate(
     ITE = Y1 - Y0,
-    estY0 = ifelse(hyperShoe == 0, NA, estY0),
-    estY1 = ifelse(hyperShoe == 1, NA, estY1)
+    estY0 = ifelse(hyperShoe == 0, Y0, estY0),
+    estY1 = ifelse(hyperShoe == 1, Y1, estY1)
   )
   if(isTRUE(imputed)){
     colorEstY1 <- ifelse(df$hyperShoe == 0, "#DF536B", 'none')
@@ -932,14 +945,16 @@ create_table_oracle <- function(df, imputed, .show, rows, estimand = 'ate'){
     theme = reactable::reactableTheme(cellPadding = "1px 6px"),
     defaultPageSize = rows,
     defaultColDef = reactable::colDef(
-      footerStyle = list(fontWeight = "bold", color = 'white', background = 'black'),
+      footerStyle = list(fontWeight = "bold", background = 'white'),
     ),
     columns = list(
-      runner = reactable::colDef(footer = 'Average'),
+      runner = reactable::colDef(footer = 'Average', footerStyle = list(background = 'white')),
       estY0 = reactable::colDef(
         show = isTRUE(imputed),
         name = 'est.',
-        maxWidth = ifelse(isTRUE(imputed), 50, 100),
+        footerStyle = list(fontWeight = "bold", background = 'white'),
+        footer = round(mean(df$estY0), 1),
+        maxWidth = ifelse(isTRUE(imputed), 60, 100),
         #show = isTRUE(imputed) & 'estY0' %in% .show,
         style = function(value, index) {
           list(color = colorEstY0[index])
@@ -948,8 +963,9 @@ create_table_oracle <- function(df, imputed, .show, rows, estimand = 'ate'){
       Y0 = reactable::colDef(
         name = ifelse(isTRUE(imputed), 'true', 'Y0'),
         footer = round(mean(df$Y0), 1),
+        footerStyle = list(fontWeight = "bold", color = 'white', background = 'black'),
         #show = 'Y0' %in% .show,
-        maxWidth = ifelse(isTRUE(imputed), 50, 100),
+        maxWidth = ifelse(isTRUE(imputed), 60, 100),
         style = function(value, index) {
           list(color = colorY0[index],
                background = backgroundY0[index])
@@ -958,7 +974,9 @@ create_table_oracle <- function(df, imputed, .show, rows, estimand = 'ate'){
       estY1 = reactable::colDef(
         show = isTRUE(imputed),
         name = 'est.',
-        maxWidth = ifelse(isTRUE(imputed), 50, 100),
+        footer = round(mean(df$estY1), 1),
+        footerStyle = list(fontWeight = "bold"),
+        maxWidth = ifelse(isTRUE(imputed), 60, 100),
         #show = isTRUE(imputed)&'estY1' %in% .show,
         style = function(value, index) {
           list(color = colorEstY1[index])
@@ -966,9 +984,10 @@ create_table_oracle <- function(df, imputed, .show, rows, estimand = 'ate'){
       ),
       Y1 = reactable::colDef(
         footer = round(mean(df$Y1), 1),
+        footerStyle = list(fontWeight = "bold", color = 'white', background = 'black'),
         #show = 'Y1' %in% .show,
         name = ifelse(isTRUE(imputed), 'true', 'Y1'),
-        maxWidth = ifelse(isTRUE(imputed), 50, 100),
+        maxWidth = ifelse(isTRUE(imputed), 60, 100),
         #headerStyle = list(backgroundColor = 'green'),
         style = function(value, index) {
           list(color = colorY1[index],
@@ -977,16 +996,18 @@ create_table_oracle <- function(df, imputed, .show, rows, estimand = 'ate'){
       ),
       estITE = reactable::colDef(
         show = isTRUE(imputed),
+        footer = round(mean(df$estITE), 1),
+        footerStyle = list(fontWeight = "bold"),
         name = 'est.',
-        #show = isTRUE(imputed) & 'estITE' %in% .show,
-        maxWidth = 50
+        maxWidth = 60
 
       ),
       ITE = reactable::colDef(
-        footer = paste(estimand,'=', round(mean(df$ITE), 1)),
+        footer = round(mean(df$ITE), 1),
+        footerStyle = list(fontWeight = "bold", color = 'white', background = 'black'),
         name = ifelse(isTRUE(imputed), 'true', 'ITE'),
         #show = 'ITE' %in% .show,
-        maxWidth = ifelse(isTRUE(imputed), 50, 100),
+        maxWidth = ifelse(isTRUE(imputed), 60, 100),
         style = function(value, index) {
           list(color = colorITE[index],
                background = backgroundITE[index])

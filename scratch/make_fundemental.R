@@ -1,7 +1,9 @@
-library(tidyverse)
+#library(tidyverse)
 library(ggrepel)
-library(ggmagnify)
 library(ggdark)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
 
 set.seed(62)
 n <- 20
@@ -201,7 +203,7 @@ data.frame(Y, prior_race, Z,Y1, Y0) %>%
 ggsave('inst/app/www/learn/fundemental/plots/p5.png', device = 'png', height = 5, width = 8)
 
 
-data.frame(Y, prior_race, Z,Y1, Y0) %>%
+p6 <- data.frame(Y, prior_race, Z,Y1, Y0) %>%
   filter(prior_race == 2) %>%
   ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z))) +
   geom_point() +
@@ -234,11 +236,14 @@ data.frame(Y, prior_race, Z,Y1, Y0) %>%
   ) +
   theme_bw()
 
+p6
+readr::write_rds(p6, 'inst/app/www/learn/fundemental/plots/p6.rds')
+
 ggsave('inst/app/www/learn/fundemental/plots/p6.png', device = 'png', height = 5, width = 8)
 
 
 
-data.frame(Y, prior_race, Z,Y1, Y0) %>%
+p7 <- data.frame(Y, prior_race, Z,Y1, Y0) %>%
   filter(prior_race == 3) %>%
   ggplot(aes(as.factor(prior_race), Y, col = as.factor(Z))) +
   geom_point() +
@@ -270,6 +275,8 @@ data.frame(Y, prior_race, Z,Y1, Y0) %>%
        linetype = NULL
   ) +
   theme_bw()
+p7
+readr::write_rds(p7, 'inst/app/www/learn/fundemental/plots/p7.rds')
 
 ggsave('inst/app/www/learn/fundemental/plots/p7.png', device = 'png', height = 5, width = 8)
 

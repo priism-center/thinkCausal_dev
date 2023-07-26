@@ -149,7 +149,8 @@ mod_learn_fundamental_server <- function(id){
     ns <- session$ns
 
     # load in everything we need
-    datImputed <- readr::read_csv('inst/extdata/fundamental_table2.csv')
+    datImputed <- readr::read_csv('inst/extdata/fundamental_table2.csv') %>%
+      dplyr::mutate(estITE = Y1 - Y0)
     datTruth <- readr::read_csv('inst/extdata/truth.csv')
     datCombined <- data.frame(
       datImputed[, 1:3],
@@ -157,7 +158,8 @@ mod_learn_fundamental_server <- function(id){
       Y0 = datTruth$Y0,
       estY1 = datImputed$Y1,
       Y1 = datTruth$Y1,
-      Y = datImputed$Y
+      Y = datImputed$Y,
+      estITE = datImputed$Y1 - datImputed$Y0
     )
     shinyQuiz::quiz_server(quiz_content_fundamental)
 
@@ -471,7 +473,7 @@ mod_learn_fundamental_server <- function(id){
         style = 'visibility: hidden;',
         reactable::renderReactable({
           reactable::reactable(
-            datImputed,
+            datImputed %>% dplyr::select(-estITE),
             defaultPageSize = 20,
             #class = 'small',
             theme = reactable::reactableTheme(cellPadding = "1px 6px"),
@@ -506,7 +508,7 @@ mod_learn_fundamental_server <- function(id){
         style = 'visibility: hidden;',
         reactable::renderReactable({
           reactable::reactable(
-            datImputed %>% dplyr::mutate('est.ITE' = Y1 - Y0),
+            datImputed,
             fullWidth = FALSE,
             defaultPageSize = 20,
             #class = 'small',
@@ -537,7 +539,7 @@ mod_learn_fundamental_server <- function(id){
                   list(color = color)
                 }
               ),
-              est.ITE = reactable::colDef(
+              estITE = reactable::colDef(
                 name = 'estimated ITE'
               )
             )
@@ -551,7 +553,7 @@ mod_learn_fundamental_server <- function(id){
         style = 'visibility: hidden;',
         reactable::renderReactable({
           reactable::reactable(
-            datImputed %>% dplyr::mutate('estITE' = Y1 - Y0),
+            datImputed,
             fullWidth = FALSE,
             defaultPageSize = 20,
             #class = 'small',
@@ -566,7 +568,7 @@ mod_learn_fundamental_server <- function(id){
                 footer = 'Average'
               ),
               Y0 = reactable::colDef(
-                footer = mean(datImputed$Y0),
+                footer = round(mean(datImputed$Y0), 1),
                 style = function(value, index) {
                   if (datImputed$hyperShoe[index] == 1) {
                     color <- imputedY0
@@ -577,7 +579,7 @@ mod_learn_fundamental_server <- function(id){
                 }
               ),
               Y1 = reactable::colDef(
-                footer = mean(datImputed$Y1),
+                footer = round(mean(datImputed$Y1), 1),
                 style = function(value, index) {
                   if (datImputed$hyperShoe[index] == 0) {
                     color <- imputedY1
@@ -589,7 +591,7 @@ mod_learn_fundamental_server <- function(id){
               ),
               estITE = reactable::colDef(
                 name = 'estimated ITE',
-                footer = mean(datImputed$Y1 - datImputed$Y0)
+                footer = round(mean(datImputed$Y1 - datImputed$Y0), 1)
               )
             )
           )
@@ -627,11 +629,12 @@ mod_learn_fundamental_server <- function(id){
           )
         }),
         reactable::renderReactable({
+          req(input$view)
           switch (
             input$view,
             'Researcher' = create_table_researcher(df = datImputed, imputed = input$imputed),
-            'Parallel Universe' = create_table_parallel(df = datTruth),
-            'Oracle' = create_table_oracle(df = datCombined, imputed = input$imputed, .show = input$cols)
+            'Parallel Universe' = create_table_parallel(df = datTruth, rows = 20),
+            'Oracle' = create_table_oracle(df = datCombined, imputed = input$imputed, .show = input$cols, rows = 20)
             )
         })
 
