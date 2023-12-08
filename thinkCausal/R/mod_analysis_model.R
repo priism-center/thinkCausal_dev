@@ -11,15 +11,18 @@ mod_analysis_model_ui <- function(id){
   ns <- NS(id)
   tagList(
     fluidRow(
-      bs4Dash::box(
+      column(
         width = 3,
+      bs4Dash::box(
+        width = 12,
         collapsible = FALSE,
         title = 'Specify model',
         selectInput(ns('analysis_model_estimand'),
                     label = 'Select a causal estimand:',
-                    choices = c('ATE - Average treatment effect' = 'ATE',
-                                'ATT - Average treatment effect on the treated' = 'ATT',
-                               'ATC - Average treatment effect on the control' = 'ATC')),
+                    choices = c('',
+                      'ATE - Average treatment effect' = 'ATE',
+                      'ATT - Average treatment effect on the treated' = 'ATT',
+                      'ATC - Average treatment effect on the control' = 'ATC')),
         selectInput(ns('analysis_model_moderator_yes_no'),
                     label = 'Pre-specify subgroup analyses:',
                     choices = c("No", "Yes", 'Unsure')),
@@ -35,15 +38,32 @@ mod_analysis_model_ui <- function(id){
                      label = "Fit model"),
         actionButton(inputId = ns('analysis_model_help'),
                      label = 'Help me')
-        ),
-      bs4Dash::box(
+        )
+      ),
+      column(
         width = 9,
+      bs4Dash::box(
+        width = 12,
         collapsible = FALSE,
-        title = 'Review your model',
-        p('More coming soon...')
+        title = 'Fitting a  BART model in thinkCausal',
+        p('thinkCausal will estimate causal effects by using Bayesian Additive Regression Trees (BART), a flexible machine learning algorithm. BART estimates causal effects by making predictions for what would have happened to each individual if they had received the opposite treatment.'),
+        br(),
+        p('BART models are non-parametric, this means any interactions or non-linear relationships are automatically learned and included in the model. With the BART model fit in thinkCausal, you do not have to manually include interaction terms or squared terms or transformations of variables.'),
+        br(),
+        p('thinkCausal will automatically identify moderators of the treatment effect. A moderator is a variable where the treatment effect varies or changes across different values. While thinkCausal will automatically detect treatment effect moderation, if there are variables you belive are moderators you are encouraged to pre-specify them in the specify model controls.')
+
         #,
         #verbatimTextOutput(ns('review'))
+      ),
+      bs4Dash::box(
+        width = 12,
+        collapsible = FALSE,
+        title = 'Review your model',
+        tags$head(tags$style(HTML("pre { white-space: pre-wrap; word-break: keep-all; }"))),
+        verbatimTextOutput(ns('review'))
+
         )
+      )
       )
     )
 }
@@ -93,30 +113,31 @@ mod_analysis_model_server <- function(id, store){
     # model review page on left pannel
 
     output$review <- renderText({
-      covariates <- paste0(c('re75', 're74'), collapse = '; ')
+      covariates <- paste0(store$column_assignments$x, collapse = ', ')
+
+      excluded <- paste0(names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) %notin% c(store$column_assignments$x, store$column_assignments$z, store$column_assignments$y)], collapse = ', ')
+      design <- store$analysis_select_design
+      estimand <- ifelse(input$analysis_model_estimand == '',
+                         'You have not selected a causal estimand. You will need to make a selection before fitting your model.',
+                         paste0('You are estimating the ', input$analysis_model_estimand)
+                         )
+
+      treatment <- store$column_assignments$z
+      outcome <- store$column_assignments$y
+
+      X <- ifelse(design == 'Observational Study (Treatment not Randomized)', 'Confounders', 'Covariates')
       glue::glue(
       "
-      You are testing if changing the TREATMENT causes a change in OUTCOME
-       by fitting a Bayesian Additive Regression Tree (BART).\n
-       Your data is from a DESIGN
-       You are not blocking on any variables.
-       You have not pre-specified any sub-group comparisons.
-        You are estimating the: INSERT ESTIMAND\n
-        Your model will control for: \n
-        \n\t{covariates}
+      Desigin: Your data is from a(n) {design}\n\t
+      Estimand: {estimand}\n\t
+      Causal Question: You are testing whether {treatment} causes changes in {outcome}.\n\t
 
-        You are not controlling for:\n
-        \tNOT INCLUDED
+      You are including the following variables in your model:\n\t
+      {covariates}
 
-        You have not specified any random effects of survey weights.
+      You are not controlling for:\n\t
+      {excluded}
 
-        BART models assume that all confounders are being controled for in the model.
-        OVERLAP (explan how we will test for overlap)
-        SUTVA
-
-        BART models will automatically learn any interactions that exist in your data so you do not need to specify interaction effects.
-        BART models are inherently non-parametric and do not assume the relationship between predictors and the outcome is linear.
-        Specification of any polynomial terms are not needed.
       ")
     })
 
@@ -133,6 +154,14 @@ mod_analysis_model_server <- function(id, store){
           bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_upload')
           # updateNavbarPage(store$session_global, inputId = "nav", selected = module_ids$analysis$upload)
         })
+      }
+
+      if(input$analysis_model_estimand == ''){
+        show_popup_model_no_estimand_warning(session, ns = ns)
+        observeEvent(input$analysis_model_estimand_button_popup, {
+          close_popup(session = session)
+        })
+
       }
 
       # make sure required inputs have values
@@ -155,8 +184,7 @@ mod_analysis_model_server <- function(id, store){
       # stop here if data hasn't been uploaded and selected
       validate_data_verified(store)
 
-      # TODO: stop here if inputs aren't found
-      # req(input$)
+      req(input$analysis_model_estimand)
 
       # save the estimand (again, also saved on the design page)
       store$analysis_design_estimand <- input$analysis_model_estimand

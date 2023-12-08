@@ -33,7 +33,7 @@ mod_analysis_overlap_ui <- function(id){
                          checkboxInput(
                            inputId = ns('trim'),
                           label = 'Trim plot:',
-                          value = TRUE
+                          value = FALSE
                          )
                          ),
         selectInput(

@@ -114,7 +114,7 @@ mod_analysis_upload_server <- function(id, store){
 
         # stop if not one of the accepted file types
         # this should be caught by fileInput() on the UI side
-        accepted_filetypes <- c('csv', 'txt', 'xlsx', 'dta', 'sav', 'Rdata', 'rds')
+        accepted_filetypes <- c('csv', 'txt', 'xlsx', 'dta', 'spss', 'sav', 'sas', 'Rdata', 'rds')
         validate(need(
           filetype %in% accepted_filetypes,
           paste(
@@ -140,7 +140,7 @@ mod_analysis_upload_server <- function(id, store){
               col_names = input$analysis_upload_data_header
             )
           } else if (filetype == 'dta'){
-            #uploaded_file <- readstata13::read.dta13(file = filepath)
+            uploaded_file <- haven::read_dta(file = filepath)
           } else if (filetype == 'xlsx'){
             uploaded_file <- openxlsx::read.xlsx(xlsxFile = filepath)
           } else if (filetype == 'txt'){
@@ -150,7 +150,12 @@ mod_analysis_upload_server <- function(id, store){
               col_names = input$analysis_upload_data_header
             )
           } else if (filetype == 'sav'){
+            uploaded_file <- haven::read_sav(file = filepath)
             #uploaded_file <- Hmisc::spss.get(file = filepath)
+          } else if(filetype == 'spss'){
+            uploaded_file <- haven::read_spss(file = filepath)
+          }else if(filetype == 'sas'){
+            uploaded_file <- haven::read_sas(file = filepath)
           } else if(filetype == 'Rdata'){
             e <- new.env()
             name <- load(file = filepath, envir = e)

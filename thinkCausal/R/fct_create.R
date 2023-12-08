@@ -290,10 +290,9 @@ create_interpretation <- function(.model, type, treatment, units, participants){
   if(units == '') units <- 'units'
   if(participants == '') participants <- 'participants'
   if(type == 'Causal'){
-    if(.model$estimand == 'att') estimand <- paste0('For ', participants, ' in this study that received the ', treatment,  ', receiving the ', treatment)
-    if(.model$estimand == 'ate') estimand <- paste0('For ', participants, ' in this study, receiving the ', treatment)
-    if(.model$estimand == 'atc') estimand <- paste0('For ', participants, ' in this study that did not receive the ', treatment, ' receiving the ', treatment, ' would have')
-
+    if(.model$estimand == 'att') estimand <- paste0('Assuming Ignorability and SUTVA', ', for ', participants, ' in this study that received the ', treatment,  ', receiving the ', treatment)
+    if(.model$estimand == 'ate') estimand <- paste0('Assuming Ignorability and SUTVA', ', for ', participants, ' in this study, receiving the ', treatment)
+    if(.model$estimand == 'atc') estimand <- paste0('Assuming Ignorability and SUTVA', ', for ', participants, ' in this study that did not receive the ', treatment, ' receiving the ', treatment, ' would have')
     if(as.data.frame(summary(.model)$estimates)[1] > 0) result <- paste0(' led to an increase of ', as.character(round(as.data.frame(summary(.model)$estimates)[1], 2)), ' ', units)
     if(as.data.frame(summary(.model)$estimates)[1] < 0) result <- paste0(' led to a decrease of ', as.character(round(as.data.frame(summary(.model)$estimates)[1], 2)), ' ', units)
 

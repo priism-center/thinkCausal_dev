@@ -4,35 +4,117 @@ This is still under development
 
 <br><br><br>
 
-### Study design
 
-The name of your treatment, the units of the outcome variable, and the participants in your study are all optional fields. These fields will populate the automatic interpretations at the end of the analysis.
+### Upload data
+thinkCausal can load in .csv, .txt, .xlsx (Excel), .spss (SPSS), .sav (SPSS), .dta (STATA) or .sas (SAS) files. 
+<br>
 
-Example inputs for each are:
-- Treatment: "**job training program**"
-- Units: "**dollars**"
-- Participants: "**low-income households**"
+If you are uploading a .txt file then the delimiter will also need to be specified (usually this is a tab or comma). 
+
+thinkCausal assumes that variables are represented as columns and rows are values of corresponding variables. 
+
+If you have nested or multi-level data, thinkCausal will assumes your data is in the long form. 
+
+If your data does not include a header (variable/column names) row then uncheck the 'Data contains a header row' checkmark and you will be able to rename your columns on the 'Select data' page.
+
+
+
+<!-- TODO: describe wide vs long data ] -->
+
+If you are using the weblink, upload files are limited to 10mb. If you are using thinkCausal locally, this does not apply.
 
 <br>
 
-#### Unsure about your causal estimand?
-Nisl vel pretium lectus quam id leo. Vitae et leo duis ut diam. Varius vel pharetra vel turpis nunc eget lorem. Nisl purus in mollis nunc sed. Phasellus faucibus scelerisque eleifend donec pretium vulputate sapien. Semper risus in hendrerit gravida rutrum.
+
+### Variable Selection
+#### Select Outcome and Treatment
+
+Does z cause y? y is the outcome variable and z is the treatment variable. 
+
+To select an outcome from your uploaded data you can click the corresponding box and choose the outcome variable you are interested in studying. 
+
+You will repeat this process for a treatment variable as well.
+
+**What types of variables can be outcome variables?**
+
+At this point in time, thinkCausal can analyze outcome variables that are either continuous variables or binary variables. 
+
+**What types of variables can be a treatment?**
+
+At this point in time, thinkCausal can only analyze binary treatment variables. In the future we plan to expand to accommodate additional treatment levels variables.
+
+**Example: Choosing an outcome and treatment for the hyperShoe:**
+
+Suppose a hypothetical sporting company has released a new shoe called the hyperShoe, you are interested in knowing whether or not wearing hyperShoes causes runners to run faster in the Detroit marathon than they would have ran had they not worn hyperShoes? 
+
+In this example hyperShoes is the treatment variable and running times in the Detroit marathon is outcome variable. The hyperShoe is the cause we are studying and running time in the marathon is the effect of the cause we want to know!
+
+**Learning Module: Potential Outcomes**
+
+You can learn more about what a cause is, and the difference between treatment and outcome variables in the potential outcomes learning module: 
 
 <a onclick="go_to_shiny_page('learn_potential_outcomes', true);" class="help-link">
-  <span class="glyphicon glyphicon-info-sign"></span>  Learn more about causal estimands
+  <span class="glyphicon glyphicon-info-sign"></span>  Learn more about potential outcomes
 </a>
 
-<br>
+#### Study Design
 
-#### Unsure about your study design?
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet massa vitae tortor condimentum lacinia quis vel. Commodo sed egestas egestas fringilla. Sed velit dignissim sodales ut. Ac odio tempor orci dapibus ultrices in iaculis nunc. Ut sem viverra aliquet eget sit amet tellus. Sit amet venenatis urna cursus eget nunc scelerisque viverra mauris. Fusce id velit ut tortor.
+Different study designs make different assumptions. thinkCausal needs to know the design of your study so that it can inform you about the assumptions you are making in your analysis. 
 
-Ipsum dolor sit amet consectetur. Id eu nisl nunc mi ipsum. Ut aliquam purus sit amet luctus venenatis lectus. Sed augue lacus viverra vitae. Mattis vulputate enim nulla aliquet porttitor. Risus quis varius quam quisque. Arcu odio ut sem nulla. Nunc sed id semper risus in hendrerit gravida.
+thinkCausal supports three different study designs: 
+  - Observational Studies (Non-Random Treatment)
+  - Completely Randomized Experiments
+  - Block Randomized Experiments
+  
 
-<br>
+If you treatment variable has not been randomly assigned your study design is an observational study. 
+
+If your treatment variable has been randomly assigned across the whole data set your study design is a completely randomized experiment. 
+
+If your treatment variable has been randomly assigned within groups (blocks) based on another variable or variables, your study design is a blocked randomized experiment.
+  
+  
+**Observational Studies (Non-Random Treatment):**
+
+In observational studies, the treatment variable is not randomly assigned and individuals may self select into receiving or not receiving the treatment. In thinkCausal studies without any sort of randomization of the treatment are considered observational studies.
+
+Sometimes it is not possible to conduct a randomized study. Consider a study on the causal effects of attending collect on income at age 30. It would be unethical to randomly assign students to attend or not attend college. Yet, understanding the effect of college on income is an important policy question!
+
+Observational studies have imbalance between the treatment group and the control group. In our college example, on average, students that attend college may come from wealthier families and students who do not attend college may come from poorer families. Differences in the average family wealth between students that attend and don't attend college is an example of imbalance. 
+
+thinkCausal can estimate the causal effects of observational studies 
+
+
+
+
+**Completely Randomized Experiment:**
+
+In a completely randomized experiment, the treatment variable is randomly assigned. If everyone in the study has the same probability of receiving the treatment then the study is a completely randomized experiment. 
+
+Consider the hyperShoe, a new type of running shoe released with the claim that wearing hyperShoes causes runners to run faster marathons. If we recruited a group of runners to participate in our study, and flipped a coin to determine if each runner would wear hyperShoes or not wear hyperShoes then this would be a completely randomized experiment because every runners has a .5 probability of wearing hyperShoes and a .5 probability of not wearing hyperShoes. 
+
+The probability of receiving the treatment does not have to .5! If each runner was assigned a .4 probability of receiving the hyperShoe and a .6 probability of not receiving the hyperShoe our study would still be a completely randomized experiment. 
+
+The important detail of what makes a study a completely randomized experiment is that **every** participant has the same probability of receiving the treatment and the same probability of receiving the control. 
+
+
+**Block Randomized Experiment:**
+
+In a block randomized experiment the treatment variable is randomly assigned within blocks defined by one or more other variables. 
+
+Using the hyperShoes as our example, suppose a small subset of the runners in our sample are professional runners and the remainder of runners in our sample are amateur runners. 
+
+In a block randomized experiment, the randomization of the treatment assignment takes place within groups (blocks) defined by another variable (in this example the other variable is professional status). In a block randomized experiment we could randomize 60% of the professional runners to receive the hyperShoes and 50% of the amateur runners to receive the hyperShoes. 
+
+Notice that within the two blocks (professionals and amateurs) each runners has the same probability of receiving the treatment.
+
+In block randomized experiments it is important to always adjust for the variable you have blocked on! 
+
+
+
 
 #### Survey weights
-Diam vel quam elementum pulvinar etiam non quam. Vel risus commodo viverra maecenas accumsan. Tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam faucibus purus in massa tempor nec feugiat nisl. Morbi tempus iaculis urna id volutpat lacus laoreet non curabitur.
+Sometimes our data comes from surveys that are not representative of the population we are inferences about. 
 
 <br>
 
@@ -41,23 +123,28 @@ Risus in hendrerit gravida rutrum quisque non. Fermentum posuere urna nec tincid
 
 <br>
 
-### Data
-Data should be rectangular, wide data and can be a .csv, .txt, .xlsx, .spss, or .dta file. If you are uploading a .txt file then the delimiter will also need to be specified (usually this is a tab or comma). If your data does not include a header row then uncheck the 'Data contains a header row' checkmark and you will be able to rename your columns on the 'Select data' page.
 
-<!-- TODO: describe wide vs long data ] -->
+#### Select covariates
+**Which variables should I include?**
 
-Upload files are limited to 10mb.
+Include all **pre-treatment** variables that you believe could predict the outcome in the analysis. thinkCausal estimates casual effects using Bayesian Additive Regression Trees (BART), BART automatically prevents over-fitting and can accommodate many covariates. Some causal inference studies include over 300 variables as covariates. 
 
-<br>
-
-#### Upload data
-Each column of your dataset must be matched to one of these roles depending on study design: Covariate, Treatment, Outcome, Block, Post-treatment, or Exclude. These roles are auto-populated based on the column name and column values. You can change the roles by dragging-and-dropping the column names to each respective bucket. Treatment and Response should contain only one column respectively. Please exclude any ID columns or other irrelevant columns from your dataset.
-
-ID, index, and post-treatment variables are excluded from the analysis.
+**Post-treatment variables should not be included as covariates in the model.** A post-treatment variable is any variable that could plausibly be be influenced by the treatment.
 
 <a onclick="go_to_shiny_page('learn_post_treatment', true);" class="help-link">
   <span class="glyphicon glyphicon-info-sign"></span>  Learn more about post-treatment variables
 </a>
+
+**ID variables should not be included as covariates in the model.** ID variables are variables that represent row numbers or participant IDs and do not predict the outcome variable. 
+
+
+**How do I select variables?**
+
+Use the drag-and-drop to include additional variables in the analysis. You may click multiple variables to drag-and-drop a group of variables. 
+
+You can move all the variables in your dataset by clicking "Move all covariates to include box". 
+
+**After you have selected variables to include in the analysis click on the "Save variable selection & continue" button. 
 
 <!--
 #### Group data
@@ -69,13 +156,23 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ### Verify data
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit amet massa vitae tortor condimentum lacinia quis vel. Vitae congue mauris rhoncus aenean vel elit scelerisque. Congue nisi vitae suscipit tellus.
+On this page you can change variables names and check that thinkCausal has made reasonable decisions about whether a variable is modeled as a continuous predictor or an indicator variable. 
 
-Commodo ullamcorper a lacus vestibulum sed arcu non. Ut tristique et egestas quis ipsum suspendisse. Turpis egestas pretium aenean pharetra magna ac. Pellentesque id nibh tortor id aliquet. Tortor aliquam nulla facilisi cras fermentum odio. Sapien faucibus et molestie ac feugiat. 
+thinkCausal estimates causal effects with Bayesian Additive Regression Trees, a flexible machine learning model! For the BART model fit by thinkCausal the including a predictor as a continuous variable or as a categorical variable will not impact the results. For linear regression, decisions about modeling a variable as a continuous predictor or as a categorical variable can heavily influence the results. 
 
-<br>
+The defaults in thinkCausal will automatically include any variable with less than 15 categories as a categorical variable.
 
-### EDA
+**Missing data:**
+
+thinkCausal will alert you to the amount of missing data for each variable you have selected to include the analysis as well as the total number of rows containing missing data.
+
+Currently, thinkCausal uses listwise deletion and any row with a missing value will be removed from the analysis. 
+
+**reverting changes:**
+
+The revert variable changes button will return the dataset names and variable types to the initial thinkCausal defaults for names and variable types. 
+
+### Exploratory Data Visualization
 
 Nisl tincidunt eget nullam non nisi est sit. Mus mauris vitae ultricies leo integer malesuada nunc vel. Nibh mauris cursus mattis molestie a iaculis. Nisl vel pretium lectus quam id leo. Vitae et leo duis ut diam. Varius vel pharetra vel turpis nunc eget lorem. Nisl purus in mollis nunc sed. Phasellus faucibus scelerisque eleifend donec pretium vulputate sapien. Semper risus in hendrerit gravida rutrum.
 

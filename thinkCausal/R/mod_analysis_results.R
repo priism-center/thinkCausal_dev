@@ -5,7 +5,6 @@
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
 #' @noRd
-#'
 #' @importFrom shiny NS tagList
 mod_analysis_results_ui <- function(id){
   ns <- NS(id)

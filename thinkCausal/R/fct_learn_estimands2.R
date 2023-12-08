@@ -1,4 +1,4 @@
-#' Content for the estimands quiz
+#' Content for the estimands2 quiz
 #'
 #' @description A fct function
 #'
@@ -7,174 +7,85 @@
 #' @noRd
 quiz_content_estimands2 <- local({
 
-  content <- list()
-  content$ns_quiz <- shiny::NS(shiny::NS('learning_estimands2')('quiz'))
-  # questions
-
-# question 1 --------------------------------------------------------------
-  question_text_1 <- htmltools::div(
-    htmltools::p("Variable X is the only confounder. Given the overlap of X, select all the estimands we could estimate without violating the overlap assumption."),
-    htmltools::p("Filler text 1"),
-
-    renderImage({
-      list(src = app_sys('app', 'www/learn/estimands2/plots/quiz1.png'),
-           contentType = 'image/png',
-           width = 600,
-           height = 400)
-    }, deleteFile = F),
-
-    shiny::checkboxGroupInput(
-      inputId = content$ns_quiz('answers'),
-      label = NULL,
-      inline = TRUE,
-      choices = c('ATE', 'ATT', 'ATC'),
-      selected = NULL
+  # content <- list()
+  # content$ns_quiz <- NS(NS('learning_estimands')('quiz'))
+  #ns <- shiny::NS(shiny::NS('learning_estimands')('quiz'))
+  ns <- shiny::NS('learning_estimands2')
+  ns1 <- shiny::NS(ns('quiz'))
+  generate_estimand2 <- function(){
+    n <- 750
+    x = switch (sample(c('norm', 'unif'), 1),
+      'norm' = rnorm(n),
+      'unif' = runif(n, -2, 2)
     )
-  )
 
-  # answer
-  correct_answer_1 <- list(c('ATE', 'ATT', 'ATC'))
+    if(isTRUE(sample(c(T, F), 1))){
+      beta <- rnorm(1, 2)
+      y1 = x*beta + rnorm(n) + rnorm(1, -2, 5)
+      if(isTRUE(sample(c(T, F), 1))) beta <- rnorm(1, 2)
+      y0 = x*beta + rnorm(n)
 
-  # TODO: move to a permanent home
-  setClass('quizQuestion', slots = list(
-    question = 'shiny.tag',
-    answerUser = 'list',
-    answerUserDisplay = 'function', # how to print the user answer in the report
-    answerCorrectDisplay = 'character', # how to print the correct answer in the report
-    grader = 'function' # function that compares user answer to the correct answer
-  ))
-  verify_question_structure <- function(question){
+    }else{
+      y0 <-  rnorm(1, 2,1)*x + rnorm(n)
+      if(isTRUE(sample(c(T, F), 1))) y0 <-  rnorm(1, .3, 1)*x + I((x+.3)^2)*rnorm(1, 1, .5) + rnorm(n)
+      y1 <- 6 + rnorm(1, .3, 1)*x + I((x+.3)^2)*rnorm(1, 1, .5) + rnorm(n)
+    }
 
-    if (!isTRUE(isS4(question))) cli::cli_abort('Must be an S4 object')
-    if (!isTRUE(inherits(question, 'quizQuestion'))) cli::cli_abort('Must be an S4 object with class quizQuestion')
+    z <- rbinom(n, 1, .5)
+    y <- ifelse(z == 1, y1, y0)
+    dat <- data.frame(y, z, x)
 
-    if (!isTRUE(inherits(question@question, 'shiny.tag'))) cli::cli_abort('`question` must be of class shiny.tag. Preferably generated from htmltools::div().')
+    correct_aws <- sample(c('ATE', 'ATT', 'ATC'), 1)
 
-    if (!isTRUE(inherits(question@answerUserDisplay, 'function'))) cli::cli_abort('`answerUserDisplay` must be a function that accepts one argument and returns a character.')
-    if (!isTRUE(inherits(question@answerCorrectDisplay, 'character'))) cli::cli_abort('`answerCorrectDisplay` must be a character.')
-    if (!isTRUE(inherits(question@grader, 'function'))) cli::cli_abort('`grader` must be a function that accepts one argument and returns a boolean')
+    val <- quantile(x)[sample(c(2:4), 1)]
+    direction <- sample(c('>', '<'), 1)
+    ind <- switch (sample(c('greater', 'less'), 1),
+      'greater' = eval(parse(text = "x > val")),
+      'less' = eval(parse(text = "x < val"))
+    )
 
-    # verify args
+    dat <- switch (correct_aws,
+      'ATE' = dat,
+      'ATT' = dat %>% dplyr::filter(ind | z == 0),
+      'ATC' = dat %>% dplyr::filter(ind | z == 1)
+    )
 
 
-    return(invisible(TRUE))
+
+    if(correct_aws == 'ATE') correct_aws <- c('ATE', 'ATT', 'ATC')
+
+
+    question_prompt <- tagList(
+      h5(glue::glue("Select estimands")),
+      p(glue::glue("Given the data, which estimands can we estimate with a statistical model?")),
+      renderPlot({
+        ggplot2::ggplot(dat, ggplot2::aes(x, y, col = as.factor(z))) +
+          ggplot2::geom_point() +
+          ggplot2::scale_color_manual(values = c(4, 2), labels = c('Control', 'Treatment')) +
+          ggplot2::labs(col = NULL) +
+          ggplot2::theme_bw()
+      }),
+      br(),
+      br(),
+      checkboxGroupInput(inputId = ns1('answers'),
+                         label = 'Select all that apply:',
+                         choices = c('ATE', 'ATT', 'ATC'),
+                         inline = TRUE
+      )
+      )
+
+
+    q <- shinyQuiz::create_question_raw(prompt = question_prompt,
+                                    grader = function(user_input){setequal(user_input, correct_aws)},
+                                    correct_answer_pretty = paste(correct_aws, collapse = ', '))
+
+
+    return(q)
+
   }
 
-
-  # create the formal quizQuestion
-  question_1 <- new('quizQuestion')
-  question_1@question <- question_text_1
-  question_1@answerUser = list(c('ATE', 'ATT', 'ATC'))
-  question_1@answerUserDisplay <- function(x) {
-    tryCatch(
-      paste0(x[[2]], collapse = ', '),
-      error = function(e) 'Cannot print user response'
-    )
-  }
-  question_1@answerCorrectDisplay <- 'test1'
-  question_1@grader <- function(x) TRUE
-
-  verify_question_structure(question_1)
-
-
-# question 2 --------------------------------------------------------------
-  question_text_2 <- htmltools::div(
-    htmltools::p("Variable X is the only confounder. Given the overlap of X, select all the estimands we could estimate without violating the overlap assumption."),
-    htmltools::p("Filler text 1"),
-
-    renderImage({
-      list(src = app_sys('app', 'www/learn/estimands2/plots/quiz2.png'),
-           contentType = 'image/png',
-           width = 600,
-           height = 400)
-    }, deleteFile = F),
-
-    shiny::checkboxGroupInput(
-      inputId = content$ns_quiz('answers'),
-      label = NULL,
-      inline = TRUE,
-      choices = c('ATE', 'ATT', 'ATC'),
-      selected = NULL
-    )
-  )
-
-  # answer
-  correct_answer_2 <- list(c('ATC'))
-
-  # create the formal quizQuestion
-  question_2 <- new('quizQuestion')
-  question_2@question <- question_text_2
-  question_2@answerUser = list(NA)
-  question_2@answerUserDisplay <- function(x) {
-    tryCatch(
-      paste0(x[[2]], collapse = ', '),
-      error = function(e) 'Cannot print user response'
-    )
-  }
-  question_2@answerCorrectDisplay <- 'test2'
-  question_2@grader <- function(x) TRUE
-
-  verify_question_structure(question_2)
-
-
-
-# question 3 --------------------------------------------------------------
-  question_text_3 <- htmltools::div(
-    # h4("Practice choosing an estimand based on overlap with these X practice questions:"),
-    # hr(),
-    # h3("Question 3"), # h3 required for checkmark/red x placement
-    htmltools::p("Variable X is the only confounder. Given the overlap of X, select all the estimands we could estimate without violating the overlap assumption."),
-    htmltools::p("Filler text 1"),
-
-    shiny::renderImage({
-      list(src = app_sys('app', 'www/learn/estimands2/plots/quiz3.png'),
-           contentType = 'image/png',
-           width = 600,
-           height = 400)
-    }, deleteFile = F),
-
-    shiny::checkboxGroupInput(
-      inputId = content$ns_quiz('answers'),
-      label = NULL,
-      inline = TRUE,
-      choices = c('ATE', 'ATT', 'ATC'),
-      selected = NULL
-    )
-  )
-
-  # create the formal quizQuestion
-  question_3 <- new('quizQuestion')
-  question_3@question <- question_text_3
-  question_3@answerUser = list(NA)
-  question_3@answerUserDisplay <- function(x) {
-    tryCatch(
-      paste0(x[[2]], collapse = ', '),
-      error = function(e) 'Cannot print user response'
-    )
-  }
-  question_3@answerCorrectDisplay <- 'test2'
-  question_3@grader <- function(x) TRUE
-
-  verify_question_structure(question_3)
-
-
-
-  # place in a single list
-  # content$question_texts <- list(question_1, question_2, question_3)
-  # content$question_prompts <- list(question_prompt_1, question_prompt_2, question_prompt_3)
-  # content$correct_answers <- list(correct_answer_1, correct_answer_2, correct_answer_3)
-  # content$message_correct <- "Well done! You got all of them correct. Please read on to learn about the next topic."
-  # content$message_wrong <- "Good attempt but you got at least one wrong. Take another try!"
-  # content$message_skipped <- 'Quiz skipped. You can restart it using the button below.'
-
-  # use character(0) if any rank lists should be empty
-  content$questions <- list(question_1, question_2, question_3)
-  # content$question_prompts <- list(question_prompt_1, question_prompt_2)
-  # content$correct_answers <- list(correct_answer_1, correct_answer_2)
-  content$message_correct <- "Well done! You got all of them correct. Please read on to learn about the next topic."
-  content$message_wrong <- "Hmmm, bummer! You got at least one wrong."
-  content$message_skipped <- "Quiz skipped. You can restart it using the button below."
+  sandbox_q <- shinyQuiz::create_question_sandbox(.f = generate_estimand2, n = 25)
+  content <- shinyQuiz::create_quiz(sandbox_q, options = shinyQuiz::set_quiz_options(ns = ns1))
 
   return(content)
 })
-

@@ -108,7 +108,7 @@ mod_analysis_variable_selection_server <- function(id, store){
           width = 6,
           selectInput(
             inputId = ns('analysis_select_outcome'),
-            label = 'Select an outcome variable from you data',
+            label = 'Select an outcome variable from your data',
             choices = c('', names(store$analysis_data_uploaded_df)),
             selected = NULL
           )
@@ -312,10 +312,9 @@ mod_analysis_variable_selection_server <- function(id, store){
         label = 'Indicate the study design:',
         choices = c(
           "",
-          "Unsure",
-          'Observational',
-          'Randomized treatment',
-          'Block randomized treatment'
+          'Observational Study (Treatment not Randomized)',
+          'Completely Randomized Experement',
+          'Block Randomized Experement'
         )
       ),
       HTML('<details><summary>Advanced options (random effects & survey weights)</summary>'),

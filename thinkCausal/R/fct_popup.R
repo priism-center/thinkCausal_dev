@@ -111,10 +111,26 @@ show_popup_learn_common_support <- function(session){
   show_popup(session = session, content)
 }
 
+show_popup_model_no_estimand_warning <- function(session, ns){
+  content <- tags$div(
+    style = 'margin: auto; text-align: center',
+    h3('Before fitting a model, you need to select a causal estimand.'),
+    br(),
+    div(
+      class = 'backNextContainer',
+      style = "width:60%;display:inline-block;horizontal-align:center;",
+      actionButton(inputId = ns('analysis_model_estimand_button_popup'),
+                   class = 'nav-btn-focus',
+                   label = 'Stay on page and choose an estimand')
+    )
+  )
+  show_popup(session = session, content, easyClose = TRUE)
+}
+
 show_popup_model_no_data_warning <- function(session, ns){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
-    h3('Data must be first uploaded and columns selected'),
+    h3('Before fitting a model you need to upload Data. Right now you do not have any Data loaded into thinkCausal.'),
     br(),
     div(
       class = 'backNextContainer',

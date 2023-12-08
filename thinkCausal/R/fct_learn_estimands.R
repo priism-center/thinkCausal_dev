@@ -16,7 +16,7 @@ quiz_content_estimands <- local({
     po <- create_table(ate = sample(-25:0, 1), y_min = 20, y_max = 50, po_question = FALSE, ite_question = FALSE, id_unit = 'Runner', button = FALSE)
     estimand <- sample(c('ATE','ATT', 'ATC'), 1)
     estimand_long <- switch (estimand,
-      'ATE' = 'average treatment effect (ATE).',
+      'ATE' = 'average treatment effect (ATE)',
       'ATT' = 'average treatment effect on the treated (ATT)',
       'ATC' = 'average treatment effect on the control (ATC)'
     )

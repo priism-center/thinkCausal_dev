@@ -138,12 +138,6 @@ mod_learn_estimands2_ui<- function(id){
             ns = ns,
             position = 22,
             div(
-              class = ns('learning-content'), # required
-              class = 'learning-content', # required
-              style = 'display: block;',
-              p("Before moving on, apply what you've learned about overlap and estimands in this three question quiz!"),
-              # the quiz UI
-              h2('Practice'),
               mod_quiz_ui(id = ns('quiz')),
               br(),
               br(),
@@ -164,7 +158,7 @@ mod_learn_estimands2_ui<- function(id){
           ),
 
         ),
-        scroll_ui_visual(ns = ns, clickable = TRUE)
+        scroll_ui_visual(ns = ns, clickable = T)
       )
       #, scroll_ui_container2(
       #   ns = ns,
@@ -202,20 +196,22 @@ mod_learn_estimands2_server <- function(id){
     ns <- session$ns
 
     # run the quiz
-    mod_quiz_server(
-      id = "quiz", # this should always be quiz
-      id_parent = module_ids$learn$estimands2,
-      questions = quiz_content_estimands2$questions,
-      # question_texts = quiz_content_post_treatment$question_texts,
-      # question_prompts = quiz_content_post_treatment$question_prompts,
-      # correct_answers = quiz_content_post_treatment$correct_answers,
-      # graders = quiz_content_post_treatment$graders,
-      message_correct = quiz_content_estimands2$message_correct,
-      message_wrong = quiz_content_estimands2$message_wrong,
-      message_skipped = quiz_content_estimands2$message_skipped,
-      embed_quiz = TRUE,
-      sandbox_mode = FALSE # TODO: test
-    )
+    shinyQuiz::quiz_server(quiz_content_estimands2)
+
+    # mod_quiz_server(
+    #   id = "quiz", # this should always be quiz
+    #   id_parent = module_ids$learn$estimands2,
+    #   questions = quiz_content_estimands2$questions,
+    #   # question_texts = quiz_content_post_treatment$question_texts,
+    #   # question_prompts = quiz_content_post_treatment$question_prompts,
+    #   # correct_answers = quiz_content_post_treatment$correct_answers,
+    #   # graders = quiz_content_post_treatment$graders,
+    #   message_correct = quiz_content_estimands2$message_correct,
+    #   message_wrong = quiz_content_estimands2$message_wrong,
+    #   message_skipped = quiz_content_estimands2$message_skipped,
+    #   embed_quiz = TRUE,
+    #   sandbox_mode = FALSE # TODO: test
+    # )
     # mod_quiz_server(
     #   id = "quiz", # this should always be quiz
     #   id_parent = module_ids$learn$estimands2,
