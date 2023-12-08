@@ -117,7 +117,7 @@ mod_analysis_variable_selection_server <- function(id, store){
           width = 6,
           selectInput(
             inputId = ns('analysis_select_treatment'),
-            label = 'Select a treatment variable from you data',
+            label = 'Select a treatment variable from your data',
             choices = c('', names(store$analysis_data_uploaded_df)),
             selected = NULL
           )
