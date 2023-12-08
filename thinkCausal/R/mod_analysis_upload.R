@@ -151,7 +151,6 @@ mod_analysis_upload_server <- function(id, store){
             )
           } else if (filetype == 'sav'){
             uploaded_file <- haven::read_sav(file = filepath)
-            #uploaded_file <- Hmisc::spss.get(file = filepath)
           } else if(filetype == 'spss'){
             uploaded_file <- haven::read_spss(file = filepath)
           }else if(filetype == 'sas'){
