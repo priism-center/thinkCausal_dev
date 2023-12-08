@@ -13,10 +13,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-      - name: Install curl and git dependency
+      - name: Install curl
         if: runner.os == 'Linux'
         shell: bash
-        run: sudo apt-get install libcurl4-openssl-dev r-base libgit2-dev
+        run: sudo apt-get install libcurl4-openssl-dev r-base
         working-directory: thinkCausal
   
       - name: Set RENV_PATHS_ROOT
