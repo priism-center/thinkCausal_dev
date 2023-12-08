@@ -10,7 +10,6 @@
 mod_learn_scrolly_example_ui <- function(id){
   ns <- NS(id)
   tagList(
-
     # shinyjs::useShinyjs(),
     use_scrollytell(ns = ns),
 

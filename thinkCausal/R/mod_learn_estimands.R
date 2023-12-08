@@ -7,19 +7,20 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#'
 mod_learn_estimands_ui <- function(id){
   ns <- NS(id)
   tagList(
-
     div(
       class = 'learning-page',
-
       # UI content for the learning module
       div(
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
+        style = 'display: block;',
         includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_1.md')),
-        br(),br(),br(),br(),br(),br(),
+        br(),br(),br(),br(),br(),br()
+
       ),
 
       div(
@@ -44,9 +45,10 @@ mod_learn_estimands_ui <- function(id){
         class = ns('learning-content'), # required
         class = 'learning-content',  # required
         br(),br(),br(), br(),
+        style = 'display: block;',
         includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_attatc.md')),
         # the quiz UI
-        mod_quiz_ui(id = ns('quiz')),
+        shinyQuiz::quiz_ui(quiz_content_estimands)
       ),
       br(),
       div(
@@ -66,19 +68,21 @@ mod_learn_estimands_ui <- function(id){
 mod_learn_estimands_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+    shinyQuiz::quiz_server(quiz_content_estimands)
 
     # run the quiz
-    mod_quiz_server(
-      id = "quiz", # this should always be quiz
-      id_parent = module_ids$learn$estimands,
-      question_texts = quiz_content_estimands$question_texts,
-      question_prompts = quiz_content_estimands$question_prompts,
-      correct_answers = quiz_content_estimands$correct_answers,
-      message_correct = quiz_content_estimands$message_correct,
-      message_wrong = quiz_content_estimands$message_wrong,
-      message_skipped = quiz_content_estimands$message_skipped,
-      embed_quiz = TRUE
-    )
+    # mod_quiz_server(
+    #   id = "quiz", # this should always be quiz
+    #   id_parent = module_ids$learn$estimands,
+    #   question_texts = quiz_content_estimands$question_texts,
+    #   question_prompts = quiz_content_estimands$question_prompts,
+    #   correct_answers = quiz_content_estimands$correct_answers,
+    #   # graders = quiz_content_estimands$graders,
+    #   message_correct = quiz_content_estimands$message_correct,
+    #   message_wrong = quiz_content_estimands$message_wrong,
+    #   message_skipped = quiz_content_estimands$message_skipped,
+    #   embed_quiz = TRUE
+    # )
 
 
   })

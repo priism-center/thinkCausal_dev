@@ -136,7 +136,7 @@ clean_detect_logical <- function(x){
 
 clean_detect_binary <- function(x){
   if(inherits(x, 'data.frame')) stop('x cannot be a dataframe')
-  is_binary <- ifelse(length(unique(x)) == 2, TRUE, FALSE)
+  is_binary <- ifelse(length(unique(na.omit(x))) == 2, TRUE, FALSE)
   return(is_binary)
 }
 
@@ -209,6 +209,7 @@ clean_auto_convert_integers <- function(.data){
   return(.data)
 }
 
+#' @noRd
 #' @describeIn clean_auto_convert_integers detect if a vector is integers
 clean_detect_integers <- function(x, n_levels_threshold = 15){
 
@@ -452,7 +453,8 @@ clean_detect_plot_vars <- function(.column_types, .treatment_column, .response_c
 #' @param df a dataframe with varibales
 #'
 #' @return a dataframe with no categorical variables
-#' @author George Perrett & Joe Marlo
+#' @author George Perrett, Joseph Marlo
+#' @noRd
 clean_to_indicator <- function(df){
   character_vars <- names(which(sapply(df, is.character)))
   factor_vars <- names(which(sapply(df, is.factor)))

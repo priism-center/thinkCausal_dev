@@ -91,9 +91,11 @@ mod_learn_post_treatment_server <- function(id, store){
     mod_quiz_server(
       id = "quiz", # this should always be quiz
       id_parent = module_ids$learn$post_treatment,
-      question_texts = quiz_content_post_treatment$question_texts,
-      question_prompts = quiz_content_post_treatment$question_prompts,
-      correct_answers = quiz_content_post_treatment$correct_answers,
+      questions = quiz_content_post_treatment$questions,
+      # question_texts = quiz_content_post_treatment$question_texts,
+      # question_prompts = quiz_content_post_treatment$question_prompts,
+      # correct_answers = quiz_content_post_treatment$correct_answers,
+      # graders = quiz_content_post_treatment$graders,
       message_correct = quiz_content_post_treatment$message_correct,
       message_wrong = quiz_content_post_treatment$message_wrong,
       message_skipped = quiz_content_post_treatment$message_skipped,
@@ -154,8 +156,8 @@ mod_learn_post_treatment_server <- function(id, store){
         }, deleteFile = F)
       )
 
+      # browser()
       return(items)
-
     })
 
 

@@ -34,16 +34,17 @@ usethis::use_package('shinyWidgets', min_version = '0.7.4')
 usethis::use_package('reactable', min_version = '0.3.0')
 usethis::use_package('sortable', min_version = '0.4.5')
 usethis::use_package('readr')
-usethis::use_package('Hmisc', min_version = '4.7.0')
 usethis::use_package('openxlsx', min_version = '4.2.5')
-usethis::use_package('readstata13', min_version = '0.10.0')
 usethis::use_package('patchwork', min_version = '1.1.1')
 usethis::use_package('shinybrowser', min_version = '1.0.0')
 usethis::use_package('shinydisconnect', min_version = '0.1.0')
 usethis::use_package('htmltools')
 usethis::use_package('jsonlite')
 usethis::use_package('waiter')
+usethis::use_dev_package('shinyFeedback', remote = 'merlinoa/shinyFeedback')
+usethis::use_dev_package('ggdark', remote = 'nsgrantham/ggdark')
 
+usethis::use_dev_package('shinyQuiz', remote = 'github::priism-center/shinyQuiz')
 usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')
 usethis::use_package('bartCause', min_version = '1.0.6')
 
@@ -108,6 +109,11 @@ golem::add_css_file("learn-potential-outcomes", dir = 'inst/app/www/learn/potent
 # scrollytell example
 golem::add_module(name = 'learn_scrolly_example', with_test = FALSE)
 
+# estimands 2
+golem::add_module(name = "learn_estimands3", with_test = FALSE)
+golem::add_module(name = "learn_choose", with_test = FALSE)
+
+
 ## Add helper functions ----
 ## Creates fct_* and utils_*
 golem::add_fct("ui", with_test = FALSE)
@@ -120,6 +126,7 @@ golem::add_fct('popup', with_test = FALSE)
 golem::add_fct('convert', with_test = TRUE)
 golem::add_utils('utils', with_test = TRUE)
 golem::add_fct('model', with_test = TRUE)
+
 
 ## External resources
 ## Creates .js and .css files at inst/app/www

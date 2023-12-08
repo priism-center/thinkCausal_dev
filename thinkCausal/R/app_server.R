@@ -5,7 +5,7 @@
 #' @import shiny
 #' @noRd
 app_server <- function(input, output, session) {
-
+  # test deployment
   # close loading spinner
   Sys.sleep(1.5) # prevent flashing
   waiter::waiter_hide()
@@ -46,7 +46,14 @@ app_server <- function(input, output, session) {
   # learn
   mod_learn_server(module_ids$learn$home, store)
   mod_learn_estimands_server(module_ids$learn$estimands)
+  mod_learn_estimands2_server(module_ids$learn$estimands2)
+  mod_learn_fundamental_server(module_ids$learn$fundamental)
+  mod_learn_versionA_server(module_ids$learn$versionA)
+  mod_learn_versionB_server(module_ids$learn$versionB)
+  mod_learn_randomization_dist_server(module_ids$learn$rand_dist)
   mod_learn_rct_analysis_server(module_ids$learn$randomization)
+  mod_learn_variable_selection_server(module_ids$learn$selection, store)
+  mod_learn_colinearity_server(module_ids$learn$colinearity, id_parent = module_ids$learn$selection)
   mod_learn_post_treatment_server(module_ids$learn$post_treatment, store)
   mod_learn_potential_outcomes_server(module_ids$learn$potential_outcomes)
   mod_learn_obs_analysis_server(module_ids$learn$observational)
@@ -56,7 +63,6 @@ app_server <- function(input, output, session) {
 
   # analysis
   store <- mod_analysis_upload_server(module_ids$analysis$upload, store)
-  store <- mod_analysis_design_server(module_ids$analysis$design, store)
   store <- mod_analysis_variable_selection_server(module_ids$analysis$select, store)
   store <- mod_analysis_verify_server(module_ids$analysis$verify, store)
   store <- mod_analysis_visualize_server(module_ids$analysis$visualize, store)

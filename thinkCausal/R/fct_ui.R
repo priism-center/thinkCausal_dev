@@ -7,6 +7,7 @@
 #' @param section the title of the h3 section within the help markdown
 #'
 #' @return NULL; called for the JavaScript side effects
+#' @author Joe Marlo
 #' @noRd
 open_help_sidebar <- function(store, section){
 
@@ -28,4 +29,30 @@ open_help_sidebar <- function(store, section){
     )
   )
   return(NULL)
+}
+
+#' Add a red ribbon in the corner denoting beta status
+#'
+#' Must include corner-ribbon.css file in the /www folder
+#'
+#' @return html
+#' @author Joe Marlo
+#' @noRd
+#'
+#' @examples
+#' # within app_UI
+#' add_betta_ribbon()
+add_beta_ribbon <- function(){
+
+  htmltools::tags$div(
+    class = 'cornerRibbon',
+    'BETA',
+    htmltools::tags$div(
+      htmltools::tags$a(
+        href = 'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
+        target = "_blank",
+        'Have feedback?'
+      )
+    )
+  )
 }

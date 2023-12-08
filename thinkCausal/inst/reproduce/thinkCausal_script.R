@@ -8,10 +8,8 @@ invisible(lapply(list.files('R', full.names = TRUE), source))
 
 # read in the data
 #!! csv X <- readr::read_csv(file, col_names = my_col_names)
-#!! dta X <- readstata13::read.dta13(file = file)
 #!! xlsx X <- openxlsx::read.xlsx(xlsxFile = file)
 #!! txt X <- readr::read_delim(file = file, delim = my_delim, col_names = my_col_names)
-#!! sav X <- Hmisc::spss.get(file = file)
 
 # select columns and clean it
 # X <- X[, 2:n_cols]

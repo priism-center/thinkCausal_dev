@@ -5,6 +5,9 @@ on:
   push:
     branches: [dev]
 
+env:
+  RENV_CONFIG_SANDBOX_ENABLED: False
+
 jobs:
   deploy-shinyapps:
     timeout-minutes: 45
@@ -15,13 +18,13 @@ jobs:
         with:
           r-version: '4.2.0'
       - uses: priism-center/thinkCausal_dev/.github/setup-renv@master
-      - name: Install extra dependencies
-        shell: Rscript {0}
-        run: install.packages(c("remotes", "rsconnect"))
-        working-directory: thinkCausal
+#      - name: Install extra dependencies
+#        shell: Rscript {0}
+#        run: install.packages(c("remotes", "rsconnect"))
+#        working-directory: thinkCausal
       - name: Deploy to shinyapps.io
         shell: Rscript {0}
         run: |
           rsconnect::setAccountInfo(name = "${{secrets.SA_ACCOUNT_NAME}}", token = "${{secrets.SA_TOKEN}}", secret = "${{secrets.SA_SECRET}}")
-          rsconnect::deployApp(appName = 'thinkCausal-dev', account = "${{secrets.SA_ACCOUNT_NAME}}")
+          rsconnect::deployApp(appName = 'thinkCausal-dev', account = "${{secrets.SA_ACCOUNT_NAME}}", forceUpdate = TRUE)
         working-directory: thinkCausal

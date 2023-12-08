@@ -6,9 +6,11 @@
 #' @noRd
 app_ui <- function(request) {
   tagList(
-
     # add external resources
     golem_add_external_resources(),
+
+    # add feedback
+    shinyFeedback::useShinyFeedback(),
 
     # initial load spinner
     waiter::waiterShowOnLoad(
@@ -24,6 +26,9 @@ app_ui <- function(request) {
         waiter::spin_wobblebar()
       )
     ),
+
+    # add beta ribbon
+    add_beta_ribbon(),
 
     # message when server disconnects
     # TODO: this can be removed for native installation
@@ -59,19 +64,6 @@ app_ui <- function(request) {
 
       body = bs4Dash::dashboardBody(
 
-        # add beta ribbon
-        tags$div(
-          class = 'cornerRibbon',
-          'BETA',
-          tags$div(
-            tags$a(
-              href = 'https://docs.google.com/forms/d/e/1FAIpQLSd7dZjpw4FtoVAFUmovNOgKeW-kxnJrs3zV2r3lJ8kvhdq8lA/viewform?usp=sf_link',
-              target = "_blank",
-              'Have feedback?'
-            )
-          )
-        ),
-
         bs4Dash::tabItems(
 
           bs4Dash::tabItem(
@@ -89,6 +81,26 @@ app_ui <- function(request) {
             mod_learn_estimands_ui(module_ids$learn$estimands)
           ),
           bs4Dash::tabItem(
+            tabName = 'learn_estimands2',
+            mod_learn_estimands2_ui(module_ids$learn$estimands2)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_versionA',
+            mod_learn_versionA_ui(module_ids$learn$versionA)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_versionB',
+            mod_learn_versionB_ui(module_ids$learn$versionB)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_rand_dist',
+            mod_learn_randomization_dist_ui(module_ids$learn$rand_dist)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_fundamental',
+            mod_learn_fundamental_ui(module_ids$learn$fundamental)
+          ),
+          bs4Dash::tabItem(
             tabName = 'learn_randomization',
             mod_learn_rct_analysis_ui(module_ids$learn$randomization)
           ),
@@ -99,6 +111,14 @@ app_ui <- function(request) {
           bs4Dash::tabItem(
             tabName = 'learn_balance',
             mod_learn_balance_ui(module_ids$learn$balance)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_variable_selection',
+            mod_learn_variable_selection_ui(module_ids$learn$selection)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_colinearity',
+            mod_learn_colinearity_ui(module_ids$learn$colinearity)
           ),
           bs4Dash::tabItem(
             tabName = 'learn_post_treatment',
@@ -112,7 +132,6 @@ app_ui <- function(request) {
             tabName = 'learn_scrolly',
             mod_learn_scrolly_example_ui('learn_scrolly')
           ),
-
           # analysis pages
           bs4Dash::tabItem(
             tabName = 'analysis_upload',
@@ -155,12 +174,13 @@ app_ui <- function(request) {
             mod_analysis_subgroup_ui(module_ids$analysis$subgroup)
           ),
 
-
+          # reproduce
           bs4Dash::tabItem(
             tabName = 'reproduce',
             mod_reproduce_ui(module_ids$reproduce)
           ),
 
+          # settings pages
           bs4Dash::tabItem(
             tabName = 'settings_options',
             mod_settings_options_ui(module_ids$settings$options)
@@ -183,12 +203,14 @@ app_ui <- function(request) {
         bs4Dash::sidebarMenu(
           id = 'sidebar',
 
+          # home page
           bs4Dash::menuItem(
             text = 'thinkCausal',
             tabName = 'home',
             icon = icon("home", verify_fa = FALSE)
           ),
 
+          # learning pages
           bs4Dash::menuItem(
             text = 'Learn',
             icon = icon("book", verify_fa = FALSE),
@@ -204,6 +226,42 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Causal estimands',
               tabName = 'learn_estimands'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Estimands 2',
+              tabName = 'learn_estimands2'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'version A',
+              tabName = 'learn_versionA'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'version B',
+              tabName = 'learn_versionB'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Sandbox',
+              tabName = 'learn_rand_dist'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Fundamental',
+              tabName = 'learn_fundamental'
+            ),
+            bs4Dash::menuItem(
+              text = 'Variable Selection',
+              tabName = 'learn_variable_selection',
+              bs4Dash::menuSubItem(
+                text = 'Variable Selection',
+                tabName = 'learn_variable_selection',
+              ),
+              bs4Dash::menuSubItem(
+                text = 'Colinearity',
+                tabName = 'learn_colinearity',
+              ),
+              bs4Dash::menuSubItem(
+                text = 'Overfitting',
+                tabName = 'learn_overfitting',
+              )
             ),
             bs4Dash::menuSubItem(
               text = 'Post treatment variables',
@@ -283,12 +341,14 @@ app_ui <- function(request) {
             )
           ),
 
+          # reproduce
           bs4Dash::menuItem(
             text = 'Reproduce',
             tabName = 'reproduce',
             icon = shiny::icon('repeat', verify_fa = FALSE)
           ),
 
+          # settings pages
           bs4Dash::menuItem(
             text = 'Settings',
             tabName = 'settings',
@@ -344,9 +404,6 @@ golem_add_external_resources <- function() {
       path = app_sys("app/www"),
       app_title = "thinkCausal"
     ),
-
-    # make all links open in a new tab
-    # tags$base(target = "_blank"),
 
     # enable shinyjs
     shinyjs::useShinyjs(),

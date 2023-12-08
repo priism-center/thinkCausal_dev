@@ -2,40 +2,41 @@ Package: thinkCausal
 Title: Point-and-click bartCause analysis and causal inference education
 Version: 0.5.0
 Authors@R: c(
-  person('Joseph', 'Marlo', email = 'jpm770@nyu.edu', role = c('cre', 'aut')),
-  person("George", "Perrett", email = "gp77@nyu.edu", role = "aut"),
-  person("Jennifer", "Hill", email = "jennifer.hill@nyu.edu", role = "aut")
+  person("George", "Perrett", email = "gp77@nyu.edu", role = c('cre', 'aut')),
+  person("Jennifer", "Hill", email = "jennifer.hill@nyu.edu", role = "aut"), 
+  person('Joseph', 'Marlo', email = 'jpm770@nyu.edu', role = "aut")
   )
-Description: A federally funded project devoted to building scaffolded causal inference software implementing Bayesian Additive Regression Trees.
+Description: An Institute of Education Sciences (IES) funded project devoted to building scaffolded causal inference software implementing Bayesian Additive Regression Trees.
 License: MIT + file LICENSE
 URL: https://github.com/priism-center/thinkCausal_dev
 Imports: 
-    bartCause (>= 1.0.5),
+    bartCause (>= 1.0.6),
     bs4Dash (>= 2.1.0),
     cli,
     config (>= 0.3.1),
     dplyr (>= 1.0.5),
+    ggdark (>= 0.2.1),
     ggplot2 (>= 3.3.2),
     glue,
     golem (>= 0.3.2),
-    Hmisc (>= 4.7.0),
     htmltools,
     jsonlite,
     lubridate (>= 1.8.0),
     openxlsx (>= 4.2.5),
     patchwork (>= 1.1.1),
     pkgload,
-    plotBart (>= 0.1.23),
+    plotBart (>= 0.1.25),
     purrr,
     reactable (>= 0.3.0),
     readr,
-    readstata13 (>= 0.10.0),
     rlang (>= 1.0.3),
     scales (>= 1.1.1),
     shiny (>= 1.7.1),
     shinybrowser (>= 1.0.0),
     shinydisconnect (>= 0.1.0),
+    shinyFeedback (>= 0.4.0.9001),
     shinyjs (>= 2.1.0),
+    shinyQuiz (>= 0.0.0.9000),
     shinyWidgets (>= 0.7.4),
     sortable (>= 0.4.5),
     stringr,
@@ -51,8 +52,11 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 BugReports: https://priism-center.github.io/thinkCausal//issues
 Remotes: 
-    github::priism-center/plotBart
+    github::priism-center/plotBart,
+    github::merlinoa/shinyFeedback,
+    github::priism-center/shinyQuiz,
+    nsgrantham/ggdark

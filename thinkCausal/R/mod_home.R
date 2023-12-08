@@ -33,7 +33,7 @@ mod_home_ui <- function(id){
                 img(src = 'www/img/thumbnails/randomization.png',
                     width = '100%'),
               ),
-              "Interactively learn the foundational concepts of casual inference."
+              "Interactively learn the foundational concepts of causal inference."
             ),
             actionButton(inputId = ns('learn_start'),
                          label = 'Start learning!',

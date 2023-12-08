@@ -29,6 +29,14 @@ a {
 }
 
 
+.label-primary{
+    background-color: #ae4ec2 !important;
+}
+
+.bg-primary{
+    background-color: #ae4ec2 !important;
+}
+
 .btn {
   background-color: rgba(48, 47, 66, 0) !important;
   border-radius: 3;
@@ -137,5 +145,9 @@ footer > a:hover{
 .help-link:hover {
   color: #fff !important;
 }
-
+.small {
+  font-size: 60%;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
 
