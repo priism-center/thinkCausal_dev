@@ -46,11 +46,11 @@ mod_analysis_model_ui <- function(id){
         width = 12,
         collapsible = FALSE,
         title = 'Fitting a  BART model in thinkCausal',
-        p('thinkCausal will estimate causal effects by using Bayesian Additive Regression Trees (BART), a flexible machine learning algorithm. BART estimates causal effects by making predictions for what would have happened to each individual if they had received the opposite treatment.'),
+        p("thinkCausal estimates causal effects by relying on Bayesian Additive Regression Trees (BART), a flexible machine learning algorithm, to get accurate predictions of our outcome based on treatment variable and pre-treatment covariates (potential confounders). This allows us to estimate causal effects by relying not just on the outcome we observe for each individual (or observation) but also our best prediction of that individual's outcome under an alternate treatment condition -- their counterfactual outcome."),
         br(),
-        p('BART models are non-parametric, this means any interactions or non-linear relationships are automatically learned and included in the model. With the BART model fit in thinkCausal, you do not have to manually include interaction terms or squared terms or transformations of variables.'),
+        p("BART models are nonparametric. This means that any interactions or non-linear relationships in the model for the outcome conditional on the treatment and covariates are automatically learned and included in the model. Therefore, using this approach, there is no need to manually include interaction terms, squared terms, or transformations of variables."),
         br(),
-        p('thinkCausal will automatically identify moderators of the treatment effect. A moderator is a variable where the treatment effect varies or changes across different values. While thinkCausal will automatically detect treatment effect moderation, if there are variables you belive are moderators you are encouraged to pre-specify them in the specify model controls.')
+        p("thinkCausal can also automatically identify important moderators of the treatment effect. Thus if a treatment effect varies or changes across different values of one of our covariates, thinkCausal can automatically detect this treatment effect heterogeneity and help you identify which variables are driving it. That means that if there are variables you believe are moderators you are encouraged to pre-specify them in the 'specify model' options.")
 
         #,
         #verbatimTextOutput(ns('review'))
@@ -117,6 +117,11 @@ mod_analysis_model_server <- function(id, store){
 
       excluded <- paste0(names(store$analysis_data_uploaded_df)[names(store$analysis_data_uploaded_df) %notin% c(store$column_assignments$x, store$column_assignments$z, store$column_assignments$y)], collapse = ', ')
       design <- store$analysis_select_design
+      if(design == 'Observational Study (Treatment not Randomized)'){
+        design <- paste('an', design)
+      }else{
+        design <- paste('a', design)
+      }
       estimand <- ifelse(input$analysis_model_estimand == '',
                          'You have not selected a causal estimand. You will need to make a selection before fitting your model.',
                          paste0('You are estimating the ', input$analysis_model_estimand)
@@ -128,7 +133,7 @@ mod_analysis_model_server <- function(id, store){
       X <- ifelse(design == 'Observational Study (Treatment not Randomized)', 'Confounders', 'Covariates')
       glue::glue(
       "
-      Desigin: Your data is from a(n) {design}\n\t
+      Design: Your data is from a(n) {design}\n\t
       Estimand: {estimand}\n\t
       Causal Question: You are testing whether {treatment} causes changes in {outcome}.\n\t
 
