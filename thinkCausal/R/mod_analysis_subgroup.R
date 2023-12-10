@@ -130,6 +130,12 @@ mod_analysis_subgroup_ui <- function(id){
             outputId = ns('analysis_subgroup_plot'),
             height = 500
           ),
+          conditionalPanel(condition = "input.analysis_subgroup_type == 'Pre-specified subgroup analysis'",
+                           ns = ns,
+                           reactable::reactableOutput(
+                             outputId = ns('analysis_prespecifed_table')
+                           )
+          ),
           conditionalPanel(condition = "input.analysis_subgroup_type == 'Exploratory subgroup analysis'",
                            ns = ns,
                            reactable::reactableOutput(
@@ -331,6 +337,43 @@ mod_analysis_subgroup_server <- function(id, store){
     })
 
     # Pre-specified
+    output$analysis_prespecifed_table <- reactable::renderReactable({
+      validate_model_fit(store)
+      validate(need(input$analysis_subgroup_prespecified, ''))
+      .moderator <- store$verified_df[[paste0('X_', input$analysis_subgroup_prespecified)]]
+
+      icate <- bartCause::extract(store$analysis$model$model, 'icate')
+      x <- store$verified_df[[paste0('X_', input$analysis_subgroup_prespecified)]]
+      if(store$analysis$model$analysis_model_estimand == 'ATT'){
+        x <- x[store$verified_df$Z_treat == TRUE]
+        .moderator <- .moderator[store$verified_df$Z_treat == TRUE]
+      }
+
+      if(store$analysis$model$analysis_model_estimand == 'ATC'){
+        x <- x[store$verified_df$Z_treat == FALSE]
+        .moderator <- .moderator[store$verified_df$Z_treat == FALSE]
+      }
+
+      subgroup <- vector()
+      estimate <- vector()
+      se <- vector()
+      lci <- vector()
+      uci <- vector()
+      for (i in 1:length(unique(.moderator))) {
+        post <- apply(icate[, x == unique(.moderator)[i]], 1, mean)
+        subgroup[i] <- paste0(input$analysis_subgroup_prespecified, ' = ', unique(.moderator)[i])
+        estimate[i] <- round(mean(post), 4)
+        se[i] <- round(sd(post), 4)
+        lci[i] <- round(quantile(post, prob = .025), 4)
+        uci[i] <- round(quantile(post, prob = .975), 4)
+
+      }
+
+      data.frame(subgroup, estimate, se, lci, uci) %>%
+        reactable::reactable()
+
+    })
+
     prespecifed_plot <- reactive({
       # div_id <- 'analysis_subgroup_plot'
       # show_message_updating(div_id)
