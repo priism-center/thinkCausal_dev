@@ -72,6 +72,7 @@ mod_learn_post_treatment_ui <- function(id){
         br(),
         br(),
         br(),
+        uiOutput(ns('analysis_return')),
         includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_citations.md')),
         includeMarkdown(app_sys("app", "www", "learn", "post-treatment", "markdowns", 'post_treatment_learn_more.md'))
       )
@@ -86,6 +87,21 @@ mod_learn_post_treatment_ui <- function(id){
 mod_learn_post_treatment_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    output$analysis_return <- renderUI({
+      req(store$analysis_origin)
+      if(store$analysis_origin == 'analysis_select'){
+        actionButton(ns('analysis_return'), label = 'Return to Analysis', class = 'nav-path')
+
+      }else{
+        NULL
+      }
+    })
+
+    observeEvent(input$analysis_return, {
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_variable_selection')
+      store$analysis_origin <- NULL
+    })
 
     # run the quiz
     mod_quiz_server(

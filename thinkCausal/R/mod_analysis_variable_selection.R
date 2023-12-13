@@ -404,8 +404,31 @@ mod_analysis_variable_selection_server <- function(id, store){
 
     # create new dataframe when user saves column assignments and move to next page
     observeEvent(input$analysis_select_button_columnAssignSave, {
-
       req(store$analysis_data_uploaded_df)
+      # launch popup if a lot of predictors are not included
+      pass_variable <- length(input$analysis_select_dragdrop_avalable) == 0
+      if (isFALSE(pass_variable)) {
+        show_popup_variable_selection_warning(x = length(input$analysis_select_dragdrop_avalable),
+                                              session, ns = ns)
+
+        observeEvent(input$analysis_model_button_popup, {
+          close_popup(session = session)
+          bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_upload')
+          # updateNavbarPage(store$session_global, inputId = "nav", selected = module_ids$analysis$upload)
+        })
+
+        observeEvent(input$analysis_model_variable_selection_popup_posttreatment, {
+          close_popup(session = session)
+          store$analysis_origin <- 'analysis_select'
+          bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'learn_post_treatment')
+        })
+
+      }
+
+      validate(need(pass_variable, ""))
+
+
+
 
       # remove any previous dataframes from the store
       store <- remove_downstream_data(store, page = 'select')
