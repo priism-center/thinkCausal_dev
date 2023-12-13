@@ -345,13 +345,13 @@ mod_analysis_subgroup_server <- function(id, store){
       icate <- bartCause::extract(store$analysis$model$model, 'icate')
       x <- store$verified_df[[paste0('X_', input$analysis_subgroup_prespecified)]]
       if(store$analysis$model$analysis_model_estimand == 'ATT'){
-        x <- x[store$verified_df$Z_treat == TRUE]
-        .moderator <- .moderator[store$verified_df$Z_treat == TRUE]
+        x <- x[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == TRUE]
+        .moderator <- .moderator[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == TRUE]
       }
 
       if(store$analysis$model$analysis_model_estimand == 'ATC'){
-        x <- x[store$verified_df$Z_treat == FALSE]
-        .moderator <- .moderator[store$verified_df$Z_treat == FALSE]
+        x <- x[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == FALSE]
+        .moderator <- .moderator[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == FALSE]
       }
 
       subgroup <- vector()
@@ -414,13 +414,13 @@ mod_analysis_subgroup_server <- function(id, store){
       icate <- bartCause::extract(store$analysis$model$model, 'icate')
       x <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
       if(store$analysis$model$analysis_model_estimand == 'ATT'){
-        x <- x[store$verified_df$Z_treat == TRUE]
-        .moderator <- .moderator[store$verified_df$Z_treat == TRUE]
+        x <- x[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == TRUE]
+        .moderator <- .moderator[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == TRUE]
       }
 
       if(store$analysis$model$analysis_model_estimand == 'ATC'){
-        x <- x[store$verified_df$Z_treat == FALSE]
-        .moderator <- .moderator[store$verified_df$Z_treat == FALSE]
+        x <- x[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == FALSE]
+        .moderator <- .moderator[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == FALSE]
       }
 
       subgroup <- vector()
@@ -437,6 +437,7 @@ mod_analysis_subgroup_server <- function(id, store){
         uci[i] <- round(quantile(post, prob = .975), 4)
 
       }
+
 
         data.frame(subgroup, estimate, se, lci, uci) %>%
           reactable::reactable()
