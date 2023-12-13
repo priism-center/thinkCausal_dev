@@ -354,6 +354,7 @@ mod_analysis_variable_selection_server <- function(id, store){
       validate(need(input$analysis_design != '', "Before selecting covariates, you'll need to provide information about the study design."))
       tagList(
       HTML("<details open><summary><b>Information about variable selection</b></summary>"),
+      p(strong('Include all pre-treatment variables in the analysis.')),
       p('For observational studies, include all potential confounders in the analysis.'),
       p('If you are unsure whether or not a variable is a confounder, it is recommended to assume that it is a confounder.'),
       p('Colinearity between preditors is not problematic for treatment effect estimation.'),
