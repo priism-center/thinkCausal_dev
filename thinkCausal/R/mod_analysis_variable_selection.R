@@ -389,6 +389,8 @@ mod_analysis_variable_selection_server <- function(id, store){
 
       drag_drop_html <- create_drag_drop_roles(ns = ns,
                                                .data = store$analysis_data_uploaded_df,
+                                               z = input$analysis_select_treatment,
+                                               y = input$analysis_select_outcome,
                                                ns_prefix = 'analysis_select',
                                                exclude = .exclude,
                                                include_all = input$analysis_select_include_all,
@@ -402,6 +404,8 @@ mod_analysis_variable_selection_server <- function(id, store){
       return(drag_drop_html)
     })
 
+
+    # reactive function to run checks over selected varaibles
     check_variable_assignment <- reactive({
       # remove any previous dataframes from the store
       store <- remove_downstream_data(store, page = 'select')

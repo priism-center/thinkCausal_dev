@@ -5,10 +5,10 @@
 #' @return html
 #'
 #' @noRd
-create_drag_drop_roles <- function(ns, .data, ns_prefix, exclude = NULL, include_all = FALSE, blocks = FALSE,random_effect = FALSE, weight = FALSE, default_weight = NULL, default_random_effects = NULL,default_blocks = NULL){
+create_drag_drop_roles <- function(ns, .data, ns_prefix, exclude = NULL, include_all = FALSE, blocks = FALSE,random_effect = FALSE, weight = FALSE, default_weight = NULL, default_random_effects = NULL,default_blocks = NULL, z = NULL, y = NULL){
   if (!inherits(.data, 'data.frame')) stop('.data must be a dataframe')
   # search for an ID variable
-  auto_columns <- clean_detect_ID_column(.data)
+  auto_columns <- clean_detect_ID_column(.data, z, y)
 
   # gather coviraiate names
   if(isFALSE(include_all)){
