@@ -402,11 +402,7 @@ mod_analysis_variable_selection_server <- function(id, store){
       return(drag_drop_html)
     })
 
-    # create new dataframe when user saves column assignments and move to next page
-    observeEvent(input$analysis_select_button_columnAssignSave, {
-
-      req(store$analysis_data_uploaded_df)
-
+    check_variable_assignment <- reactive({
       # remove any previous dataframes from the store
       store <- remove_downstream_data(store, page = 'select')
 
@@ -549,9 +545,49 @@ mod_analysis_variable_selection_server <- function(id, store){
                           '\n\tblocking variable(s): ', paste0(cols_block, collapse = '; '))
       store$log <- append(store$log, log_event)
 
+    })
+
+
+
+    # create new dataframe when user saves column assignments and move to next page
+    observeEvent(input$analysis_select_button_columnAssignSave, {
+      req(store$analysis_data_uploaded_df)
+      pass_variable <- reactiveVal(length(input$analysis_select_dragdrop_avalable) == 0)
+      # check that all predictors are included, if not launch popup
+      if (isFALSE(pass_variable()) & isTRUE(input$analysis_design == "Observational Study (Treatment not Randomized)")) {
+        show_popup_variable_selection_warning(x = length(input$analysis_select_dragdrop_avalable),
+                                              session, ns = ns)
+
+      }
+
+      validate(need(pass_variable(), ''))
+      check_variable_assignment()
       # move to next page
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_verify')
 
+    })
+
+    ## pop up buttons if variable selection warning is activated.
+    ## This means a user has tried to proceed without including all variables in the analysis.
+    # first button adjust variables
+    observeEvent(input$analysis_model_variable_selection_popup_stop, {
+      close_popup(session = session)
+    })
+
+    # second button continue and override warning
+    observeEvent(input$analysis_model_variable_selection_popup_continue, {
+      close_popup(session = session)
+      check_variable_assignment()
+      # move to next page
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_verify')
+
+    })
+
+    # third button move to learn post-treatment page
+    observeEvent(input$analysis_model_variable_selection_popup_posttreatment, {
+      close_popup(session = session)
+      store$analysis_origin <- 'analysis_select'
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'learn_post_treatment')
     })
 
   })

@@ -111,6 +111,33 @@ show_popup_learn_common_support <- function(session){
   show_popup(session = session, content)
 }
 
+show_popup_variable_selection_warning <- function(x, session, ns){
+  content <- tags$div(
+    style = 'margin: auto; text-align: left',
+    h5(glue::glue('Currently, there are {x} avalable covaraites not included in the analysis.')),
+    h5('For observational studies in thinkCausal, include all pre-treatment variables in the analysis.'),
+    h5('The only reasons you should exclude a variable from the analysis are:'),
+    h5('  1. The variable is a post-treatment variable (the variable could be effected by the treatment)'),
+    h5('  2. The variable is an ID variable.'),
+    br(),
+    div(
+      class = 'backNextContainer',
+      style = "width:60%;display:inline-block;horizontal-align:center;",
+      actionButton(inputId = ns('analysis_model_variable_selection_popup_stop'),
+                   class = 'nav-path',
+                   label = 'Stay on page and update variable selection'),
+      actionButton(inputId = ns('analysis_model_variable_selection_popup_continue'),
+                   class = 'nav-btn-focus',
+                   label = glue::glue('Continue: All {x} variables are either post-treatment variables or ID variables')),
+      actionButton(inputId = ns('analysis_model_variable_selection_popup_posttreatment'),
+                   class = 'nav-btn-focus',
+                   label = 'Learn more about post-treatment variables')
+    )
+  )
+  show_popup(session = session, content, size = 'l')
+
+}
+
 show_popup_model_no_estimand_warning <- function(session, ns){
   content <- tags$div(
     style = 'margin: auto; text-align: center',
