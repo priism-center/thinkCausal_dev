@@ -233,6 +233,8 @@ clean_detect_integers <- function(x, n_levels_threshold = 15){
 #' ID detection is based on column name and the values. If none are detected, then columns are categorized as 'X'
 #'
 #' @param .data a dataframe
+#' @param z string indicating named of selected treatment
+#' @param y string indicating name of selected response
 #'
 #' @author Joe Marlo & George Perrett
 #'
@@ -249,11 +251,11 @@ clean_detect_integers <- function(x, n_levels_threshold = 15){
 #' )
 #' clean_detect_ID_column(.data)
 
-clean_detect_ID_column <- function(.data) {
+clean_detect_ID_column <- function(.data, z, y) {
 
   # set list of potential column names to match
   ID_potentials <- c("^id")
-  all_col_names <- colnames(.data)
+  all_col_names <- colnames(.data)[colnames(.data) %notin% c(z, y)]
 
   # find ID columns
   ID_matches <- sapply(X = all_col_names, FUN = function(col){
