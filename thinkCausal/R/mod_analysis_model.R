@@ -133,7 +133,7 @@ mod_analysis_model_server <- function(id, store){
       X <- ifelse(design == 'Observational Study (Treatment not Randomized)', 'Confounders', 'Covariates')
       glue::glue(
       "
-      Design: Your data is from a(n) {design}\n\t
+      Design: Your data is from {design}\n\t
       Estimand: {estimand}\n\t
       Causal Question: You are testing whether {treatment} causes changes in {outcome}.\n\t
 
