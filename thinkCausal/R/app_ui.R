@@ -84,22 +84,22 @@ app_ui <- function(request) {
             tabName = 'learn_estimands2',
             mod_learn_estimands2_ui(module_ids$learn$estimands2)
           ),
-          bs4Dash::tabItem(
-            tabName = 'learn_versionA',
-            mod_learn_versionA_ui(module_ids$learn$versionA)
-          ),
-          bs4Dash::tabItem(
-            tabName = 'learn_versionB',
-            mod_learn_versionB_ui(module_ids$learn$versionB)
-          ),
-          bs4Dash::tabItem(
-            tabName = 'learn_rand_dist',
-            mod_learn_randomization_dist_ui(module_ids$learn$rand_dist)
-          ),
-          bs4Dash::tabItem(
-            tabName = 'learn_fundamental',
-            mod_learn_fundamental_ui(module_ids$learn$fundamental)
-          ),
+          # bs4Dash::tabItem(
+          #   tabName = 'learn_versionA',
+          #   mod_learn_versionA_ui(module_ids$learn$versionA)
+          # ),
+          # bs4Dash::tabItem(
+          #   tabName = 'learn_versionB',
+          #   mod_learn_versionB_ui(module_ids$learn$versionB)
+          # ),
+          # bs4Dash::tabItem(
+          #   tabName = 'learn_rand_dist',
+          #   mod_learn_randomization_dist_ui(module_ids$learn$rand_dist)
+          # ),
+          # bs4Dash::tabItem(
+          #   tabName = 'learn_fundamental',
+          #   mod_learn_fundamental_ui(module_ids$learn$fundamental)
+          # ),
           bs4Dash::tabItem(
             tabName = 'learn_randomization',
             mod_learn_rct_analysis_ui(module_ids$learn$randomization)

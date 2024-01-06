@@ -28,7 +28,7 @@ mod_analysis_balance_ui <- function(id){
           selected = 'means'
         ),
         selectInput(inputId = ns('analysis_balance_select'),
-                    label = 'Filter variables in balance plot by:',
+                    label = 'Filter variables in balance plot:',
                     choices = c('Plot varibables with most imbalance',
                                 'Manually select variables to plot')
                     ),
