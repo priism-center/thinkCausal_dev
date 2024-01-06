@@ -1344,14 +1344,14 @@
     },
     "plotBart": {
       "Package": "plotBart",
-      "Version": "0.1.25",
+      "Version": "0.1.28",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "plotBart",
       "RemoteUsername": "priism-center",
       "RemoteRef": "HEAD",
-      "RemoteSha": "5bc1a94aff33d4b23785189ca72cfdc5fb6e9c3a",
+      "RemoteSha": "9c74cb505201cf68d9c277c53c835959de804873",
       "Requirements": [
         "GGally",
         "R",
@@ -1366,7 +1366,7 @@
         "stats",
         "tidyr"
       ],
-      "Hash": "be94312a4d05f3e582bdfb354cfb1911"
+      "Hash": "4030c5b1af532b981873c93440682bce"
     },
     "plyr": {
       "Package": "plyr",
