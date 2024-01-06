@@ -231,22 +231,22 @@ app_ui <- function(request) {
               text = 'Estimands 2',
               tabName = 'learn_estimands2'
             ),
-            bs4Dash::menuSubItem(
-              text = 'version A',
-              tabName = 'learn_versionA'
-            ),
-            bs4Dash::menuSubItem(
-              text = 'version B',
-              tabName = 'learn_versionB'
-            ),
-            bs4Dash::menuSubItem(
-              text = 'Sandbox',
-              tabName = 'learn_rand_dist'
-            ),
-            bs4Dash::menuSubItem(
-              text = 'Fundamental',
-              tabName = 'learn_fundamental'
-            ),
+            # bs4Dash::menuSubItem(
+            #   text = 'version A',
+            #   tabName = 'learn_versionA'
+            # ),
+            # bs4Dash::menuSubItem(
+            #   text = 'version B',
+            #   tabName = 'learn_versionB'
+            # ),
+            # bs4Dash::menuSubItem(
+            #   text = 'Sandbox',
+            #   tabName = 'learn_rand_dist'
+            # ),
+            # bs4Dash::menuSubItem(
+            #   text = 'Fundamental',
+            #   tabName = 'learn_fundamental'
+            # ),
             bs4Dash::menuItem(
               text = 'Variable Selection',
               tabName = 'learn_variable_selection',
@@ -271,10 +271,10 @@ app_ui <- function(request) {
             #   text = 'Scrollytell example',
             #   tabName = 'learn_scrolly'
             # ),
-            bs4Dash::menuSubItem(
-              text = 'Randomization',
-              tabName = 'learn_randomization'
-            ),
+            # bs4Dash::menuSubItem(
+            #   text = 'Randomization',
+            #   tabName = 'learn_randomization'
+            # ),
             bs4Dash::menuSubItem(
               text = 'Observational studies',
               tabName = 'learn_observational'
