@@ -19,6 +19,7 @@ Imports:
     ggplot2 (>= 3.3.2),
     glue,
     golem (>= 0.3.2),
+    haven,
     htmltools,
     jsonlite,
     lubridate (>= 1.8.0),
