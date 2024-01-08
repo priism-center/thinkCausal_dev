@@ -106,7 +106,7 @@ mod_learn_versionB_server <- function(id){
       imputedY0 <- "#E6C0F0"
       imputedY1 <- "#E6C0F0"
 
-      dat18 <- readr::read_csv('inst/extdata/fundamental_table2.csv')
+      dat18 <- readr::read_csv(app_sys('extdata/fundamental_table2.csv'))
       items$position3 <- div(
         style = 'visibility: hidden;',
         reactable::renderReactable({
@@ -140,7 +140,7 @@ mod_learn_versionB_server <- function(id){
 
       truth <- readr::read_csv('inst/extdata/truth.csv')
       truth$ITE <- with(truth, Y1 - Y0)
-      imputed <- readr::read_csv('inst/extdata/fundamental_table2.csv')
+      imputed <- readr::read_csv(app_sys('extdata/fundamental_table2.csv'))
       imputed$ITE <- with(imputed, Y1 - Y0)
       combined <- cbind(truth[, 1:3], imputed[, 4], truth[, 4], imputed[, 5], truth[, 5], truth[, 6])
       combined[combined$hyperShoe == 0, 4] <- NA

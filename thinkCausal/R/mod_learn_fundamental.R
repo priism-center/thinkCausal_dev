@@ -149,9 +149,9 @@ mod_learn_fundamental_server <- function(id){
     ns <- session$ns
 
     # load in everything we need
-    datImputed <- readr::read_csv('inst/extdata/fundamental_table2.csv') %>%
+    datImputed <- readr::read_csv(app_sys('extdata/fundamental_table2.csv')) %>%
       dplyr::mutate(estITE = Y1 - Y0)
-    datTruth <- readr::read_csv('inst/extdata/truth.csv')
+    datTruth <- readr::read_csv(app_sys('extdata/truth.csv'))
     datCombined <- data.frame(
       datImputed[, 1:3],
       estY0 = datImputed$Y0,
