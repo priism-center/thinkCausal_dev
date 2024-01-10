@@ -29,14 +29,14 @@ mod_analysis_balance_ui <- function(id){
         ),
         selectInput(inputId = ns('analysis_balance_select'),
                     label = 'Filter variables in balance plot:',
-                    choices = c('Plot varibables with most imbalance',
+                    choices = c('Plot variables with most imbalance',
                                 'Manually select variables to plot')
                     ),
         # checkboxInput(ns('analysis_balance_show_table'),
         #               label = 'Show balance table',
         #               value = TRUE
         #               ),
-        conditionalPanel(condition = "input.analysis_balance_select == 'Plot varibables with most imbalance'",
+        conditionalPanel(condition = "input.analysis_balance_select == 'Plot variables with most imbalance'",
                          ns = ns,
                          sliderInput(ns('analysis_balance_cat'),
                                      label = 'Categorical variables in balance plot:',
