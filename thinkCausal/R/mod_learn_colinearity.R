@@ -58,7 +58,7 @@ mod_learn_colinearity_server <- function(id, id_parent = 'learn_variable_selecti
     ns <- session$ns
     #ns <- NS(NS(id_parent)(id))
 
-    dat <- readr::read_csv('inst/extdata/colinearity.csv')
+    dat <- readr::read_csv(app_sys('extdata/colinearity.csv'))
     dat$ITE <- with(dat, Y1 - Y0)
     dat$runner <- 1:500
     dat <- dat %>% dplyr::select(runner, dplyr::everything())
