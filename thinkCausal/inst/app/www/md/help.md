@@ -6,6 +6,9 @@ This is still under development
 
 
 ### Upload data
+
+After clicking the browse button you can select any file available on your computer. 
+
 thinkCausal can load in .csv, .txt, .xlsx (Excel), .spss (SPSS), .sav (SPSS), .dta (STATA) or .sas (SAS) files. 
 <br>
 
@@ -114,7 +117,9 @@ In block randomized experiments it is important to always adjust for the variabl
 
 
 #### Survey weights
-Sometimes our data comes from surveys that are not representative of the population we are inferences about. 
+Sometimes our data comes from surveys that are not representative of the population we are inferences about. If your dataset contains survey weights, indicate *yes* for the the Include survey weights input under Advanced Options.
+
+If your dataset does not contrain survey weights leave this input as *no* which is the default option. 
 
 <br>
 
@@ -144,7 +149,7 @@ Use the drag-and-drop to include additional variables in the analysis. You may c
 
 You can move all the variables in your dataset by clicking "Move all covariates to include box". 
 
-**After you have selected variables to include in the analysis click on the "Save variable selection & continue" button. 
+**After you have selected variables to include in the analysis click on the "Save variable selection & continue" button**. 
 
 <!--
 #### Group data
@@ -174,13 +179,27 @@ The revert variable changes button will return the dataset names and variable ty
 
 ### Exploratory Data Visualization
 
-Nisl tincidunt eget nullam non nisi est sit. Mus mauris vitae ultricies leo integer malesuada nunc vel. Nibh mauris cursus mattis molestie a iaculis. Nisl vel pretium lectus quam id leo. Vitae et leo duis ut diam. Varius vel pharetra vel turpis nunc eget lorem. Nisl purus in mollis nunc sed. Phasellus faucibus scelerisque eleifend donec pretium vulputate sapien. Semper risus in hendrerit gravida rutrum.
+Visualizing your data is an important part of the data analysis process. Exploratory data visualization may inform hypotheses about potential subgroup or moderation effects. 
+
+These plots should not be used to inform variable selection. You should have already included any variable that is plausibly predictive of the outcome variable and is not a post-treatment variable.
+
+In the plot type input you can choose between visualizing a scatter plot, histogram, bar plot, density plot and boxplots. 
 
 <br>
 
 ### Balance
 
-In iaculis nunc sed augue lacus viverra vitae. Etiam erat velit scelerisque in dictum non. Tristique nulla aliquet enim tortor at auctor. Id consectetur purus ut faucibus pulvinar. Egestas dui id ornare arcu odio ut sem. Consectetur a erat nam at lectus urna duis. Tempus imperdiet nulla malesuada pellentesque elit eget gravida. Consectetur adipiscing elit ut aliquam purus sit amet.
+Balance is how comparable predictor variables are between the treatment and control groups. We can compare balance of the means, variance (continuous variables only) and covariance. The dashed center line represents the control group. Points represent how different the treatment group is in terms of means, variance or covariance for each predictor variable. 
+
+thinkCausal will fit a flexible Bayesian Additive Regression Tree (BART) machine learning model to account for imbalanced data. Unlike in propensity score matching you will not need to check balance after the model is fit. 
+
+When the treatment and control groups are **balanced** all points should be close to the center line. The further away a point is from the center line the more **imbalanced** the data is. 
+
+In a completely randomized experiments the data is balanced in expectation, and we expect all points to be close to the center line. The figure below shows the balance plot for a completely randomized experiment on the effects of a job training program on real wages. 
+
+<p align="center">
+<img src="www/img/example_balance.png" width=90%>
+</p>
 
 <br>
 

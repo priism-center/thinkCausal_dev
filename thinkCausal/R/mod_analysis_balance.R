@@ -158,23 +158,33 @@ mod_analysis_balance_server <- function(id, store){
       treatment_col <- grep("^Z_", names(X), value = TRUE)
       outcome_col <-   grep("^Y_", names(X), value = TRUE)
 
-      if(input$analysis_balance_select == 'Plot varibables with most imbalance'){
-        .confounders <- colnames(X)[colnames(X)%notin% c(treatment_col, outcome_col)]
+      if(input$analysis_balance_select == 'Plot variables with most imbalance'){
+        .confounders <- colnames(X)[colnames(X) %notin% c(treatment_col, outcome_col)]
+        # stop here if there are no columns selected
+        validate(need(length(.confounders) > 0,
+                      "No columns available or currently selected"))
+        p <- plotBart::plot_balance(.data = X,
+                                    treatment = treatment_col,
+                                    confounders = .confounders,
+                                    compare = input$analysis_balance_type,
+                                    estimand = input$analysis_balance_estimand,
+                                    limit_catagorical = input$analysis_balance_cat + 1,
+                                    limit_continuous = input$analysis_balance_cont + 1
+        )
       }else{
         .confounders <- input$analysis_balance_select_var
+        # stop here if there are no columns selected
+        validate(need(length(.confounders) > 0,
+                      "No columns available or currently selected"))
+        p <- plotBart::plot_balance(.data = X,
+                                    treatment = treatment_col,
+                                    confounders = .confounders,
+                                    compare = input$analysis_balance_type,
+                                    estimand = input$analysis_balance_estimand
+        )
       }
 
-      # stop here if there are no columns selected
-      validate(need(length(.confounders) > 0,
-                    "No columns available or currently selected"))
-      p <- plotBart::plot_balance(.data = X,
-                                treatment = treatment_col,
-                                confounders = .confounders,
-                                compare = input$analysis_balance_type,
-                                estimand = input$analysis_balance_estimand,
-                                limit_catagorical = input$analysis_balance_cat,
-                                limit_continuous = input$analysis_balance_cont
-                                )
+
 
       # add theme
       p <- p & store$options$theme_custom + ggplot2::theme(legend.position = 'none')

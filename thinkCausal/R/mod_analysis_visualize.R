@@ -133,7 +133,7 @@ mod_analysis_visualize_ui <- function(id){
            ),
            selectInput(
              inputId = ns("analysis_eda_variable_facet"),
-             label = "Panel variable: ",
+             label = "Group by: ",
              multiple = FALSE,
              choices = c("None", NULL),
              selected = "None"
@@ -143,7 +143,7 @@ mod_analysis_visualize_ui <- function(id){
              ns = ns,
              selectInput(
                inputId = ns("analysis_eda_variable_facet_second"),
-               label = "Second panel variable: ",
+               label = "Group by second variable: ",
                multiple = FALSE,
                choices = c("None"),
                selected = "None"
