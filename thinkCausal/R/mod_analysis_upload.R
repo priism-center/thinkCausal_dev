@@ -62,7 +62,8 @@ mod_analysis_upload_ui <- function(id) {
           inputId = ns('analysis_upload_data_button_columnAssignSave'),
           class = 'nav-path',
           label = 'Next'
-        )
+        ),
+        create_go_to_learning_btn('learn', 'analysis_upload', 'Learning')
       )
     ),
     column(width = 9,
