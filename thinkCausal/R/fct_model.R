@@ -7,7 +7,7 @@
 #' @param rct a logical TRUE is completely randomized design FALSE otherwise
 #' @return an object of class "bartcFit"
 #' @noRd
-fit_bart <- function(.data, .weights, ran_eff, .estimand, random){
+fit_bart <- function(.data, .weights, ran_eff, .estimand, rct){
   ind <- max(3, 3 + length(.weights) + length(ran_eff))
   if(rlang::is_null(.weights)){
     tryCatch({
