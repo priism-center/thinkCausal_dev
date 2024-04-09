@@ -29,6 +29,7 @@ app_ui <- function(request) {
 
     # add beta ribbon
     add_beta_ribbon(),
+    create_return_btn(),
 
     # message when server disconnects
     # TODO: this can be removed for native installation
