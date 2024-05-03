@@ -1,0 +1,1 @@
+We know the average finishing time for runners' with hyperShoes is 252.26 minutes, but *we don't know what the runners' with hyerShoes average finishing time would have been had these runners' not worn hyperShoes*.

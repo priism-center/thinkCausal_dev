@@ -1,0 +1,1 @@
+For the professional runners that wore hyperShoes, we use the average time of the professional runners who did not wear hyperShoes, to represent what would have happened if they had not worn hyperShoes. 

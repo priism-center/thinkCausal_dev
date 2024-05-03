@@ -15,16 +15,17 @@ module_ids <- list(
     colinearity = 'learning_colinearity',
     estimands = 'learning_estimands',
     estimands2 = 'learning_estimands2',
+    obs_ignorability = 'learning_obs_ignorability',
     # versionA = 'learn_versionA',
     # versionB = 'learn_versionB',
     # fundamental = 'learning_fundamental',
     # rand_dist = 'learning_randomization_dist',
     bias_efficiency = 'learning_bias_efficiency',
     rct_covariates = 'learning_rct_covariates',
-    ignorability = 'learning_ignorability',
     confounders_measured = 'learning_confounders_measured',
     potential_outcomes = "learning_potential_outcomes",
-    observational = "learning_observational"
+    observational = "learning_observational",
+    confounder = "learning_confounder"
   ),
   analysis = list(
     design = 'analysis_design',

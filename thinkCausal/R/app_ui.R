@@ -102,12 +102,20 @@ app_ui <- function(request) {
           #   mod_learn_fundamental_ui(module_ids$learn$fundamental)
           # ),
           bs4Dash::tabItem(
+            tabName = 'learn_obs_ignorability',
+            mod_learn_draft_ui(module_ids$learn$obs_ignorability)
+          ),
+          bs4Dash::tabItem(
             tabName = 'learn_randomization',
             mod_learn_rct_analysis_ui(module_ids$learn$randomization)
           ),
           bs4Dash::tabItem(
             tabName = 'learn_observational',
             mod_learn_obs_analysis_ui(module_ids$learn$observational)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_confounder',
+            mod_learn_confounder_ui(module_ids$learn$confounder)
           ),
           bs4Dash::tabItem(
             tabName = 'learn_balance',
@@ -232,6 +240,10 @@ app_ui <- function(request) {
               text = 'Estimands 2',
               tabName = 'learn_estimands2'
             ),
+            bs4Dash::menuSubItem(
+              text = 'Ignorability',
+              tabName = 'learn_obs_ignorability'
+            ),
             # bs4Dash::menuSubItem(
             #   text = 'version A',
             #   tabName = 'learn_versionA'
@@ -279,6 +291,10 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Observational studies',
               tabName = 'learn_observational'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Confounder',
+              tabName = 'learn_confounder'
             )
             #, bs4Dash::menuSubItem(
             #   text = 'Balance',

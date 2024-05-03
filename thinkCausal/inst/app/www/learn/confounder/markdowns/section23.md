@@ -1,0 +1,1 @@
+And we will use the observed average time of non-professional runners who wore hyperShoes (229.73) to represent what would have happened to non-professional runners that did not wear hyperShoes if they had worn hyperShoes.

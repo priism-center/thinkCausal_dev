@@ -1,0 +1,512 @@
+renv::status()
+devtools::load_all()
+devtools::build()
+devtools::check()
+devtools::document()
+usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')
+## Dependencies ----
+## Amend DESCRIPTION with dependencies read from package code parsing
+# attachment::att_amend_desc()
+usethis::use_package('ggplot2', min_version = '3.3.2')
+usethis::use_package('dplyr', min_version = '1.0.5')
+usethis::use_package('tibble')
+usethis::use_package('purrr')
+usethis::use_package('tidyr', min_version = '1.1.3')
+usethis::use_package('stringr')
+usethis::use_package('glue')
+usethis::use_package('rlang', min_version = '1.0.3')
+usethis::use_package('scales', min_version = '1.1.1')
+usethis::use_package('lubridate', min_version = '1.8.0')
+usethis::use_package('cli')
+usethis::use_package('bs4Dash', min_version = '2.1.0')
+usethis::use_package('shinyjs', min_version = '2.1.0')
+usethis::use_package('shinyWidgets', min_version = '0.7.4')
+usethis::use_package('reactable', min_version = '0.3.0')
+usethis::use_package('sortable', min_version = '0.4.5')
+usethis::use_package('readr')
+#usethis::use_package('Hmisc', min_version = '4.7.0')
+usethis::use_package('openxlsx', min_version = '4.2.5')
+#usethis::use_package('readstata13', min_version = '0.10.0')
+usethis::use_package('patchwork', min_version = '1.1.1')
+usethis::use_package('shinybrowser', min_version = '1.0.0')
+usethis::use_package('shinydisconnect', min_version = '0.1.0')
+usethis::use_package('htmltools')
+usethis::use_package('jsonlite')
+usethis::use_package('waiter')
+usethis::use_dev_package('shinyFeedback', remote = 'merlinoa/shinyFeedback')
+usethis::use_dev_package('ggdark', remote = 'nsgrantham/ggdark')
+usethis::use_dev_package('shinyQuiz', remote = 'github::priism-center/shinyQuiz')
+usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')
+usethis::use_package('bartCause', min_version = '1.0.6')
+renv::status()
+renv::clean()
+renv::clean()
+renv::dependencies()
+dep <- renv::dependencies()
+'Hmisc' %in% dep
+renv::diagnostics()
+renv::clean()
+renv::status()
+renv::rebuild()
+install.packages('testthat')
+renv::rebuild()
+install.packages('Matrix')
+renv::history()
+renv::revert('b7feb95f725ad3615ccbdbe9cdfecc7946bbd541')
+renv::status()
+?renv::checkout()
+?renv::clean()
+renv::clean()
+renv::restore()
+renv::revert('b7feb95f725ad3615ccbdbe9cdfecc7946bbd541')
+## Dependencies ----
+## Amend DESCRIPTION with dependencies read from package code parsing
+# attachment::att_amend_desc()
+usethis::use_package('renv', min_version = '1.0.3')
+packageVersion('renv')
+install.packages('renv')
+renv::rebuild()
+renv::status()
+renv::snapshot()
+renv::status()
+renv::clean()
+renv::diagnostics()
+renv::rebuild()
+install.packages('Rcpp')
+renv::rebuild()
+renv::status()
+renv::activate()
+renv::restore()
+renv::rebuild()
+renv::status()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+28-13
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+dat <- readr::read_csv('~/Desktop/data_analysis_causal_inf.csv')
+names(dat)
+View(dat)
+golem::run_dev()
+golem::run_dev()
+validate_model_fit(store)
+validate(need(input$analysis_subgroup_exploratory, ''))
+input$analysis_subgroup_exploratory
+golem::run_dev()
+.moderator <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
+icate <- bartCause::extract(store$analysis$model$model, 'icate')
+x <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
+if(store$analysis$model$analysis_model_estimand == 'ATT'){
+x <- x[store$verified_df$Z_treat == TRUE]
+.moderator <- .moderator[store$verified_df$Z_treat == TRUE]
+}
+golem::run_dev()
+golem::run_dev()
+.moderator
+input$analysis_subgroup_exploratory
+store$verified_df
+store$verified_df[, 'X_mom_race']
+input$analysis_subgroup_exploratory
+paste0('X_', input$analysis_subgroup_exploratory)
+store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
+x <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
+x <- x[store$verified_df$Z_treat == TRUE]
+store$verified_df
+store$analysis_data_uploaded_df$z
+store$column_assignments$z
+store$column_assignments$z
+x <- x[store$verified_df$Z_treat == TRUE]
+x <- x[store$verified_df[[store$column_assignments$z]] == TRUE]
+.moderator <- .moderator[store$verified_df[[store$column_assignments$z]] == TRUE]
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+x <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
+x <- x[store$verified_df[[store$column_assignments$z]] == TRUE]
+.moderator <- .moderator[store$verified_df[[store$column_assignments$z]] == TRUE]
+.moderator
+x
+x <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
+x <- x[store$verified_df[[store$column_assignments$z]] == TRUE]
+x <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
+store$verified_df
+x <- x[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == TRUE]
+.moderator <- .moderator[store$verified_df[[store$column_assignments$z]] == TRUE]
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+input$analysis_select_dragdrop_avalable
+length(input$analysis_select_dragdrop_avalable) > 0
+pass_varible <- length(input$analysis_select_dragdrop_avalable) == 0
+?req
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+store$analysis_origin
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+input$analysis_design
+input$analysis_design
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+pass_variable <- reactiveVal(length(input$analysis_select_dragdrop_avalable) == 0)
+pass_variable()
+golem::run_dev()
+golem::run_dev()
+pass_variable()
+pass_variable(T)
+pass_variable()
+golem::run_dev()
+pass_variable()
+golem::run_dev()
+pass_variable()
+pass_variable()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+pass_variable()
+golem::run_dev()
+pass_variable()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+auto_columns
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+X
+store$column_types
+lapply(store$column_types, length)
+plotBart::print_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+compare = input$analysis_balance_type,
+estimand = input$analysis_balance_estimand)
+plotBart::print_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+compare = 'means',
+estimand = 'att')
+plotBart::print_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+estimand = 'att')
+plotBart::print_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+estimand = 'ATT')
+check <- plotBart::print_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+estimand = 'ATT')
+View(check)
+check |> filter(variable %in% store$column_types$categorical)
+store$column_types$categorical
+check$variable
+check |> filter(stringr::str_detect(variable, store$column_types$categorica))
+check[stringr::str_detect(variable, store$column_types$categorica),]
+check[stringr::str_detect(check$variable, store$column_types$categorica),]
+check[stringr::str_detect(check$variable, store$column_types$categorical),]
+store$column_types$categorical
+sapply(check$variable, function(i) stringr::str_detect(i, store$column_types$categorical))
+vapply(check$variable, function(i) stringr::str_detect(i, store$column_types$categorical))
+sapply(check$variable, function(i) stringr::str_detect(i, store$column_types$categorical))
+obj <-       sapply(check$variable, function(i) stringr::str_detect(i, store$column_types$categorical))
+golem::run_dev()
+golem::run_dev()
+sapply(check$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical)))
+input$analysis_balance_estimand
+input$analysis_balance_type
+input$analysis_balance_select_var
+X
+plotBart::print_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+compare = input$analysis_balance_type,
+estimand = input$analysis_balance_estimand)
+plotBart::print_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+#compare = input$analysis_balance_type,
+estimand = input$analysis_balance_estimand)
+bal_dat <- plotBart::print_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+estimand = input$analysis_balance_estimand)
+sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical)))
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ]
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ] |>
+dplyr::arrange(`difference in means`)
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ] |>
+dplyr::arrange(abs(`difference in means`))
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ] %>%
+dplyr::mutate(imbalance = abs(`difference in means`)) %>%
+dplyr::arrange(imbalance)
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ] %>%
+#dplyr::mutate(imbalance = abs(`difference in means`)) %>%
+dplyr::arrange(desc(abs(`difference in means`)))
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ] %>%
+#dplyr::mutate(imbalance = abs(`difference in means`)) %>%
+dplyr::arrange(desc(abs(`difference in means`))) %>%
+dplyr::slice(1:max)
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ] %>%
+#dplyr::mutate(imbalance = abs(`difference in means`)) %>%
+dplyr::arrange(desc(abs(`difference in means`))) %>%
+dplyr::slice(max)
+?slice
+max
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ] %>%
+#dplyr::mutate(imbalance = abs(`difference in means`)) %>%
+dplyr::arrange(desc(abs(`difference in means`))) %>%
+dplyr::slice(25)
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ] %>%
+#dplyr::mutate(imbalance = abs(`difference in means`)) %>%
+dplyr::arrange(desc(abs(`difference in means`))) %>%
+dplyr::slice(1:25)
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ] %>%
+#dplyr::mutate(imbalance = abs(`difference in means`)) %>%
+dplyr::arrange(desc(abs(`difference in means`))) %>%
+dplyr::slice(1:25) %>%
+dplyr::select(variable)
+bal_dat[sapply(bal_dat$variable, function(i) any(stringr::str_detect(i, store$column_types$categorical))), ] %>%
+#dplyr::mutate(imbalance = abs(`difference in means`)) %>%
+dplyr::arrange(desc(abs(`difference in means`))) %>%
+dplyr::slice(1:25) %>%
+dplyr::select(variable) %>%
+purrr::as_vector()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+X <- store$verified_df
+X <- clean_to_indicator(X)
+treatment_col <- grep("^Z_", names(X), value = TRUE)
+# get covariates
+new_col_names <- colnames(clean_to_indicator(store$verified_df))
+X_cols <- grep("^X_", new_col_names, value = TRUE)
+bal_dat <- plotBart::print_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+estimand = input$analysis_balance_estimand)
+treatment_col
+bal_dat <- plotBart::print_balance(.data = X,
+treatment = treatment_col,
+confounders = X_cols,
+estimand = input$analysis_balance_estimand)
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+remotes::install_github('priism-center/plotBart', ref = 'HEAD')
+library(plotBart)
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+library(plotBart)
+data("lalonde")
+fit <- bartc(re78, treat, as.matrix(lalonde)[,c(1:8, 10:11)])
+fit <- bartc(re78, treat, as.matrix(lalonde)[,c(1:8, 10:11)], data = lalonde)
+plot_balance(lalonde, 'treat', confounders = names(lalonde)[c(1:8, 10:11)])
+plot_balance(lalonde, 'treat', confounders = names(lalonde)[c(1:8, 10:11)], limit_continuous = 1)
+plot_balance(lalonde, 'treat', confounders = names(lalonde)[c(1:8, 10:11)], limit_catagorical = 1)
+remotes::install_github('priism-center/plotBart', ref = 'HEAD')
+library(plotBart)
+golem::run_dev()
+golem::run_dev()
+input$analysis_balance_cat
+input$analysis_balance_cont
+plotBart::plot_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+compare = input$analysis_balance_type,
+estimand = input$analysis_balance_estimand,
+limit_categorical = input$analysis_balance_cat,
+limit_continuous = input$analysis_balance_cont
+)
+plotBart::plot_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+compare = input$analysis_balance_type,
+estimand = input$analysis_balance_estimand,
+# limit_categorical = input$analysis_balance_cat,
+limit_continuous = input$analysis_balance_cont
+)
+p <- plotBart::plot_balance(.data = X,
+treatment = treatment_col,
+confounders = input$analysis_balance_select_var,
+compare = input$analysis_balance_type,
+estimand = input$analysis_balance_estimand,
+limit_catagorical = input$analysis_balance_cat,
+limit_continuous = input$analysis_balance_cont
+)
+golem::run_dev()
+remotes::install_github('priism-center/plotBart', ref = 'HEAD')
+library(plotBart)
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+store$column_types$categorical
+length(store$column_types$categorical)
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+ncol(X)
+ncol(X) - length(store$column_types$continuous)
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+library(bartCause)
+golem::run_dev()
+getwd()
+golem::run_app()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+filepath
+filetype
+golem::run_dev()
+golem::run_dev()
+usethis::use_package('haven')
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+library(plotBart)
+packageVersion('plotBart')
+lalonde
+plotBart::plot_balance(.data = lalonde, treatment = 'treat', confounders = names(lalonde))
+plotBart::plot_balance(.data = lalonde, treatment = 'treat', confounders = names(lalonde), limit_continuous = 2)
+plotBart::plot_balance(.data = lalonde, treatment = 'treat', confounders = names(lalonde), limit_catagorical = 3)
+golem::run_dev()
+.confounders
+input$analysis_balance_select
+colnames(X)
+colnames(X)[colnames(X) %notin% c(treatment_col, outcome_col)]
+input$analysis_balance_select == 'Plot varibables with most imbalance'
+input$analysis_balance_select == 'Plot variables with most imbalance'
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+lalonde <- plotBart::lalonde
+names(lalonde)
+names(lalonde)[c(1:8, 10:11)]
+names(lalonde)[c(1:8, 10:11)]
+plotBart::plot_balance(lalonde, treatment = 'treat', confounders = names(lalonde)[c(1:8, 10:11)])
+plotBart::plot_balance(lalonde, treatment = 'treat', confounders = names(lalonde)[c(1:8, 10:11)]) + theme_minimal()
+plotBart::plot_balance(lalonde, treatment = 'treat', confounders = names(lalonde)[c(1:8, 10:11)]) + ggplot2::theme_minimal()
+ggplot2::theme_set(ggplot2::theme_minimal())
+plotBart::plot_balance(lalonde, treatment = 'treat', confounders = names(lalonde)[c(1:8, 10:11)])
+ggplot2::ggsave('inst/app/www/img/example_balance.png')
+golem::run_dev()
+ggplot2::ggsave('inst/app/www/img/example_balance.png', bg = 'white')
+ggplot2::theme_set(ggplot2::theme_minimal())
+plotBart::plot_balance(lalonde, treatment = 'treat', confounders = names(lalonde)[c(1:8, 10:11)])
+ggplot2::ggsave('inst/app/www/img/example_balance.png', bg = 'white')
+golem::run_dev()
+# Figure 18.1
+## Plots a chi-squared distribution with one degree of freedom
+curve(dchisq(x, 1), 0, 3.5, ylab = "Density", xlab = "Chi-square with one degree of freedom")
+sample(x = c(1, 2, 3), replace = T, size = 14)
+remotes::install_github('priism-center/thinkCausal_dev', subdir = 'thinkCausal')
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+remotes::install_github('priism-center/thinkCausal_dev', subdir = 'thinkCausal')
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()
+dat <- readr::read_csv('~/Dropbox/papers/language_MSU_23/january_wave.csv')
+View(dat)
+golem::run_dev()
+golem::run_dev()
+golem::run_dev()

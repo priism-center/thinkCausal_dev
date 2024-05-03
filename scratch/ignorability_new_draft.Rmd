@@ -9,38 +9,36 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
 library(reactable)
 
 ```
 
 
-Observational studies where the treatment is not randomly assigned make a strong ignorability assumption. For observational studies, the ignorability assumption is all about confounders. Under the ignorability assumption we assume all confounders have been measured and included in the analysis. If this assumption is not met, your results may be very missleading. 
+Observational studies where the treatment is not randomly assigned make a strong **ignorability assumption**. For observational studies, the ignorability assumption is that we have measured all confounders and account for every confounder when estimating a causal effect. If this assumption is not satisfied and there are confounders not included in your analysis your results will be biased. 
 
-To understand the ignorability assumption for observational studies and what a confounder is we will consider our hyperShoe example. 
+To understand the ignorability assumption for observational studies and the role of confounders we will consider our hyperShoe example:
 
-The company that makes hyperShoes found in a new study that wearing the hyperShoes casues a runner to run a marathon an average of 51.76 minutes faster than they would have ran without wearing hyperShoes! 
+The company that makes hyperShoes released a new study that found wearing  hyperShoes causes a runner to run a marathon an average of 51.76 minutes faster than they would have ran without wearing hyperShoes! 
 
-An Average Treatment Effect(ATE) of 51.76 minutes seems like an unbelevably big effect for simply changing shoes, but the company's claim was based on evidence from a study. The study compared the marathon times of runners that wore hyperShoes against the marathon times of runners that did not wear hyperShoes. There were 300 runners in the hyperShoe group and 700 runners in the group that did not wear hyperShoes. 
-
-
-We'll investigate the data to see if we should really beleive that a pair of hyperShoes would cause us to run 50 minutes faster!
+The study compared the marathon times of runners that wore hyperShoes against the marathon times of runners that did not wear hyperShoes. There were 300 runners in the hyperShoe group and 700 runners in the group that did not wear hyperShoes. An Average Treatment Effect(ATE) of 51.76 minutes seems like an unbelievably large effect for simply changing shoes we'll investigate to see if we should really believe that a pair of hyperShoes would cause us to run 50 minutes faster!
 
 ```{r, echo=FALSE}
 set.seed(64)
 hyperShoe <- c(rep(1, 300), rep(0, 724))
 pro <- ifelse(hyperShoe == 1, rbinom(300, 1, .85), rbinom(724, 1, .15))
+
 age <- ifelse(hyperShoe == 1, rnorm(sum(hyperShoe), 29, 5), runif(sum(hyperShoe == 0), 18, 45))
+
 age[age < 18] <- runif(sum(age < 18), 22, 27)
 y0 <- 240 + pro*-70 + age*1 +  rnorm(1024, 0, 15)
 y1 <- 240 + -5 + pro*-70 + age*1 + rnorm(1024, 0, 15)
 finish <- ifelse(hyperShoe == 1, y1, y0)
-
+lm(finish ~ age + hyperShoe*pro)
 ```
 
 ## Scroll 
 
-Runners that ran the race with hyperShoes finished with an average time of 252.26 minutes. We know thier average finishing time with hyperShoes, but we don't know what their average finishing time would have been had they not worn hyperShoes.
+Runners in the treatment group ran the race with hyperShoes and finished with an average time of 252.26 minutes. We know their average finishing time with hyperShoes, but *we don't know what their average finishing time would have been had they not worn hyperShoes*.
 
 ```{r}
 mean_trt <- round(mean(finish[hyperShoe == 1]), 2)
@@ -60,14 +58,14 @@ tibble(finish, hyperShoe) |>
 
 tibble(`average time with hyperShoes` = mean_trt, `average time without hyperShoes` = '?', hyperShoe = 'Yes') |>
   reactable::reactable(columns = list(
-                               `average time with hyperShoes` = colDef(align = "center"),
-                               `average time without hyperShoes` = colDef(align = "center"),
-                                hyperShoe = colDef(align = "center")
+                               `average time with hyperShoes` = reactable::colDef(align = "center"),
+                               `average time without hyperShoes` = reactable::colDef(align = "center"),
+                                hyperShoe = reactable::colDef(align = "center")
                              ))
 ```
 
 
-Runners that ran the marathon without hyperShoes finished with an average time of 304.2 minutes. We dont know what their average finishig time would have been with hyperShoes, but we do know their average finishing time without hyperShoes.
+Runners in the control group ran the marathon without hyperShoes and finished with an average time of 304.2 minutes. For this group of runners, we know what their average finishing time would was without hyperShoes, but *we don't know what their average finishing time would have been with hyperShoes*.
 
 ```{r}
 mean_ctl <- round(mean(finish[hyperShoe == 0]), 2)
@@ -86,14 +84,14 @@ tibble(finish, hyperShoe) |>
 
 tibble(`average time with hyperShoes` = '?', `average time without hyperShoes` = mean_ctl, hyperShoe = 'No') |>
   reactable::reactable(columns = list(
-                               `average time with hyperShoes` = colDef(align = "center"),
-                               `average time without hyperShoes` = colDef(align = "center"),
-                                hyperShoe = colDef(align = "center")
+                               `average time with hyperShoes` = reactable::colDef(align = "center"),
+                               `average time without hyperShoes` = reactable::colDef(align = "center"),
+                                hyperShoe = reactable::colDef(align = "center")
                              ))
 ```
 
 
-When the company analyzed the data they used the difference in means to estimate the Average Treatment Effect. Under the difference in means the average of the treatment group represents the average finishing time **for all the runners** had they worn hyperShoes and the average of the control group represents the average finishing time **for all the runners** had they not worn hyperShoes.
+When the company analyzed the data from the study they used the difference in means estimator to estimate the Average Treatment Effect. The difference in means estimator estimates the Average Treatment Effects by taking the difference between the mean of the treatment group and the mean of the control group.
 
 ```{r}
 tibble(finish, hyperShoe) |>
@@ -124,7 +122,10 @@ tibble(finish, hyperShoe) |>
 
 ```
 
-The ignorability assumption we assume that the average running time of the Treatment group (ran with hyperShoes) accurately represents what would have happened to the control group (no hyperShoes) had they gotten the treatment. Under the ignorability assumption we will assume that the average running time for the Control group (no hyperShoes) can represent what would have happened to the Treatment group had they not gotten the treatment. 
+
+The difference in means estimator uses the average running time of the treatment group, who ran with hyperShoes, to represent what would have happened to the control group had they ran with hyperShoes.
+
+Likewise, we the difference in mean estimator uses the average running time of the control group to represent what would have hapend to runner's in the treatment group had they ran the race without hyperShoes. 
 
 
 ```{r}
@@ -139,10 +140,31 @@ tibble(`average time with hyperShoes` = mean_trt,
 ```
 
 
-In observational studies, the Treatment and Control groups often look very different from one another. In this study, some of the runners are professional runners while some of the runners are amateur runners. 
+The ignorability assumption is the assumption that: 
+
+1: the running times of runner's in the treatment group are actually representative of the counter-factual outcomes of runners in the control group. 
+
+2: the running times of runner's in the control group are actually representative of the counter-factual outcomes of runners in the treatment group. 
+
+```{r}
+tibble(`average time with hyperShoes` = mean_trt, 
+       `average time without hyperShoes` = mean_ctl, hyperShoe = c('Yes', 'No')) |>
+  reactable::reactable(
+    columns = list(
+      `average time with hyperShoes` = colDef(align = "center"),
+      `average time without hyperShoes` = colDef(align = "center"),
+      hyperShoe = colDef(align = "center")
+                             ))
+```
 
 
-Let's look at the runners that wore hyperShoes. Most of these 300 runners were professional runners and only a few were amateur runners. 
+The problem is that in observational studies, the treatment variable is not randomly assigned and this can lead to treatment and control groups that look very different from one another. 
+
+When the treatment is not randomly assigned 
+
+In this study, some of the runners are professional runners while some of the runners are amateur runners. 
+
+The vast majority of the 300 runners that wore hyperShoes were professional runners and only a few amateur runners wore hyperShoes. 
 
 
 ```{r}
@@ -195,8 +217,7 @@ grid |>
 ```
 
 
-
-This is a problem because professional status predicts how fast a runner will finish the race. Unsurprisingly professional runners are much faster than amateur runners!
+Unsurprisingly, when we look at the outcome, we see that professional runners run much faster than amateur runners.
 
 ```{r}
 tibble(pro, finish) |>
@@ -210,7 +231,18 @@ tibble(pro, finish) |>
 ```
 
 
-In this study Professional status is **confounder**. A **confounder** or a **confounding variable** is any variable that predicts *both* whether an individual receives the treatment and also predicts the outcome of interest. 
+Do you think runner's in the treatment group a good representative of what would have happened to runners in the control group had they worn hyperShoes? 
+
+
+
+
+
+
+
+
+In this study, Professional status is **confounder**. A **confounder** or a **confounding variable** is any variable that *both* predicts the treatment and predicts the outcome.
+
+Professional runners are more likely to wear hyperShoes and they are more likely to run fast while ameature runners are less likely to wear hyperShoes and less likely to run fast. 
 
 When we estimate a causal effect without accounting for all confounders we are violating the ignorability assumption!
 

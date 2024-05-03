@@ -1,0 +1,1 @@
+Computing the weighted average gives us an estimate ATE of -11.35! After adjusting for both `professional stautus` and `usa` we found that wearing hyperShoes causes a runner to run an average of 11.35 minutes *faster* than they would have ran without hyperShoes! Our conclusions about the hyperShoe are entirely different after we adjust for an additional confounding variable. 

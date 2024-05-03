@@ -24,6 +24,7 @@ scroll_ui_text <- function(ns, ...){
   )
 }
 
+
 #' @noRd
 #' @describeIn scroll_ui_container UI for establishing an individual scrollytell text section
 scroll_ui_text_section <- function(ns, position, ...){
@@ -32,6 +33,19 @@ scroll_ui_text_section <- function(ns, position, ...){
     id = glue::glue('{id}-scroll-text-section'),
     class = 'scroll-text-section',
     class = ns('scroll-text-section'),
+    style = 'display: block;',
+    ...
+  )
+}
+
+#' @noRd
+#' @describeIn scroll_ui_container UI for establishing an individual scrollytell text section
+scroll_ui_text_wide_section <- function(ns, position, ...){
+  id <- ns(glue::glue('text-{position}'))
+  htmltools::div(
+    id = glue::glue('{id}-scroll-text-wide-section'),
+    class = 'learning-content',
+    class = ns('learning-content'),
     ...
   )
 }
