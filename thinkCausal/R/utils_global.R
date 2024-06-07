@@ -30,6 +30,8 @@ module_ids <- list(
   analysis = list(
     design = 'analysis_design',
     upload = 'analysis_upload_data',
+    question = 'analysis_causal_question',
+    selection = 'analysis_variable_selection',
     verify = 'analysis_verify_data',
     visualize = 'analysis_eda',
     balance = 'analysis_balance',

@@ -231,7 +231,7 @@ mod_analysis_upload_server <- function(id, store){
       store <- remove_downstream_data(store, page = 'upload')
 
       # move to next page
-      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_variable_selection')
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_causal_question')
 
     })
 

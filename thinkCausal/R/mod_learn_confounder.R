@@ -336,7 +336,7 @@ mod_learn_confounder_server <- function(id){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
     # run the quiz
-    shinyQuiz::quiz_server(quiz_content_confounding)
+    shinyquiz::quiz_server(quiz_content_confounding)
 
     output$scroll_visual <- renderUI({
 

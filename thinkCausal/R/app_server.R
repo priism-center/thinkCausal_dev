@@ -66,6 +66,7 @@ app_server <- function(input, output, session) {
 
   # analysis
   store <- mod_analysis_upload_server(module_ids$analysis$upload, store)
+  store <- mod_analysis_causal_question_server(module_ids$analysis$question, store)
   store <- mod_analysis_variable_selection_server(module_ids$analysis$select, store)
   store <- mod_analysis_verify_server(module_ids$analysis$verify, store)
   store <- mod_analysis_visualize_server(module_ids$analysis$visualize, store)

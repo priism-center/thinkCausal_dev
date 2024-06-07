@@ -147,6 +147,10 @@ app_ui <- function(request) {
             mod_analysis_upload_ui(module_ids$analysis$upload)
           ),
           bs4Dash::tabItem(
+              tabName = 'analysis_causal_question',
+              mod_analysis_causal_question_ui(module_ids$analysis$question)
+          ),
+          bs4Dash::tabItem(
             tabName = 'analysis_variable_selection',
             mod_analysis_variable_selection_ui(module_ids$analysis$select),
           ),
@@ -310,6 +314,11 @@ app_ui <- function(request) {
               text = 'Upload data',
               tabName = 'analysis_upload',
               icon = icon("upload", verify_fa = FALSE)
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Causal question',
+              tabName = 'analysis_causal_question',
+              icon = icon('table',verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Variable selection',

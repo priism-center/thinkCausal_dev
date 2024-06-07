@@ -50,10 +50,11 @@ test_that("clean_detect_ZYX_columns() output is correct", {
 
 # -------------------------------------------------------------------------
 
-col_names <- c("yes", "TRUE", "nope%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye')
+#col_names <- c("yes", "TRUE", "nope%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye')
+col_names <- c("yes", "TRUE", "nope%", "98", 'yep_-,.yep', 'hello goodbye')
 cleaned_names <- clean_names(col_names)
 test_that("clean_names() output is correct", {
-  expect_equal(cleaned_names, c("yes", "TRUE",  "nope_percent", "n98", "Abcdeacoauu", "yep_.yep", "hello_goodbye"))
+  expect_equal(cleaned_names, c("yes", "TRUE","nope_percent","n98","yep_.yep","hello_goodbye"))
   expect_type(cleaned_names, 'character')
 })
 

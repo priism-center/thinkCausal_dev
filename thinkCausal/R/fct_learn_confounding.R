@@ -27,7 +27,7 @@ quiz_content_confounding <- local({
     )
 
 
-    q <- shinyQuiz::create_question_raw(prompt = question_prompt,
+    q <- shinyquiz::create_question_raw(prompt = question_prompt,
                                         grader = function(user_input){setequal(round(user_input, 2), correct_aws)},
                                         correct_answer_pretty = paste(correct_aws, collapse = ', '))
 
@@ -35,8 +35,8 @@ quiz_content_confounding <- local({
 
 
 
-  content <- shinyQuiz::create_quiz(q, options = shinyQuiz::set_quiz_options(ns = ns1,
-                                                                             messages = shinyQuiz::create_messages('Great job! You calculated the weighted average correctly!',
+  content <- shinyquiz::create_quiz(q, options = shinyquiz::set_quiz_options(ns = ns1,
+                                                                             messages = shinyquiz::create_messages('Great job! You calculated the weighted average correctly!',
                                                                                                                    'Your weighted average is incorrect. You can review the example from earlier and try again!',
                                                                                                                    'The weighted average is -11.12.'
                                                                                                                    )))

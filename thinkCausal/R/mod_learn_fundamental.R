@@ -161,7 +161,7 @@ mod_learn_fundamental_server <- function(id){
       Y = datImputed$Y,
       estITE = datImputed$Y1 - datImputed$Y0
     )
-    shinyQuiz::quiz_server(quiz_content_fundamental)
+    shinyquiz::quiz_server(quiz_content_fundamental)
 
     tab1 <- readr::read_csv('inst/extdata/fundamental_table1.csv') %>%
       dplyr::filter(`prior races` == 2) %>%

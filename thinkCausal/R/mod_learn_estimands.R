@@ -48,7 +48,7 @@ mod_learn_estimands_ui <- function(id){
         style = 'display: block;',
         includeMarkdown(app_sys("app", "www", "learn", "estimands", "markdowns", 'estimands_attatc.md')),
         # the quiz UI
-        shinyQuiz::quiz_ui(quiz_content_estimands)
+        shinyquiz::quiz_ui(quiz_content_estimands)
       ),
       br(),
       div(
@@ -68,7 +68,7 @@ mod_learn_estimands_ui <- function(id){
 mod_learn_estimands_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    shinyQuiz::quiz_server(quiz_content_estimands)
+    shinyquiz::quiz_server(quiz_content_estimands)
 
     # run the quiz
     # mod_quiz_server(
