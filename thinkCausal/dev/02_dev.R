@@ -46,7 +46,7 @@ usethis::use_dev_package('shinyFeedback', remote = 'merlinoa/shinyFeedback')
 usethis::use_dev_package('ggdark', remote = 'nsgrantham/ggdark')
 
 usethis::use_package('shinyquiz')
-#usethis::use_dev_package('shinyQuiz', remote = 'github::priism-center/shinyQuiz')
+usethis::use_dev_package('bs4Dash', remote = 'github::RinteRface/bs4Dash')
 usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')
 usethis::use_package('bartCause', min_version = '1.0.6')
 
