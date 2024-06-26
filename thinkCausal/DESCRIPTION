@@ -60,5 +60,5 @@ Remotes:
     github::priism-center/plotBart,
     github::merlinoa/shinyFeedback,
     github::priism-center/shinyQuiz,
-    cran/bs4Dash@2.1.0
+    cran/bs4Dash@2.1.0,
     nsgrantham/ggdark
