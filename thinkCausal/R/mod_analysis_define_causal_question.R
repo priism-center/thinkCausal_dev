@@ -16,7 +16,7 @@ mod_analysis_causal_question_ui <- function(id) {
         bs4Dash::box(
           width = 12,
           collapsible = FALSE,
-          title = "Define the Causal Question and Design",
+          title = "Describe your Study Design",
           uiOutput(ns('outcome_ui')),
           conditionalPanel(
             "output.need_outcome_info == 'show'",
@@ -39,8 +39,8 @@ mod_analysis_causal_question_ui <- function(id) {
               selected = NULL
             )
           ),
-          uiOutput(ns('question_heading')),
-          textOutput(ns('causal_question')),
+          #uiOutput(ns('question_heading')),
+          #textOutput(ns('causal_question')),
           br(),
           uiOutput(ns('design_ui')),
           br(),
