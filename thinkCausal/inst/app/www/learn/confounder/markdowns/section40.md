@@ -1,0 +1,1 @@
+Filling in missing counterfactuals with the average observed value of runners with equal values for `USA` and `professional status` gives an estimated effect of -5.97 for non-professional runners from the United States. 

@@ -29,6 +29,7 @@ app_ui <- function(request) {
 
     # add beta ribbon
     add_beta_ribbon(),
+    create_return_btn(),
 
     # message when server disconnects
     # TODO: this can be removed for native installation
@@ -101,12 +102,20 @@ app_ui <- function(request) {
           #   mod_learn_fundamental_ui(module_ids$learn$fundamental)
           # ),
           bs4Dash::tabItem(
+            tabName = 'learn_obs_ignorability',
+            mod_learn_draft_ui(module_ids$learn$obs_ignorability)
+          ),
+          bs4Dash::tabItem(
             tabName = 'learn_randomization',
             mod_learn_rct_analysis_ui(module_ids$learn$randomization)
           ),
           bs4Dash::tabItem(
             tabName = 'learn_observational',
             mod_learn_obs_analysis_ui(module_ids$learn$observational)
+          ),
+          bs4Dash::tabItem(
+            tabName = 'learn_confounder',
+            mod_learn_confounder_ui(module_ids$learn$confounder)
           ),
           bs4Dash::tabItem(
             tabName = 'learn_balance',
@@ -136,6 +145,10 @@ app_ui <- function(request) {
           bs4Dash::tabItem(
             tabName = 'analysis_upload',
             mod_analysis_upload_ui(module_ids$analysis$upload)
+          ),
+          bs4Dash::tabItem(
+              tabName = 'analysis_causal_question',
+              mod_analysis_causal_question_ui(module_ids$analysis$question)
           ),
           bs4Dash::tabItem(
             tabName = 'analysis_variable_selection',
@@ -231,6 +244,10 @@ app_ui <- function(request) {
               text = 'Estimands 2',
               tabName = 'learn_estimands2'
             ),
+            bs4Dash::menuSubItem(
+              text = 'Ignorability',
+              tabName = 'learn_obs_ignorability'
+            ),
             # bs4Dash::menuSubItem(
             #   text = 'version A',
             #   tabName = 'learn_versionA'
@@ -278,6 +295,10 @@ app_ui <- function(request) {
             bs4Dash::menuSubItem(
               text = 'Observational studies',
               tabName = 'learn_observational'
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Confounder',
+              tabName = 'learn_confounder'
             )
             #, bs4Dash::menuSubItem(
             #   text = 'Balance',
@@ -293,6 +314,11 @@ app_ui <- function(request) {
               text = 'Upload data',
               tabName = 'analysis_upload',
               icon = icon("upload", verify_fa = FALSE)
+            ),
+            bs4Dash::menuSubItem(
+              text = 'Causal question',
+              tabName = 'analysis_causal_question',
+              icon = icon('table',verify_fa = FALSE)
             ),
             bs4Dash::menuSubItem(
               text = 'Variable selection',

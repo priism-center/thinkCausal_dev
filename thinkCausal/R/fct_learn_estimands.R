@@ -37,12 +37,12 @@ quiz_content_estimands <- local({
     )
 
 
-    q <- shinyQuiz::create_question(prompt = question_prompt,
-                               shinyQuiz::add_choice('', correct = FALSE),
-                               shinyQuiz::add_choice(ate, correct = estimand == 'ATE'),
-                               shinyQuiz::add_choice(att, correct = estimand == 'ATT'),
-                               shinyQuiz::add_choice(atc, correct = estimand == 'ATC'),
-                               shinyQuiz::add_choice(avg_y),
+    q <- shinyquiz::create_question(prompt = question_prompt,
+                               shinyquiz::add_choice('', correct = FALSE),
+                               shinyquiz::add_choice(ate, correct = estimand == 'ATE'),
+                               shinyquiz::add_choice(att, correct = estimand == 'ATT'),
+                               shinyquiz::add_choice(atc, correct = estimand == 'ATC'),
+                               shinyquiz::add_choice(avg_y),
                                ns = ns1)
 
 
@@ -50,8 +50,8 @@ quiz_content_estimands <- local({
 
     }
 
-  sandbox_q <- shinyQuiz::create_question_sandbox(.f = generate_estimand, n = 25)
-  content <- shinyQuiz::create_quiz(sandbox_q, options = shinyQuiz::set_quiz_options(ns = ns1))
+  sandbox_q <- shinyquiz::create_question_random(.f = generate_estimand, n = 25)
+  content <- shinyquiz::create_quiz(sandbox_q, options = shinyquiz::set_quiz_options(ns = ns1))
 
   return(content)
 })

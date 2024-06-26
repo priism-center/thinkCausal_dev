@@ -75,7 +75,7 @@ quiz_content_estimands2 <- local({
       )
 
 
-    q <- shinyQuiz::create_question_raw(prompt = question_prompt,
+    q <- shinyquiz::create_question_raw(prompt = question_prompt,
                                     grader = function(user_input){setequal(user_input, correct_aws)},
                                     correct_answer_pretty = paste(correct_aws, collapse = ', '))
 
@@ -84,8 +84,8 @@ quiz_content_estimands2 <- local({
 
   }
 
-  sandbox_q <- shinyQuiz::create_question_sandbox(.f = generate_estimand2, n = 25)
-  content <- shinyQuiz::create_quiz(sandbox_q, options = shinyQuiz::set_quiz_options(ns = ns1))
+  sandbox_q <- shinyquiz::create_question_random(.f = generate_estimand2, n = 25)
+  content <- shinyquiz::create_quiz(sandbox_q, options = shinyquiz::set_quiz_options(ns = ns1))
 
   return(content)
 })

@@ -10,7 +10,8 @@ model_results <- fit_bart(
   .data = .data,
   ran_eff = NULL,
   .weights = NULL,
-  .estimand = "ate"
+  .estimand = "ate",
+  rct = T
 )
 
 model_validation <- validate_model_fit_(model_results)

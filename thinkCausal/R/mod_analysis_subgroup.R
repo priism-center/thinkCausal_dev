@@ -43,7 +43,8 @@ mod_analysis_subgroup_ui <- function(id){
                                'Density' = 'density',
                                'Error bar' = 'errorbar')
                  ),
-                 conditionalPanel(condition = "input.analysis_subgroup_prespecified_type != 'errorbar' ", ns = ns,
+                 conditionalPanel(condition = "input.analysis_subgroup_prespecified_type != 'errorbar' ",
+                                  ns = ns,
                                   checkboxInput(inputId = ns('analysis_prespecified_subgroup_facet'),
                                                 label = 'Overlay Plots',
                                                 value = FALSE,
@@ -93,9 +94,8 @@ mod_analysis_subgroup_ui <- function(id){
                  uiOutput(outputId = ns('render_analysis_subgroup_x_levels')),
                  selectInput(inputId = ns('analysis_subgroup_exploratory_type'),
                              label = 'Plot type:',
-                             choices = c('Histogram' = 'histogram',
-                                         'Density' = 'density',
-                                         'Error bar' = 'errorbar')),
+                             choices = NULL,
+                             selected = NULL),
                  conditionalPanel(condition = "input.analysis_subgroup_exploratory_type != 'errorbar' ", ns = ns,
                                   checkboxInput(inputId = ns('analysis_subgroup_facet'),
                                                 label = 'Overlay Plots',
@@ -287,6 +287,24 @@ mod_analysis_subgroup_server <- function(id, store){
     })
 
     #subgroup
+    observeEvent(input$analysis_subgroup_exploratory, {
+      cols_categorical <- gsub('X_', '',store$column_types$categorical)
+      if(input$analysis_subgroup_exploratory %in% cols_categorical){
+      updateSelectInput(inputId = 'analysis_subgroup_exploratory_type',
+                        choices = c('Histogram' = 'histogram',
+                                    'Density' = 'density',
+                                    'Error bar' = 'errorbar')
+                        )
+      }else{
+        updateSelectInput(inputId = 'analysis_subgroup_exploratory_type',
+                          choices = c('Histogram' = 'histogram',
+                                      'Density' = 'density',
+                                      'Error bar' = 'errorbar',
+                                      'Loess')
+        )
+      }
+
+    })
     exploratory_plot <- reactive({
       validate(need(input$analysis_subgroup_exploratory, 'Select a variable to define subgroups'))
       # div_id <- 'analysis_subgroup_plot'
@@ -321,14 +339,23 @@ mod_analysis_subgroup_server <- function(id, store){
                                         facet = .facet)
       }else{
         .moderator <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
-        p <- plotBart::plot_moderator_c_bin(store$analysis$model$model,
-                                            moderator = .moderator,
-                                            .name = input$analysis_subgroup_exploratory,
-                                            type = input$analysis_subgroup_exploratory_type,
-                                            facet = .facet)
 
-        # p <- plotBart::plot_moderator_c_loess(store$analysis$model$model,
-        #                                       moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]])
+        if(input$analysis_subgroup_exploratory_type != 'Loess'){
+          p <- plotBart::plot_moderator_c_bin(store$analysis$model$model,
+                                              moderator = .moderator,
+                                              .name = input$analysis_subgroup_exploratory,
+                                              type = input$analysis_subgroup_exploratory_type,
+                                              facet = .facet)
+        }else{
+
+          p <- plotBart::plot_moderator_c_loess(
+            store$analysis$model$model,
+            moderator = store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
+            )
+        }
+
+
+
       }
 
       p <- p + store$options$theme_custom
@@ -340,6 +367,8 @@ mod_analysis_subgroup_server <- function(id, store){
     output$analysis_prespecifed_table <- reactable::renderReactable({
       validate_model_fit(store)
       validate(need(input$analysis_subgroup_prespecified, ''))
+
+      cols_categorical <- gsub('X_', '',store$column_types$categorical)
       .moderator <- store$verified_df[[paste0('X_', input$analysis_subgroup_prespecified)]]
 
       icate <- bartCause::extract(store$analysis$model$model, 'icate')
@@ -354,22 +383,30 @@ mod_analysis_subgroup_server <- function(id, store){
         .moderator <- .moderator[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == FALSE]
       }
 
-      subgroup <- vector()
-      estimate <- vector()
-      se <- vector()
-      lci <- vector()
-      uci <- vector()
-      for (i in 1:length(unique(.moderator))) {
-        post <- apply(icate[, x == unique(.moderator)[i]], 1, mean)
-        subgroup[i] <- paste0(input$analysis_subgroup_prespecified, ' = ', unique(.moderator)[i])
-        estimate[i] <- round(mean(post), 4)
-        se[i] <- round(sd(post), 4)
-        lci[i] <- round(quantile(post, prob = .025), 4)
-        uci[i] <- round(quantile(post, prob = .975), 4)
+      if(input$analysis_subgroup_prespecified %in% cols_categorical){
+        subgroup <- vector()
+        estimate <- vector()
+        se <- vector()
+        lci <- vector()
+        uci <- vector()
+        for (i in 1:length(unique(.moderator))) {
+          post <- apply(icate[, x == unique(.moderator)[i]], 1, mean)
+          subgroup[i] <- paste0(input$analysis_subgroup_prespecified, ' = ', unique(.moderator)[i])
+          estimate[i] <- round(mean(post), 4)
+          se[i] <- round(sd(post), 4)
+          lci[i] <- round(quantile(post, prob = .025), 4)
+          uci[i] <- round(quantile(post, prob = .975), 4)
 
+        }
+
+        ci_table <- data.frame(subgroup, estimate, se, lci, uci)
+
+      }else{
+        ci_table <- plotBart::table_moderator_c_bin()
       }
 
-      data.frame(subgroup, estimate, se, lci, uci) %>%
+
+      ci_table %>%
         reactable::reactable()
 
     })
@@ -409,6 +446,8 @@ mod_analysis_subgroup_server <- function(id, store){
     output$analysis_subgroup_table <- reactable::renderReactable({
       validate_model_fit(store)
       validate(need(input$analysis_subgroup_exploratory, ''))
+
+      cols_categorical <- gsub('X_', '',store$column_types$categorical)
       .moderator <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
 
       icate <- bartCause::extract(store$analysis$model$model, 'icate')
@@ -423,23 +462,29 @@ mod_analysis_subgroup_server <- function(id, store){
         .moderator <- .moderator[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == FALSE]
       }
 
-      subgroup <- vector()
-      estimate <- vector()
-      se <- vector()
-      lci <- vector()
-      uci <- vector()
-      for (i in 1:length(unique(.moderator))) {
-        post <- apply(icate[, x == unique(.moderator)[i]], 1, mean)
-        subgroup[i] <- paste0(input$analysis_subgroup_exploratory, ' = ', unique(.moderator)[i])
-        estimate[i] <- round(mean(post), 4)
-        se[i] <- round(sd(post), 4)
-        lci[i] <- round(quantile(post, prob = .025), 4)
-        uci[i] <- round(quantile(post, prob = .975), 4)
+      if(input$analysis_subgroup_exploratory %in% cols_categorical){
+        subgroup <- vector()
+        estimate <- vector()
+        se <- vector()
+        lci <- vector()
+        uci <- vector()
+        for (i in 1:length(unique(.moderator))) {
+          post <- apply(icate[, x == unique(.moderator)[i]], 1, mean)
+          subgroup[i] <- paste0(input$analysis_subgroup_exploratory, ' = ', unique(.moderator)[i])
+          estimate[i] <- round(mean(post), 4)
+          se[i] <- round(sd(post), 4)
+          lci[i] <- round(quantile(post, prob = .025), 4)
+          uci[i] <- round(quantile(post, prob = .975), 4)
 
+        }
+
+        ci_table <- data.frame(subgroup, estimate, se, lci, uci)
+      }else{
+        ci_table <- plotBart::table_moderator_c_bin(.model = store$analysis$model$model, moderator = .moderator)
       }
 
 
-        data.frame(subgroup, estimate, se, lci, uci) %>%
+      ci_table %>%
           reactable::reactable()
 
     })

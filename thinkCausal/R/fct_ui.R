@@ -56,3 +56,36 @@ add_beta_ribbon <- function(){
     )
   )
 }
+
+
+#' Button to be used within Analysis flow to link to Learning articles
+#'
+#' @param tabName The tab name of the Learning article to link to
+#' @param tabNameCurrent The tab name of the point in the Analysis flow this function is called.
+#' @param label Button label
+#'
+#' @return html
+#' @author Joe Marlo
+#' @noRd
+#'
+#' @examples
+#' create_go_to_learning_btn('learn_1', 'analysis_1', 'Article 1')
+create_go_to_learning_btn <- function(tabName, tabNameCurrent, label){
+  htmltools::tags$button(
+    type = 'button',
+    class = "btn btn-primary",
+    onclick = glue::glue("show_back_button(); log_page('{tabNameCurrent}'); go_to_shiny_page('{tabName}', false);"),
+    glue::glue("Learn more at {label}")
+  )
+}
+#' @describeIn create_go_to_learning_btn Hovering button that returns user back to the latest Analysis page
+create_return_btn <- function(){
+  htmltools::tags$button(
+    id = 'back_to_analysis',
+    type = 'button',
+    class = "btn btn-primary nav-path",
+    style = "position: fixed; bottom: 30px; right: 20px; z-index: 100; display: none; max-width: 200px;",
+    onclick = "go_to_shiny_page(last_page, false); hide_back_button();",
+    glue::glue("Back to Analysis")
+  )
+}

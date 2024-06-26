@@ -1,0 +1,1 @@
+Non-professional runners who did not wear hyperShoes had an average time of 226.98, we will use this time to represent what would have happened to non-professional runners who wore hyperShoes if they had not worn hyperShoes.

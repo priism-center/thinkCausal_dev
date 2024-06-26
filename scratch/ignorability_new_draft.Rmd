@@ -1,0 +1,382 @@
+---
+title: "Untitled"
+author: "George Perrett"
+date: '2024-02-02'
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reactable)
+
+```
+
+
+Observational studies where the treatment is not randomly assigned make a strong **ignorability assumption**. For observational studies, the ignorability assumption is that we have measured all confounders and account for every confounder when estimating a causal effect. If this assumption is not satisfied and there are confounders not included in your analysis your results will be biased. 
+
+To understand the ignorability assumption for observational studies and the role of confounders we will consider our hyperShoe example:
+
+The company that makes hyperShoes released a new study that found wearing  hyperShoes causes a runner to run a marathon an average of 51.76 minutes faster than they would have ran without wearing hyperShoes! 
+
+The study compared the marathon times of runners that wore hyperShoes against the marathon times of runners that did not wear hyperShoes. There were 300 runners in the hyperShoe group and 700 runners in the group that did not wear hyperShoes. An Average Treatment Effect(ATE) of 51.76 minutes seems like an unbelievably large effect for simply changing shoes we'll investigate to see if we should really believe that a pair of hyperShoes would cause us to run 50 minutes faster!
+
+```{r, echo=FALSE}
+set.seed(64)
+hyperShoe <- c(rep(1, 300), rep(0, 724))
+pro <- ifelse(hyperShoe == 1, rbinom(300, 1, .85), rbinom(724, 1, .15))
+
+age <- ifelse(hyperShoe == 1, rnorm(sum(hyperShoe), 29, 5), runif(sum(hyperShoe == 0), 18, 45))
+
+age[age < 18] <- runif(sum(age < 18), 22, 27)
+y0 <- 240 + pro*-70 + age*1 +  rnorm(1024, 0, 15)
+y1 <- 240 + -5 + pro*-70 + age*1 + rnorm(1024, 0, 15)
+finish <- ifelse(hyperShoe == 1, y1, y0)
+lm(finish ~ age + hyperShoe*pro)
+```
+
+## Scroll 
+
+Runners in the treatment group ran the race with hyperShoes and finished with an average time of 252.26 minutes. We know their average finishing time with hyperShoes, but *we don't know what their average finishing time would have been had they not worn hyperShoes*.
+
+```{r}
+mean_trt <- round(mean(finish[hyperShoe == 1]), 2)
+tibble(finish, hyperShoe) |>
+  filter(hyperShoe == 1) |>
+  ggplot(aes(finish)) + 
+  geom_histogram(col = 'white', aes(fill = 'Treatment')) + 
+  geom_vline(aes(xintercept = mean_trt, linetype = paste('average finish time =', mean_trt)), col = 'black') + 
+  scale_linetype_manual(values = 1) + 
+  scale_fill_manual(values = 2) + 
+  #guides(linetype = guide_legend(order = 2)) + 
+  labs(x = 'Finishing time in minutes',fill = NULL, linetype = NULL, title = "Runners with the hyperShoe") + 
+  theme_bw() + 
+  theme(legend.position='top', 
+        legend.justification='left',
+        legend.direction='horizontal')
+
+tibble(`average time with hyperShoes` = mean_trt, `average time without hyperShoes` = '?', hyperShoe = 'Yes') |>
+  reactable::reactable(columns = list(
+                               `average time with hyperShoes` = reactable::colDef(align = "center"),
+                               `average time without hyperShoes` = reactable::colDef(align = "center"),
+                                hyperShoe = reactable::colDef(align = "center")
+                             ))
+```
+
+
+Runners in the control group ran the marathon without hyperShoes and finished with an average time of 304.2 minutes. For this group of runners, we know what their average finishing time would was without hyperShoes, but *we don't know what their average finishing time would have been with hyperShoes*.
+
+```{r}
+mean_ctl <- round(mean(finish[hyperShoe == 0]), 2)
+tibble(finish, hyperShoe) |>
+  filter(hyperShoe == 0) |>
+  ggplot(aes(finish)) + 
+  geom_histogram(col = 'white', aes(fill = 'Control')) + 
+  geom_vline(aes(xintercept = mean_ctl, linetype = paste('average finish time =', mean_ctl)), col = 'black') + 
+  scale_linetype_manual(values = 2) + 
+  scale_fill_manual(values = 4) + 
+  labs(x = 'Finishing time in minutes',fill = NULL, linetype = NULL, title = "Runners without the hyperShoe") + 
+  theme_bw() + 
+  theme(legend.position='top', 
+        legend.justification='left',
+        legend.direction='horizontal')
+
+tibble(`average time with hyperShoes` = '?', `average time without hyperShoes` = mean_ctl, hyperShoe = 'No') |>
+  reactable::reactable(columns = list(
+                               `average time with hyperShoes` = reactable::colDef(align = "center"),
+                               `average time without hyperShoes` = reactable::colDef(align = "center"),
+                                hyperShoe = reactable::colDef(align = "center")
+                             ))
+```
+
+
+When the company analyzed the data from the study they used the difference in means estimator to estimate the Average Treatment Effect. The difference in means estimator estimates the Average Treatment Effects by taking the difference between the mean of the treatment group and the mean of the control group.
+
+```{r}
+tibble(finish, hyperShoe) |>
+  mutate(hyperShoe = ifelse(hyperShoe == 1, 'Treatment', 'Control')) |>
+  mutate(hyperShoe = factor(hyperShoe, levels = c('Treatment', 'Control'))) |>
+  mutate(mean = ifelse(hyperShoe == 'Treatment', mean_trt, mean_ctl)) |>
+  ggplot(aes(finish)) + 
+  geom_histogram(col = 'white', aes(fill = hyperShoe), position = 'identity') + 
+    geom_vline(aes(xintercept = mean, linetype = hyperShoe), col = 'black') + 
+  scale_fill_manual(values = c(2, 4), 
+                    labels = c(
+                      paste('Treatment mean =', mean_trt),
+                      paste('Control mean =', mean_ctl))) + 
+  scale_linetype_manual(values = c(1, 2), 
+                        labels = c(
+                          paste('Treatment mean =', mean_trt),
+                          paste('Control mean =', mean_ctl))
+                        ) +
+  labs(x = 'Finishing time in minutes',fill = NULL, linetype = NULL, 
+       title = "Difference in Means", 
+       subtitle = 
+         paste('ATE =', mean_trt, '-', mean_ctl, '=', mean_trt - mean_ctl)) +
+  theme_bw() + 
+  facet_wrap(~hyperShoe, ncol = 1) + 
+  theme(legend.position='top', 
+        legend.justification='left',
+        legend.direction='horizontal')
+
+```
+
+
+The difference in means estimator uses the average running time of the treatment group, who ran with hyperShoes, to represent what would have happened to the control group had they ran with hyperShoes.
+
+Likewise, we the difference in mean estimator uses the average running time of the control group to represent what would have hapend to runner's in the treatment group had they ran the race without hyperShoes. 
+
+
+```{r}
+tibble(`average time with hyperShoes` = mean_trt, 
+       `average time without hyperShoes` = mean_ctl, hyperShoe = c('Yes', 'No')) |>
+  reactable::reactable(
+    columns = list(
+      `average time with hyperShoes` = colDef(align = "center"),
+      `average time without hyperShoes` = colDef(align = "center"),
+      hyperShoe = colDef(align = "center")
+                             ))
+```
+
+
+The ignorability assumption is the assumption that: 
+
+1: the running times of runner's in the treatment group are actually representative of the counter-factual outcomes of runners in the control group. 
+
+2: the running times of runner's in the control group are actually representative of the counter-factual outcomes of runners in the treatment group. 
+
+```{r}
+tibble(`average time with hyperShoes` = mean_trt, 
+       `average time without hyperShoes` = mean_ctl, hyperShoe = c('Yes', 'No')) |>
+  reactable::reactable(
+    columns = list(
+      `average time with hyperShoes` = colDef(align = "center"),
+      `average time without hyperShoes` = colDef(align = "center"),
+      hyperShoe = colDef(align = "center")
+                             ))
+```
+
+
+The problem is that in observational studies, the treatment variable is not randomly assigned and this can lead to treatment and control groups that look very different from one another. 
+
+When the treatment is not randomly assigned 
+
+In this study, some of the runners are professional runners while some of the runners are amateur runners. 
+
+The vast majority of the 300 runners that wore hyperShoes were professional runners and only a few amateur runners wore hyperShoes. 
+
+
+```{r}
+grid <- tibble(hyperShoe, pro) |>
+  arrange(hyperShoe, pro)
+  
+
+grid <- cbind.data.frame(grid, crossing(x = 1:32, y = 1:32))
+grid$x <- as.factor(grid$x)
+grid$y <- as.factor(grid$y)
+ 
+grid |>
+  filter(hyperShoe == 1) |>
+  ggplot(aes(x, y, shape = as.factor(pro))) + 
+  geom_point(col = 2) + 
+  scale_shape_manual(values = c(21, 19), labels = c('Amateur', 'Professional')) + 
+  theme_void() + 
+  theme(legend.position = 'top') + 
+  labs(shape = 'Professional Status:')
+  
+```
+
+
+But most of the 724 runners in the control group were amateur runners and only a few professional runners did not wear hyperShoes. 
+
+```{r}
+grid |>
+  filter(hyperShoe == 0) |>
+  ggplot(aes(x, y, shape = as.factor(pro))) + 
+  geom_point(col = 4) + 
+  scale_shape_manual(values = c(21, 19), labels = c('Amateur', 'Professional')) + 
+  theme_void() + 
+  theme(legend.position = 'top') + 
+  labs(shape = 'Professional Status:')
+```
+
+
+When we look at all the runners it is clear that the Treatment group and the Control group are very different in terms of the variable professional status! 
+
+
+```{r}
+grid |>
+  ggplot(aes(x, y, shape = as.factor(pro))) + 
+  geom_point(aes(col = as.factor(hyperShoe))) + 
+  scale_shape_manual(values = c(21, 19), labels = c('Amateur', 'Professional')) +  
+  scale_color_manual(values = c(4, 2), labels = c('Control', 'Treatment')) +       
+  theme_void() + 
+  theme(legend.position = 'top') + 
+  labs(shape = 'Professional Status:', col = NULL)
+```
+
+
+Unsurprisingly, when we look at the outcome, we see that professional runners run much faster than amateur runners.
+
+```{r}
+tibble(pro, finish) |>
+  mutate(pro = ifelse(pro == 1, 'Professional', 'Amateur')) |>
+  ggplot(aes(finish)) + 
+  geom_histogram(col = 'white') + 
+  facet_wrap(~pro, ncol = 1) + 
+  theme_bw() + 
+   labs(x = 'Finishing time in minutes')
+
+```
+
+
+Do you think runner's in the treatment group a good representative of what would have happened to runners in the control group had they worn hyperShoes? 
+
+
+
+
+
+
+
+
+In this study, Professional status is **confounder**. A **confounder** or a **confounding variable** is any variable that *both* predicts the treatment and predicts the outcome.
+
+Professional runners are more likely to wear hyperShoes and they are more likely to run fast while ameature runners are less likely to wear hyperShoes and less likely to run fast. 
+
+When we estimate a causal effect without accounting for all confounders we are violating the ignorability assumption!
+
+
+```{r}
+mean_trt <- round(mean(finish[hyperShoe == 1 & pro == 1]), 2)
+mean_ctl <- round(mean(finish[hyperShoe == 0 & pro == 1]), 2)
+
+tibble(finish, hyperShoe, pro) |>
+  filter(pro == 1)  |>
+  mutate(hyperShoe = ifelse(hyperShoe == 1, 'Treatment', 'Control')) |>
+  mutate(hyperShoe = factor(hyperShoe, levels = c('Treatment', 'Control'))) |>
+  mutate(mean = ifelse(hyperShoe == 'Treatment', mean_trt, mean_ctl)) |>
+  ggplot(aes(finish)) + 
+  geom_histogram(col = 'white', aes(fill = hyperShoe), position = 'identity') + 
+    geom_vline(aes(xintercept = mean, linetype = hyperShoe), col = 'black') + 
+  scale_fill_manual(values = c(2, 4), 
+                    labels = c(
+                      paste('Treatment mean =', mean_trt),
+                      paste('Control mean =', mean_ctl))) + 
+  scale_linetype_manual(values = c(1, 2), 
+                        labels = c(
+                          paste('Treatment mean =', mean_trt),
+                          paste('Control mean =', mean_ctl))
+                        ) +
+  labs(x = 'Finishing time in minutes',fill = NULL, linetype = NULL, 
+       title = "Difference in Means for Professional Runners", 
+       subtitle = 
+         paste(mean_trt, '-', mean_ctl, '=', round(mean_trt - mean_ctl, 2))) +
+  theme_bw() + 
+  facet_wrap(~hyperShoe, ncol = 1) + 
+  theme(legend.position='top', 
+        legend.justification='left',
+        legend.direction='horizontal')
+
+```
+
+
+```{r}
+tibble(`average time with hyperShoes` = 
+         c(mean_trt, '?', '?', '?'), 
+       `average time without hyperShoes` = 
+         c('?', mean_ctl, '?', '?'), 
+       hyperShoe = c('Yes', 'No', 'Yes', 'No'), 
+       Professional = c('Yes', 'Yes', 'No', 'No')) |>
+  reactable::reactable(
+    columns = list(
+      `average time with hyperShoes` = colDef(align = "center"),
+      `average time without hyperShoes` = colDef(align = "center"),
+      hyperShoe = colDef(align = "center")
+                             ))
+```
+
+
+```{r}
+tibble(`average time with hyperShoes` = 
+         c(mean_trt, mean_trt, '?', '?'), 
+       `average time without hyperShoes` = 
+         c(mean_ctl, mean_ctl, '?', '?'), 
+       hyperShoe = c('Yes', 'No', 'Yes', 'No'), 
+       Professional = c('Yes', 'Yes', 'No', 'No')) |>
+  reactable::reactable(
+    columns = list(
+      `average time with hyperShoes` = colDef(align = "center"),
+      `average time without hyperShoes` = colDef(align = "center"),
+      hyperShoe = colDef(align = "center")
+                             ))
+
+```
+
+
+```{r}
+mean_trt2 <- round(mean(finish[hyperShoe == 1 & pro == 0]), 2)
+mean_ctl2 <- round(mean(finish[hyperShoe == 0 & pro == 0]), 2)
+
+tibble(finish, hyperShoe, pro) |>
+  filter(pro == 0)  |>
+  mutate(hyperShoe = ifelse(hyperShoe == 1, 'Treatment', 'Control')) |>
+  mutate(hyperShoe = factor(hyperShoe, levels = c('Treatment', 'Control'))) |>
+  mutate(mean = ifelse(hyperShoe == 'Treatment', mean_trt2, mean_ctl2)) |>
+  ggplot(aes(finish)) + 
+  geom_histogram(col = 'white', aes(fill = hyperShoe), position = 'identity') + 
+    geom_vline(aes(xintercept = mean, linetype = hyperShoe), col = 'black') + 
+  scale_fill_manual(values = c(2, 4), 
+                    labels = c(
+                      paste('Treatment mean =', mean_trt2),
+                      paste('Control mean =', mean_ctl2))) + 
+  scale_linetype_manual(values = c(1, 2), 
+                        labels = c(
+                          paste('Treatment mean =', mean_trt2),
+                          paste('Control mean =', mean_ctl2))
+                        ) +
+  labs(x = 'Finishing time in minutes',fill = NULL, linetype = NULL, 
+       title = "Difference in Means for Amateur Runners", 
+       subtitle = 
+         paste(mean_trt, '-', mean_ctl, '=', round(mean_trt2 - mean_ctl2, 2))) +
+  theme_bw() + 
+  facet_wrap(~hyperShoe, ncol = 1) + 
+  theme(legend.position='top', 
+        legend.justification='left',
+        legend.direction='horizontal')
+```
+
+
+
+```{r}
+tibble(`average time with hyperShoes` = 
+         c(mean_trt, mean_trt, mean_trt2, '?'), 
+       `average time without hyperShoes` = 
+         c(mean_ctl, mean_ctl, '?', mean_ctl2), 
+       hyperShoe = c('Yes', 'No', 'Yes', 'No'), 
+       Professional = c('Yes', 'Yes', 'No', 'No')) |>
+  reactable::reactable(
+    columns = list(
+      `average time with hyperShoes` = colDef(align = "center"),
+      `average time without hyperShoes` = colDef(align = "center"),
+      hyperShoe = colDef(align = "center")
+                             ))
+```
+
+
+```{r}
+tibble(`average time with hyperShoes` = 
+         c(mean_trt, mean_trt, mean_trt2, mean_trt2), 
+       `average time without hyperShoes` = 
+         c(mean_ctl, mean_ctl, mean_ctl2, mean_ctl2), 
+       hyperShoe = c('Yes', 'No', 'Yes', 'No'), 
+       Professional = c('Yes', 'Yes', 'No', 'No')) |>
+  reactable::reactable(
+    columns = list(
+      `average time with hyperShoes` = colDef(align = "center"),
+      `average time without hyperShoes` = colDef(align = "center"),
+      hyperShoe = colDef(align = "center")
+                             ))
+```
+
+

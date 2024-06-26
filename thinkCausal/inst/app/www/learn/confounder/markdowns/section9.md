@@ -1,0 +1,2 @@
+For this analysis to be correct, the average running time of runners in the treatment group (174.47) needs to accurately represent what the average running time would have been for the control group had they worn hyperShoes and that the average running time of runners in the control group (216.64) needs to accurately represent what the average running time would have been for runners in the treatment group had they not worn hyperShoes. 
+

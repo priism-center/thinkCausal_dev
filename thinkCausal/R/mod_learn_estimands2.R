@@ -196,7 +196,7 @@ mod_learn_estimands2_server <- function(id){
     ns <- session$ns
 
     # run the quiz
-    shinyQuiz::quiz_server(quiz_content_estimands2)
+    shinyquiz::quiz_server(quiz_content_estimands2)
 
     # mod_quiz_server(
     #   id = "quiz", # this should always be quiz

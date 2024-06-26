@@ -15,18 +15,18 @@ quiz_content_fundamental <- local({
     reactable::reactable(readr::read_csv('inst/extdata/fundamental_table1.csv')[3,])
   )
 
-  q <- shinyQuiz::create_question(prompt = question_prompt,
-                             shinyQuiz::add_choice(''),
-                             shinyQuiz::add_choice(245),
-                             shinyQuiz::add_choice(8),
-                             shinyQuiz::add_choice(-8, correct = T),
-                             shinyQuiz::add_choice(253),
-                             shinyQuiz::add_choice(249),
+  q <- shinyquiz::create_question(prompt = question_prompt,
+                             shinyquiz::add_choice(''),
+                             shinyquiz::add_choice(245),
+                             shinyquiz::add_choice(8),
+                             shinyquiz::add_choice(-8, correct = T),
+                             shinyquiz::add_choice(253),
+                             shinyquiz::add_choice(249),
                              type = 'single',
                              ns = ns1)
 
 
-  content <- shinyQuiz::create_quiz(q, options = shinyQuiz::set_quiz_options(ns = ns1, sandbox = F))
+  content <- shinyquiz::create_quiz(q, options = shinyquiz::set_quiz_options(ns = ns1, sandbox = F))
 
   return(content)
 

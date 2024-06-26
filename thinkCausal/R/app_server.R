@@ -51,18 +51,22 @@ app_server <- function(input, output, session) {
   #mod_learn_versionA_server(module_ids$learn$versionA)
   #mod_learn_versionB_server(module_ids$learn$versionB)
   #mod_learn_randomization_dist_server(module_ids$learn$rand_dist)
+  #mod_learn_ignorability_server(module_ids$learn$ignorability)
+  mod_learn_obs_ignorability_server(module_ids$learn$obs_ignorability)
   mod_learn_rct_analysis_server(module_ids$learn$randomization)
   mod_learn_variable_selection_server(module_ids$learn$selection, store)
   mod_learn_colinearity_server(module_ids$learn$colinearity, id_parent = module_ids$learn$selection)
   mod_learn_post_treatment_server(module_ids$learn$post_treatment, store)
   mod_learn_potential_outcomes_server(module_ids$learn$potential_outcomes)
   mod_learn_obs_analysis_server(module_ids$learn$observational)
+  mod_learn_confounder_server(module_ids$learn$confounder)
   mod_learn_balance_server(module_ids$learn$balance)
 
   mod_learn_scrolly_example_server('learn_scrolly')
 
   # analysis
   store <- mod_analysis_upload_server(module_ids$analysis$upload, store)
+  store <- mod_analysis_causal_question_server(module_ids$analysis$question, store)
   store <- mod_analysis_variable_selection_server(module_ids$analysis$select, store)
   store <- mod_analysis_verify_server(module_ids$analysis$verify, store)
   store <- mod_analysis_visualize_server(module_ids$analysis$visualize, store)

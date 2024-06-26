@@ -124,12 +124,18 @@ mod_analysis_overlap_server <- function(id, store){
       confounder_cols <- grep("^X_", col_names, value = TRUE)
 
       # calculate pscores
-      pscores <- plotBart:::propensity_scores(
-        .data = X,
-        treatment = treatment_col,
-        confounders = confounder_cols,
-        seed = 44
-      )
+      if(store$analysis_select_design == 'Observational Study (Treatment not Randomized)'){
+        p_call <- paste0(treatment_col, '~', paste0(names(X)[3:length(X)], collapse = '+'))
+        pscores <- dbarts::bart2(as.formula(p_call), data = X, seed = 2)
+        pscores <- dbarts::extract(pscores, 'ev')
+        pscores <- apply(pscores, 2, mean)
+      }else{
+        p_call <- paste0(treatment_col, '~', paste0(names(X)[3:length(X)], collapse = '+'))
+        pscores <- glm(as.formula(p_call), data = X)
+        pscores <- predict(pscores, type = 'response')
+      }
+
+
       return(pscores)
     })
 

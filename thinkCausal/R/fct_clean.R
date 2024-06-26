@@ -21,6 +21,7 @@
 #' @examples
 #' .names <- c("yes", "TRUE", "nope%", "98", 'Ábcdêãçoàúü', 'yep_-,.yep', 'hello goodbye', '', 'no', 'no')
 #' clean_names(.names)
+
 clean_names <- function(.names){
 
   .names <- as.character(.names)
@@ -44,7 +45,7 @@ clean_names <- function(.names){
   pat <- "(?![._])[[:punct:]]"
   .names <- stringr::str_remove_all(string = .names, pattern = pat)
 
-  # remove ^~`$
+  # # remove ^~`$
   .names <- stringr::str_remove_all(string = .names, pattern = "[\\^]")
   .names <- stringr::str_remove_all(string = .names, pattern = "[\\~]")
   .names <- stringr::str_remove_all(string = .names, pattern = "[\\`]")
@@ -60,6 +61,7 @@ clean_names <- function(.names){
     return(string)
   }))
 
+
   # replace blanks with 'BLANK'
   .names[.names == ''] <- "BLANK"
 
@@ -72,7 +74,9 @@ clean_names <- function(.names){
     }
   }
 
+
   return(.names)
+
 }
 
 #' @title Convert all psuedo-logical columns in a dataframe to booleans

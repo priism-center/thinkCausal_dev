@@ -62,7 +62,8 @@ mod_analysis_upload_ui <- function(id) {
           inputId = ns('analysis_upload_data_button_columnAssignSave'),
           class = 'nav-path',
           label = 'Next'
-        )
+        ),
+        create_go_to_learning_btn('learn', 'analysis_upload', 'Learning')
       )
     ),
     column(width = 9,
@@ -230,7 +231,7 @@ mod_analysis_upload_server <- function(id, store){
       store <- remove_downstream_data(store, page = 'upload')
 
       # move to next page
-      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_variable_selection')
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_causal_question')
 
     })
 

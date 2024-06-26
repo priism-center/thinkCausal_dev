@@ -4,9 +4,10 @@
 #' @param ran.eff if not "None", then the name of the column within .data that represents the random effects
 #' @param .estimand the causal estimand. See bartCause::bartc
 #' @param .weights name of the variable corresponding to a vector of survey weights
+#' @param rct a logical TRUE is completely randomized design FALSE otherwise
 #' @return an object of class "bartcFit"
 #' @noRd
-fit_bart <- function(.data, .weights, ran_eff, .estimand){
+fit_bart <- function(.data, .weights, ran_eff, .estimand, rct){
   ind <- max(3, 3 + length(.weights) + length(ran_eff))
   if(rlang::is_null(.weights)){
     tryCatch({
@@ -16,6 +17,7 @@ fit_bart <- function(.data, .weights, ran_eff, .estimand){
           treatment = .data[, 1],
           confounders = clean_confounders_for_bart(.data[, ind:length(.data)]),
           estimand = .estimand,
+          method.trt = ifelse(rct, 'none', 'bart'),
           seed = 2
         )
       }
@@ -28,6 +30,7 @@ fit_bart <- function(.data, .weights, ran_eff, .estimand){
           estimand = .estimand,
           group.by = ran_eff,
           use.ranef = TRUE,
+          method.trt = ifelse(rct, 'none', 'bart'),
           seed = 2
         )
       }
@@ -43,6 +46,7 @@ fit_bart <- function(.data, .weights, ran_eff, .estimand){
           confounders = clean_confounders_for_bart(.data[, ind:length(.data)]),
           estimand = .estimand,
           weights = .data[[.weights]],
+          method.trt = ifelse(rct, 'none', 'bart'),
           seed = 2
         )
       }
@@ -56,6 +60,7 @@ fit_bart <- function(.data, .weights, ran_eff, .estimand){
           weights = .data[[.weights]],
           group.by = ran_eff,
           use.ranef = TRUE,
+          method.trt = ifelse(rct, 'none', 'bart'),
           seed = 2
         )
       }
