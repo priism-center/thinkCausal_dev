@@ -70,7 +70,7 @@ app_server <- function(input, output, session) {
   store <- mod_analysis_variable_selection_server(module_ids$analysis$select, store)
   store <- mod_analysis_verify_server(module_ids$analysis$verify, store)
   store <- mod_analysis_visualize_server(module_ids$analysis$visualize, store)
-  store <- mod_analysis_balance_server(module_ids$analysis$balance, store)
+  #store <- mod_analysis_balance_server(module_ids$analysis$balance, store)
   store <- mod_analysis_overlap_server(module_ids$analysis$overlap, store)
   store <- mod_analysis_model_server(module_ids$analysis$model, store)
   store <- mod_analysis_diagnostics_server(module_ids$analysis$diagnostics, store)

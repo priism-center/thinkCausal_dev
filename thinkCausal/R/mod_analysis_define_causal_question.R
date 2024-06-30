@@ -370,8 +370,8 @@ mod_analysis_causal_question_server <- function(id, store){
           choices = c(
             "",
             'Observational Study (Treatment not Randomized)',
-            'Completely Randomized Experement',
-            'Block Randomized Experement'
+            'Completely Randomized Experiment',
+            'Block Randomized Experiment'
           )
         ),
         HTML('<details><summary>Advanced options (random effects & survey weights)</summary>'),
