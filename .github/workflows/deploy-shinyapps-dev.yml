@@ -3,7 +3,7 @@ name: deploy-shinyapps-dev
 on:
   workflow_dispatch:
   push:
-    branches: [dev]
+    branches: [development]
 
 env:
   RENV_CONFIG_SANDBOX_ENABLED: False
