@@ -294,7 +294,7 @@ mod_analysis_variable_selection_server <- function(id, store){
 
       }
 
-      validate(need(pass_variable(), ''))
+      #validate(need(pass_variable(), ''))
       check_variable_assignment()
       # move to next page
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_verify')
