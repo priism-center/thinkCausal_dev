@@ -12,25 +12,13 @@ mod_analysis_model_ui <- function(id){
   tagList(
     fluidRow(
       column(
-        width = 6,
+        width = 12,
       bs4Dash::box(
+        title = 'Fit Your Model',
         width = 12,
         collapsible = FALSE,
-        h3('Define the causal estimand'),
-        selectInput(ns('analysis_model_inference'),
-                    label = 'Select a level of inference:',
-                    choices = c('',
-                                'Sample',
-                                'Conditional',
-                                'Population')),
-        selectInput(ns('analysis_model_estimand'),
-                    label = 'Select an average causal effect:',
-                    choices = c('',
-                                'ATE - Average treatment effect' = 'ATE',
-                                'ATT - Average treatment effect on the treated' = 'ATT',
-                                'ATC - Average treatment effect on the control' = 'ATC')),
       selectInput(ns('analysis_model_moderator_yes_no'),
-                  label = 'Pre-specify subgroup analyses:',
+                  label = 'Before fitting your model, would you like to pre-specify a subgroup analyses:',
                   choices = c("", "No", "Yes", 'Unsure')),
 
 
@@ -81,22 +69,22 @@ mod_analysis_model_ui <- function(id){
         #verbatimTextOutput(ns('review'))
       )
       ),
-      column(width = 6,
-             bs4Dash::box(
-               width = 12,
-               collapsible = FALSE,
-               title = 'Review your model',
-               tags$head(tags$style(HTML("pre { white-space: pre-wrap; word-break: keep-all; }"))),
-               h5('Causal Question:'),
-               verbatimTextOutput(ns('causal_q')),
-               h5('Design:'),
-               verbatimTextOutput(ns('design')),
-               h5('Causal Estimand:'),
-               verbatimTextOutput(ns('estimand'))
-
-
-             )
-             )
+      # column(width = 6,
+      #        bs4Dash::box(
+      #          width = 12,
+      #          collapsible = FALSE,
+      #          title = 'Review your model',
+      #          tags$head(tags$style(HTML("pre { white-space: pre-wrap; word-break: keep-all; }"))),
+      #          h5('Causal Question:'),
+      #          verbatimTextOutput(ns('causal_q')),
+      #          h5('Design:'),
+      #          verbatimTextOutput(ns('design')),
+      #          h5('Causal Estimand:'),
+      #          verbatimTextOutput(ns('estimand'))
+      #
+      #
+      #        )
+      #        )
       )
     )
 }
@@ -248,7 +236,6 @@ mod_analysis_model_server <- function(id, store){
       # update position value on next or back button click
       position$value <- position$value + 1
       # this value is set based on the number of sub-pages + 1
-      if(position$value == 2){
         # launch popup if data is not yet selected
         if (!is.data.frame(store$verified_df)) {
           show_popup_model_no_data_warning(session, ns = ns)
@@ -260,13 +247,6 @@ mod_analysis_model_server <- function(id, store){
           })
         }
 
-        if(input$analysis_model_estimand == ''){
-          show_popup_model_no_estimand_warning(session, ns = ns)
-          observeEvent(input$analysis_model_estimand_button_popup, {
-            close_popup(session = session)
-          })
-
-        }
 
         # make sure required inputs have values
         local({
@@ -288,11 +268,6 @@ mod_analysis_model_server <- function(id, store){
         # stop here if data hasn't been uploaded and selected
         validate_data_verified(store)
 
-        req(input$analysis_model_estimand)
-
-        # save the estimand (again, also saved on the design page)
-        store$analysis_design_estimand <- input$analysis_model_estimand
-
         # remove current model if it exists
         store$analysis$model$model <- NULL
         store$analysis$model$fit_good <- NULL
@@ -304,33 +279,15 @@ mod_analysis_model_server <- function(id, store){
         # insert popup to notify user of model fit process
         # TODO: estimate the time remaining empirically?
         # TODO: show console redirect
+
+        # fit BART model
         show_popup_fitting_BART_waiting(session)
 
-
-        # pull the response, treatment, and confounders variables out of the df
-        # treatment_v <- store$verified_df[, 1]
-        # response_v <- store$verified_df[, 2]
-        # confounders_mat <- as.matrix(store$verified_df[, 3:ncol(store$verified_df)])
-        # colnames(confounders_mat) <- str_sub(colnames(confounders_mat), start = 3)
-
-        # run model
-        # store$analysis$model$model <- withProgress(
-        #   message = 'Fitting BART model',
-        #   session = session,
-        #   {
-        #     fit_bart(
-        #       .data = store$verified_df,
-        #       support = common_support_rule,
-        #       ran.eff = input$analysis_random_intercept,
-        #       .estimand = base::tolower(input$analysis_model_estimand)
-        #     )
-        #   }
-        # )
         bart_model <- fit_bart(
           .data = store$verified_df,
           .weights = store$column_assignments$weight,
           ran_eff = store$column_assignments$ran_eff,
-          .estimand = base::tolower(input$analysis_model_estimand),
+          .estimand = store$analysis$model$analysis_model_estimand, # estimand handled latter in post processing
           rct = store$analysis_select_design == 'Completely Randomized Experiment'
         )
         store$analysis$model$model <- bart_model
@@ -372,23 +329,9 @@ mod_analysis_model_server <- function(id, store){
 
 
 
-        # add to log
-        log_event <- paste0(
-          'Ran BART model with following specification: \n',
-          # '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
-          '\t', 'Causal estimand: ', input$analysis_model_estimand, '\n',
-          '\t', 'Remove observations without overlap: ', input$analysis_model_support, '\n',
-          '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
-          # '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
-          # '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
-          '\t', 'Good model fit: ', store$analysis$model$fit_good
-        )
-        store$log <- append(store$log, log_event)
-
          bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_results')
         # updateNavbarPage(store$session_global, inputId = "nav", selected = store$module_ids$analysis$results)
         close_popup(session = session)
-      }
 
     })
 

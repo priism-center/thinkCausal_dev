@@ -12,65 +12,90 @@ mod_analysis_overlap_ui <- function(id){
   tagList(
     fluidRow(
       bs4Dash::box(
-        width = 3,
+        width = 12,
         collapsible = FALSE,
-        title = 'Check overlap',
+        title = 'Select a Causal Estimand & Check Overlap',
         selectInput(
-          inputId = ns("analysis_overlap_trim"),
-          label = 'Check overlap of:',
-          choices = c("ATE", 'ATT', 'ATC')
+          inputId = ns("analysis_inference_group"),
+          label = 'Who would you like to make causal inferences about?',
+          choices = c(
+            '',
+            'Both those that received the treatment and those that did not recieve the treatment.' = 'ate',
+            'Only those that received the treatment.' = 'att',
+            'Only those that did not receive the treatment.' = 'atc',
+            "I don't understand this question" = 'help'
+          )
         ),
-        selectInput(
-          inputId = ns("analysis_overlap_type"),
-          label = "View:",
-          choices = c("By Propensity Score" = 1,
-                      "By Variables" = 2
-          ),
-          selected = 1
-        ),
-        conditionalPanel("input.analysis_overlap_type == '1'",
+        # selectInput(
+        #   inputId = ns("analysis_inference_uncertainty"),
+        #   label = 'How far to extend inference (sample, conditional, population)',
+        #   choices = c('', 'Sample', 'Conditional', 'Population')
+        # ),
+        conditionalPanel(condition = "input.analysis_inference_group != ''",
                          ns = ns,
-                         checkboxInput(
-                           inputId = ns('trim'),
-                          label = 'Trim plot:',
-                          value = FALSE
-                         )
-                         ),
-        selectInput(
-          inputId = ns("analysis_overlap_method"),
-          label = "Plot type:",
-          choices = c('Histogram', 'Density'),
-          selected = 'Histogram'
-        ),
-        conditionalPanel(condition = "input.analysis_overlap_type == '2'",
-                         ns = ns,
-                         selectInput(
-                           inputId = ns("analysis_overlap_select_var"),
-                           label = "Select variables for overlap check:",
-                           multiple = FALSE,
-                           choices = NULL,
-                           selected = NULL
-                         )),
-        br(),
-        actionButton(inputId = ns('analysis_overlap_help'),
-                     label = 'What is this plot telling me?'),
-        downloadButton(ns('download_overlap_plot'), label = "Download plot"),
-        actionButton(
-          inputId = ns("analysis_overlap_button_next"),
-          class = "nav-path",
-          label = "Next"
-        )
-      ),
+                         bs4Dash::box(title = 'Checking Overlap',
+                                      status = 'secondary',
+                                      id = ns('analysis_message_overlap'),
+                                      width = 12,
+                                      height = 500,
+                                      collapsible = FALSE,
+                                      conditionalPanel("output.check_overlap_view == '1'",
+                                                       ns = ns,
+                                                       uiOutput(ns('analysis_estimand_text'))),
+                                      conditionalPanel("output.check_overlap_view == '0'",
+                                                       ns = ns,
+                                                       fluidRow(
+                                                         column(
+                                                           width = 3,
+                                                           selectInput(inputId = ns('analysis_overlap_confirm'),
+                                                                       label = 'Confirm Sufficent Overlap:',
+                                                                       choices = NULL
+                                                                       ),
+                                                           checkboxInput(
+                                                             inputId = ns('trim'),
+                                                             label = 'Trim plot',
+                                                             value = FALSE
+                                                           ),
+                                                           br(),
+                                                           create_go_to_learning_btn('learn_estimands2', 'analysis_overlap', 'Learn how to check overlap'),
+                                                           downloadButton(ns('download_overlap_plot'),
+                                                                          label = "Download plot"),
+                                                           actionButton(
+                                                             inputId = ns("analysis_overlap_button_next"),
+                                                             class = "nav-path",
+                                                             label = "Next"
+                                                           )
+                                                         ),
+                                                         column(width = 9,
+                                                                plotOutput(
+                                                                  outputId = ns("analysis_overlap_plot"),
+                                                                  height = 450
+                                                                )
+                                                         )
+                                                       )
+                                      )
 
-      bs4Dash::box(
-        width = 9,
-        collapsible = FALSE,
-        title = 'Overlap plot',
-        plotOutput(
-          outputId = ns("analysis_overlap_plot"),
-          height = 800
-        )
+                         )
+                         )
+
+        # selectInput(
+        #   inputId = ns('analysis_overlap_confirm'),
+        #   label = ''
+        # ),
+        #textOutput(ns('analysis_inference_group_text')),
+
+
       )
+
+      # bs4Dash::box(
+      #   width = 9,
+      #   collapsible = FALSE,
+      #   title = 'Overlap plot',
+      #   plotOutput(
+      #     outputId = ns("analysis_overlap_plot"),
+      #     height = 800
+      #   )
+      # )
     )
   )
 }
@@ -82,6 +107,112 @@ mod_analysis_overlap_server <- function(id, store){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    page_control <- reactiveValues(status = 0,
+                                   estimand = NULL,
+                                   violated = NULL,
+                                   satisfied = NULL)
+
+    observeEvent(input$analysis_inference_group, {
+      req(input$analysis_inference_group)
+      if(input$analysis_inference_group == 'ate'){
+        page_control$estimand <- 'ATE.'
+      }
+
+      if(input$analysis_inference_group == 'att'){
+        page_control$estimand <- 'ATT.'
+      }
+
+      if(input$analysis_inference_group == 'atc'){
+        page_control$estimand <- 'ATC.'
+      }
+
+
+      page_control$satisfied <- paste0('Yes, there is sufficent overlap to estimate the ', page_control$estimand)
+      page_control$violated <- paste0('No, there is not sufficent overlap to estimate the ', page_control$estimand)
+
+      updateSelectInput(inputId = 'analysis_overlap_confirm',
+                        choices = c('', page_control$satisfied, page_control$violated)
+                        )
+
+    })
+
+    observeEvent(input$analysis_overlap_confirm, {
+      req(input$analysis_inference_group)
+      if(input$analysis_overlap_confirm == page_control$violated){
+        show_popup_overlap_warning(session, ns = ns)
+      }
+    })
+
+    output$analysis_estimand_text <- renderUI({
+
+      if(input$analysis_inference_group == 'ate'){
+       out <- tagList(
+         p('Based on your response above, you are interested in estimating the Average Treatment Effect (ATE).'),
+         p('thinkCausal will estimate the ATE by:'),
+         br(),
+         p('- Predicting what would have happened to those in the treatment group had they not received the treatment.'),
+         p('- Predicting what would have happened to those in the control group had they received the treatment.')
+       )
+      }
+
+
+
+      if(input$analysis_inference_group == 'atc'){
+        out <- tagList(
+          p('Based on your response above, you are interested in estimating the Average Treatment Effect on the Control (ATC).'),
+          p('thinkCausal will estimate the ATC by:'),
+          br(),
+          p('- Predicting what would have happened to those in the control group had they received the treatment.')
+        )
+      }
+
+      if(input$analysis_inference_group == 'att'){
+        out <- tagList(
+          p('Based on your responses above, you are interested in estimating the Average Treatment Effect on the Treated(ATT).'),
+          p('thinkCausal will estimate the ATT by:'),
+          br(),
+          p('- Predicting what would have happened to those in the treatment group had they not received the treatment.')
+        )
+      }
+
+      out <- tagList(
+        out,
+        br(),
+        p('Without sufficicent overlap thinkCausal will not be able to accuratly make these predictions.'),
+        p(strong('Check for sufficent overlap before continuing!!')),
+        br(),
+        fluidRow(
+          column(width = 3,
+          actionButton(ns('analysis_check_overlap'), label = 'Check Overlap'),
+          br(),
+          create_go_to_learning_btn('learn_estimands2', 'analysis_overlap', 'Learn how to check overlap')
+
+          #actionButton(ns('analysis_learn_overlap'), label = 'Learn how to check overlap')
+          )
+        )
+
+      )
+
+      return(out)
+    })
+
+
+    # remove message box when choice is made
+    observeEvent(input$analysis_check_overlap, {
+      page_control$status <- page_control$status + 1
+      #bs4Dash::updateBox("analysis_message_overlap", action = "remove")
+    })
+
+    output$check_overlap_view <- reactive({
+      ifelse(page_control$status%%2 == 0, 1, 0)
+    })
+
+    outputOptions(output, "check_overlap_view", suspendWhenHidden = FALSE)
+
+
+
+
+
     # open help on button click
     observeEvent(input$analysis_overlap_help, {
       open_help_sidebar(store, 'Overlap')
@@ -89,27 +220,43 @@ mod_analysis_overlap_server <- function(id, store){
 
     # next button
     observeEvent(input$analysis_overlap_button_next, {
+      # save model estiand to access on fit model page
+      store$analysis$model$analysis_model_estimand <- input$analysis_inference_group
       bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_model')
     })
 
-    # render default values when verified data is saved
-    observeEvent(store$analysis$data$verify$analysis_verify_data_save,{
 
-      # get covariates
-      new_col_names <- colnames(store$verified_df)
-      cols_categorical <- store$column_types$categorical
-      cols_continuous <- store$column_types$continuous
-      X_cols <- grep("^X_", new_col_names, value = TRUE)
-      X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
 
-      # send them off to the UI
-      updateSelectInput(session = session,
-                        inputId = 'analysis_overlap_select_var',
-                        choices = X_cols,
-                        selected = NULL
-      )
-
+    observeEvent(input$analysis_overlap_popup_stop, {
+      close_popup(session = session)
     })
+
+    # render default values when verified data is saved
+    # observeEvent(store$analysis$data$verify$analysis_verify_data_save,{
+    #
+    #   # get covariates
+    #   new_col_names <- colnames(store$verified_df)
+    #   cols_categorical <- store$column_types$categorical
+    #   cols_continuous <- store$column_types$continuous
+    #   X_cols <- grep("^X_", new_col_names, value = TRUE)
+    #   # X_cols_continuous <- grep("^X_", cols_continuous, value = TRUE)
+    #   call <- paste0('Y_', store$column_assignments$y, '~', paste0(X_cols, collapse = '+'))
+    #   lmfit <- lm(as.formula(call), data = store$verified_df)
+    #
+    #   lmfit <- summary(step(lmfit))
+    #   X_cols <- rownames(coef(lmfit))[2:length(rownames(coef(lmfit)))]
+    #
+    #   X_cols <- gsub('TRUE', '', X_cols)
+    #
+    #
+    #   # send them off to the UI
+    #   updateSelectInput(session = session,
+    #                     inputId = 'analysis_overlap_select_var',
+    #                     choices = X_cols,
+    #                     selected = NULL
+    #   )
+    #
+    # })
 
     # calculate propensity scores
     pscores <- reactive({
@@ -126,7 +273,7 @@ mod_analysis_overlap_server <- function(id, store){
       # calculate pscores
       if(store$analysis_select_design == 'Observational Study (Treatment not Randomized)'){
         p_call <- paste0(treatment_col, '~', paste0(names(X)[3:length(X)], collapse = '+'))
-        pscores <- dbarts::bart2(as.formula(p_call), data = X, seed = 2)
+        pscores <- dbarts::bart2(as.formula(p_call), data = X, seed = 2, combineChains = T)
         pscores <- dbarts::extract(pscores, 'ev')
         pscores <- apply(pscores, 2, mean)
       }else{
@@ -156,58 +303,29 @@ mod_analysis_overlap_server <- function(id, store){
       response_col <- grep("^Y_", col_names, value = TRUE)
       cols_continuous <- store$column_types$continuous
       confounder_cols <- grep("^X_", cols_continuous, value = TRUE)
-      plt_type <- input$analysis_overlap_method
+      #plt_type <- input$analysis_overlap_method
 
-      # plot either the variables or the 1 dimension propensity scores
-      if(input$analysis_overlap_type == 2){
-        if(is.numeric(X[[input$analysis_overlap_select_var]])){
-          trim <- switch (input$analysis_overlap_trim,
-                          'ATE' = c(min(X[[input$analysis_overlap_select_var]]),
-                                    max(X[[input$analysis_overlap_select_var]])),
-                          'ATT' = c(min(X[[input$analysis_overlap_select_var]][X[[treatment_col]] == 1]),
-                                    max(X[[input$analysis_overlap_select_var]][X[[treatment_col]] == 1])),
-                          'ATC' = c(min(X[[input$analysis_overlap_select_var]][X[[treatment_col]] == 0]),
-                                    max(X[[input$analysis_overlap_select_var]][X[[treatment_col]] == 0]))
-          )
 
-          X <- X[X[[input$analysis_overlap_select_var]] >= trim[1],]
-          X <- X[X[[input$analysis_overlap_select_var]] <= trim[2],]
-        }
+      trim <- switch (input$analysis_inference_group,
+                      'ate' = c(NULL, NULL),
+                      'att' = c(min(pscores()[X[[treatment_col]] == 1]),max(pscores()[X[[treatment_col]] == 1])),
+                      'atc' = c(min(pscores()[X[[treatment_col]] == 0]),max(pscores()[X[[treatment_col]] == 0]))
+      )
 
-        p <- tryCatch(
-          plotBart::plot_overlap_vars(
-            .data = X,
-            treatment = treatment_col,
-            confounders = input$analysis_overlap_select_var,
-            plot_type = plt_type
-          ),
-          error = function(e) NULL
+
+      p <- tryCatch({
+        plotBart::plot_overlap_pScores(
+          .data = X,
+          treatment = treatment_col,
+          plot_type = 'Histogram',
+          pscores = pscores(),
+          min_x = trim[1],
+          max_x = trim[2],
+          trim = input$trim
         )
-      }
-
-      else if(input$analysis_overlap_type == 1){
-
-        trim <- switch (input$analysis_overlap_trim,
-                        'ATE' = c(NULL, NULL),
-                        'ATT' = c(min(pscores()[X[[treatment_col]] == 1]),max(pscores()[X[[treatment_col]] == 1])),
-                        'ATC' = c(min(pscores()[X[[treatment_col]] == 0]),max(pscores()[X[[treatment_col]] == 0]))
-        )
-
-
-        p <- tryCatch({
-          plotBart::plot_overlap_pScores(
-            .data = X,
-            treatment = treatment_col,
-            plot_type = plt_type,
-            pscores = pscores(),
-            min_x = trim[1],
-            max_x = trim[2],
-            trim = input$trim
-          )
-        },
-        error = function(e) NULL
-        )
-      }
+      },
+      error = function(e) NULL
+      )
 
       # add theme
       p <- p + store$options$theme_custom

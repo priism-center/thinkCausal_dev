@@ -23,6 +23,24 @@ show_popup_waiting <- function(session){
   show_popup(session = session, content)
 }
 
+show_popup_overlap_warning <- function(session, ns){
+  content <- tags$div(
+    style = 'margin: auto; text-align: center',
+    h3('You have indicated there is lack of complete overlap'),
+    br(),
+    h5('There are two ways to proceed:'),
+    br(),
+    h5('1. Select a different group to make inferences about. (Change the causal estimand). After changing the estimand, check the overlap again.'),
+    br(),
+    h5('2. Contunue without complete overlap. When fitting the model, thinkCausal will attempt to remove cases without complete overlap.'),
+    br(), br(),
+    actionButton(inputId = ns('analysis_overlap_popup_stop'),
+                 class = 'nav-path',
+                 label = 'Ok')
+  )
+  show_popup(session = session, content, size = 'xl')
+}
+
 show_popup_common_support_warning <- function(session, common_support_check, ns){
   content <- tags$div(
     style = 'margin: auto; text-align: center',

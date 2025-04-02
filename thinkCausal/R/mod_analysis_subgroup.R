@@ -373,12 +373,12 @@ mod_analysis_subgroup_server <- function(id, store){
 
       icate <- bartCause::extract(store$analysis$model$model, 'icate')
       x <- store$verified_df[[paste0('X_', input$analysis_subgroup_prespecified)]]
-      if(store$analysis$model$analysis_model_estimand == 'ATT'){
+      if(store$analysis$model$model$estimand == 'att'){
         x <- x[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == TRUE]
         .moderator <- .moderator[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == TRUE]
       }
 
-      if(store$analysis$model$analysis_model_estimand == 'ATC'){
+      if(store$analysis$model$model$estimand == 'atc'){
         x <- x[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == FALSE]
         .moderator <- .moderator[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == FALSE]
       }
@@ -446,18 +446,17 @@ mod_analysis_subgroup_server <- function(id, store){
     output$analysis_subgroup_table <- reactable::renderReactable({
       validate_model_fit(store)
       validate(need(input$analysis_subgroup_exploratory, ''))
-
       cols_categorical <- gsub('X_', '',store$column_types$categorical)
       .moderator <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
 
       icate <- bartCause::extract(store$analysis$model$model, 'icate')
       x <- store$verified_df[[paste0('X_', input$analysis_subgroup_exploratory)]]
-      if(store$analysis$model$analysis_model_estimand == 'ATT'){
+      if(store$analysis$model$model$estimand == 'att'){
         x <- x[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == TRUE]
         .moderator <- .moderator[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == TRUE]
       }
 
-      if(store$analysis$model$analysis_model_estimand == 'ATC'){
+      if(store$analysis$model$model$estimand == 'atc'){
         x <- x[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == FALSE]
         .moderator <- .moderator[store$verified_df[[paste0('Z_', store$column_assignments$z)]] == FALSE]
       }

@@ -75,7 +75,7 @@ create_go_to_learning_btn <- function(tabName, tabNameCurrent, label){
     type = 'button',
     class = "btn btn-primary",
     onclick = glue::glue("show_back_button(); log_page('{tabNameCurrent}'); go_to_shiny_page('{tabName}', false);"),
-    glue::glue("Learn more at {label}")
+    glue::glue("{label}")
   )
 }
 #' @describeIn create_go_to_learning_btn Hovering button that returns user back to the latest Analysis page

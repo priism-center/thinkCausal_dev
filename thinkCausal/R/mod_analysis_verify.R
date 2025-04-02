@@ -271,6 +271,27 @@ mod_analysis_verify_server <- function(id, store){
 
       # save the column names by their respective class
       store$column_types <- clean_detect_column_types(store$verified_df)
+#
+#       # fit BART model
+#       show_popup_fitting_BART_waiting(session)
+#
+#       bart_model <- fit_bart(
+#         .data = store$verified_df,
+#         .weights = store$column_assignments$weight,
+#         ran_eff = store$column_assignments$ran_eff,
+#         .estimand = 'ate', # estimand handled latter in post processing
+#         rct = store$analysis_select_design == 'Completely Randomized Experiment'
+#       )
+#       store$analysis$model$model <- bart_model
+#
+#       # check common support
+#       store$analysis$model$overlap_checks <- check_overlap_rules(.model = bart_model)
+#
+#
+#       # close the alert
+#       # shinyWidgets::closeSweetAlert()
+#       close_popup(session = session)
+
 
       # add to log
       column_types <- convert_data_type_to_simple(store$verified_df)
@@ -280,6 +301,19 @@ mod_analysis_verify_server <- function(id, store){
                ": ",
                column_types,
                collapse = "\n")
+      )
+      store$log <- append(store$log, log_event)
+
+      # add to log
+      log_event <- paste0(
+        'Ran BART model with following specification: \n',
+        # '\t', 'Experiment design: ', input$analysis_model_radio_design, '\n',
+        '\t', 'Causal estimand: ', input$analysis_model_estimand, '\n',
+        '\t', 'Remove observations without overlap: ', input$analysis_model_support, '\n',
+        '\t', 'Moderators: ', paste0(input$analysis_model_moderator_vars, collapse = "; "), '\n',
+        # '\t', 'Model outcome: ', input$analysis_model_outcome, '\n',
+        # '\t', 'Propensity score fit: ', input$analysis_model_pscore, '\n',
+        '\t', 'Good model fit: ', store$analysis$model$fit_good
       )
       store$log <- append(store$log, log_event)
 

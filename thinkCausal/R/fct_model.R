@@ -116,6 +116,31 @@ clean_confounders_for_bart <- function(df){
   return(confounders_mat)
 }
 
+
+#' Identify predictors of the outcome variable. This is typically used to check overlap of most relevant predictors.
+#'
+#' @description A fct function
+#'
+#' @param X a matrix of predictor variables. Typically store$verified_df
+#' @param y a vector of the outcome variable. Typically store$verified_df[[2]]
+#' @param .weights a vector of survey weights
+#' @param  ran_eff a vector of random intercepts
+#'
+#' @author George Perrett
+#'
+#' @return vector
+#'
+#' @noRd
+
+find_predictors <- function(X, .y, .weights, ran_eff){
+  ind <- max(3, 3 + length(.weights) + length(ran_eff))
+  X <- clean_confounders_for_bart(df = clean_confounders_for_bart(X[, ind:length(X)]))
+  fit <- glmnet::cv.glmnet(x = X, y = .y)
+  rownames(coef(fit))[as.vector(coef(fit)) != 0 & rownames(coef(fit)) != "(Intercept)"]
+
+}
+
+
 #' Check overlap rules of a BART model
 #'
 #' @description A fct function

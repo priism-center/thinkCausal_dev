@@ -49,6 +49,7 @@ usethis::use_package('shinyquiz')
 usethis::use_dev_package('bs4Dash', remote = 'github::RinteRface/bs4Dash')
 usethis::use_dev_package('plotBart', remote = 'github::priism-center/plotBart')
 usethis::use_package('bartCause', min_version = '1.0.6')
+usethis::use_package('glmnet')
 
 ## Add modules ----
 ## Create a module infrastructure in R/

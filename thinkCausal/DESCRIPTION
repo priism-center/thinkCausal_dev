@@ -17,6 +17,7 @@ Imports:
     dplyr (>= 1.0.5),
     ggdark (>= 0.2.1),
     ggplot2 (>= 3.3.2),
+    glmnet,
     glue,
     golem (>= 0.3.2),
     haven,

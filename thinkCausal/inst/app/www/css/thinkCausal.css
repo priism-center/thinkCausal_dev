@@ -1,3 +1,7 @@
+.card-secondary.card-outline {
+    border-top:3px solid purple
+}
+
 body {
   font-family: "Roboto", Helvetica, Arial, sans-serif;
   color: #636363;

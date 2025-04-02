@@ -64,14 +64,11 @@ app_ui <- function(request) {
       ),
 
       body = bs4Dash::dashboardBody(
-
         bs4Dash::tabItems(
-
           bs4Dash::tabItem(
             tabName = 'home',
             mod_home_ui(module_ids$home)
           ),
-
           # learning articles
           bs4Dash::tabItem(
             tabName = 'learn',
