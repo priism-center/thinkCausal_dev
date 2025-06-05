@@ -287,6 +287,7 @@ mod_analysis_variable_selection_server <- function(id, store){
     observeEvent(input$analysis_select_button_columnAssignSave, {
       req(store$analysis_data_uploaded_df)
       pass_variable <- reactiveVal(length(input$analysis_select_dragdrop_avalable) == 0)
+      
       # check that all predictors are included, if not launch popup
       if (isFALSE(pass_variable()) & isTRUE(store$analysis_select_design == "Observational Study (Treatment not Randomized)")) {
         show_popup_variable_selection_warning(x = length(input$analysis_select_dragdrop_avalable),
@@ -295,6 +296,7 @@ mod_analysis_variable_selection_server <- function(id, store){
         validate(need(pass_variable(), ''))
 
       }
+
 
 
       check_variable_assignment()
