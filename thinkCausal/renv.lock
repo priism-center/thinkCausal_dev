@@ -16,17 +16,6 @@
       "Repository": "CRAN",
       "Hash": "4e348572ffcaa2fb1e610e7a941f6f3a"
     },
-    "Formula": {
-      "Package": "Formula",
-      "Version": "1.2-5",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "stats"
-      ],
-      "Hash": "7a29697b75e027767a53fde6c903eca7"
-    },
     "GGally": {
       "Package": "GGally",
       "Version": "2.1.2",
@@ -51,33 +40,6 @@
         "utils"
       ],
       "Hash": "022f78c8698724b326f1838b1a98cafa"
-    },
-    "Hmisc": {
-      "Package": "Hmisc",
-      "Version": "5.1-1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "Formula",
-        "base64enc",
-        "cluster",
-        "colorspace",
-        "data.table",
-        "foreign",
-        "ggplot2",
-        "grid",
-        "gridExtra",
-        "gtable",
-        "htmlTable",
-        "htmltools",
-        "knitr",
-        "methods",
-        "nnet",
-        "rmarkdown",
-        "rpart",
-        "viridis"
-      ],
-      "Hash": "27c7750992bc511728e2f9ebd2911199"
     },
     "MASS": {
       "Package": "MASS",
@@ -367,20 +329,6 @@
       ],
       "Hash": "3f038e5ac7f41d4ac41ce658c85e3042"
     },
-    "cluster": {
-      "Package": "cluster",
-      "Version": "2.1.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "grDevices",
-        "graphics",
-        "stats",
-        "utils"
-      ],
-      "Hash": "c5f8447373ec2a0f593c694024e5b7ee"
-    },
     "codetools": {
       "Package": "codetools",
       "Version": "0.2-18",
@@ -407,10 +355,10 @@
     },
     "commonmark": {
       "Package": "commonmark",
-      "Version": "1.8.0",
+      "Version": "1.9.5",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "2ba81b120c1655ab696c935ef33ea716"
+      "Repository": "RSPM",
+      "Hash": "4ac08754c8ed35996b7c343fbb22885a"
     },
     "config": {
       "Package": "config",
@@ -464,17 +412,6 @@
         "R"
       ],
       "Hash": "f15795aaa507bf90088346a1eff6534e"
-    },
-    "data.table": {
-      "Package": "data.table",
-      "Version": "1.14.8",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "methods"
-      ],
-      "Hash": "b4c06e554f33344e044ccd7fdca750a9"
     },
     "dbarts": {
       "Package": "dbarts",
@@ -698,19 +635,6 @@
       ],
       "Hash": "618609b42c9406731ead03adf5379850"
     },
-    "foreign": {
-      "Package": "foreign",
-      "Version": "0.8-82",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "methods",
-        "stats",
-        "utils"
-      ],
-      "Hash": "32b25c97ce306a760c4d9f787991b5d9"
-    },
     "fresh": {
       "Package": "fresh",
       "Version": "0.2.0",
@@ -884,20 +808,6 @@
       ],
       "Hash": "b396a44b56209da3733a4a906b0cc457"
     },
-    "gridExtra": {
-      "Package": "gridExtra",
-      "Version": "2.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "grDevices",
-        "graphics",
-        "grid",
-        "gtable",
-        "utils"
-      ],
-      "Hash": "7d7f283939f563670a697165b2cf5560"
-    },
     "gtable": {
       "Package": "gtable",
       "Version": "0.3.1",
@@ -965,23 +875,6 @@
         "vctrs"
       ],
       "Hash": "41100392191e1244b887878b533eea91"
-    },
-    "htmlTable": {
-      "Package": "htmlTable",
-      "Version": "2.4.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "checkmate",
-        "htmltools",
-        "htmlwidgets",
-        "knitr",
-        "magrittr",
-        "methods",
-        "rstudioapi",
-        "stringr"
-      ],
-      "Hash": "d5b485330dcfe241b50db157bf898e97"
     },
     "htmltools": {
       "Package": "htmltools",
@@ -1304,18 +1197,6 @@
         "utils"
       ],
       "Hash": "dbca60742be0c9eddc5205e5c7ca1f44"
-    },
-    "nnet": {
-      "Package": "nnet",
-      "Version": "7.3-17",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "stats",
-        "utils"
-      ],
-      "Hash": "cb1d8d9f300a7e536b89c8a88c53f610"
     },
     "openssl": {
       "Package": "openssl",
@@ -1692,16 +1573,6 @@
         "vroom"
       ],
       "Hash": "e9df4b445fca203653f04ece2f97d51e"
-    },
-    "readstata13": {
-      "Package": "readstata13",
-      "Version": "0.10.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "Rcpp"
-      ],
-      "Hash": "be127ee4a3bb6591585db8ab9cc4247d"
     },
     "rematch2": {
       "Package": "rematch2",
@@ -2210,24 +2081,26 @@
       "Package": "thinkCausal",
       "Version": "0.5.0",
       "Source": "GitHub",
-      "Remotes": "github::priism-center/plotBart",
+      "Remotes": "github::priism-center/plotBart, github::merlinoa/shinyFeedback, github::priism-center/shinyQuiz, cran/bs4Dash@2.1.0, nsgrantham/ggdark",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "thinkCausal_dev",
       "RemoteUsername": "priism-center",
       "RemoteRef": "HEAD",
-      "RemoteSha": "c92790c1e34bb07c6009f11c1db73a482dfedd6e",
+      "RemoteSha": "7d7c2b3798a5268344b6a872e1f3596af9309f1f",
       "RemoteSubdir": "thinkCausal",
       "Requirements": [
-        "Hmisc",
         "bartCause",
         "bs4Dash",
         "cli",
         "config",
         "dplyr",
+        "ggdark",
         "ggplot2",
+        "glmnet",
         "glue",
         "golem",
+        "haven",
         "htmltools",
         "jsonlite",
         "lubridate",
@@ -2238,21 +2111,22 @@
         "purrr",
         "reactable",
         "readr",
-        "readstata13",
         "rlang",
         "scales",
         "shiny",
+        "shinyFeedback",
         "shinyWidgets",
         "shinybrowser",
         "shinydisconnect",
         "shinyjs",
+        "shinyquiz",
         "sortable",
         "stringr",
         "tibble",
         "tidyr",
         "waiter"
       ],
-      "Hash": "fb1fae25705ac3a6b435fde5658cc94e"
+      "Hash": "11150711975310924d63eb00975cdbd8"
     },
     "tibble": {
       "Package": "tibble",
@@ -2402,20 +2276,6 @@
       ],
       "Hash": "c03fa420630029418f7e6da3667aac4a"
     },
-    "viridis": {
-      "Package": "viridis",
-      "Version": "0.6.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "ggplot2",
-        "gridExtra",
-        "stats",
-        "viridisLite"
-      ],
-      "Hash": "ee96aee95a7a563e5496f8991e9fde4b"
-    },
     "viridisLite": {
       "Package": "viridisLite",
       "Version": "0.4.1",
@@ -2503,15 +2363,16 @@
     },
     "xfun": {
       "Package": "xfun",
-      "Version": "0.44",
+      "Version": "0.52",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
+        "R",
         "grDevices",
         "stats",
         "tools"
       ],
-      "Hash": "317a0538d32f4a009658bcedb7923f4b"
+      "Hash": "652ce36fe7d57688e6786819b09d9190"
     },
     "xml2": {
       "Package": "xml2",
