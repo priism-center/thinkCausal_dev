@@ -1,4 +1,4 @@
-#' The application User-Interface
+#' The application User-Interface add updates
 #'
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
