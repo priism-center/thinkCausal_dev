@@ -17,6 +17,24 @@ mod_analysis_model_ui <- function(id){
         title = 'Fit Your Model',
         width = 12,
         collapsible = FALSE,
+      selectInput(ns('analysis_model_estimand'),
+                  label = 'Select a Causal Estimand',
+                  choices = list(
+                    '',
+                    'Average Treatment Effect (ATE)' = 'ate',
+                    'Average Treatment Effect of the Treated (ATT)' = 'att',
+                    'Average Treatment Effect of the Control (ATC)' = 'atc'
+                  )
+                  ),
+      selectInput(ns('analysis_model_uncertainty'),
+                  label = 'Who are you making causal inferences about?',
+                  choices = list(
+                    '',
+                    'The Sample' = 'sate',
+                    'The Conditional' = 'cate',
+                    'The Population' = 'pate'
+                  )
+                  ),
       selectInput(ns('analysis_model_moderator_yes_no'),
                   label = 'Before fitting your model, would you like to pre-specify a subgroup analyses:',
                   choices = c("", "No", "Yes", 'Unsure')),
@@ -251,7 +269,7 @@ mod_analysis_model_server <- function(id, store){
         # make sure required inputs have values
         local({
           req_inputs <- c(
-            'analysis_model_moderator_yes_no'
+            'analysis_model_moderator_yes_no', 'analysis_model_estimand', 'analysis_model_uncertainty'
           )
           req_values <- reactiveValuesToList(input)[req_inputs]
 
@@ -271,6 +289,13 @@ mod_analysis_model_server <- function(id, store){
         # remove current model if it exists
         store$analysis$model$model <- NULL
         store$analysis$model$fit_good <- NULL
+        store$analysis$model$analysis_model_estimand <- NULL
+
+        # update estimand value
+        store$analysis$model$analysis_model_estimand <- input$analysis_model_estimand
+
+        # update uncertainty measure
+        store$analysis$model$analysis_model_uncertainty <- input$analysis_model_uncertainty
 
         # save prespecified moderators
         store$analysis$subgroup$prespecified_subgroups <- input$analysis_model_moderator_vars

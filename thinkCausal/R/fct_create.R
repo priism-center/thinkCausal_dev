@@ -24,7 +24,7 @@ create_drag_drop_roles <- function(ns, .data, ns_prefix, exclude = NULL, include
     fluidRow(column(
       width = 6,
       sortable::bucket_list(
-        header = HTML('<b><center>Variables not included in the analysis</center></b>'),
+        header = NULL, #HTML('<b><center>Variables not included in the analysis</center></b>'),
         #"Drag the variables to their respective roles",
         group_name = ns(paste0(ns_prefix, "_dragdrop")),
         orientation = "vertical",
@@ -54,7 +54,7 @@ create_drag_drop_roles <- function(ns, .data, ns_prefix, exclude = NULL, include
     column(
       width = 6,
         sortable::bucket_list(
-          header = HTML('<b><center>Variables included in the analysis</center></b>'),
+          header = NULL, #HTML('<b><center>Variables included in the analysis</center></b>'),
           group_name = ns(paste0(ns_prefix, "_dragdrop")),
           orientation = "vertical",
           class = 'default-sortable sortable-wide',

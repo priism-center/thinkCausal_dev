@@ -141,7 +141,8 @@ mod_analysis_upload_server <- function(id, store){
               col_names = input$analysis_upload_data_header
             )
           } else if (filetype == 'dta'){
-            uploaded_file <- haven::read_dta(file = filepath)
+            uploaded_file <- haven::read_dta(file = filepath) |>
+              haven::zap_labels()
           } else if (filetype == 'xlsx'){
             uploaded_file <- openxlsx::read.xlsx(xlsxFile = filepath)
           } else if (filetype == 'txt'){
@@ -151,11 +152,15 @@ mod_analysis_upload_server <- function(id, store){
               col_names = input$analysis_upload_data_header
             )
           } else if (filetype == 'sav'){
-            uploaded_file <- haven::read_sav(file = filepath)
+            uploaded_file <- haven::read_sav(file = filepath) |>
+              haven::zap_labels()
+
           } else if(filetype == 'spss'){
-            uploaded_file <- haven::read_spss(file = filepath)
+            uploaded_file <- haven::read_spss(file = filepath) |>
+              haven::zap_labels()
           }else if(filetype == 'sas'){
-            uploaded_file <- haven::read_sas(file = filepath)
+            uploaded_file <- haven::read_sas(file = filepath) |>
+              haven::zap_labels()
           } else if(filetype == 'Rdata'){
             e <- new.env()
             name <- load(file = filepath, envir = e)
@@ -215,6 +220,7 @@ mod_analysis_upload_server <- function(id, store){
 
     output$analysis_upload_show_data <- reactable::renderReactable({
       validate_data_uploaded(store)
+
       tab <- store$analysis_data_uploaded_df %>%
         na.omit() %>%
         reactable::reactable()

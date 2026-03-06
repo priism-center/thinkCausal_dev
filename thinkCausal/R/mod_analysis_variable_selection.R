@@ -11,35 +11,10 @@ mod_analysis_variable_selection_ui <- function(id) {
   ns <- NS(id)
   tagList(
     fluidRow(
-    # column(
-    #   width = 3,
-    #   bs4Dash::box(
-    #     width = 12,
-    #     collapsible = FALSE,
-    #     title = "Variable Selection",
-    #     actionButton(
-    #       inputId = ns('analysis_select_help'),
-    #       label = 'Help me'
-    #     ),
-    #     actionButton(
-    #       inputId = ns('analysis_select_button_columnAssignSave'),
-    #       class = 'nav-path',
-    #       label = 'Save variable selection & continue'
-    #     )
-    #   )
-    # ),
-    column(
-      width = 12,
       bs4Dash::box(
-        width = 12,
-        collapsible = TRUE,
-        title = 'Select covariates',
-        uiOutput(outputId = ns('analysis_select_UI_dragdrop')),
-        checkboxInput(
-          inputId = ns('analysis_select_include_all'),
-          label = 'Move all covariates to include box',
-          value = FALSE
-        ),
+        width = 3,
+        collapsible = FALSE,
+        title = "Select covariates",
         actionButton(
           inputId = ns('analysis_select_help'),
           label = 'Help me'
@@ -49,11 +24,20 @@ mod_analysis_variable_selection_ui <- function(id) {
           class = 'nav-path',
           label = 'Save variable selection & continue'
         )
+      ),
+      bs4Dash::box(
+        width = 9,
+        collapsible = FALSE,
+        title = 'Drag & Drop To Make Your Selection',
+        uiOutput(outputId = ns('analysis_select_UI_dragdrop')),
+        checkboxInput(
+          inputId = ns('analysis_select_include_all'),
+          label = 'Move all covariates to include box',
+          value = FALSE
+        )
       )
     )
   )
-  )
-
 }
 
 #' analysis_design Server Functions
@@ -287,7 +271,7 @@ mod_analysis_variable_selection_server <- function(id, store){
     observeEvent(input$analysis_select_button_columnAssignSave, {
       req(store$analysis_data_uploaded_df)
       pass_variable <- reactiveVal(length(input$analysis_select_dragdrop_avalable) == 0)
-      
+
       # check that all predictors are included, if not launch popup
       if (isFALSE(pass_variable()) & isTRUE(store$analysis_select_design == "Observational Study (Treatment not Randomized)")) {
         show_popup_variable_selection_warning(x = length(input$analysis_select_dragdrop_avalable),

@@ -27,7 +27,6 @@ Imports:
     openxlsx (>= 4.2.5),
     patchwork (>= 1.1.1),
     pkgload,
-    plotBart (>= 0.1.28),
     purrr,
     reactable (>= 0.3.0),
     readr,
@@ -36,7 +35,7 @@ Imports:
     shiny (>= 1.7.1),
     shinybrowser (>= 1.0.0),
     shinydisconnect (>= 0.1.0),
-    shinyFeedback (>= 0.4.0.9001),
+    shinyFeedback (>= 0.4.0),
     shinyjs (>= 2.1.0),
     shinyquiz (>= 0.0.1),
     shinyWidgets (>= 0.7.4),
@@ -54,7 +53,7 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 BugReports: https://priism-center.github.io/thinkCausal//issues
 Remotes: 

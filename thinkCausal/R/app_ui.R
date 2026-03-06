@@ -163,10 +163,10 @@ app_ui <- function(request) {
           #   tabName = 'analysis_balance',
           #   mod_analysis_balance_ui(module_ids$analysis$balance)
           # ),
-          bs4Dash::tabItem(
-            tabName = 'analysis_overlap',
-            mod_analysis_overlap_ui(module_ids$analysis$overlap)
-          ),
+          # bs4Dash::tabItem(
+          #   tabName = 'analysis_overlap',
+          #   mod_analysis_overlap_ui(module_ids$analysis$overlap)
+          # ),
           bs4Dash::tabItem(
             tabName = 'analysis_model',
             mod_analysis_model_ui(module_ids$analysis$model)
@@ -337,11 +337,11 @@ app_ui <- function(request) {
             #   tabName = 'analysis_balance',
             #   icon = icon('chart-bar', verify_fa = FALSE)
             # ),
-            bs4Dash::menuSubItem(
-              text = 'Check overlap',
-              tabName = 'analysis_overlap',
-              icon = icon('chart-bar', verify_fa = FALSE)
-            ),
+            # bs4Dash::menuSubItem(
+            #   text = 'Check overlap',
+            #   tabName = 'analysis_overlap',
+            #   icon = icon('chart-bar', verify_fa = FALSE)
+            # ),
             bs4Dash::menuSubItem(
               text = 'Fit model',
               tabName = 'analysis_model',

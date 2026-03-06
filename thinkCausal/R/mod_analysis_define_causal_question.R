@@ -12,7 +12,7 @@ mod_analysis_causal_question_ui <- function(id) {
   tagList(
     fluidRow(
       column(
-        width = 6,
+        width = 12,
         bs4Dash::box(
           width = 12,
           collapsible = FALSE,
@@ -53,15 +53,6 @@ mod_analysis_causal_question_ui <- function(id) {
             class = 'nav-path',
             label = 'Continue to Variable Selection'
           )
-        )
-      ),
-      column(
-        width = 6,
-        bs4Dash::box(
-          width = 12,
-          collapsible = FALSE,
-          title = 'Potential Outcomes',
-          reactable::reactableOutput(ns('po_table'))
         )
       )
     )

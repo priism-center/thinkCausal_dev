@@ -20,8 +20,22 @@ mod_analysis_visualize_ui <- function(id){
            inputId = ns("analysis_eda_select_plot_type"),
            label = "Plot type:",
            multiple = FALSE,
-           choices = c("Balance", "Scatter", "Histogram", "Barplot", "Density", "Boxplot")
+           choices = c("Overlap","Balance", "Scatter", "Histogram", "Barplot", "Density", "Boxplot")
          ),
+        conditionalPanel("input.analysis_eda_select_plot_type == 'Overlap'",
+                         ns = ns,
+                         selectInput(
+                           inputId = ns("analysis_overlap_estimand"),
+                           label = 'Check overlap for the:',
+                           choices = c('ATE', 'ATT', 'ATC'),
+                           selected = 'ATE'
+                         ),
+                         checkboxInput(
+                           inputId = ns('trim'),
+                           label = 'Trim plot',
+                           value = FALSE
+                         )
+        ),
          conditionalPanel("input.analysis_eda_select_plot_type == 'Balance'",
                           ns = ns,
                           selectInput(
@@ -65,21 +79,11 @@ mod_analysis_visualize_ui <- function(id){
                                            )
                           )
                           ),
-         conditionalPanel(
-           condition = "input.analysis_eda_select_plot_type != 'Balance'",
-           ns = ns,
-           # selectInput(
-           #   inputId = ns("analysis_eda_variable_x"),
-           #   label = "X: ",
-           #   multiple = NULL,
-           #   choices = NULL,
-           #   selected = NULL
-           # ),
-           uiOutput(ns("render_analysis_eda_variable_x")),
-           uiOutput(ns("render_analysis_eda_x_levels")),
            conditionalPanel(
              condition = "input.analysis_eda_select_plot_type == 'Scatter'",
              ns = ns,
+             uiOutput(ns("render_analysis_eda_variable_x")),
+             uiOutput(ns("render_analysis_eda_x_levels")),
              selectInput(
                inputId = ns("analysis_eda_variable_y"),
                label = "Y: ",
@@ -141,6 +145,8 @@ mod_analysis_visualize_ui <- function(id){
            conditionalPanel(
              condition = "input.analysis_eda_select_plot_type == 'Histogram'",
              ns = ns,
+             uiOutput(ns("render_analysis_eda_variable_x")),
+             uiOutput(ns("render_analysis_eda_x_levels")),
              sliderInput(
                inputId = ns("analysis_eda_variable_n_bins"),
                label = "Number of bins: ",
@@ -153,6 +159,8 @@ mod_analysis_visualize_ui <- function(id){
            conditionalPanel(
              condition = "input.analysis_eda_select_plot_type == 'Boxplot'",
              ns = ns,
+             uiOutput(ns("render_analysis_eda_variable_x")),
+             uiOutput(ns("render_analysis_eda_x_levels")),
              selectInput(
                inputId = ns("analysis_eda_variable_group"),
                label = "Grouping: ",
@@ -181,6 +189,8 @@ mod_analysis_visualize_ui <- function(id){
            conditionalPanel(
              condition = "input.analysis_eda_select_plot_type == 'Scatter'",
              ns = ns,
+             uiOutput(ns("render_analysis_eda_variable_x")),
+             uiOutput(ns("render_analysis_eda_x_levels")),
              sliderInput(
                inputId = ns("analysis_eda_variable_alpha"),
                label = "Opacity: ",
@@ -189,8 +199,7 @@ mod_analysis_visualize_ui <- function(id){
                value = 0.5,
                step = 0.1
              )
-           )
-         ),
+           ),
          HTML('<details><summary>Advanced options</summary>'),
          checkboxInput(
            inputId = ns("analysis_eda_check_jitter"),
@@ -234,7 +243,7 @@ mod_analysis_visualize_server <- function(id, store){
 
     # next button
     observeEvent(input$analysis_plots_descriptive_button_next, {
-      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_overlap')
+      bs4Dash::updateTabItems(store$session_global, inputId = 'sidebar', selected = 'analysis_model')
     })
 
 
@@ -437,12 +446,88 @@ mod_analysis_visualize_server <- function(id, store){
     })
 
 
+    # calculate propensity scores
+    pscores <- reactive({
+      # stop here if data hasn't been uploaded and selected
+      validate_data_verified(store)
+
+      # get variables
+      X <- clean_to_indicator(store$verified_df)
+      col_names <- colnames(X)
+      treatment_col <- grep("^Z_", col_names, value = TRUE)
+      response_col <- grep("^Y_", col_names, value = TRUE)
+      confounder_cols <- grep("^X_", col_names, value = TRUE)
+      p_call <- paste0(treatment_col, '~', paste0(names(X)[3:length(X)], collapse = '+'))
+      pscores <- glm(as.formula(p_call), data = X)
+      pscores <- predict(pscores, type = 'response')
+      # calculate pscores
+
+      #  if(store$analysis_select_design == 'Observational Study (Treatment not Randomized)'){
+      #   p_call <- paste0(treatment_col, '~', paste0(names(X)[3:length(X)], collapse = '+'))
+      #   pscores <- dbarts::bart2(as.formula(p_call), data = X, seed = 2, combineChains = T)
+      #   pscores <- dbarts::extract(pscores, 'ev')
+      #   pscores <- apply(pscores, 2, mean)
+      # }else{
+      #   p_call <- paste0(treatment_col, '~', paste0(names(X)[3:length(X)], collapse = '+'))
+      #   pscores <- glm(as.formula(p_call), data = X)
+      #   pscores <- predict(pscores, type = 'response')
+      # }
+      #
+
+      return(pscores)
+    })
     # create the descriptive plots
     # build the exploration plots
     descriptive_plot <- reactive({
 
       # stop here if data hasn't been uploaded and selected
       validate_data_verified(store)
+
+      if(input$analysis_eda_select_plot_type == 'Overlap'){
+
+        # # create the overlap plot
+        # overlap_plot <- reactive({
+        #
+        #   # stop here if data hasn't been uploaded and selected
+        #   validate_data_verified(store)
+        #
+          # stop here if there are no numeric columns selected
+          # validate(need(length(input$analysis_overlap_select_var) > 0,
+          #               "No continuous columns available or currently selected"))
+
+          # get variables for input into plotting functions
+          X <- store$verified_df
+          col_names <- colnames(X)
+          treatment_col <- grep("^Z_", col_names, value = TRUE)
+          response_col <- grep("^Y_", col_names, value = TRUE)
+          cols_continuous <- store$column_types$continuous
+          confounder_cols <- grep("^X_", cols_continuous, value = TRUE)
+          #plt_type <- input$analysis_overlap_method
+
+
+          trim <- switch (input$analysis_overlap_estimand,
+                          'ATE' = c(NULL, NULL),
+                          'ATT' = c(min(pscores()[X[[treatment_col]] == 1]),max(pscores()[X[[treatment_col]] == 1])),
+                          'ATC' = c(min(pscores()[X[[treatment_col]] == 0]),max(pscores()[X[[treatment_col]] == 0]))
+          )
+
+          p <- plotBart::plot_overlap_pScores(
+            .data = X,
+            treatment = treatment_col,
+            plot_type = 'Histogram',
+            pscores = pscores(),
+            min_x = trim[1],
+            max_x = trim[2],
+            trim = input$trim
+          )
+
+          # add theme
+          p <- p & store$options$theme_custom + ggplot2::theme(legend.position = 'none')
+
+        #   return(p)
+        # })
+
+      }
 
       if(input$analysis_eda_select_plot_type == 'Balance'){
         # plot it
@@ -482,38 +567,41 @@ mod_analysis_visualize_server <- function(id, store){
         # add theme
         p <- p & store$options$theme_custom + ggplot2::theme(legend.position = 'none')
 
-      }else{
-      p <- tryCatch({
-        plot_exploration(
-          .data = store$verified_df,
-          .plot_type = input$analysis_eda_select_plot_type,
-          .x = input$analysis_eda_variable_x,
-          .y = input$analysis_eda_variable_y,
-          .levels = find_levels(),
-          .fill = input$analysis_eda_variable_fill,
-          .fill_static = 'grey20', #"#5c5980",
-          .shape = input$analysis_eda_variable_shape,
-          .size = input$analysis_eda_variable_size,
-          .alpha = input$analysis_eda_variable_alpha,
-          .vars_pairs = input$analysis_eda_variable_pairs_vars,
-          .n_bins = input$analysis_eda_variable_n_bins,
-          .jitter = input$analysis_eda_check_jitter,
-          .groups = input$analysis_eda_variable_group,
-          .facet = input$analysis_eda_variable_facet,
-          .facet_second = input$analysis_eda_variable_facet_second,
-          .include_regression = input$analysis_eda_variable_regression
+      }
+
+      if(input$analysis_eda_select_plot_type != 'Balance' & input$analysis_eda_select_plot_type != 'Overlap'){
+        p <- tryCatch({
+          plot_exploration(
+            .data = store$verified_df,
+            .plot_type = input$analysis_eda_select_plot_type,
+            .x = input$analysis_eda_variable_x,
+            .y = input$analysis_eda_variable_y,
+            .levels = find_levels(),
+            .fill = input$analysis_eda_variable_fill,
+            .fill_static = 'grey20', #"#5c5980",
+            .shape = input$analysis_eda_variable_shape,
+            .size = input$analysis_eda_variable_size,
+            .alpha = input$analysis_eda_variable_alpha,
+            .vars_pairs = input$analysis_eda_variable_pairs_vars,
+            .n_bins = input$analysis_eda_variable_n_bins,
+            .jitter = input$analysis_eda_check_jitter,
+            .groups = input$analysis_eda_variable_group,
+            .facet = input$analysis_eda_variable_facet,
+            .facet_second = input$analysis_eda_variable_facet_second,
+            .include_regression = input$analysis_eda_variable_regression
+          )
+        }
+        # warning = function(e) NULL,
+        # error = function(e) NULL
         )
-      }
-      # warning = function(e) NULL,
-      # error = function(e) NULL
-      )
 
-      # add theme
-      p <- p + store$options$theme_custom
-      }
+        # add theme
+        p <- p + store$options$theme_custom
+        }
 
-      return(p)
+        return(p)
     })
+
     output$analysis_eda_plot <- renderPlot(descriptive_plot())
 
     # to save the parameters of downloaded descriptive plots for reproducible script

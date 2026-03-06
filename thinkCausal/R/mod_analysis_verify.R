@@ -10,7 +10,6 @@
 mod_analysis_verify_ui <- function(id){
   ns <- NS(id)
   tagList(
-
     fluidRow(
       bs4Dash::box(
         width = 3,

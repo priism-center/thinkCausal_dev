@@ -121,7 +121,7 @@ mod_analysis_results_server <- function(id, store){
       validate_model_fit(store, req_only = TRUE)
 
       # extract estimates and format
-      sate <- bartCause::extract(store$analysis$model$model, 'sate')
+      sate <- bartCause::extract(store$analysis$model$model, store$analysis$model$analysis_model_uncertainty)
       model_sum <- data.frame(estimate = mean(sate), sd = sd(sate), ci.lower = quantile(sate, .025), ci.upper = quantile(sate, .975))
       rownames(model_sum) <- store$analysis$model$model$estimand
       tab <- model_sum %>%
@@ -171,17 +171,38 @@ mod_analysis_results_server <- function(id, store){
       if (input$show_reference == 'Yes') reference_bar <- req(input$reference_bar)
 
       # create plot
-      p <- plotBart::plot_SATE(
-        .model = store$analysis$model$model,
-        type = input$plot_result_style,
-        ci_80 = sum(input$show_interval == 0.80) > 0,
-        ci_95 = sum(input$show_interval == 0.95) > 0,
-        .mean = sum(input$central_tendency == 'Mean') > 0,
-        .median = sum(input$central_tendency == 'Median') > 0,
-        reference = reference_bar,
-        check_overlap = .check,
-        overlap_rule = input$analysis_results_view_overlap
-      )
+      if(store$analysis$model$analysis_model_uncertainty == 'sate'){
+        p <- plotBart::plot_SATE(
+          .model = store$analysis$model$model,
+          type = input$plot_result_style,
+          ci_80 = sum(input$show_interval == 0.80) > 0,
+          ci_95 = sum(input$show_interval == 0.95) > 0,
+          .mean = sum(input$central_tendency == 'Mean') > 0,
+          .median = sum(input$central_tendency == 'Median') > 0,
+          reference = reference_bar,
+          check_overlap = .check,
+          overlap_rule = input$analysis_results_view_overlap
+        )
+      }else if(store$analysis$model$analysis_model_uncertainty == 'cate'){
+        p <- plotBart::plot_CATE(
+          .model = store$analysis$model$model,
+          type = input$plot_result_style,
+          ci_80 = sum(input$show_interval == 0.80) > 0,
+          ci_95 = sum(input$show_interval == 0.95) > 0,
+          .mean = sum(input$central_tendency == 'Mean') > 0,
+          .median = sum(input$central_tendency == 'Median') > 0,
+          reference = reference_bar)
+      }else{
+        p <- plotBart::plot_PATE(
+          .model = store$analysis$model$model,
+          type = input$plot_result_style,
+          ci_80 = sum(input$show_interval == 0.80) > 0,
+          ci_95 = sum(input$show_interval == 0.95) > 0,
+          .mean = sum(input$central_tendency == 'Mean') > 0,
+          .median = sum(input$central_tendency == 'Median') > 0,
+          reference = reference_bar)
+      }
+
 
       # add theme
       p <- p +
@@ -196,7 +217,7 @@ mod_analysis_results_server <- function(id, store){
     output$analysis_results_plot_SATE <- renderPlot(analysis_results_plot_SATE())
 
     output$download_SATE_plot <- downloadHandler(
-      filename = "SATE_plot.png",
+      filename = "estimate_plot.png",
       content = function(file) {
         ggplot2::ggsave(
           file,
