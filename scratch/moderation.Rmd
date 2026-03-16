@@ -67,7 +67,7 @@ Sub-group analyses estimate the average treatment effects within sub-groups defi
 Causal effects within sub-groups are often refereed to as a **conditional average treatment effect (CATE)** because we are conditioning (read as sub-setting) by sub-group. thinkCausal automatically allows you to look at treatment effects within all possible sub-groups includes all possible 
 
 
-### Causal Effect of HyerShoes for Professional and Ameature Runners
+### Causal Effect of HyperShoes for Professional and Ameature Runners
 If we separate our results into sub-groups defined by being a professional or amateur runner we reach a more nuanced conclusion about HyperShoes! We can see that HyperShoes do in fact cause faster running times but only for professional level runners! For professional runners, wearing HyperShoes caused finishing times that were an average of 9 minutes faster (-9.2) than they would have been had they worn standard shoes. Amateur runners, on the other hand, gain no advantage from wearing HyperShoes!
 
 #### CATEs vs SATEs
